@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->foreign('city_id')->references('id')->on('cities');
             $table->string('job_skills')->comment="reference to job_skill table. multiple with comma.";
             $table->string('area_of_interest')->comment="reference to area_of_interest table. multiple with comma.";
+            $table->string('role');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
