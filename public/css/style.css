@@ -1,0 +1,28 @@
+
+
+
+
+
+
+
+
+
+
+
+.navbar-brand {
+    padding: 5px;
+}
+.navbar-brand>img {
+    height: 100%;
+    padding: 5px;
+    width: auto;
+    display:inline;
+}
+.navbar-orange{background-color:#fff;}
+.navbar-orange .navbar-nav>.active>a{
+    border-top:5px solid #E1672C !important;
+}
+.text-orange{color:#E1672C;}
+.orange-bg{background-color:#E1672C;color:#fff;}
+/*footer{width:100%;position:absolute;bottom:0px;}*/
+footer .statistics{color:#fff;background-color:#222222;}

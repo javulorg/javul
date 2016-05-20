@@ -28,6 +28,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
     <link href="{!! url('plugins/font-awesome/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('plugins/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('css/style.css') !!}" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
     <link rel="shortcut icon" href="favicon.ico" />
     @yield('page-css')
@@ -35,8 +36,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- END HEAD -->
     <!-- If login page reload every 15 minutes. -->
     <body>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
+        <nav class="navbar navbar-default navbar-orange">
+            <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -45,46 +46,39 @@ License: You must have a valid license purchased only from themeforest(the above
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Brand</a>
+                    <a class="navbar-brand" href="#">
+                        <img class="logo" src="{!! url('images/logo.png') !!}" />JAVUL
+                    </a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                        <li><a href="#">Link</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">One more separated link</a></li>
-                            </ul>
-                        </li>
+                        <li class="active"><a href="#" style="padding-top:10px;"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <li><a href="#">{!! Lang::get('messages.about_this_site') !!}</a></li>
+                        <li><a href="#">{!! Lang::get('messages.faq') !!}</a></li>
+                        <li><a href="#">{!! Lang::get('messages.how_can_i_help') !!}</a></li>
+                        <li><a href="#">{!! Lang::get('messages.joul.org_unit') !!}</a></li>
                     </ul>
-                    <form class="navbar-form navbar-left" role="search">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
-                        </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">Link</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                            </ul>
+                        <li><a href="{!! url('register') !!}">
+                                <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.signup') !!}</button>
+                            </a></li>
+                        <li><a href="{!! url('login') !!}">
+                                <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.sign_in') !!}</button>
+                            </a>
+                        </li>
+                        <li style="width:300px;">
+                            <a href="#">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="{!! Lang::get('messages.search_for') !!}" aria-describedby="basic-addon1">
+                                    <span class="input-group-addon orange-bg" id="basic-addon1"><i class="fa fa-search"></i></span>
+                                </div>
+                            </a>
                         </li>
                     </ul>
+
+
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
