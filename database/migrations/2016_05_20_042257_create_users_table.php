@@ -19,8 +19,14 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('phone');
-            $table->integer('mobile',15);
+            $table->integer('mobile')->length(15);
             $table->string('address');
+            $table->integer('country_id')->unsigned();
+            $table->foreign('country_id')->references('id')->on('countries');
+            $table->integer('state_id')->unsigned();
+            $table->foreign('state_id')->references('id')->on('states');
+            $table->integer('city_id')->unsigned();
+            $table->foreign('city_id')->references('id')->on('cities');
             $table->string('job_skills')->comment="reference to job_skill table. multiple with comma.";
             $table->string('area_of_interest')->comment="reference to area_of_interest table. multiple with comma.";
             $table->rememberToken();

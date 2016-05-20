@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateObjectiveImportanceLevelTable extends Migration
+class CreateUserAwardNominationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,15 @@ class CreateObjectiveImportanceLevelTable extends Migration
      */
     public function up()
     {
-        Schema::create('objective_importance_level', function (Blueprint $table) {
+        Schema::create('user_award_nominations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('objective_id')->unsigned();
-            $table->foreign('objective_id')->rederences('id')->on('objectives');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('level');
+            $table->integer('leadership');
+            $table->integer('task_completion');
+            $table->integer('ingenuity');
+            $table->integer('mediator_facilitator');
+            $table->integer('accountibility_award');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +33,6 @@ class CreateObjectiveImportanceLevelTable extends Migration
      */
     public function down()
     {
-        Schema::drop('objective_importance_level');
+        Schema::drop('user_award_nominations');
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUnitCategoryTable extends Migration
+class CreateAreaOfInterestTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,10 @@ class CreateUnitCategoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('unit_category', function (Blueprint $table) {
+        Schema::create('area_of_interest', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('parent_id')->unsinged();
-            $table->string('status')->comment='pending or approved';
+            $table->string('title');
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +28,6 @@ class CreateUnitCategoryTable extends Migration
      */
     public function down()
     {
-        Schema::drop('unit_category');
+        Schema::drop('area_of_interest');
     }
 }

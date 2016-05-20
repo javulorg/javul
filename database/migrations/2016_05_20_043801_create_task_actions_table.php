@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateObjectivesTable extends Migration
+class CreateTaskActionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,15 @@ class CreateObjectivesTable extends Migration
      */
     public function up()
     {
-        Schema::create('objectives', function (Blueprint $table) {
+        Schema::create('task_actions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('unit_id')->unsigned();
-            $table->foreign('unit_id')->references('id')->on('units');
+            $table->integer('task_id')->unsigned();
+            $table->foreign('task_id')->references('id')->on('tasks');
             $table->string('name');
             $table->text('description');
-            $table->string('status')->comment="in-progress, completed or archieved";
-            $table->integer('parent_id');
+            $table->string('status')->comment='pending or completed';
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +33,6 @@ class CreateObjectivesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('objectives');
+        Schema::drop('task_actions');
     }
 }

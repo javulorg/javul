@@ -16,14 +16,14 @@ class CreateUnitsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->string('category_id')->comment='reference to unit_category. multiple categories with comma.';
             $table->string('name');
             $table->text('description');
-            $table->string('category_id')->comment='reference to unit_category. multiple categories with comma.';
             $table->string('credibility')->comment='platinum,gold,silver or bronze';
-            $table->integer('location');
+            $table->integer('location')->unsigned();
             $table->foreign('location')->references('id')->on('cities');
             $table->string('status')->comment="active or disabled";
-            $table->integer('parent_id');
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

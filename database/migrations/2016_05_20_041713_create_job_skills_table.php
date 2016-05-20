@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableRelatedUnits extends Migration
+class CreateJobSkillsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,10 @@ class CreateTableRelatedUnits extends Migration
      */
     public function up()
     {
-        Schema::create('related_units', function (Blueprint $table) {
+        Schema::create('job_skills', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('unit_id')->unisigned();
-            $table->foreign('unit_id')->references('id')->on('units');
-            $table->integer('related_to')->unsigned();
-            $table->foreign('related_to')->references('id')->on('units');
+            $table->string('skill_name');
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +28,6 @@ class CreateTableRelatedUnits extends Migration
      */
     public function down()
     {
-        Schema::drop('related_units');
+        Schema::drop('job_skills');
     }
 }

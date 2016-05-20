@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUnitFundsTable extends Migration
+class CreateActivityPointsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,16 @@ class CreateUnitFundsTable extends Migration
      */
     public function up()
     {
-        Schema::create('unit_funds', function (Blueprint $table) {
+        Schema::create('activity_points', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('user_id')->nullable();
             $table->integer('unit_id')->nullable();
             $table->integer('objective_id')->nullable();
-            $table->decimal('amount',10,2);
-            $table->string('transaction_type')->comment="donated or rewarded";
-            $table->string('fund_type')->comment="units or objectives or general purpose";
+            $table->integer('task_id')->nullable();
+            $table->integer('issue_id')->nullable();
+            $table->integer('points');
+            $table->text('comments');
+            $table->string('type')->comment='unit,objective,task or issue';
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +34,6 @@ class CreateUnitFundsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('unit_funds');
+        Schema::drop('activity_points');
     }
 }
