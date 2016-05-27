@@ -7,16 +7,17 @@ return [
     'how_can_i_help'=>'How can I help?',
     'joul.org_unit'=>'Javul.org Unit',
     'search_for'=>'Search for...',
-    'please_signup'=>'Please Sign Up',
+    'please_signup'=>'Sign Up',
     'enter_firstname'=>'Enter First Name',
     'enter_lastname'=>'Enter Last Name',
     'email_address'=>'Email address',
     'enter_password'=>'Enter Password',
     'confirm_password'=>'Confirm password',
     'signup'=>'Sign Up',
-    'please_signin'=>'Please sign in',
+    'sign_out'=>'Logout',
+    'please_signin'=>'Sign In',
     'remember_me'=>'Remember me',
-    'sign_in'=>'Sign in',
+    'sign_in'=>'Login',
     'recent_units'=>'Recent Units',
     'all_units'=>'All Units',
     'create_units'=>'Create Units',
@@ -28,13 +29,9 @@ return [
     'create_tasks'=>'Create Tasks',
     'most_recent_users'=>'Most recent users',
     'activity_log'=>'Activity Log',
-
-
-
-
-
-
-
-
-
+    'reset_password'=>'Reset Password',
+    'send_password_reset_link'=>'Send Password Reset Link',
+    'forgot_password'=>'Forgot Your Password?',
+    'reset_your_password'=>'Reset your password.',
+    'enter_registered_email'=>'Enter your registered email address'
 ];

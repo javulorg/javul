@@ -61,13 +61,20 @@ License: You must have a valid license purchased only from themeforest(the above
                         <li><a href="#">{!! Lang::get('messages.joul.org_unit') !!}</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="{!! url('auth/register') !!}">
-                                <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.signup') !!}</button>
-                            </a></li>
-                        <li><a href="{!! url('auth/login') !!}">
-                                <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.sign_in') !!}</button>
-                            </a>
-                        </li>
+                        @if (Auth::guest())
+                            <li><a href="{!! url('register') !!}">
+                                    <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.signup') !!}</button>
+                                </a></li>
+                            <li><a href="{!! url('login') !!}">
+                                    <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.sign_in') !!}</button>
+                                </a>
+                            </li>
+                        @else
+                            <li><a href="{!! url('/logout') !!}">
+                                    <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.sign_out') !!}</button>
+                                </a>
+                            </li>
+                        @endif
                         <li style="width:300px;">
                             <a href="#">
                                 <div class="input-group">

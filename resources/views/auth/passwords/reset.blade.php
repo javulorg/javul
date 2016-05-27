@@ -3,42 +3,20 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-offset-3 col-sm-6">
-            <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
+
+            <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/reset') }}">
                 {!! csrf_field() !!}
 
-                <div class="form-group row">
+                <div class="row form-group">
                     <div class="col-sm-12">
-                        <h2 class="form-signin-heading">{!! Lang::get('messages.please_signup') !!}</h2>
+                        <h2 class="form-signin-heading">{!! Lang::get('messages.reset_your_password') !!}</h2>
                     </div>
                 </div>
-                <div class="row form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
-                    <div class="col-md-12">
-                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}"  placeholder="{!! Lang::get('messages.enter_firstname') !!}">
-                        @if ($errors->has('first_name'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('first_name') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="row form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
-                    <div class="col-md-12">
-                        <input name="last_name" type="text" id="last_name" value="{{ old('last_name') }}" class="form-control"
-                               placeholder="{!! Lang::get('messages.enter_lastname') !!}"/>
-                        @if ($errors->has('last_name'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('last_name') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
+                <input type="hidden" name="token" value="{{ $token }}">
 
                 <div class="row form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <div class="col-md-12">
-                        <input name="email" type="email" value="{{ old('email') }}" id="email" class="form-control" placeholder="{!! Lang::get('messages.email_address') !!}"
-                               required="" >
-
+                        <input type="email" class="form-control" name="email" value="{{ $email or old('email') }}" placeholder="{!! Lang::get('messages.email_address') !!}">
                         @if ($errors->has('email'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('email') }}</strong>
@@ -74,8 +52,8 @@
 
                 <div class="row form-group">
                     <div class="col-sm-12">
-                        <button class="btn btn-lg orange-bg btn-block" type="submit">
-                            <i class="fa fa-btn fa-user"></i> {!! Lang::get('messages.signup') !!}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-btn fa-refresh"></i>&nbsp;{!! Lang::get('messages.reset_password') !!}
                         </button>
                     </div>
                 </div>

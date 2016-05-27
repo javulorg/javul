@@ -56,24 +56,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Display Login page
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-
-    public function getLogin(){
-        return view('auth.login');
-    }
-
-    /**
-     * Display Registration page
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-
-    public function getRegister(){
-        return view('auth.register');
-    }
-
-    /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data

@@ -15,5 +15,9 @@ class UnitsController extends Controller
         return view('units');
     }
 
+    public function show()
+    {
+        return view('objectives');
+    }
 
 }
