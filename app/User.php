@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name','last_name', 'email', 'password','phone','mobile','address','country_id','state_id','city_id'
     ];
 
     /**
@@ -23,4 +23,36 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Get Units of User..
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function units(){
+        return $this->hasMany('App\Unit');
+    }
+
+    /**
+     * Get Objectives of user..
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function objectives(){
+        return $this->hasMany('App\Objective');
+    }
+
+    /**
+     * Get Tasks of User..
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasks(){
+        return $this->hasMany('App\Task');
+    }
+
+    /**
+     * Get Issues of User...
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function issues(){
+        return $this->hasMany('App\Issue');
+    }
 }

@@ -3,10 +3,18 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-offset-3 col-sm-6">
-                <form class="form-signup">
+                @if($errors->all())
+                    <?php dd($errors); ?>
+                @endif
+                <form class="form-signup" method="post" action="{!! url('auth/register') !!}">
+                    <input type="hidden" name="_token" value="{!! csrf_token() !!}" />
                     <h2 class="form-signin-heading">{!! Lang::get('messages.please_signup') !!}</h2>
                     <div class="form-group">
-                        <input name="name" type="text" id="name" class="form-control" placeholder="{!! Lang::get('messages.enter_fullname') !!}"
+                        <input name="first_name" type="text" id="first_name" class="form-control" placeholder="{!! Lang::get('messages.enter_firstname') !!}"
+                               required="" autofocus="" />
+                    </div>
+                    <div class="form-group">
+                        <input name="last_name" type="text" id="last_name" class="form-control" placeholder="{!! Lang::get('messages.enter_lastname') !!}"
                                required="" autofocus="" />
                     </div>
                     <div class="form-group">
@@ -18,7 +26,7 @@
                                required="">
                     </div>
                     <div class="form-group">
-                        <input name="confirm_password" type="password" id="confirm_password" class="form-control"
+                        <input name="password_confirmation" type="password" id="password_confirmation" class="form-control"
                                placeholder="{!! Lang::get('messages.confirm_password') !!}" required="" />
                     </div>
                     <div class="form-group">
