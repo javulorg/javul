@@ -26,9 +26,9 @@ License: You must have a valid license purchased only from themeforest(the above
     <meta content="" name="author" />
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-    <link href="{!! url('plugins/font-awesome/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css" />
-    <link href="{!! url('plugins/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
-    <link href="{!! url('css/style.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('assets/plugins/font-awesome/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('assets/plugins/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('assets/css/style.css') !!}" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
     <link rel="shortcut icon" href="favicon.ico" />
     @yield('page-css')
@@ -47,7 +47,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="#">
-                        <img class="logo" src="{!! url('images/logo.png') !!}" />JAVUL
+                        <img class="logo" src="{!! url('assets/images/logo.png') !!}" />JAVUL
                     </a>
                 </div>
 
@@ -88,16 +88,16 @@ License: You must have a valid license purchased only from themeforest(the above
         </div>
 
         <!--[if lt IE 9]>
-        <script src="{!! url('plugins/respond.min.js') !!}"></script>
-        <script src="{!! url('plugins/excanvas.min.js') !!}"></script>
+        <script src="{!! url('assets/plugins/respond.min.js') !!}"></script>
+        <script src="{!! url('assets/plugins/excanvas.min.js') !!}"></script>
         <![endif]-->
         <!-- BEGIN CORE PLUGINS -->
-        <script src="{!! url('plugins/jquery.min.js') !!}" type="text/javascript"></script>
-        <script src="{!! url('plugins/bootstrap/js/bootstrap.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/jquery.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/bootstrap/js/bootstrap.min.js') !!}" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="{!! url('plugins/jquery-validation/js/jquery.validate.min.js') !!}" type="text/javascript"></script>
-        <script src="{!! url('plugins/jquery-validation/js/additional-methods.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/jquery-validation/js/jquery.validate.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/jquery-validation/js/additional-methods.min.js') !!}" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         @yield('page-scripts')
     </body>
