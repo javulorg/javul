@@ -61,7 +61,8 @@ License: You must have a valid license purchased only from themeforest(the above
                         <li><a href="#">{!! Lang::get('messages.joul.org_unit') !!}</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        @if (Auth::guest())
+                        <?php $flag=$user_login; ?>
+                        @if (!$flag)
                             <li><a href="{!! url('register') !!}">
                                     <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.signup') !!}</button>
                                 </a></li>
