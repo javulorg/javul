@@ -37,6 +37,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
+        view()->share('user_login',\Auth::check());
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
     }
 
