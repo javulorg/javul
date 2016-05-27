@@ -6,13 +6,11 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-class ObjectivesController extends Controller
+class HomeController extends Controller
 {
     public function __construct(){}
 
     public function index(Request $request){
-        return view('objectives');
+        return view('home');
     }
-
-
 }
