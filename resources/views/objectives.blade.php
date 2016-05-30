@@ -2,60 +2,61 @@
 @section('content')
 
     <div class="container">
+        <div class="row">
+            @include('elements.user-menu',['page'=>'objectives'])
+        </div>
         <div class="row form-group">
-            @include('elements.user-menu',array('page'=>'objectives'))
-            <div class="col-sm-12 grey-bg">
-                <div class="row">
-                    <div class="col-md-5">
-                        <h1><span class="glyphicon glyphicon-list-alt"></span> Title of sample Objective</h1>
-                        <div class="form-group">
-                            Objective Summary: Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
-                            of type and scrambled it to make a type specimen book.
-                        </div>
-                        <div class="form-group">
-                            <button class="btn orange-bg" id="edit_object"><span class="glyphicon glyphicon-pencil"></span> &nbsp;Edit Object</button>
-                        </div>
-
+            <div class="col-sm-12">
+                <div class="col-md-6 grey-bg unit_description">
+                    <h1 class="unit-heading"><span class="glyphicon glyphicon-list-alt"></span> Title of sample Objective</h1>
+                    <div class="form-group">
+                        Objective Summary: Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
+                        of type and scrambled it to make a type specimen book.
                     </div>
-                    <div class="col-md-7">
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <div class="panel form-group marginTop20">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <strong>Unit's Funds:</strong>
-                                            </div>
-                                            <div class="col-xs-6">Available:</div>
-                                            <div class="col-xs-6 text-right">400 $</div>
-                                            <div class="col-xs-6">Awarded:</div>
-                                            <div class="col-xs-6 text-right">100 $</div>
-                                            <div class="col-xs-12 text-right">
-                                                <button class="btn orange-bg btn-sm" id="add_funds_btn">Add funds</button>
-                                            </div>
+                    <div>
+                        <button class="btn orange-bg" id="edit_object"><span class="glyphicon glyphicon-pencil"></span> &nbsp;
+                            {!! trans('messages.edit_objective') !!}</button>
+                    </div>
+
+                </div>
+                <div class="col-md-6 grey-bg unit_description">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="panel form-group marginTop20">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <strong>{!! trans('messages.unit_funds') !!}</strong>
+                                        </div>
+                                        <div class="col-xs-6">{!! trans('messages.available') !!}</div>
+                                        <div class="col-xs-6 text-right">400 $</div>
+                                        <div class="col-xs-6">{!! trans('messages.awarded') !!}</div>
+                                        <div class="col-xs-6 text-right">100 $</div>
+                                        <div class="col-xs-12 text-right">
+                                            <button class="btn orange-bg btn-sm" id="add_funds_btn">{!! trans('messages.add_funds') !!}</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-7">
-                                <div class="panel form-group marginTop20">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <strong>Unit Information:</strong>
-                                            </div>
-                                            <div class="col-xs-5">Unit Name:</div>
-                                            <div class="col-xs-7 text-right">Woman's Rights</div>
-                                            <div class="col-xs-5">Type:</div>
-                                            <div class="col-xs-7 text-right">Non-profit-Human-welfare</div>
-                                            <div class="col-xs-5">Funds:</div>
-                                            <div class="col-xs-7 text-right">Available 5000 $</div>
-                                            <div class="col-xs-5">Awarded:</div>
-                                            <div class="col-xs-7 text-right">750 $</div>
-                                            <div class="col-xs-12 text-right">
-                                                <button class="btn orange-bg btn-sm" id="add_unit_fund_btn">Add funds</button>
-                                            </div>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="panel form-group marginTop20">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <strong>{!! trans('messages.unit_information') !!}</strong>
+                                        </div>
+                                        <div class="col-xs-5">{!! trans('messages.unit_name') !!}</div>
+                                        <div class="col-xs-7 text-right">Woman's Rights</div>
+                                        <div class="col-xs-5">{!! trans('messages.type') !!}</div>
+                                        <div class="col-xs-7 text-right">Non-profit-Human-welfare</div>
+                                        <div class="col-xs-5">{!! trans('messages.funds') !!}</div>
+                                        <div class="col-xs-7 text-right">Available 5000 $</div>
+                                        <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
+                                        <div class="col-xs-7 text-right">750 $</div>
+                                        <div class="col-xs-12 text-right">
+                                            <button class="btn orange-bg btn-sm" id="add_unit_fund_btn">{!! trans('messages.add_funds') !!}</button>
                                         </div>
                                     </div>
                                 </div>

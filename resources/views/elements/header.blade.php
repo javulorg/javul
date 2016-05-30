@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#" style="margin-top:5px ">
+            <a class="navbar-brand" href="{!! url('') !!}" style="margin-top:5px ">
                 <img class="logo" src="{!! url('assets/images/logo.png') !!}" />JAVUL
             </a>
         </div>

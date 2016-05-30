@@ -1,41 +1,40 @@
 @extends('layout.default')
 @section('content')
-
     <div class="container">
+        <div class="row">
+            @include('elements.user-menu',['page'=>'units'])
+        </div>
         <div class="row form-group">
-            @include('elements.user-menu',array('page'=>'units'))
-            <div class="col-sm-12 grey-bg">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h1><span class="glyphicon glyphicon-list-alt"></span> Women's rights</h1><br /><br />
-                        <p><span class="glyphicon glyphicon-map-marker"> </span> &nbsp;Afghanistan</p>
-                        <p><span class="glyphicon glyphicon-paperclip"> </span> &nbsp; Non-profit > Human welfare</p>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="row">
-                            <div class="col-sm-offset-5 col-sm-7">
-                                <div class="panel form-group marginTop20">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <strong>Unit's Funds:</strong>
-                                            </div>
-                                            <div class="col-xs-6">Available:</div>
-                                            <div class="col-xs-6 text-right">5,000 $</div>
-                                            <div class="col-xs-6">Awarded:</div>
-                                            <div class="col-xs-6 text-right">750 $</div>
+            <div class="col-sm-12 ">
+                <div class="col-sm-6 grey-bg unit_description">
+                    <h1 class="unit-heading"><span class="glyphicon glyphicon-list-alt"></span> Women's rights</h1><br /><br />
+                    <p><span class="glyphicon glyphicon-map-marker"> </span> &nbsp;Afghanistan</p>
+                    <p><span class="glyphicon glyphicon-tag"> </span> &nbsp; Non-profit <span class="glyphicon glyphicon-menu-right"> </span> Human welfare</p>
+                </div>
+                <div class="col-sm-6 grey-bg unit_description">
+                    <div class="row">
+                        <div class="col-sm-offset-5 col-sm-7">
+                            <div class="panel form-group marginTop20">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <strong>{!! trans('messages.unit_funds')!!}</strong>
                                         </div>
+                                        <div class="col-xs-6">{!! trans('messages.available') !!}</div>
+                                        <div class="col-xs-6 text-right">5,000 $</div>
+                                        <div class="col-xs-6">{!! trans('messages.awarded') !!}</div>
+                                        <div class="col-xs-6 text-right">750 $</div>
                                     </div>
                                 </div>
-                                <div class="panel">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-xs-5">
-                                                <strong>Unit Links:</strong>
-                                            </div>
-                                            <div class="col-xs-7 text-right">
-                                                <a href="#">Forum</a> | <a href="#">Wiki</a>
-                                            </div>
+                            </div>
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <strong>{!! trans('messages.unit_links') !!}</strong>
+                                        </div>
+                                        <div class="col-xs-7 text-right">
+                                            <a href="#">{!! trans('messages.forum') !!}</a> | <a href="#">{!! trans('messages.wiki') !!}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -49,16 +48,16 @@
             <div class="col-sm-12">
                 <div class="panel panel-default panel-dark-grey">
                     <div class="panel-heading">
-                        <h4>Objectives</h4>
+                        <h4>{!! trans('messages.objectives') !!}</h4>
                     </div>
                     <div class="panel-body table-inner table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Importance</th>
-                                    <th>Date Created</th>
-                                    <th>Title</th>
-                                    <th>Task Statistics</th>
+                                    <th>{!! trans('messages.importance') !!}</th>
+                                    <th>{!! trans('messages.date_created') !!}</th>
+                                    <th>{!! trans('messages.title') !!}</th>
+                                    <th>{!! trans('messages.task_statistics') !!}</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -66,9 +65,9 @@
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                                    <th>Available</th>
-                                    <th>In-progress</th>
-                                    <th>Completed</th>
+                                    <th>{!! trans('messages.available') !!}</th>
+                                    <th>{!! trans('messages.in_progress') !!}</th>
+                                    <th>{!! trans('messages.completed') !!}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,25 +101,25 @@
                 </div>
             </div>
             <div class="col-sm-12">
-                <button class="btn orange-bg" id="add_objective_btn" type="button"><span class="glyphicon glyphicon-plus"></span> Add Objective</button>
-                <button class="btn orange-bg" id="see_all_objective_btn" type="button">See all Objectives</button>
+                <button class="btn orange-bg" id="add_objective_btn" type="button"><span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}</button>
+                <button class="btn orange-bg" id="see_all_objective_btn" type="button">{!! trans('messages.see_all_objectives') !!}</button>
             </div>
         </div>
         <div class="row form-group">
             <div class="col-sm-12">
                 <div class="panel panel-default panel-dark-grey">
                     <div class="panel-heading">
-                        <h4>Tasks</h4>
+                        <h4>{!! trans('messages.tasks') !!}</h4>
                     </div>
                     <div class="panel-body table-inner table-responsive">
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th>Date Created</th>
-                                <th>Title</th>
-                                <th>Objective</th>
-                                <th>Status</th>
-                                <th>Award</th>
+                                <th>{!! trans('messages.date_created') !!}</th>
+                                <th>{!! trans('messages.title') !!}</th>
+                                <th>{!! trans('messages.objective') !!}</th>
+                                <th>{!! trans('messages.status') !!}</th>
+                                <th>{!! trans('messages.award') !!}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -144,15 +143,15 @@
                 </div>
             </div>
             <div class="col-sm-12">
-                <button class="btn orange-bg" type="button" id="add_task_btn"><span class="glyphicon glyphicon-plus"></span> Add Tasks</button>
-                <button class="btn orange-bg" type="button" id="see_all_task_btn">See all Tasks</button>
+                <button class="btn orange-bg" type="button" id="add_task_btn"><span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_task') !!}</button>
+                <button class="btn orange-bg" type="button" id="see_all_task_btn">{!! trans('messages.see_all_tasks') !!}</button>
             </div>
         </div>
         <div class="row form-group">
             <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-dark-grey">
                     <div class="panel-heading">
-                        <h4>Activity Log</h4>
+                        <h4>{!! trans('messages.activity_log') !!}</h4>
                     </div>
                     <div class="panel-body table-inner table-responsive">
                         <table class="table">
