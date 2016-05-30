@@ -54,7 +54,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#" style="padding-top:10px;"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <li class="active"><a href="{!! url('') !!}"" style="padding-top:10px;"><span class="glyphicon glyphicon-home"></span></a></li>
                         <li><a href="#">{!! Lang::get('messages.about_this_site') !!}</a></li>
                         <li><a href="#">{!! Lang::get('messages.faq') !!}</a></li>
                         <li><a href="#">{!! Lang::get('messages.how_can_i_help') !!}</a></li>
@@ -64,20 +64,21 @@ License: You must have a valid license purchased only from themeforest(the above
                         <?php $flag=$user_login; ?>
                         @if (!$flag)
                             <li><a href="{!! url('register') !!}">
-                                    <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.signup') !!}</button>
+                                    <button type="button" class="btn btn-default orange-bg usermenu-btns">{!! Lang::get('messages.signup')
+                                        !!}</button>
                                 </a></li>
                             <li><a href="{!! url('login') !!}">
-                                    <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.sign_in') !!}</button>
+                                    <button type="button" class="btn btn-default orange-bg usermenu-btns">{!! Lang::get('messages.sign_in') !!}</button>
                                 </a>
                             </li>
                         @else
                             <li><a href="{!! url('/logout') !!}">
-                                    <button type="button" class="btn btn-default orange-bg">{!! Lang::get('messages.sign_out') !!}</button>
+                                    <button type="button" class="btn btn-default orange-bg usermenu-btns">{!! Lang::get('messages.sign_out') !!}</button>
                                 </a>
                             </li>
                         @endif
-                        <li style="width:300px;">
-                            <a href="#">
+                        <li class="search_div_main">
+                            <a href="#" class="search_anchor">
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="{!! Lang::get('messages.search_for') !!}" aria-describedby="basic-addon1">
                                     <span class="input-group-addon orange-bg" id="basic-addon1"><i class="fa fa-search"></i></span>
