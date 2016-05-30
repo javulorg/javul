@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\SiteConfigs;
 use App\Unit;
+use App\UnitCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -29,6 +31,10 @@ class UnitsController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create(Request $request){
+        $unit_category_arr = UnitCategory::all();
+        $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
+        view()->share('unit_category_arr',$unit_category_arr);
+        view()->share('unit_credibility_arr',$unit_credibility_arr);
         return view('units.create');
     }
 }

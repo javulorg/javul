@@ -34,12 +34,12 @@ footer .statistics{color:#fff;background-color:#222222;}
 .unit_description{min-height: 224px;}
 .unit_grey_screen_height{min-height:154px;}
 .create_unit_heading{margin-top: 60px;}
-
+.search_div_main{width: 200px;}
 @media (min-width: 767px) and (max-width: 990px){
     .usermenu-btns,.search_div_main{width: 100%;}
     .search_anchor{padding-right: 15px !important;}
     .unit-heading {margin-top: 0;padding-top: 20px;}
-
+    .search_div_main{width: 200px;}
 }
 
 @media (max-width: 767px){

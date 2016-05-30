@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <a class="btn orange-bg" href="{!! url('') !!}">{!! Lang::get('messages.all_units') !!}</a>
-                        <a class="btn orange-bg" href="{!! url('units/create') !!}">{!! Lang::get('messages.create_units') !!}</a>
+                        <a class="btn orange-bg" href="{!! url('units') !!}">{!! Lang::get('messages.create_units') !!}</a>
                     </div>
                 </div>
                 <div class="row form-group">

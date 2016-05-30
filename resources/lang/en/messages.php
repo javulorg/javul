@@ -80,5 +80,9 @@ return [
     'fund_awarded'=>'Funds awarded',
     'total_fund_rewarded'=>'Total funds rewarded',
     'total_fund_available'=>'Total funds available',
-    'total_units'=>'Total units'
+    'total_units'=>'Total units',
+    'unit_category'=>'Unit Category',
+    'select'=>'Select',
+    'unit_credibility'=>'Unit Credibility'
+
 ];
