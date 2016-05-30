@@ -48,7 +48,7 @@
                     </div>
                 </div>
 
-                <div class="row form-group{{ $errors->has('address') ? ' has-error' : '' }}">
+                <!--<div class="row form-group{{ $errors->has('address') ? ' has-error' : '' }}">
                     <div class="col-md-12">
                         <textarea name="address" value="{{ old('address') }}" id="address" class="form-control"
                                   placeholder="{!! Lang::get('messages.address') !!}"></textarea>
@@ -58,9 +58,9 @@
                             </span>
                         @endif
                     </div>
-                </div>
+                </div>-->
 
-                <div class="row form-group{{ ($errors->has('country') || $errors->has('state') || $errors->has('city')) ? 'has-error': '' }}">
+                <!--<div class="row form-group{{ ($errors->has('country') || $errors->has('state') || $errors->has('city')) ? 'has-error': '' }}">
                     <div class="col-sm-4">
                         <select name="country" id="country" class="form-control">
                             <option value="">Select Country</option>
@@ -79,7 +79,7 @@
                             <option value="1">Melbourne</option>
                         </select>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="row form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                     <div class="col-md-12">

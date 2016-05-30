@@ -12,6 +12,7 @@ return [
     'enter_lastname'=>'Enter Last Name',
     'email_address'=>'Email address',
     'address'=>'Address',
+    'welcome'=>'Welcome',
     'enter_password'=>'Enter Password',
     'confirm_password'=>'Confirm password',
     'signup'=>'Sign Up',
