@@ -77,5 +77,8 @@ return [
     'forum_posts'=>'Forum Posts',
     'wiki_edits'=>'Wiki edits',
     'funds_available'=>'Funds available',
-    'fund_awarded'=>'Funds awarded'
+    'fund_awarded'=>'Funds awarded',
+    'total_fund_rewarded'=>'Total funds rewarded',
+    'total_fund_available'=>'Total funds available',
+    'total_units'=>'Total units'
 ];

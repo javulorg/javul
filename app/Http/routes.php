@@ -14,17 +14,13 @@
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
 
-Route::get('objectives', 'ObjectivesController@index');
-Route::get('issues', 'IssuesController@index');
-Route::get('tasks', 'TasksController@index');
-Route::get('units', 'UnitsController@index');
-Route::get('user', 'UserController@index');
 
-Route::controller('issues','IssuesController');
-Route::controller('objectives','ObjectivesController');
-Route::controller('tasks','TasksController');
-Route::controller('units','UnitsController');
-Route::controller('user','UserController');
+
+Route::resource('/issues','IssuesController');
+Route::resource('/objectives','ObjectivesController');
+Route::resource('/tasks','TasksController');
+Route::resource('/units','UnitsController');
+Route::resource('/user','UserController');
 
 Route::auth();
 

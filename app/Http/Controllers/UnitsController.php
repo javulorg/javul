@@ -22,4 +22,13 @@ class UnitsController extends Controller
     public function index(Request $request){
         return view('units.units');
     }
+
+    /**
+     * To create new unit
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function create(Request $request){
+        return view('units.create');
+    }
 }
