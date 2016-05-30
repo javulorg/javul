@@ -20,6 +20,6 @@ class UnitsController extends Controller
     }
 
     public function index(Request $request){
-        return view('units');
+        return view('units.units');
     }
 }

@@ -19,7 +19,7 @@ class TasksController extends Controller
     }
 
     public function index(Request $request){
-        return view('tasks');
+        return view('tasks.tasks');
     }
 
 

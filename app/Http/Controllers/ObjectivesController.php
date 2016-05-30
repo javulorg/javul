@@ -19,7 +19,7 @@ class ObjectivesController extends Controller
     }
 
     public function index(Request $request){
-        return view('objectives');
+        return view('objectives.objectives');
     }
 
 

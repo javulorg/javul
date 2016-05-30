@@ -27,8 +27,8 @@
                                 <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Unit 5</a>
                             </div>
                         </div>
-                        <button class="btn orange-bg">{!! Lang::get('messages.all_units') !!}</button>
-                        <button class="btn orange-bg">{!! Lang::get('messages.create_units') !!}</button>
+                        <a class="btn orange-bg" href="{!! url('') !!}">{!! Lang::get('messages.all_units') !!}</a>
+                        <a class="btn orange-bg" href="{!! url('units/create') !!}">{!! Lang::get('messages.create_units') !!}</a>
                     </div>
                 </div>
                 <div class="row form-group">
