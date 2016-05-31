@@ -52,7 +52,7 @@
 
                 <div class="row form-group">
                     <div class="col-sm-12">
-                        <button type="submit" class="btn orange-bg">
+                        <button type="submit" class="btn orange-bg btn-block">
                             <i class="fa fa-btn fa-refresh"></i>&nbsp;{!! Lang::get('messages.reset_password') !!}
                         </button>
                     </div>
