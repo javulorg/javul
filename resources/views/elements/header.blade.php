@@ -17,8 +17,7 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{!! url('') !!}"class="header_nav_menus"><span class="glyphicon
-                glyphicon-home"></span></a></li>
+                <li class="active"><a href="{!! url('') !!}" class="header_nav_menus"><span class="glyphicon glyphicon-home"></span></a></li>
                 <li><a href="#" class="header_nav_menus">{!! trans('messages.about_this_site') !!}</a></li>
                 <li><a href="#" class="header_nav_menus">{!! trans('messages.faq') !!}</a></li>
                 <li><a href="#" class="header_nav_menus">{!! trans('messages.how_can_i_help') !!}</a></li>

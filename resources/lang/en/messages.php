@@ -83,6 +83,7 @@ return [
     'total_units'=>'Total units',
     'unit_category'=>'Unit Category',
     'select'=>'Select',
-    'unit_credibility'=>'Unit Credibility'
+    'unit_credibility'=>'Unit Credibility',
+    'create_unit'=>'Create Unit',
 
 ];

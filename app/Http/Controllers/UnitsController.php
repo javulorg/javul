@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Country;
 use App\SiteConfigs;
 use App\Unit;
 use App\UnitCategory;
@@ -33,6 +34,8 @@ class UnitsController extends Controller
     public function create(Request $request){
         $unit_category_arr = UnitCategory::all();
         $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
+        $countries = Country::lists('name','id');
+        view()->share('countries',$countries);
         view()->share('unit_category_arr',$unit_category_arr);
         view()->share('unit_credibility_arr',$unit_credibility_arr);
         return view('units.create');

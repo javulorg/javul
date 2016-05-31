@@ -19,7 +19,7 @@ class SiteConfigs extends Model
      * @return array
      */
     public static function getUnitCredibilityTypes($type=''){
-       $credibility_types = ['platinum'=>'Platinum','gold'=>'gold','silver'=>'Silver','bronze'=>'Bronze'];
+       $credibility_types = ['platinum'=>'Platinum','gold'=>'Gold','silver'=>'Silver','bronze'=>'Bronze'];
        if(!empty($type))
            return $credibility_types[$type];
        else
