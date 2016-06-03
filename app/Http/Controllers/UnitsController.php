@@ -149,8 +149,8 @@ class UnitsController extends Controller
             $unit_id = $unitIDHashID->encode($unitID);
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
-                'comment'=>'<a href="'.url('users/view/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a> created
-                 unit <a href="'.url('units/view/'.$unit_id).'">'.$request->input('unit_name').'</a>'
+                'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a> created
+                 unit <a href="'.url('units/'.$unit_id).'">'.$request->input('unit_name').'</a>'
             ]);
 
             $request->session()->flash('msg_val', "Unit created successfully!!!");
@@ -161,8 +161,25 @@ class UnitsController extends Controller
         return view('units.create');
     }
 
-    public function edit($unit_id){
-        dd($unit_id);
+    public function view($unit_id){
+        if(!empty($unit_id))
+        {
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id = $unit_id[0];
+                $unitObj = Unit::find($unit_id);
+                if(!empty($unitObj)){
+                    $unitCategoryObj = UnitCategory::whereIn('id',explode(",",$unitObj->category_id))->get();
+                    view()->share('unitCategoryObj',$unitCategoryObj);
+                    view()->share('unitObj',$unitObj);
+                    return view('units.view');
+                }
+
+            }
+
+        }
+        return ('errors.404');
     }
 
     public function show()

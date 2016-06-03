@@ -10,6 +10,10 @@
                     {!! $activity->comment !!}
                 </div>
             @endforeach
+        @else
+            <div class="list-group-item">
+                No activity found.
+            </div>
         @endif
         <!--<a href="#" class="list-group-item">
             <span class="glyphicon glyphicon-ok"></span>
