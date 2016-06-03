@@ -168,18 +168,22 @@ class UnitsController extends Controller
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
-                $unitObj = Unit::find($unit_id);
-                if(!empty($unitObj)){
-                    $unitCategoryObj = UnitCategory::whereIn('id',explode(",",$unitObj->category_id))->get();
-                    view()->share('unitCategoryObj',$unitCategoryObj);
-                    view()->share('unitObj',$unitObj);
+                $units = Unit::getUnitWithCategories($unit_id);
+                $objectives = Objective::where('unit_id',$unit_id)->get();
+                $tasks = Task::where('objective_id',1)->get();
+                if(!empty($units)){
+                    $units = array_shift($units);
+                    $cityName = City::find($units->location);
+                    view()->share('cityName',$cityName);
+                    view()->share('unitObj',$units );
+                    view()->share('objectivesObj',$objectives );
+                    view()->share('taskObj',$tasks );
                     return view('units.view');
                 }
-
             }
 
         }
-        return ('errors.404');
+        return view('errors.404');
     }
 
     public function show()

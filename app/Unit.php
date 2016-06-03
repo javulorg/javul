@@ -2,6 +2,7 @@
 
 namespace App;
 
+use ___PHPSTORM_HELPERS\object;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
@@ -53,15 +54,20 @@ class Unit extends Model
      * @return mixed
      */
     public static function getUnitWithCategories($unit_id=''){
-        if(empty($unit_id)){
-            $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name) as category_name FROM units JOIN unit_category ON " .
-                "FIND_IN_SET(unit_category.id,units.category_id) > 0") );
-            return $unitsObj;
+        $where= '';
+        if(!empty($unit_id))
+            $where = " WHERE units.id='".$unit_id."' ";
+
+        $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name) as category_name FROM units INNER JOIN unit_category ON " .
+            "(units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  ) $where ") );
+
+        if(count($unitsObj) == 1){
+            $unitsObj= array_filter((array)$unitsObj[0]);
+            if(!empty($unitsObj)){
+                $temp[] =(object)$unitsObj;
+                return $temp;
+            }
         }
-        $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name) as category_name FROM units JOIN unit_category ON " .
-            "FIND_IN_SET(unit_category.id,units.category_id) > 0 and units.id='".$unit_id."'") );
         return $unitsObj;
-
     }
-
 }
