@@ -14,6 +14,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'encode_chars'=>'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
 
     /*
     |--------------------------------------------------------------------------
@@ -155,6 +156,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\ViewComposerServiceProvider::class,
 
     ],
 

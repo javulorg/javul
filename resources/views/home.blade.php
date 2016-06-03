@@ -22,13 +22,15 @@
                             <div class="panel-body list-group">
                                 @if(count($recentUnits) > 0)
                                     @foreach($recentUnits as $unit)
-                                        <a href="{!! url('units/view/'.$unitIDHashID->encode($unit->id)) !!}" class="list-group-item"><span
+                                        <a href="{!! url('units/'.$unitIDHashID->encode($unit->id)) !!}" class="list-group-item"><span
                                                 class="glyphicon glyphicon-dot"></span>
                                             {{$unit->name}}
                                         </a>
                                     @endforeach
                                 @else
-                                    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> No Unit found.</a>
+                                <div class="list-group-item">
+                                    No Unit found.
+                                </div>
                                 @endif
                             </div>
                         </div>
