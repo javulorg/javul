@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Objective;
+use App\Task;
+use App\Unit;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;

@@ -3,15 +3,15 @@
     <div class="container">
         <div class="row form-group">
             <div class="col-sm-4 text-center">
-                <h1>3,867</h1>
+                <h1>{{number_format($totalUnits)}}</h1>
                 <strong class="text-orange">{!! strtoupper(trans('messages.units')) !!}</strong>
             </div>
             <div class="col-sm-4 text-center">
-                <h1>16,110</h1>
+                <h1>{{number_format($totalObjectives)}}</h1>
                 <strong class="text-orange">{!! strtoupper(trans('messages.objectives')) !!}</strong>
             </div>
             <div class="col-sm-4 text-center">
-                <h1>3,142,000</h1>
+                <h1>{{number_format($totalTasks)}}</h1>
                 <strong class="text-orange">{!! strtoupper(trans('messages.tasks')) !!}</strong>
             </div>
         </div>

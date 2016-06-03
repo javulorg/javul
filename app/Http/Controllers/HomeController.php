@@ -3,8 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Objective;
+use App\SiteActivity;
+use App\Task;
+use App\Unit;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Hashids\Hashids;
 
 class HomeController extends Controller
 {
@@ -31,6 +37,16 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $recentUnits = Unit::take(5)->orderBy('created_at','desc')->get();
+        $recentObjectives = Objective::take(5)->orderBy('created_at','desc')->get();
+        $recentTasks= Task::take(5)->orderBy('created_at','desc')->get();
+        $recentUsers= User::take(5)->orderBy('created_at','desc')->get();
+
+        view()->share('recentUnits',$recentUnits);
+        view()->share('recentObjectives',$recentObjectives);
+        view()->share('recentTasks',$recentTasks);
+        view()->share('recentUsers',$recentUsers);
+
         return view('home');
     }
 }

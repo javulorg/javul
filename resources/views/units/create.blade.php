@@ -39,6 +39,7 @@
         </div>
     </div>
     <form role="form" method="post" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data">
+        {!! csrf_field() !!}
         <div class="row">
             <div class="col-sm-4 form-group">
                 <label class="control-label">{!! trans('messages.unit_name')!!}</label>
@@ -65,7 +66,7 @@
                 <label class="control-label">{!! trans('messages.unit_credibility') !!}</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="unit_credibility">
+                    <select class="form-control" name="credibility">
                         <option value="">{!! trans('messages.select') !!}</option>
                         @if(count($unit_credibility_arr) > 0)
                             @foreach($unit_credibility_arr as $id=>$val)
@@ -104,7 +105,7 @@
                 <label class="control-label">City</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="city" id="city">
+                    <select class="form-control" name="location" id="city">
                         <option value="">{!! trans('messages.select') !!}</option>
                     </select>
                 </div>
@@ -117,6 +118,11 @@
                     <i class="fa select-error"></i>
                     <select class="form-control" name="related_to">
                         <option value="">{!! trans('messages.select') !!}</option>
+                        @if(count($relatedUnitsObj) > 0 )
+                            @foreach($relatedUnitsObj as $id=>$relate)
+                                <option value="{{$id}}">{{$relate}}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
             </div>
@@ -126,6 +132,11 @@
                     <i class="fa select-error"></i>
                     <select class="form-control" name="parent_unit">
                         <option value="">{!! trans('messages.select') !!}</option>
+                        @if(count($parentUnitsObj) > 0 )
+                            @foreach($parentUnitsObj as $id=>$parent)
+                                <option value="{{$id}}">{{$parent}}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
             </div>
@@ -134,8 +145,14 @@
                 <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status">
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-4 form-group">
+                <label class="control-label">Unit Description</label>
+                <textarea class="form-control" name="description"></textarea>
+            </div>
+        </div>
         <div class="row form-group">
-            <div class="col-sm-12">
+            <div class="col-sm-12 ">
                 <button class="btn orange-bg" id="create_unit" type="submit"><span class="glyphicon glyphicon-plus"></span> {!! trans
                     ('messages.create_unit') !!}</button>
             </div>

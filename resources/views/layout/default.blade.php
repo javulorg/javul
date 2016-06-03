@@ -28,6 +28,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/font-awesome/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('assets/plugins/bootstrap-toastr/toastr.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/css/style.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/css/component.css') !!}" rel="stylesheet" type="text/css" />
 
@@ -60,7 +61,9 @@ License: You must have a valid license purchased only from themeforest(the above
         <div class="content">
              @yield('content')
         </div>
-
+        <script>
+            var siteURL = '{!! url('') !!}';
+        </script>
         <!--[if lt IE 9]>
         <script src="{!! url('assets/plugins/respond.min.js') !!}"></script>
         <script src="{!! url('assets/plugins/excanvas.min.js') !!}"></script>
@@ -73,6 +76,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{!! url('assets/plugins/jquery-validation/js/jquery.validate.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/jquery-validation/js/additional-methods.min.js') !!}" type="text/javascript"></script>
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+        <script src="{!! url('assets/plugins/bootstrap-toastr/toastr.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         @yield('page-scripts')

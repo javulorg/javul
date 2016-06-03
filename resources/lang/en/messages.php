@@ -69,6 +69,7 @@ return [
     'task_award'=>'Task Award',
     'task_summary'=>'Task Summary',
     'long_description'=>'Long Description',
+    'description'=>'Description',
     'units'=>'Units',
     'statistics'=>'Statistics',
     'user_registered'=>'User registered',
@@ -85,5 +86,6 @@ return [
     'select'=>'Select',
     'unit_credibility'=>'Unit Credibility',
     'create_unit'=>'Create Unit',
+    'add_unit'=>'Add Unit',
 
 ];

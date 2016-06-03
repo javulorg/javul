@@ -3,9 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Unit extends Model
 {
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'units';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -35,6 +44,24 @@ class Unit extends Model
      */
     public function tasks(){
         return $this->hasManyThrough('App\Task','App\Objective');
+    }
+
+
+    /**
+     * function will return unit with it's category name. if unit having multiple category then it will return all category name with unit.
+     * @param string $unit_id
+     * @return mixed
+     */
+    public static function getUnitWithCategories($unit_id=''){
+        if(empty($unit_id)){
+            $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name) as category_name FROM units JOIN unit_category ON " .
+                "FIND_IN_SET(unit_category.id,units.category_id) > 0") );
+            return $unitsObj;
+        }
+        $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name) as category_name FROM units JOIN unit_category ON " .
+            "FIND_IN_SET(unit_category.id,units.category_id) > 0 and units.id='".$unit_id."'") );
+        return $unitsObj;
+
     }
 
 }

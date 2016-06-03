@@ -22,7 +22,7 @@ var FormValidation = function () {
                 unit_category: {
                     required: true
                 },
-                unit_credibility: {
+                credibility: {
                     required: true
                 },
                 country: {
@@ -31,7 +31,7 @@ var FormValidation = function () {
                 state: {
                     required: true
                 },
-                city: {
+                location: {
                     required: true
                 }
             },
@@ -66,7 +66,7 @@ var FormValidation = function () {
             submitHandler: function (form) {
                 success2.show();
                 error2.hide();
-                form[0].submit(); // submit the form
+                form.submit(); // submit the form
 
             }
         });
@@ -84,6 +84,61 @@ var FormValidation = function () {
 $(document).ready(function() {
     FormValidation.init();
 
+    //get state after selecting country
+    $("#country").on('change',function(){
+        var value = $(this).val();
+        var token = $('[name="_token"]').val();
+        if($.trim(value) == ""){
+            $("#state").html('<option value="">Select</option>');
+            $("#city").html('<option value="">Select</option>');
+        }
+        else
+        {
+            $.ajax({
+                type:'POST',
+                url:siteURL+'/units/get_state',
+                dataType:'json',
+                async:true,
+                data:{country_id:value,_token:token },
+                success:function(resp){
+                    if(resp.success){
+                        var html='<option value="">Select</option>';
+                        $.each(resp.states,function(index,val){
+                            html+='<option value="'+index+'">'+val+'</option>'
+                        });
+                        $("#state").html(html);
+                    }
+                }
+            })
+        }
+    });
+
+    //get state after selecting country
+    $("#state").on('change',function(){
+        var value = $(this).val();
+        var token = $('[name="_token"]').val();
+        if($.trim(value) == "")
+            $("#city").html('<option value="">Select</option>');
+        else
+        {
+            $.ajax({
+                type:'POST',
+                url:siteURL+'/units/get_city',
+                dataType:'json',
+                async:true,
+                data:{state_id:value,_token:token },
+                success:function(resp){
+                    if(resp.success){
+                        var html='<option value="">Select</option>';
+                        $.each(resp.cities,function(index,val){
+                            html+='<option value="'+index+'">'+val+'</option>'
+                        });
+                        $("#city").html(html);
+                    }
+                }
+            })
+        }
+    });
 });
 
 

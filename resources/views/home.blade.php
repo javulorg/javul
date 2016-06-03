@@ -5,12 +5,12 @@
         <div class="row form-group">
             @include('elements.user-menu',array('page'=>'home'))
         </div>
-        <div class="row form-group">
+        <!--<div class="row form-group">
             <div class="col-sm-12">
                 <h2><strong>Objective: Change the World</strong></h2>
                 <div>Explore projects, everywhere</div>
             </div>
-        </div>
+        </div>-->
         <div class="row">
             <div class="col-sm-8">
                 <div class="row form-group">
@@ -20,15 +20,22 @@
                                 <h4>{!! Lang::get('messages.recent_units') !!}</h4>
                             </div>
                             <div class="panel-body list-group">
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Unit 1</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Unit 2</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Unit 3</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Unit 4</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Unit 5</a>
+                                @if(count($recentUnits) > 0)
+                                    @foreach($recentUnits as $unit)
+                                        <a href="{!! url('units/view/'.$unitIDHashID->encode($unit->id)) !!}" class="list-group-item"><span
+                                                class="glyphicon glyphicon-dot"></span>
+                                            {{$unit->name}}
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> No Unit found.</a>
+                                @endif
                             </div>
                         </div>
-                        <a class="btn orange-bg" href="{!! url('') !!}">{!! Lang::get('messages.all_units') !!}</a>
-                        <a class="btn orange-bg" href="{!! url('units/create') !!}">{!! Lang::get('messages.create_units') !!}</a>
+                        @if(count($recentUnits) > 5)
+                            <!--<a class="btn orange-bg" href="{!! url('') !!}">{!! Lang::get('messages.all_units') !!}</a>-->
+                        @endif
+                        <!--<a class="btn orange-bg" href="{!! url('units/create') !!}">{!! Lang::get('messages.create_units') !!}</a>-->
                     </div>
                 </div>
                 <div class="row form-group">
@@ -38,15 +45,24 @@
                                 <h4>{!! Lang::get('messages.recent_objective') !!}</h4>
                             </div>
                             <div class="panel-body list-group">
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Objective 1</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Objective 2</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Objective 3</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Objective 4</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Objective 5</a>
+                                @if(count($recentObjectives) > 0)
+                                    @foreach($recentObjectives as $objective)
+                                        <a href="{!! url('objectives/view/'.$objectiveIDHashID->encode($objective->id)) !!}"
+                                           class="list-group-item"><span class="glyphicon glyphicon-dot"></span>
+                                            {{$objective->name}}
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <div class="list-group-item">
+                                        No objective found.
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                        <button class="btn orange-bg">{!! Lang::get('messages.all_objectives') !!}</button>
-                        <button class="btn orange-bg">{!! Lang::get('messages.create_objectives') !!}</button>
+                        @if(count($recentObjectives) > 5)
+                            <!--<button class="btn orange-bg">{!! Lang::get('messages.all_objectives') !!}</button>-->
+                        @endif
+                        <!--<button class="btn orange-bg">{!! Lang::get('messages.create_objectives') !!}</button>-->
                     </div>
                 </div>
                 <div class="row form-group">
@@ -56,15 +72,24 @@
                                 <h4>{!! Lang::get('messages.recent_tasks') !!}</h4>
                             </div>
                             <div class="panel-body list-group">
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Task 1</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Task 2</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Task 3</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Task 4</a>
-                                <a href="#" class="list-group-item"><span class="glyphicon glyphicon-dot"></span> Task 5</a>
+                                @if(count($recentTasks) > 0)
+                                    @foreach($recentTasks as $task)
+                                        <a href="{!! url('task/view/'.$taskIDHashID->encode($task->id)) !!}" class="list-group-item">
+                                            <span class="glyphicon glyphicon-dot"></span>
+                                            {{$task->name}}
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <div class="list-group-item">
+                                        No task found.
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                        <button class="btn orange-bg">{!! Lang::get('messages.all_tasks') !!}</button>
-                        <button class="btn orange-bg">{!! Lang::get('messages.create_tasks') !!}</button>
+                        @if(count($recentTasks) > 5)
+                            <!--<button class="btn orange-bg">{!! Lang::get('messages.all_tasks') !!}</button>-->
+                        @endif
+                        <!--<button class="btn orange-bg">{!! Lang::get('messages.create_tasks') !!}</button>-->
                     </div>
                 </div>
             </div>
@@ -74,60 +99,21 @@
                         <h4>{!! Lang::get('messages.most_recent_users') !!}</h4>
                     </div>
                     <div class="panel-body list-group">
-                        <a href="#" class="list-group-item"><span class="glyphicon glyphicon-user"></span> User 1</a>
-                        <a href="#" class="list-group-item"><span class="glyphicon glyphicon-user"></span> User 2</a>
-                        <a href="#" class="list-group-item"><span class="glyphicon glyphicon-user"></span> User 3</a>
-                        <a href="#" class="list-group-item"><span class="glyphicon glyphicon-user"></span> User 4</a>
-                        <a href="#" class="list-group-item"><span class="glyphicon glyphicon-user"></span> User 5</a>
+                        @if(count($recentUsers) > 0 )
+                            @foreach($recentUsers as $user)
+                                <a href="{!! url('user/view/'.$userIDHashID->encode($user->id)) !!}" class="list-group-item">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    {{$user->first_name.' '.$user->last_name}}
+                                </a>
+                            @endforeach
+                        @else
+                            <div class="list-group-item">
+                                No user found.
+                            </div>
+                        @endif
                     </div>
                 </div>
-                <div class="panel panel-dark-grey panel-default">
-                    <div class="panel-heading">
-                        <h4>{!! Lang::get('messages.activity_log') !!}</h4>
-                    </div>
-                    <div class="panel-body list-group">
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Objective 1 Created by User 3
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Objective 3 edited by User 4
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Task 1 edited(Objective 1)
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Task 2 created(Objective 1)
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Task 3 assigned to User 1 (Objective 1)
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Objective 1 Created by User 3
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Objective 3 edited by User 4
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Task 1 edited(Objective 1)
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Task 2 created(Objective 1)
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Objective 3 edited by User 4
-                        </a>
-                    </div>
-                </div>
+                @include('elements.site_activities')
             </div>
         </div>
     </div>
