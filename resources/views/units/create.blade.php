@@ -1,4 +1,11 @@
 @extends('layout.default')
+@section('page-css')
+<link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
+<style>
+    .hide-native-select .btn-group, .hide-native-select .btn-group .multiselect, .hide-native-select .btn-group.multiselect-container
+    {width:100% !important;}
+</style>
+@endsection
 @section('content')
 <div class="container">
     <div class="row">
@@ -7,7 +14,14 @@
     <div class="row form-group">
         <div class="col-sm-12 ">
             <div class="col-sm-6 grey-bg unit_grey_screen_height">
-                <h1 class="unit-heading create_unit_heading"><span class="glyphicon glyphicon-list-alt"></span> Create Unit</h1><br /><br />
+                <h1 class="unit-heading create_unit_heading">
+                    <span class="glyphicon glyphicon-list-alt"></span>
+                    @if(empty($unitObj))
+                        Create Unit
+                    @else
+                        Update Unit
+                    @endif
+                </h1><br /><br />
             </div>
             <div class="col-sm-6 grey-bg unit_grey_screen_height">
                 <div class="row">
@@ -21,15 +35,15 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">{!! trans('messages.total_units') !!}</div>
-                                    <div class="col-xs-6 text-right">500</div>
+                                    <div class="col-xs-6 text-right">XXX</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">{!! trans('messages.total_fund_available') !!}</div>
-                                    <div class="col-xs-6 text-right">7850 $</div>
+                                    <div class="col-xs-6 text-right">XXX $</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">{!! trans('messages.total_fund_rewarded') !!}</div>
-                                    <div class="col-xs-6 text-right">7500 $</div>
+                                    <div class="col-xs-6 text-right">XXXX $</div>
                                 </div>
                             </div>
                         </div>
@@ -45,18 +59,26 @@
                 <label class="control-label">{!! trans('messages.unit_name')!!}</label>
                 <div class="input-icon right">
                     <i class="fa"></i>
-                    <input type="text" name="unit_name" value="{{ old('unit_name') }}" class="form-control"  placeholder="{!! trans('messages.unit_name') !!}"/>
+                    <input type="text" name="unit_name" value="{{ (!empty($unitObj))? $unitObj->name : old('unit_name') }}"
+                           class="form-control"
+                           placeholder="{!! trans('messages.unit_name') !!}"/>
                 </div>
             </div>
+            <?php
+            $edit_unit_category = [];
+            $temp_unit_category = 'null';
+            if(!empty($unitObj)){
+                $edit_unit_category = explode(",",$unitObj->category_id);
+                $temp_unit_category = $unitObj->category_id;
+            }?>
             <div class="col-sm-4 form-group">
                 <label class="control-label">{!! trans('messages.unit_category') !!}</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="unit_category">
-                        <option value="">{!! trans('messages.select') !!}</option>
+                    <select class="form-control" name="unit_category[]" id="unit_category" multiple="multiple">
                         @if(count($unit_category_arr) > 0)
                             @foreach($unit_category_arr as $id=>$val)
-                                <option value="{{$id}}">{{$val}}</option>
+                                <option value="{{$id}}" @if(!empty($edit_unit_category) && in_array($id,$edit_unit_category)) selected=selected @endif>{{$val}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -70,7 +92,8 @@
                         <option value="">{!! trans('messages.select') !!}</option>
                         @if(count($unit_credibility_arr) > 0)
                             @foreach($unit_credibility_arr as $id=>$val)
-                                <option value="{{$id}}">{{$val}}</option>
+                                <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->credibility == $id)
+                        selected=selected @endif>{{$val}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -86,7 +109,8 @@
                         <option value="">{!! trans('messages.select') !!}</option>
                         @if(count($countries) > 0)
                             @foreach($countries as $id=>$val)
-                                <option value="{{$id}}">{{$val}}</option>
+                                <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->country_id == $id)
+                        selected=selected @endif>{{$val}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -97,7 +121,15 @@
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
                     <select class="form-control" name="state" id="state">
-                        <option value="">{!! trans('messages.select') !!}</option>
+                        @if(!empty($unitObj))
+                            @foreach($states as $id=>$val)
+                                <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->state_id == $id)
+                                selected=selected @endif>{{$val}}</option>
+                            @endforeach
+                        @else
+                            <option value="">{!! trans('messages.select') !!}</option>
+                        @endif
+
                     </select>
                 </div>
             </div>
@@ -105,8 +137,15 @@
                 <label class="control-label">City</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="location" id="city">
-                        <option value="">{!! trans('messages.select') !!}</option>
+                    <select class="form-control" name="city" id="city">
+                        @if(!empty($unitObj))
+                            @foreach($cities as $cid=>$val)
+                                <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->city_id == $cid)
+                                selected=selected @endif>{{$val}}</option>
+                            @endforeach
+                        @else
+                            <option value="">{!! trans('messages.select') !!}</option>
+                        @endif
                     </select>
                 </div>
             </div>
@@ -116,11 +155,11 @@
                 <label class="control-label">Related To</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="related_to">
-                        <option value="">{!! trans('messages.select') !!}</option>
+                    <select class="form-control" name="related_to[]" id="related_to" multiple="multiple">
                         @if(count($relatedUnitsObj) > 0 )
                             @foreach($relatedUnitsObj as $id=>$relate)
-                                <option value="{{$id}}">{{$relate}}</option>
+                                <option value="{{$id}}" @if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) &&
+                        in_array($id,$relatedUnitsofUnitObj)) selected=selected @endif>{{$relate}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -130,11 +169,11 @@
                 <label class="control-label">Parent Unit</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="parent_unit">
-                        <option value="">{!! trans('messages.select') !!}</option>
+                    <select class="form-control" name="parent_unit[]" id="parent_unit" >
                         @if(count($parentUnitsObj) > 0 )
                             @foreach($parentUnitsObj as $id=>$parent)
-                                <option value="{{$id}}">{{$parent}}</option>
+                                <option value="{{$id}}" @if(!empty($unitObj) && $id == $unitObj->parent_id)
+                        selected=selected @endif>{{$parent}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -142,19 +181,25 @@
             </div>
             <div class="col-sm-4 form-group">
                 <label class="control-label" style="width: 100%;">Status</label>
-                <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status">
+                <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status" @if(!empty($unitObj) &&
+                $unitObj->status == "active") checked @endif>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-4 form-group">
                 <label class="control-label">Unit Description</label>
-                <textarea class="form-control" name="description"></textarea>
+                <textarea class="form-control" name="description">@if(!empty($unitObj)) {{$unitObj->description}} @endif</textarea>
             </div>
         </div>
         <div class="row form-group">
             <div class="col-sm-12 ">
-                <button class="btn orange-bg" id="create_unit" type="submit"><span class="glyphicon glyphicon-plus"></span> {!! trans
-                    ('messages.create_unit') !!}</button>
+                <button class="btn orange-bg" id="create_unit" type="submit">
+                    @if(!empty($unitObj))
+                        <span class="glyphicon glyphicon-edit"></span> Update Unit
+                    @else
+                        <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.create_unit') !!}
+                    @endif
+                </button>
             </div>
         </div>
     </form>
@@ -162,5 +207,52 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
+<script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/units/units.js') !!}"></script>
+<script>
+    $(function(){
+        var selected_category_ids = '{{$temp_unit_category}}'
+
+        $("#unit_category").multiselect({
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            enableFullValueFiltering: false,
+            includeSelectAllOption: true,
+            maxHeight: 400,
+            onChange:function(){
+                $(document).find('body').trigger('click');
+            }
+        });
+
+        if(selected_category_ids != "null"){
+            var selected_category_ids=selected_category_ids.split(",");
+            $("#unit_category").val(selected_category_ids);
+            $("#unit_category").multiselect("refresh");
+        }
+
+        $("#related_to").multiselect({
+            disableIfEmpty:true,
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            enableFullValueFiltering: false,
+            includeSelectAllOption: true,
+            maxHeight: 400,
+            onChange:function(){
+                $(document).find('body').trigger('click');
+            }
+        });
+
+        /*$("#parent_unit").multiselect({
+            disableIfEmpty:true,
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            enableFullValueFiltering: false,
+            includeSelectAllOption: true,
+            maxHeight: 400,
+            onChange:function(){
+                $(document).find('body').trigger('click');
+            }
+        });*/
+    });
+</script>
 @endsection

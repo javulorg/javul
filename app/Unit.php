@@ -21,7 +21,8 @@ class Unit extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','category_id','name','description','credibility','location','status','parent_id'];
+    protected $fillable = ['user_id','category_id','name','description','credibility','country_id','state_id','city_id','status',
+        'parent_id'];
 
     /**
      * Get UnitCategory of Unit
@@ -59,8 +60,7 @@ class Unit extends Model
             $where = " WHERE units.id='".$unit_id."' ";
 
         $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name) as category_name FROM units INNER JOIN unit_category ON " .
-            "(units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  ) $where ") );
-
+            "(units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  ) $where GROUP BY units.id") );
 
         if(count($unitsObj) == 1){
             $unitsObjTmp = $unitsObj[0];

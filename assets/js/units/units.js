@@ -19,7 +19,7 @@ var FormValidation = function () {
                 unit_name: {
                     required: true
                 },
-                unit_category: {
+                "unit_category[]": {
                     required: true
                 },
                 credibility: {
@@ -31,7 +31,7 @@ var FormValidation = function () {
                 state: {
                     required: true
                 },
-                location: {
+                city: {
                     required: true
                 }
             },
@@ -43,7 +43,11 @@ var FormValidation = function () {
             },
 
             errorPlacement: function (error, element) { // render error placement for each input type
-                var icon = $(element).parent('.input-icon').children('i');
+                var field_name = $(element).attr('name');
+                if(field_name == "unit_category[]")
+                    var icon = $(element).parents('.input-icon').children('i');
+                else
+                    var icon = $(element).parent('.input-icon').children('i');
                 icon.removeClass('fa-check').addClass("fa-warning");
                 icon.attr("data-original-title", error.text()).tooltip({'container': 'body'});
             },
@@ -58,7 +62,11 @@ var FormValidation = function () {
             },
 
             success: function (label, element) {
-                var icon = $(element).parent('.input-icon').children('i');
+                var field_name = $(element).attr('name');
+                if(field_name == "unit_category[]")
+                    var icon = $(element).parents('.input-icon').children('i');
+                else
+                    var icon = $(element).parent('.input-icon').children('i');
                 $(element).closest('.col-sm-4').removeClass('has-error').addClass('has-success'); // set success class to the control group
                 icon.removeClass("fa-warning").addClass("fa-check");
             },
@@ -98,7 +106,7 @@ $(document).ready(function() {
                 type:'POST',
                 url:siteURL+'/units/get_state',
                 dataType:'json',
-                async:true,
+                async:false,
                 data:{country_id:value,_token:token },
                 success:function(resp){
                     if(resp.success){
@@ -125,7 +133,7 @@ $(document).ready(function() {
                 type:'POST',
                 url:siteURL+'/units/get_city',
                 dataType:'json',
-                async:true,
+                async:false,
                 data:{state_id:value,_token:token },
                 success:function(resp){
                     if(resp.success){

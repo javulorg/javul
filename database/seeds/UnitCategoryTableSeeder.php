@@ -12,8 +12,22 @@ class UnitCategoryTableSeeder extends Seeder
     public function run()
     {
         DB::table('unit_category')->insert([
-            'name' => "Computers",
-            'status'=>'approved'
+            [
+                'name' => "Software",
+                'status'=>'approved'
+            ],
+            [
+                'name' => "Hardware",
+                'status'=>'approved'
+            ],
+            [
+                'name' => "Automobile",
+                'status'=>'approved'
+            ],
+            [
+                'name' => "Mechanical",
+                'status'=>'approved'
+            ]
         ]);
     }
 }

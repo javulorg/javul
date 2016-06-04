@@ -90,8 +90,10 @@ class UnitsController extends Controller
         view()->share('countries',$countries);
         view()->share('unit_category_arr',$unit_category_arr);
         view()->share('unit_credibility_arr',$unit_credibility_arr);
-
-
+        view()->share('unitObj',[] );
+        view()->share('states',[]);
+        view()->share('cities',[]);
+        view()->share('relatedUnitsofUnitObj',[]);
         //if page is submitted
         if($request->isMethod('post')){
             $validator = \Validator::make($request->all(), [
@@ -100,7 +102,7 @@ class UnitsController extends Controller
                 'credibility' => 'required',
                 'country' => 'required',
                 'state' => 'required',
-                'location' => 'required',
+                'city' => 'required',
             ]);
 
             if ($validator->fails())
@@ -114,15 +116,21 @@ class UnitsController extends Controller
             else
                 $status="active";
 
+            $parent_id = $request->input('parent_unit');
+            if(!empty($parent_id))
+                $parent_id = implode(",",$parent_id );
+
             $unitID = Unit::create([
                 'user_id'=>Auth::user()->id,
                 'name'=>$request->input('unit_name'),
-                'category_id'=>$request->input('unit_category'),
+                'category_id'=>implode(",",$request->input('unit_category')),
                 'description'=>$request->input('description'),
                 'credibility'=>$request->input('credibility'),
-                'location'=>$request->input('location'),
+                'country_id'=>$request->input('country'),
+                'state_id'=>$request->input('state'),
+                'city_id'=>$request->input('city'),
                 'status'=>$status,
-                'parent_id'=>$request->input('parent_unit')
+                'parent_id'=>$parent_id
             ])->id;
 
             //if user selected related to unit then insert record to related_units table
@@ -130,7 +138,7 @@ class UnitsController extends Controller
             if(!empty($related_unit)){
                 RelatedUnit::create([
                     'unit_id'=>$unitID,
-                    'related_to'=>$related_unit
+                    'related_to'=>implode(",",$related_unit)
                 ]);
             }
             // add activity point for created unit and user.
@@ -161,6 +169,130 @@ class UnitsController extends Controller
         return view('units.create');
     }
 
+    public function edit($unit_id,Request $request){
+        if(!empty($unit_id))
+        {
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id = $unit_id[0];
+                $units = Unit::getUnitWithCategories($unit_id);
+                if(!empty($units) && $request->isMethod('post')){
+                    //update unit and redirect to units page
+                    $validator = \Validator::make($request->all(), [
+                        'unit_name' => 'required',
+                        'unit_category' => 'required',
+                        'credibility' => 'required',
+                        'country' => 'required',
+                        'state' => 'required',
+                        'city' => 'required',
+                    ]);
+
+                    if ($validator->fails())
+                        return redirect()->back()->withErrors($validator)->withInput();
+
+                    // insert record into units table.
+                    $status = $request->input('status');
+                    if(empty($status))
+                        $status="disabled";
+                    else
+                        $status="active";
+
+                    $parent_id = $request->input('parent_unit');
+                    if(!empty($parent_id))
+                        $parent_id = implode(",",$parent_id );
+
+
+                    // update unit data.
+                    Unit::where('id',$unit_id)->update([
+                        'name'=>$request->input('unit_name'),
+                        'category_id'=>implode(",",$request->input('unit_category')),
+                        'description'=>$request->input('description'),
+                        'credibility'=>$request->input('credibility'),
+                        'country_id'=>$request->input('country'),
+                        'state_id'=>$request->input('state'),
+                        'city_id'=>$request->input('city'),
+                        'status'=>$status,
+                        'parent_id'=>$parent_id
+                    ]);
+
+                    //if user selected related to unit then insert record to related_units table
+                    $related_unit = $request->input('related_to');
+                    if(!empty($related_unit)){
+                        $relatedUnitExist = RelatedUnit::where('unit_id',$unit_id)->count();
+                        if($relatedUnitExist > 0){
+                            RelatedUnit::where('unit_id',$unit_id)->update([
+                                'related_to'=>implode(",",$related_unit)
+                            ]);
+                        }
+                        else{
+                            RelatedUnit::create([
+                                'unit_id'=>$unit_id,
+                                'related_to'=>implode(",",$related_unit)
+                            ]);
+                        }
+                    }
+                    // add activity point for created unit and user.
+                    ActivityPoint::create([
+                        'user_id'=>Auth::user()->id,
+                        'unit_id'=>$unit_id,
+                        'points'=>1,
+                        'comments'=>'Unit Edited',
+                        'type'=>'unit'
+                    ]);
+                    // add site activity record for global statistics.
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                    $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                    $unit_id = $unitIDHashID->encode($unit_id);
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        updated unit <a href="'.url('units/'.$unit_id).'">'.$request->input('unit_name').'</a>'
+                    ]);
+
+                    $request->session()->flash('msg_val', "Unit updated successfully!!!");
+                    return redirect('units');
+
+                }
+                elseif(!empty($units)){
+
+                    //redirect to edit page
+                    $units = array_shift($units);
+                    $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
+                    $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
+                    $countries = Country::lists('name','id');
+                    $states = State::where('country_id',$units->country_id)->lists('name','id');
+                    $cities = City::where('state_id',$units->state_id)->lists('name','id');
+                    $unitsObj = Unit::lists('name','id');
+
+                    $relatedUnitsofUnitObj = RelatedUnit::where('unit_id',$unit_id)->first();
+                    if(!empty($relatedUnitsofUnitObj))
+                        $relatedUnitsofUnitObj = explode(",",$relatedUnitsofUnitObj->related_to);
+                    else
+                        $relatedUnitsofUnitObj  = [];
+
+                    view()->share('relatedUnitsObj',$unitsObj);
+                    view()->share('relatedUnitsofUnitObj',$relatedUnitsofUnitObj);
+
+                    view()->share('parentUnitsObj',$unitsObj);
+                    view()->share('countries',$countries);
+                    view()->share('states',$states);
+                    view()->share('cities',$cities);
+
+                    view()->share('unit_category_arr',$unit_category_arr);
+                    view()->share('unit_credibility_arr',$unit_credibility_arr);
+
+
+                    view()->share('unitObj',$units );
+                    return view('units.create');
+                }
+            }
+
+        }
+        return view('errors.404');
+    }
     public function view($unit_id){
         if(!empty($unit_id))
         {
@@ -173,7 +305,7 @@ class UnitsController extends Controller
                 $tasks = Task::where('objective_id',1)->get();
                 if(!empty($units)){
                     $units = array_shift($units);
-                    $cityName = City::find($units->location);
+                    $cityName = City::find($units->city_id);
                     view()->share('cityName',$cityName);
                     view()->share('unitObj',$units );
                     view()->share('objectivesObj',$objectives );

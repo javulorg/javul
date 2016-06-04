@@ -16,8 +16,7 @@ class CreateRelatedUnitsTable extends Migration
             $table->increments('id');
             $table->integer('unit_id')->unsigned();
             $table->foreign('unit_id')->references('id')->on('units');
-            $table->integer('related_to')->unsigned();
-            $table->foreign('related_to')->references('id')->on('units');
+            $table->string('related_to');
             $table->timestamps();
             $table->softDeletes();
         });
