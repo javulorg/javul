@@ -120,8 +120,10 @@
                         @else
                             <option value="">{!! trans('messages.select') !!}</option>
                         @endif
-
                     </select>
+                    <span class="states_loader location_loader" style="display: none">
+                        <img src="{!! url('assets/images/small_loader.gif') !!}"/>
+                    </span>
                 </div>
             </div>
             <div class="col-sm-4 form-group">
@@ -138,6 +140,9 @@
                             <option value="">{!! trans('messages.select') !!}</option>
                         @endif
                     </select>
+                    <span class="cities_loader location_loader" style="display: none">
+                        <img src="{!! url('assets/images/small_loader.gif') !!}"/>
+                    </span>
                 </div>
             </div>
         </div>

@@ -68,6 +68,8 @@ a.list-group-item,.list-group-item a{color:#337ab7 ;}
 .upvote{border-radius: 50%;border:1px solid #36c6d3;padding: 5px;cursor: pointer;}
 .downvote{border-radius: 50%;border:1px solid #ed6b75;padding: 5px;cursor: pointer;}
 #estimated_completion_time_start,#estimated_completion_time_end{ border-radius: 4px 0 0 4px;}
+
+.location_loader{position: absolute;top:5px;left:310px;z-index: 1;}
 @media (min-width: 991px) and (max-width: 1200px){
     .unit_grey_screen_height{min-height: 192px;}
 }
