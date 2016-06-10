@@ -11,7 +11,7 @@
                         <button class="btn orange-bg"><span class="glyphicon glyphicon-send"></span> &nbsp; Send Private Message</button>
                     </div>
                     <div class="col-sm-5">
-                        <div class="panel form-group marginTop20">
+                        <div class="panel form-group marginTop10">
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12"><strong>Society Points:</strong></div>

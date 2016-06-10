@@ -14,7 +14,7 @@
             <div class="col-sm-6 grey-bg unit_description">
                 <div class="row">
                     <div class="col-sm-offset-5 col-sm-7">
-                        <div class="panel form-group marginTop20">
+                        <div class="panel form-group marginTop10">
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12">

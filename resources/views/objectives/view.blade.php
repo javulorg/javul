@@ -26,7 +26,7 @@
                 <div class="col-md-6 unit_description">
                     <div class="row">
                         <div class="col-sm-5">
-                            <div class="panel form-group marginTop20">
+                            <div class="panel form-group marginTop10">
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="col-xs-12">
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                         <div class="col-sm-7">
-                            <div class="panel form-group marginTop20">
+                            <div class="panel form-group marginTop10">
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="col-xs-12">

@@ -26,7 +26,7 @@
             <div class="col-sm-6 grey-bg unit_grey_screen_height">
                 <div class="row">
                     <div class="col-sm-offset-4 col-sm-8">
-                        <div class="panel form-group marginTop20">
+                        <div class="panel form-group marginTop10">
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12">

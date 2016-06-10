@@ -1,7 +1,7 @@
 @extends('layout.default')
 @section('content')
 <div class="container">
-    <div class="row">
+    <div class="row form-group">
         @include('elements.user-menu',['page'=>'objectives'])
     </div>
     <div class="row form-group">
