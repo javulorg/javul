@@ -30,6 +30,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="{!! url('assets/plugins/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap-toastr/toastr.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/select2/css/select2.min.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('assets/plugins/select2/css/select2-bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css') !!}" rel="stylesheet"
           type="text/css" />
 
