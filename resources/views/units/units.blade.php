@@ -60,7 +60,7 @@
                         </table>
                     </div>
                 </div>
-                <a href="{!! url('units/create')!!}"class="btn orange-bg" id="add_unit_btn" type="button">
+                <a href="{!! url('units/create')!!}"class="btn orange-bg form-group" id="add_unit_btn" type="button">
                     <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_unit') !!}
                 </a>
             </div>

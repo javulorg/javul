@@ -48,7 +48,7 @@
                     </table>
                 </div>
             </div>
-            <a href="{!! url('objectives/create')!!}"class="btn orange-bg" id="add_objective_btn" type="button">
+            <a href="{!! url('objectives/create')!!}"class="btn orange-bg form-group" id="add_objective_btn" type="button">
                 <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}
             </a>
         </div>

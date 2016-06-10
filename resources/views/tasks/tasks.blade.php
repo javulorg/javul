@@ -58,7 +58,7 @@
                     </table>
                 </div>
             </div>
-            <a href="{!! url('tasks/create')!!}"class="btn orange-bg" id="add_task_btn" type="button">
+            <a href="{!! url('tasks/create')!!}"class="btn orange-bg form-group" id="add_task_btn" type="button">
                 <span class="glyphicon glyphicon-plus"></span> Add Task
             </a>
         </div>

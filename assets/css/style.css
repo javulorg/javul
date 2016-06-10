@@ -33,12 +33,13 @@ body, h1, h2, h3, h4, h5, h6{
 .panel-body .list-group-item{*font-size:18px;}
 .search_anchor{padding-right: 0px !important;}
 /*footer{width:100%;position:absolute;bottom:0px;}*/
+/*footer{position: absolute;bottom: 0px;width: 100%;}*/
 footer .statistics{color:#fff;background-color:#222222;}
 .header_nav_menus{cursor: pointer;display: inline-block;font-size: 14px;font-weight: 400;line-height: 1.42857;margin-bottom: 0;padding: 6px 12px;text-align: center;vertical-align: middle;white-space: nowrap;border-top:5px solid transparent;}
 #bs-example-navbar-collapse-1 .navbar-nav > li > a{padding:10px 15px;line-height: 30px;}
 .unit_description{min-height: 224px;}
-.unit_grey_screen_height{min-height:154px;}
-.create_unit_heading{margin-top: 60px;}
+.unit_grey_screen_height{min-height:110px;}
+.create_unit_heading{margin-top: 20px;}
 .search_div_main{width: 200px;}
 .fa.fa-warning.select-error{right:20px;}
 .fa.fa-check.select-error{right:20px;}
@@ -69,7 +70,7 @@ a.list-group-item,.list-group-item a{color:#337ab7 ;}
 .upvote{border-radius: 50%;border:1px solid #36c6d3;padding: 5px;cursor: pointer;}
 .downvote{border-radius: 50%;border:1px solid #ed6b75;padding: 5px;cursor: pointer;}
 #estimated_completion_time_start,#estimated_completion_time_end{ border-radius: 4px 0 0 4px;}
-
+span.select2.select2-container{width:100% !important;}
 
 /*Custom Bootstrap Style...*/
 .alert{padding:7px;}
@@ -80,6 +81,11 @@ a.list-group-item,.list-group-item a{color:#337ab7 ;}
 .list-group-item{padding:7px 15px;}
 .panel-body{padding:7px;}
 .navbar{margin-bottom:10px;}
+hr, p {margin: 10px 0;}
+.h1, .h2, .h3, h1, h2, h3 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
 
 @media (min-width: 991px) and (max-width: 1200px){
@@ -90,7 +96,7 @@ a.list-group-item,.list-group-item a{color:#337ab7 ;}
     .search_anchor{padding-right: 15px !important;}
     .unit-heading {margin-top: 0;padding-top: 20px;}
     .search_div_main{width: 200px;}
-    .unit_grey_screen_height{min-height: 145px;}
+    .unit_grey_screen_height{min-height: 162px;}
 }
 @media (max-width: 767px){
     .usermenu-btns,.search_div_main{width: 100%;}

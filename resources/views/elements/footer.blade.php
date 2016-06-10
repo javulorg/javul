@@ -1,5 +1,5 @@
 <footer>
-    <br /><hr />
+    <hr />
     <div class="container">
         <div class="row form-group">
             <div class="col-sm-4 text-center">
