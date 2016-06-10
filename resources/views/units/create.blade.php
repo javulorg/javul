@@ -1,11 +1,4 @@
 @extends('layout.default')
-@section('page-css')
-<link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
-<style>
-    .hide-native-select .btn-group, .hide-native-select .btn-group .multiselect, .hide-native-select .btn-group.multiselect-container
-    {width:100% !important;}
-</style>
-@endsection
 @section('content')
 <div class="container">
     <div class="row">
@@ -66,11 +59,9 @@
             </div>
             <?php
             $edit_unit_category = [];
-            $temp_unit_category = 'null';
-            if(!empty($unitObj)){
+            if(!empty($unitObj))
                 $edit_unit_category = explode(",",$unitObj->category_id);
-                $temp_unit_category = $unitObj->category_id;
-            }?>
+            ?>
             <div class="col-sm-4 form-group">
                 <label class="control-label">{!! trans('messages.unit_category') !!}</label>
                 <div class="input-icon right">
@@ -140,7 +131,7 @@
                     <select class="form-control" name="city" id="city">
                         @if(!empty($unitObj))
                             @foreach($cities as $cid=>$val)
-                                <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->city_id == $cid)
+                                <option value="{{$cid}}" @if(!empty($unitObj) && $unitObj->city_id == $cid)
                                 selected=selected @endif>{{$val}}</option>
                             @endforeach
                         @else
@@ -169,7 +160,8 @@
                 <label class="control-label">Parent Unit</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="parent_unit[]" id="parent_unit" >
+                    <select class="form-control" name="parent_unit" id="parent_unit" >
+                        <option value="">Select</option>
                         @if(count($parentUnitsObj) > 0 )
                             @foreach($parentUnitsObj as $id=>$parent)
                                 <option value="{{$id}}" @if(!empty($unitObj) && $id == $unitObj->parent_id)
@@ -186,7 +178,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-4 form-group">
+            <div class="col-sm-12 form-group">
                 <label class="control-label">Unit Description</label>
                 <textarea class="form-control" name="description">@if(!empty($unitObj)) {{$unitObj->description}} @endif</textarea>
             </div>
@@ -207,52 +199,30 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
-<script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/units/units.js') !!}"></script>
 <script>
     $(function(){
-        var selected_category_ids = '{{$temp_unit_category}}'
-
-        $("#unit_category").multiselect({
-            enableFiltering: true,
-            enableCaseInsensitiveFiltering: true,
-            enableFullValueFiltering: false,
-            includeSelectAllOption: true,
-            maxHeight: 400,
-            onChange:function(){
-                $(document).find('body').trigger('click');
-            }
+        $("#country").select2({
+            placeholder:"Select Country"
         });
 
-        if(selected_category_ids != "null"){
-            var selected_category_ids=selected_category_ids.split(",");
-            $("#unit_category").val(selected_category_ids);
-            $("#unit_category").multiselect("refresh");
-        }
-
-        $("#related_to").multiselect({
-            disableIfEmpty:true,
-            enableFiltering: true,
-            enableCaseInsensitiveFiltering: true,
-            enableFullValueFiltering: false,
-            includeSelectAllOption: true,
-            maxHeight: 400,
-            onChange:function(){
-                $(document).find('body').trigger('click');
-            }
+        $("#state").select2({
+            placeholder:"Select State"
         });
 
-        /*$("#parent_unit").multiselect({
-            disableIfEmpty:true,
-            enableFiltering: true,
-            enableCaseInsensitiveFiltering: true,
-            enableFullValueFiltering: false,
-            includeSelectAllOption: true,
-            maxHeight: 400,
-            onChange:function(){
-                $(document).find('body').trigger('click');
-            }
-        });*/
+        $("#city").select2({
+            placeholder:"Select City"
+        });
+
+        $("#unit_category").select2({
+            allowClear: true,
+            placeholder: "Select an option"
+        });
+
+        $("#related_to").select2({
+            allowClear: true,
+            placeholder: "Select an option"
+        });
     });
 </script>
 @endsection

@@ -8,6 +8,7 @@
                 <div class="list-group-item">
                     <span class="glyphicon glyphicon-ok"></span>
                     {!! $activity->comment !!}
+                    <span class="smallText">&nbsp;({{\App\Library\Helpers::timetostr($activity->created_at)}})</span>
                 </div>
             @endforeach
         @else

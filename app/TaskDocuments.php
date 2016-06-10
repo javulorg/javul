@@ -4,21 +4,21 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TaskAction extends Model
+class TaskDocuments extends Model
 {
-	
-	
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'task_actions';
-	
+    protected $table = 'task_documents';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['user_id','task_id','name','description','status'];
+    protected $fillable = ['task_id','file_path'];
+
 }

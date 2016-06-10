@@ -16,22 +16,10 @@ var FormValidation = function () {
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",  // validate all fields including form hidden input
             rules: {
-                unit_name: {
+                unit: {
                     required: true
                 },
-                unit_category: {
-                    required: true
-                },
-                unit_credibility: {
-                    required: true
-                },
-                country: {
-                    required: true
-                },
-                state: {
-                    required: true
-                },
-                city: {
+                "objective_name": {
                     required: true
                 }
             },
@@ -66,7 +54,7 @@ var FormValidation = function () {
             submitHandler: function (form) {
                 success2.show();
                 error2.hide();
-                form[0].submit(); // submit the form
+                form.submit(); // submit the form
 
             }
         });
@@ -83,7 +71,6 @@ var FormValidation = function () {
 
 $(document).ready(function() {
     FormValidation.init();
-
 });
 
 

@@ -54,10 +54,12 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
+                            <th></th>
                             <th>{!! trans('messages.importance') !!}</th>
                             <th>{!! trans('messages.date_created') !!}</th>
                             <th>{!! trans('messages.title') !!}</th>
                             <th>{!! trans('messages.task_statistics') !!}</th>
+                            <th></th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -65,21 +67,35 @@
                             <th></th>
                             <th></th>
                             <th></th>
+                            <th></th>
                             <th>{!! trans('messages.available') !!}</th>
                             <th>{!! trans('messages.in_progress') !!}</th>
                             <th>{!! trans('messages.completed') !!}</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                             @if(count($objectivesObj) > 0)
                                 @foreach($objectivesObj as $obj)
                                     <tr>
-                                        <td>6.5/10</td>
-                                        <td>3 days ago</td>
-                                        <td>Objective number 1</td>
-                                        <td>5</td>
-                                        <td>6</td>
-                                        <td>7</td>
+                                        <td>
+                                            <span class="glyphicon glyphicon-thumbs-up text-success upvote" title="upvote"></span>
+                                            <span class="glyphicon glyphicon-thumbs-down text-danger downvote" title="downvote"></span>
+                                        </td>
+                                        <td>1</td>
+                                        <td>{{\App\Library\Helpers::timetostr($obj->created_at)}}</td>
+                                        <td>{{$obj->name}}</td>
+                                        <td>{{\App\Task::getTaskCount('available',$obj->id)}}</td>
+                                        <td>{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
+                                        <td>{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
+                                        <td>
+                                            @if(\Auth::check())
+                                            <a class="btn btn-xs btn-primary"
+                                               href="{!! url('objectives/edit/'.$objectiveIDHashID->encode($obj->id)) !!}" title="edit">
+                                                <span class="glyphicon glyphicon-edit"></span>
+                                            </a>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             @else
@@ -93,7 +109,9 @@
             </div>
         </div>
         <div class="col-sm-12">
-            <button class="btn orange-bg" id="add_objective_btn" type="button"><span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}</button>
+            <a class="btn orange-bg" id="add_objective_btn" href="{!! url('objectives/create') !!}">
+                <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}
+            </a>
             <!--<button class="btn orange-bg" id="see_all_objective_btn" type="button">{!! trans('messages.see_all_objectives') !!}</button>-->
         </div>
     </div>

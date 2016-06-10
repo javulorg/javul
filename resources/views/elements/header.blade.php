@@ -24,10 +24,7 @@
                 <li><a href="#" class="header_nav_menus">{!! trans('messages.joul.org_unit') !!}</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <?php $flag=$user_login; ?>
-
-                @if (!$flag)
-
+                @if (empty($authUserObj))
                 <li><a href="{!! url('register') !!}">
                         <button type="button" class="btn btn-default orange-bg usermenu-btns">{!! trans('messages.signup')!!}</button>
                     </a></li>
@@ -37,7 +34,7 @@
                 </li>
                 @else
                 <li>
-                    <a class="header_nav_menus">{!! trans('messages.welcome') !!} : {{$username}}</a>
+                    <a class="header_nav_menus">{!! trans('messages.welcome') !!} : {{$authUserObj->first_name.' '.$authUserObj->last_name}}</a>
                 </li>
                 <li><a href="{!! url('/logout') !!}">
                         <button type="button" class="btn btn-default orange-bg usermenu-btns">{!! trans('messages.sign_out') !!}</button>

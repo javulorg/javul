@@ -18,6 +18,10 @@ class ViewComposerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        view()->composer('*',function($view){
+            $view->with('authUserObj',auth()->user());
+        });
+
         //----------------- for footer ---------------------------
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));

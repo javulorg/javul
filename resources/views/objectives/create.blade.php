@@ -1,0 +1,129 @@
+@extends('layout.default')
+@section('page-css')
+<link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
+<style>
+    .hide-native-select .btn-group, .hide-native-select .btn-group .multiselect, .hide-native-select .btn-group.multiselect-container
+    {width:100% !important;}
+</style>
+@endsection
+@section('content')
+<div class="container">
+    <div class="row">
+        @include('elements.user-menu',['page'=>'objectives'])
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-12 ">
+            <div class="col-sm-6 grey-bg unit_grey_screen_height">
+                <h1 class="unit-heading create_unit_heading">
+                    <span class="glyphicon glyphicon-list-alt"></span>
+                    @if(empty($objectiveObj))
+                        Create Objective
+                    @else
+                        Update Objective
+                    @endif
+                </h1><br /><br />
+            </div>
+            <div class="col-sm-6 grey-bg unit_grey_screen_height">
+                <div class="row">
+                    <div class="col-sm-offset-4 col-sm-8">
+                        <div class="panel form-group marginTop20">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <strong>Objective Information</strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">Total Objectives</div>
+                                    <div class="col-xs-6 text-right">XXX</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">{!! trans('messages.total_fund_available') !!}</div>
+                                    <div class="col-xs-6 text-right">XXX $</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">{!! trans('messages.total_fund_rewarded') !!}</div>
+                                    <div class="col-xs-6 text-right">XXXX $</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form role="form" method="post" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data">
+        {!! csrf_field() !!}
+        <div class="row">
+            <div class="col-sm-4 form-group">
+                <label class="control-label">Unit</label>
+                <div class="input-icon right">
+                    <i class="fa select-error"></i>
+                    <select name="unit" class="form-control">
+                        <option value="">Select</option>
+                        @if(count($unitsObj) > 0)
+                            @foreach($unitsObj as $unit_id=>$unit)
+                                <option value="{{$unitIDHashID->encode($unit_id)}}" @if(!empty($objectiveObj) && $objectiveObj->unit_id ==
+                        $unit_id) selected=selected @endif>{{$unit}}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-4 form-group">
+                <label class="control-label">Objective Name</label>
+                <div class="input-icon right">
+                    <i class="fa "></i>
+                    <input type="text" name="objective_name" value="{{ (!empty($objectiveObj))? $objectiveObj->name : old('objective_name') }}"
+                           class="form-control"
+                           placeholder="Objective Name"/>
+                </div>
+            </div>
+            <div class="col-sm-4 form-group">
+                <label class="control-label">Parent objective</label>
+                <div class="input-icon right">
+                    <i class="fa select-error"></i>
+                    <select class="form-control" name="parent_objective" id="parent_objective">
+                        <option value="">{!! trans('messages.select') !!}</option>
+                        @if(count($parentObjectivesObj) > 0)
+                            @foreach($parentObjectivesObj as $objective_id=>$parentObjective)
+                                <option value="{{$objectiveIDHashID->encode($objective_id)}}" @if(!empty($objectiveObj) &&
+                        $objectiveObj->parent_id == $objective_id) selected=selected @endif>{{$parentObjective}}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!--<div class="row">
+            <div class="col-sm-4 form-group">
+                <label class="control-label" style="width: 100%;">Status</label>
+                <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status" @if(!empty($objectiveObj) &&
+                $objectiveObj->status == "active") checked @endif>
+            </div>
+        </div>-->
+        <div class="row">
+            <div class="col-sm-12 form-group">
+                <label class="control-label">Objective Description</label>
+                <textarea class="form-control" name="description">@if(!empty($objectiveObj)) {{$objectiveObj->description}} @endif</textarea>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12 ">
+                <button class="btn orange-bg" id="create_objective" type="submit">
+                    @if(!empty($objectiveObj))
+                    <span class="glyphicon glyphicon-edit"></span> Update objective
+                    @else
+                    <span class="glyphicon glyphicon-plus"></span> Create Objective
+                    @endif
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+@include('elements.footer')
+@stop
+@section('page-scripts')
+<script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/js/objectives/objectives.js') !!}"></script>
+@endsection

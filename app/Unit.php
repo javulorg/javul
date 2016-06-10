@@ -5,6 +5,7 @@ namespace App;
 use ___PHPSTORM_HELPERS\object;
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Hashids\Hashids;
 
 class Unit extends Model
 {
@@ -22,7 +23,7 @@ class Unit extends Model
      * @var array
      */
     protected $fillable = ['user_id','category_id','name','description','credibility','country_id','state_id','city_id','status',
-        'parent_id'];
+        'parent_id','modified_by'];
 
     /**
      * Get UnitCategory of Unit
@@ -71,5 +72,28 @@ class Unit extends Model
             }
         }
         return $unitsObj;
+    }
+
+    /**
+     * function will check whether unit_id is exist in unit table or not
+     * @param $unit_id
+     * @param bool $needToDecode
+     * @return bool
+     */
+    public static function checkUnitExist($unit_id,$needToDecode=false)
+    {
+        if($needToDecode){
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id );
+
+            if(empty($unit_id))
+                return false;
+            $unit_id = $unit_id[0];
+
+            if(Unit::find($unit_id)->count() == 0)
+                return false;
+            return true;
+        }
+
     }
 }

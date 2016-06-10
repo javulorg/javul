@@ -28,6 +28,7 @@ class CreateUnitsTable extends Migration
             $table->foreign('city_id')->references('id')->on('cities');
             $table->string('status')->comment="active or disabled";
             $table->integer('parent_id')->nullable();
+            $table->integer('modified_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

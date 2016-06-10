@@ -55,4 +55,13 @@ class User extends Authenticatable
     public function issues(){
         return $this->hasMany('App\Issue');
     }
+
+    /**
+     * Define accessor for concate first name and last name
+     * @return string
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . " " . $this->last_name;
+    }
 }

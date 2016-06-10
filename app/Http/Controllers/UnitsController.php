@@ -22,12 +22,6 @@ use Hashids\Hashids;
 class UnitsController extends Controller
 {
     public function __construct(){
-        view()->share('user_login',Auth::check());
-        $username = '';
-        if(Auth::check())
-            $username = Auth::user()->first_name.' '.Auth::user()->last_name;
-
-        view()->share('username',$username);
         $this->middleware('auth',['except'=>['index']]);
     }
 
@@ -116,21 +110,17 @@ class UnitsController extends Controller
             else
                 $status="active";
 
-            $parent_id = $request->input('parent_unit');
-            if(!empty($parent_id))
-                $parent_id = implode(",",$parent_id );
-
             $unitID = Unit::create([
                 'user_id'=>Auth::user()->id,
                 'name'=>$request->input('unit_name'),
                 'category_id'=>implode(",",$request->input('unit_category')),
-                'description'=>$request->input('description'),
+                'description'=>trim($request->input('description')),
                 'credibility'=>$request->input('credibility'),
                 'country_id'=>$request->input('country'),
                 'state_id'=>$request->input('state'),
                 'city_id'=>$request->input('city'),
                 'status'=>$status,
-                'parent_id'=>$parent_id
+                'parent_id'=>$request->input('parent_unit')
             ])->id;
 
             //if user selected related to unit then insert record to related_units table
@@ -169,6 +159,12 @@ class UnitsController extends Controller
         return view('units.create');
     }
 
+    /**
+     * Update Unit information
+     * @param $unit_id
+     * @param Request $request
+     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
     public function edit($unit_id,Request $request){
         if(!empty($unit_id))
         {
@@ -177,6 +173,7 @@ class UnitsController extends Controller
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
                 $units = Unit::getUnitWithCategories($unit_id);
+                //dd($request->all());
                 if(!empty($units) && $request->isMethod('post')){
                     //update unit and redirect to units page
                     $validator = \Validator::make($request->all(), [
@@ -198,22 +195,18 @@ class UnitsController extends Controller
                     else
                         $status="active";
 
-                    $parent_id = $request->input('parent_unit');
-                    if(!empty($parent_id))
-                        $parent_id = implode(",",$parent_id );
-
-
                     // update unit data.
                     Unit::where('id',$unit_id)->update([
                         'name'=>$request->input('unit_name'),
                         'category_id'=>implode(",",$request->input('unit_category')),
-                        'description'=>$request->input('description'),
+                        'description'=>trim($request->input('description')),
                         'credibility'=>$request->input('credibility'),
                         'country_id'=>$request->input('country'),
                         'state_id'=>$request->input('state'),
                         'city_id'=>$request->input('city'),
                         'status'=>$status,
-                        'parent_id'=>$parent_id
+                        'parent_id'=>$request->input('parent_unit'),
+                        'modified_by'=>Auth::user()->id
                     ]);
 
                     //if user selected related to unit then insert record to related_units table
@@ -231,6 +224,12 @@ class UnitsController extends Controller
                                 'related_to'=>implode(",",$related_unit)
                             ]);
                         }
+                    }
+                    else
+                    {
+                        $cnt = RelatedUnit::where('unit_id',$unit_id)->count();
+                        if($cnt > 0)
+                            RelatedUnit::where('unit_id',$unit_id)->forceDelete();
                     }
                     // add activity point for created unit and user.
                     ActivityPoint::create([
@@ -265,7 +264,7 @@ class UnitsController extends Controller
                     $countries = Country::lists('name','id');
                     $states = State::where('country_id',$units->country_id)->lists('name','id');
                     $cities = City::where('state_id',$units->state_id)->lists('name','id');
-                    $unitsObj = Unit::lists('name','id');
+                    $unitsObj = Unit::where('id','!=',$unit_id)->lists('name','id');
 
                     $relatedUnitsofUnitObj = RelatedUnit::where('unit_id',$unit_id)->first();
                     if(!empty($relatedUnitsofUnitObj))
@@ -293,6 +292,12 @@ class UnitsController extends Controller
         }
         return view('errors.404');
     }
+
+    /**
+     * Display Unit information only.
+     * @param $unit_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function view($unit_id){
         if(!empty($unit_id))
         {

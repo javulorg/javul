@@ -44,8 +44,12 @@ var FormValidation = function () {
 
             errorPlacement: function (error, element) { // render error placement for each input type
                 var field_name = $(element).attr('name');
-                if(field_name == "unit_category[]")
+                if(field_name == "unit_category[]" || field_name == "country" || field_name == "state" || field_name == "city")
+                    $(element).parents('.input-icon').find(".select2").find(".select2-selection").css("border-color","#a94442");
+
+                if(field_name == "unit_category[]"){
                     var icon = $(element).parents('.input-icon').children('i');
+                }
                 else
                     var icon = $(element).parent('.input-icon').children('i');
                 icon.removeClass('fa-check').addClass("fa-warning");
@@ -55,6 +59,7 @@ var FormValidation = function () {
             highlight: function (element) { // hightlight error inputs
                 $(element)
                     .closest('.col-sm-4').removeClass("has-success").addClass('has-error'); // set error class to the control group
+
             },
 
             unhighlight: function (element) { // revert the change done by hightlight
@@ -69,6 +74,10 @@ var FormValidation = function () {
                     var icon = $(element).parent('.input-icon').children('i');
                 $(element).closest('.col-sm-4').removeClass('has-error').addClass('has-success'); // set success class to the control group
                 icon.removeClass("fa-warning").addClass("fa-check");
+
+                if(field_name == "unit_category[]" || field_name == "country" || field_name == "state" || field_name == "city")
+                    $(element).parents('.input-icon').find(".select2").find(".select2-selection").css("border-color","#3c763d");
+
             },
 
             submitHandler: function (form) {
@@ -97,8 +106,8 @@ $(document).ready(function() {
         var value = $(this).val();
         var token = $('[name="_token"]').val();
         if($.trim(value) == ""){
-            $("#state").html('<option value="">Select</option>');
-            $("#city").html('<option value="">Select</option>');
+            $("#state").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select an option"});
+            $("#city").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select an option"});
         }
         else
         {
@@ -114,7 +123,7 @@ $(document).ready(function() {
                         $.each(resp.states,function(index,val){
                             html+='<option value="'+index+'">'+val+'</option>'
                         });
-                        $("#state").html(html);
+                        $("#state").html(html).select2({allowClear:true,placeholder:"Select an option"});
                     }
                 }
             })
@@ -126,7 +135,7 @@ $(document).ready(function() {
         var value = $(this).val();
         var token = $('[name="_token"]').val();
         if($.trim(value) == "")
-            $("#city").html('<option value="">Select</option>');
+            $("#city").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select an option"});
         else
         {
             $.ajax({
@@ -141,7 +150,7 @@ $(document).ready(function() {
                         $.each(resp.cities,function(index,val){
                             html+='<option value="'+index+'">'+val+'</option>'
                         });
-                        $("#city").html(html);
+                        $("#city").html(html).select2({allowClear:true,placeholder:"Select an option"});
                     }
                 }
             })

@@ -29,6 +29,10 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="{!! url('assets/plugins/font-awesome/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap-toastr/toastr.min.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('assets/plugins/select2/css/select2.min.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('assets/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css') !!}" rel="stylesheet"
+          type="text/css" />
+
     <link href="{!! url('assets/css/style.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/css/component.css') !!}" rel="stylesheet" type="text/css" />
 
@@ -70,14 +74,22 @@ License: You must have a valid license purchased only from themeforest(the above
         <![endif]-->
         <!-- BEGIN CORE PLUGINS -->
         <script src="{!! url('assets/plugins/jquery.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/bootstrap-datetimepicker/moment.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/bootstrap-datetimepicker/transition.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/bootstrap-datetimepicker/collapse.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/bootstrap/js/bootstrap.min.js') !!}" type="text/javascript"></script>
+        <script type="text/javascript" src="{!! url('assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js')!!}"></script>
+
+
         <!-- END CORE PLUGINS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="{!! url('assets/plugins/jquery-validation/js/jquery.validate.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/jquery-validation/js/additional-methods.min.js') !!}" type="text/javascript"></script>
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+        <script src="{!! url('assets/plugins/select2/js/select2.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/bootstrap-toastr/toastr.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/js/function.js') !!}" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         @yield('page-scripts')
     </body>
