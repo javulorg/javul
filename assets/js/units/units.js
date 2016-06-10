@@ -113,6 +113,7 @@ $(document).ready(function() {
         }
         else
         {
+            $(".states_loader.location_loader").show();
             $("#state").prop('disabled',true);
             $("#city").prop('disabled',true);
             $.ajax({
@@ -122,6 +123,7 @@ $(document).ready(function() {
                 async:true,
                 data:{country_id:value,_token:token },
                 success:function(resp){
+                    $(".states_loader.location_loader").hide();
                     $("#state").prop('disabled',false);
                     $("#city").prop('disabled',false);
                     if(resp.success){
@@ -146,6 +148,7 @@ $(document).ready(function() {
         }
         else
         {
+            $(".cities_loader.location_loader").show();
             $("#city").prop('disabled',true);
             $.ajax({
                 type:'POST',
@@ -154,6 +157,7 @@ $(document).ready(function() {
                 async:true,
                 data:{state_id:value,_token:token },
                 success:function(resp){
+                    $(".cities_loader.location_loader").hide();
                     $("#city").prop('disabled',false);
                     if(resp.success){
                         var html='<option value="">Select</option>';

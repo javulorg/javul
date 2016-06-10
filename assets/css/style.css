@@ -88,6 +88,8 @@ hr, p {margin: 10px 0;}
 }
 
 
+
+.location_loader{position: absolute;top:5px;left:310px;z-index: 1;}
 @media (min-width: 991px) and (max-width: 1200px){
     .unit_grey_screen_height{min-height: 145px;}
 }
