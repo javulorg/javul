@@ -94,9 +94,7 @@ class UnitsController extends Controller
                 'unit_name' => 'required',
                 'unit_category' => 'required',
                 'credibility' => 'required',
-                'country' => 'required',
-                'state' => 'required',
-                'city' => 'required',
+                'country' => 'required'
             ]);
 
             if ($validator->fails())
@@ -180,9 +178,7 @@ class UnitsController extends Controller
                         'unit_name' => 'required',
                         'unit_category' => 'required',
                         'credibility' => 'required',
-                        'country' => 'required',
-                        'state' => 'required',
-                        'city' => 'required',
+                        'country' => 'required'
                     ]);
 
                     if ($validator->fails())
@@ -262,6 +258,7 @@ class UnitsController extends Controller
                     $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
                     $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
                     $countries = Country::lists('name','id');
+                    $countries = Unit::getAllCountryWithFrequent();
                     $states = State::where('country_id',$units->country_id)->lists('name','id');
                     $cities = City::where('state_id',$units->state_id)->lists('name','id');
                     $unitsObj = Unit::where('id','!=',$unit_id)->lists('name','id');

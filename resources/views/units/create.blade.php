@@ -113,7 +113,8 @@
                 <label class="control-label">State</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="state" id="state">
+                    <select class="form-control" name="state" id="state" @if(!empty($unitObj) && $unitObj->country_id == "global")
+                    disabled @endif>
                         @if(!empty($unitObj))
                             @foreach($states as $id=>$val)
                                 <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->state_id == $id)
@@ -132,7 +133,8 @@
                 <label class="control-label">City</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="city" id="city">
+                    <select class="form-control" name="city" id="city" @if(!empty($unitObj) && $unitObj->country_id == "global")
+                    disabled @endif>
                         @if(!empty($unitObj))
                             @foreach($cities as $cid=>$val)
                                 <option value="{{$cid}}" @if(!empty($unitObj) && $unitObj->city_id == $cid)
