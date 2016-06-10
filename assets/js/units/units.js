@@ -106,24 +106,30 @@ $(document).ready(function() {
         var value = $(this).val();
         var token = $('[name="_token"]').val();
         if($.trim(value) == ""){
-            $("#state").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select an option"});
-            $("#city").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select an option"});
+            $("#state").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select State"});
+            $("#city").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select City"});
+            $("#state").prop('disabled',false);
+            $("#city").prop('disabled',false);
         }
         else
         {
+            $("#state").prop('disabled',true);
+            $("#city").prop('disabled',true);
             $.ajax({
                 type:'POST',
                 url:siteURL+'/units/get_state',
                 dataType:'json',
-                async:false,
+                async:true,
                 data:{country_id:value,_token:token },
                 success:function(resp){
+                    $("#state").prop('disabled',false);
+                    $("#city").prop('disabled',false);
                     if(resp.success){
                         var html='<option value="">Select</option>';
                         $.each(resp.states,function(index,val){
                             html+='<option value="'+index+'">'+val+'</option>'
                         });
-                        $("#state").html(html).select2({allowClear:true,placeholder:"Select an option"});
+                        $("#state").html(html).select2({allowClear:true,placeholder:"Select State"});
                     }
                 }
             })
@@ -134,23 +140,27 @@ $(document).ready(function() {
     $("#state").on('change',function(){
         var value = $(this).val();
         var token = $('[name="_token"]').val();
-        if($.trim(value) == "")
-            $("#city").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select an option"});
+        if($.trim(value) == ""){
+            $("#city").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select City"});
+            $("#city").prop('disabled',false);
+        }
         else
         {
+            $("#city").prop('disabled',true);
             $.ajax({
                 type:'POST',
                 url:siteURL+'/units/get_city',
                 dataType:'json',
-                async:false,
+                async:true,
                 data:{state_id:value,_token:token },
                 success:function(resp){
+                    $("#city").prop('disabled',false);
                     if(resp.success){
                         var html='<option value="">Select</option>';
                         $.each(resp.cities,function(index,val){
                             html+='<option value="'+index+'">'+val+'</option>'
                         });
-                        $("#city").html(html).select2({allowClear:true,placeholder:"Select an option"});
+                        $("#city").html(html).select2({allowClear:true,placeholder:"Select City"});
                     }
                 }
             })

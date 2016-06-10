@@ -42,7 +42,7 @@
                                             </td>
                                             <td>{{$unit->description}}</td>
                                             <td>
-                                                @if(\Auth::check() && $unit->user_id == \Auth::user()->id)
+                                                @if(\Auth::check())
                                                     <a class="btn btn-xs btn-primary"
                                                        href="{!! url('units/edit/'.$unitIDHashID->encode($unit->id)) !!}" title="edit">
                                                         <span class="glyphicon glyphicon-edit"></span>
