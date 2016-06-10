@@ -76,7 +76,7 @@ class UnitsController extends Controller
     public function create(Request $request){
         $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
         $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
-        $countries = Country::lists('name','id');
+        $countries = Unit::getAllCountryWithFrequent();
         $unitsObj = Unit::lists('name','id');
 
         view()->share('relatedUnitsObj',$unitsObj);

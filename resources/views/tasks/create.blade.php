@@ -85,6 +85,9 @@
                     <select name="objective" id="objective" class="form-control">
                         <option value="">Select</option>
                     </select>
+                    <span class="objective_loader location_loader" style="display: none">
+                        <img src="{!! url('assets/images/small_loader.gif') !!}"/>
+                    </span>
                     @if ($errors->has('objective'))
                         <span class="help-block">
                             <strong>{{ $errors->first('objective') }}</strong>
@@ -366,22 +369,29 @@
                 $("#objective").html('<option value="">Select</option>');
                 return false;
             }
-            $.ajax({
-                type:'POST',
-                url:siteURL+'/tasks/get_objective',
-                dataType:'json',
-                async:false,
-                data:{unit_id:unit_val,_token:token },
-                success:function(resp){
-                    if(resp.success){
-                        var html='<option value="">Select</option>';
-                        $.each(resp.objectives,function(index,val){
-                            html+='<option value="'+index+'">'+val+'</option>'
-                        });
-                        $("#objective").html(html).select2({allowClear:true,placeholder:"Select Objective"});
+            else
+            {
+                $(".objective_loader.location_loader").show();
+                $("#objective").prop('disabled',true);
+                $.ajax({
+                    type:'POST',
+                    url:siteURL+'/tasks/get_objective',
+                    dataType:'json',
+                    data:{unit_id:unit_val,_token:token },
+                    success:function(resp){
+                        $(".objective_loader.location_loader").hide();
+                        $("#objective").prop('disabled',false);
+                        if(resp.success){
+                            var html='<option value="">Select</option>';
+                            $.each(resp.objectives,function(index,val){
+                                html+='<option value="'+index+'">'+val+'</option>'
+                            });
+                            $("#objective").html(html).select2({allowClear:true,placeholder:"Select Objective"});
+                        }
                     }
-                }
-            })
+                })
+            }
+            return false
         });
 
         $("#input-id").fileinput({'showUpload':false, 'previewFileType':'any'});

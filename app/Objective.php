@@ -69,4 +69,8 @@ class Objective extends Model
         }
 
     }
+
+    public static function getObjectiveName($obj_id){
+        return self::find($obj_id)->name;
+    }
 }

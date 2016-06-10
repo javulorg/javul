@@ -96,4 +96,21 @@ class Unit extends Model
         }
 
     }
+
+    public static function getAllCountryWithFrequent(){
+        $top10MostCountries = self::join('countries','units.country_id','=','countries.id')->groupBy('country_id')->orderBy('units.id',
+            'desc')->select(['countries.id','countries.name'])->limit(10)->lists('countries.name','countries.id')->all();
+
+        /*$top10MostCountries['dash_line']='dash_line';*/
+        $countries_id = array_keys($top10MostCountries);
+        $otherCountries = Country::whereNotIn('id',$countries_id)->lists('name','id')->all();
+
+        $all=['global'=>'Global'/*,'dash_line1'=>'dash_line1'*/]+($top10MostCountries + $otherCountries );
+
+        return $all;
+    }
+
+    public static function getUnitName($unit_id){
+        return self::find($unit_id)->name;
+    }
 }

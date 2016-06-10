@@ -71,6 +71,67 @@
         </div>
     </div>
     <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-dark-grey">
+                <div class="panel-heading">
+                    <h4>Tasks</h4>
+                </div>
+                <div class="panel-body table-inner table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Task Name</th>
+                            <!--<th>Objective Name</th>-->
+                            <th>Unit Name</th>
+                            <th>Skills</th>
+                            <th>Assigned to</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if(count($objectiveObj->tasks) > 0 )
+                            @foreach($objectiveObj->tasks as $task)
+                                <tr>
+                                    <td><a href="{!! url('tasks/'.$taskIDHashID->encode($task->id)) !!}">{{$task->name}}</a></td>
+                                   <!-- <td>
+                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id)) !!}">
+                                            {{\App\Objective::getObjectiveName($task->objective_id)}}
+                                        </a>
+                                    </td>-->
+                                    <td>
+                                        <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id)) !!}">
+                                            {{\App\Unit::getUnitName($task->unit_id)}}
+                                        </a>
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td></td>
+                                    <td>{{ucfirst($task->status)}}</td>
+                                    <td>
+                                        <a class="btn btn-xs btn-primary"
+                                           href="{!! url('tasks/edit/'.$taskIDHashID->encode($task->id)) !!}" title="edit">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="7">No record(s) found.</td>
+                            </tr>
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="{!! url('tasks/create')!!}"class="btn orange-bg" id="add_task_btn" type="button">
+                <span class="glyphicon glyphicon-plus"></span> Add Task
+            </a>
+        </div>
+    </div>
+    <div class="row form-group">
         <div class="col-sm-6 col-xs-12">
             @include('elements.site_activities')
         </div>
