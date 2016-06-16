@@ -4,12 +4,16 @@ namespace App;
 
 use ___PHPSTORM_HELPERS\object;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use DB;
 use Hashids\Hashids;
 
 class Unit extends Model
 {
 
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+    public $timestamps = true;
     /**
      * The table associated with the model.
      *
@@ -56,15 +60,18 @@ class Unit extends Model
      * @return mixed
      */
     public static function getUnitWithCategories($unit_id=''){
-        $where= '';
+        $where= ' WHERE units.deleted_at IS NULL ';
         if(!empty($unit_id))
-            $where = " WHERE units.id='".$unit_id."' ";
+            $where .= " and units.id='".$unit_id."' ";
 
-        $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name) as category_name FROM units INNER JOIN unit_category ON " .
+        $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name SEPARATOR ', ') as category_name FROM units INNER JOIN
+        unit_category ON " .
             "(units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  ) $where GROUP BY units.id") );
 
         if(count($unitsObj) == 1){
             $unitsObjTmp = $unitsObj[0];
+            if(!empty($unit_id))
+                return $unitsObjTmp;
             $unitsObj= array_filter((array)$unitsObj[0]);
             if(!empty($unitsObj)){
                 $temp[] =(object)$unitsObjTmp ;
@@ -101,11 +108,11 @@ class Unit extends Model
         $top10MostCountries = self::join('countries','units.country_id','=','countries.id')->groupBy('country_id')->orderBy('units.id',
             'desc')->select(['countries.id','countries.name'])->limit(10)->lists('countries.name','countries.id')->all();
 
-        /*$top10MostCountries['dash_line']='dash_line';*/
+        $top10MostCountries['dash_line']='dash_line';
         $countries_id = array_keys($top10MostCountries);
-        $otherCountries = Country::whereNotIn('id',$countries_id)->lists('name','id')->all();
+        $otherCountries = Country::whereNotIn('id',$countries_id)->where('id','!=','247')->lists('name','id')->all();
 
-        $all=['global'=>'Global'/*,'dash_line1'=>'dash_line1'*/]+($top10MostCountries + $otherCountries );
+        $all=['247'=>'Global','dash_line1'=>'dash_line1']+($top10MostCountries + $otherCountries );
 
         return $all;
     }

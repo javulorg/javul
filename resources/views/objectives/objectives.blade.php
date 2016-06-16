@@ -36,6 +36,15 @@
                                     <span class="glyphicon glyphicon-edit"></span>
                                 </a>
                                 @endif
+                                <?php $unitAdminID = \App\Task::checkUnitAdmin($objective->unit_id); ?>
+
+                                @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unitAdminID ==
+                                $authUserObj->id))
+                                <a title="delete" href="#" class="btn btn-xs btn-danger delete-objective"
+                                   data-id="{{$objectiveIDHashID->encode($objective->id)}}">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
@@ -66,4 +75,5 @@
     var msg_val ='{{ $msg_val }}';
 </script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/js/objectives/delete_objective.js') !!}"></script>
 @endsection

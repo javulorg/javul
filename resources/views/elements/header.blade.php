@@ -36,7 +36,7 @@
                 <li>
                     <a class="header_nav_menus">{!! trans('messages.welcome') !!} : {{$authUserObj->first_name.' '.$authUserObj->last_name}}</a>
                 </li>
-                <li><a href="{!! url('/logout') !!}">
+                <li><a href="{!! url('account/logout') !!}">
                         <button type="button" class="btn btn-default orange-bg usermenu-btns">{!! trans('messages.sign_out') !!}</button>
                     </a>
                 </li>

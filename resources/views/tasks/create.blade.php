@@ -66,8 +66,8 @@
                         <option value="">Select</option>
                         @if(count($unitsObj) > 0)
                             @foreach($unitsObj as $unit_id=>$unit)
-                                <option value="{{$unitIDHashID->encode($unit_id)}}" @if(!empty($objectiveObj) && $objectiveObj->unit_id ==
-                                $unit_id) selected=selected @endif>{{$unit}}</option>
+                                <option value="{{$unitIDHashID->encode($unit_id)}}" @if(!empty($taskObj) && $taskObj->unit_id == $unit_id)
+                                    selected=selected @endif>{{$unit}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -84,6 +84,13 @@
                     <i class="fa select-error"></i>
                     <select name="objective" id="objective" class="form-control">
                         <option value="">Select</option>
+                        @if(count($objectiveObj) > 0)
+                            @foreach($objectiveObj as $objective)
+                                <option value="{{$objectiveIDHashID->encode($objective->id)}}" @if(!empty($objective) && $objective->id ==
+                        $taskObj->objective_id)
+                                selected=selected @endif>{{$objective->name}}</option>
+                            @endforeach
+                        @endif
                     </select>
                     <span class="objective_loader location_loader" style="display: none">
                         <img src="{!! url('assets/images/small_loader.gif') !!}"/>
@@ -119,7 +126,8 @@
                         <option value="">Select</option>
                         @if(!empty($task_skills))
                             @foreach($task_skills as $skill_id=>$skill)
-                                <option value="{{$skill_id}}">{{$skill}}</option>
+                                <option value="{{$skill_id}}" @if(!empty($exploded_task_list) && in_array($skill_id,
+                        $exploded_task_list)) selected=selected @endif>{{$skill}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -130,13 +138,14 @@
                     @endif
                 </div>
             </div>
+
             <div class="col-sm-4 form-group {{ $errors->has('estimated_completion_time_start') ? ' has-error' : '' }}">
                 <label class="control-label">Estimated Completion Time From</label>
                 <div class="input-group date" id='datetimepicker1'>
                     <div class="input-icon right">
                         <i class="fa"></i>
                         <input type="text" id="estimated_completion_time_start" name="estimated_completion_time_start" value="{{ (!empty($taskObj))?
-                        $taskObj->name :
+                        $taskObj->estimated_completion_time_start :
                         old('estimated_completion_time_start') }}" class="form-control" placeholder="Estimated Completion Time From"/>
                     </div>
                     <span class="input-group-addon">
@@ -155,7 +164,7 @@
                     <div class="input-icon right">
                         <i class="fa"></i>
                         <input type="text" id="estimated_completion_time_end" name="estimated_completion_time_end" value="{{ (!empty($taskObj))?
-                        $taskObj->name :
+                        $taskObj->estimated_completion_time_end :
                         old('estimated_completion_time_end') }}" class="form-control" placeholder="Estimated Completion Time To"/>
                     </div>
                     <span class="input-group-addon">
@@ -188,7 +197,7 @@
                 <label class="control-label">Compensation</label>
                 <div class="input-icon right">
                     <i class="fa"></i>
-                    <input type="text" name="compensation" value="{{ (!empty($taskObj))? $taskObj->name : old('compensation') }}"
+                    <input type="text" name="compensation" value="{{ (!empty($taskObj))? $taskObj->compensation : old('compensation') }}"
                            class="form-control onlyDigits"
                            placeholder="Compensation"/>
                 </div>
@@ -209,69 +218,43 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(!empty($taskDocumentsObj))
-                                <tr>
-                                    <td>
-                                        <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                            <div class="form-control" data-trigger="fileinput">
-                                                <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                                <span class="fileinput-filename"></span>
-                                            </div>
-                                            <span class="input-group-addon btn btn-default btn-file">
-                                                <span class="fileinput-new">Select file</span>
-                                                <span class="fileinput-exists">Change</span>
-                                                <input type="file" name="document">
+                            @if(!empty($taskDocumentsObj))
+                            <?php $i=1; ?>
+                                @foreach($taskDocumentsObj as $document)
+                                    <tr>
+                                        <td>
+                                            <span>
+                                                <?php $doc_name = explode("/",$document->file_path); ?>
+                                                <a href="{!! url($document->file_path) !!}" target="_blank">
+                                                    {{--$doc_name[count($doc_name)-1]--}}
+                                                    {{$document->file_name}}
+                                                </a>
                                             </span>
-                                            <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="#" class="remove-row text-danger" data-id="{{$hashID->encode($unit->id)}}">
-                                            <i class="fa fa-remove"></i>
-                                        </a>
-                                        <?php $addMoreUnitClass = "";?>
-                                        @if(count($propertyObj->units) > 1)
-                                        <?php $addMoreUnitClass = "hide";?>
-                                        @endif
-                                        @if(count($propertyObj->units) == $i)
-                                        <?php $addMoreUnitClass = "";?>
-                                        @endif
-                                        <span class="{{$addMoreUnitClass}}">
-                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <a href="#" class="addMoreUnit">
-                                                <i class="fa fa-plus"></i>
-                                            </a>
-                                        </span>
-                                    </td>
-                                </tr>
-                            @else
-                                <tr>
-                                    <td style="width:90%;">
-                                        <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                            <div class="form-control" data-trigger="fileinput">
-                                                <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                                                <span class="fileinput-filename"></span>
-                                            </div>
-                                            <span class="input-group-addon btn btn-default btn-file">
-                                                <span class="fileinput-new">Select file</span>
-                                                <span class="fileinput-exists">Change</span>
-                                                <input type="file" name="documents[]">
-                                            </span>
-                                            <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span>
-                                            <a href="#" class="remove-row text-danger hide" >
+                                        </td>
+                                        <td>
+                                            <a href="#" class="remove-row text-danger" data-task_id="{{$taskIDHashID->encode($taskObj->id)}}"
+                                               data-id="{{$taskDocumentIDHashID->encode($document->id)}}">
                                                 <i class="fa fa-remove"></i>
                                             </a>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <a href="#" class="addMoreDocument">
-                                                <i class="fa fa-plus"></i>
-                                            </a>
-                                        </span>
-                                    </td>
-                                </tr>
+                                            <?php $addMoreUnitClass = ""; ?>
+                                            @if(count($taskDocumentsObj) > 1)
+                                            <?php $addMoreUnitClass = "hide";?>
+                                            @endif
+                                            @if(count($taskDocumentsObj) == $i)
+                                            <?php $addMoreUnitClass = "";?>
+                                            @endif
+                                            <span class="{{$addMoreUnitClass}}">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                <a href="#" class="addMoreUnit">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @include('tasks.partials.document_upload')
+                            @else
+                                @include('tasks.partials.document_upload')
                             @endif
                             </tbody>
                         </table>
@@ -282,10 +265,15 @@
         <div class="row">
             <div class="col-sm-12 form-group">
                 <label class="control-label">Action Items</label>
-                <textarea class="form-control" name="action_items" id="action_items">@if(!empty($taskObj)) {{$taskObj->summary}} @endif</textarea>
-                <div class="all_action_items">
+                <textarea class="form-control" name="action_items" id="action_items">
+                    @if(!empty($taskObj))
+                        {!! $taskObj->task_action !!}
+                    @endif
+                </textarea>
+                <!-- insert each task action into task_actions table. -->
+                <!--<div class="all_action_items">
                     <input type="hidden" name="action_items_array[]" id="action_items_array" class="action_items_class"/>
-                </div>
+                </div>-->
             </div>
             <div class="col-sm-12 form-group">
                 <label class="control-label">Summary</label>
@@ -312,90 +300,27 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
+<script>
+    var editTask = '{{$editFlag}}';
+    var actionListFlag = "<?=$actionListFlag?>";
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-top-right",
+        "onclick": null,
+        "showDuration": "1000",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+</script>
 <script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.min.js') !!}" type="text/javascript"></script>
-<script>
-    $(function(){
-        $('#datetimepicker1').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm',
-            minDate:moment()
-        });
 
-        $('#datetimepicker2').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm',
-            minDate:moment()
-        });
-
-        $('.summernote').summernote({
-            height:100
-        });
-
-        $("#action_items").summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', []],
-                ['height', []]
-            ]
-        });
-
-        $('#action_items').summernote('insertUnorderedList');
-
-
-        $("#unit").select2({
-            allowClear:true,
-            placeholder:"Select Unit"
-        });
-
-        $("#objective").select2({
-            allowClear:true,
-            placeholder:"Select Objective"
-        });
-
-        $("#task_skills").select2({
-            allowClear:true,
-            placeholder:"Select Skills"
-        });
-
-        $("#unit").on('change',function(){
-            var unit_val = $(this).val();
-            var token = $('[name="_token"]').val();
-            if($.trim(unit_val) == "")
-            {
-                $("#objective").html('<option value="">Select</option>');
-                return false;
-            }
-            else
-            {
-                $(".objective_loader.location_loader").show();
-                $("#objective").prop('disabled',true);
-                $.ajax({
-                    type:'POST',
-                    url:siteURL+'/tasks/get_objective',
-                    dataType:'json',
-                    data:{unit_id:unit_val,_token:token },
-                    success:function(resp){
-                        $(".objective_loader.location_loader").hide();
-                        $("#objective").prop('disabled',false);
-                        if(resp.success){
-                            var html='<option value="">Select</option>';
-                            $.each(resp.objectives,function(index,val){
-                                html+='<option value="'+index+'">'+val+'</option>'
-                            });
-                            $("#objective").html(html).select2({allowClear:true,placeholder:"Select Objective"});
-                        }
-                    }
-                })
-            }
-            return false
-        });
-
-        $("#input-id").fileinput({'showUpload':false, 'previewFileType':'any'});
-    });
-</script>
 <script src="{!! url('assets/js/tasks/tasks.js') !!}"></script>
 @endsection

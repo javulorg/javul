@@ -18,5 +18,18 @@ class ImportanceLevel extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','objective_id','issue_id','level','type'];
+    protected $fillable = ['user_id','objective_id','issue_id','importance_upvote','importance_downvote','type'];
+
+    public static function checkImportanceLevel($objid)
+    {
+        if(!empty($objid))
+        {
+            $obj = self::where('objective_id',$objid)->first();
+            if(!empty($obj)){
+                if($obj->importance_upvote == 1)
+                    return true;
+            }
+        }
+        return false;
+    }
 }

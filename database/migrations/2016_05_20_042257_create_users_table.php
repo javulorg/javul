@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->string('job_skills')->comment="reference to job_skill table. multiple with comma.";
             $table->string('area_of_interest')->comment="reference to area_of_interest table. multiple with comma.";
             $table->string('role');
+            $table->tinyInteger('loggedin');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

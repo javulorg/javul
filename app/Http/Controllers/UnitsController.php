@@ -254,7 +254,7 @@ class UnitsController extends Controller
                 elseif(!empty($units)){
 
                     //redirect to edit page
-                    $units = array_shift($units);
+                    //$units = array_shift($units);
                     $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
                     $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
                     $countries = Country::lists('name','id');
@@ -302,14 +302,19 @@ class UnitsController extends Controller
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
-                $units = Unit::getUnitWithCategories($unit_id);
-                $objectives = Objective::where('unit_id',$unit_id)->get();
-                $tasks = Task::where('objective_id',1)->get();
-                if(!empty($units)){
-                    $units = array_shift($units);
-                    $cityName = City::find($units->city_id);
+                $unit = Unit::getUnitWithCategories($unit_id);
+                if(!empty($unit)){
+                    $objectives = Objective::where('unit_id',$unit_id)->get();
+                    $tasks = Task::where('objective_id',1)->get();
+                    $related_units = RelatedUnit::getRelatedUnitName($unit_id);
+
+                    if($unit->country_id == 247)
+                        $cityName = "Global";
+                    else
+                        $cityName = City::find($unit->city_id)->name;
                     view()->share('cityName',$cityName);
-                    view()->share('unitObj',$units );
+                    view()->share('related_units',$related_units);
+                    view()->share('unitObj',$unit );
                     view()->share('objectivesObj',$objectives );
                     view()->share('taskObj',$tasks );
                     return view('units.view');
@@ -318,6 +323,56 @@ class UnitsController extends Controller
 
         }
         return view('errors.404');
+    }
+
+    public function delete_unit(Request $request){
+        $unitID = $request->input('id');
+        if(!empty($unitID)){
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitID = $unitIDHashID->decode($unitID);
+            if(!empty($unitID)){
+                $unitID = $unitID[0];
+                $unitObj = Unit::find($unitID);
+                $unitTemp = $unitObj;
+                if(count($unitObj) > 0){
+                    $objectiveObj = Objective::where('unit_id',$unitID)->get();
+                    if(!empty($objectiveObj)){
+                        foreach($objectiveObj as $objective){
+                            $tasksObj = Task::where('objective_id',$objective->id)->get();
+                            if(count($tasksObj) > 0){
+                                foreach($tasksObj  as $task)
+                                    Task::deleteTask($task->id);
+                            }
+                            $objectiveObj->delete();
+                        }
+                    }
+                    $unitObj->delete();
+                    // add activity point for created unit and user.
+                    ActivityPoint::create([
+                        'user_id'=>Auth::user()->id,
+                        'unit_id'=>$unitID,
+                        'points'=>1,
+                        'comments'=>'Unit deleted',
+                        'type'=>'unit'
+                    ]);
+
+                    // add site activity record for global statistics.
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                    /*$objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                    $objectiveId = $objectiveIDHashID->encode($objectiveID);*/
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        deleted unit '.$unitTemp->name
+                    ]);
+                    return \Response::json(['success'=>true]);
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
     }
 
     public function show()

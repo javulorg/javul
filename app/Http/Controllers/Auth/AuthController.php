@@ -80,4 +80,15 @@ class AuthController extends Controller
             'role'=>'user'
         ]);
     }
+
+    /**
+     * Method will called after login successfully into system
+     * @param \Illuminate\Http\Request $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function authenticated( \Illuminate\Http\Request $request, \App\User $user ) {
+        $user->update(['loggedin'=>1]);
+        return redirect()->intended($this->redirectPath());
+    }
 }

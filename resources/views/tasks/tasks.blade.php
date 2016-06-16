@@ -29,22 +29,36 @@
                                 <tr>
                                     <td><a href="{!! url('tasks/'.$taskIDHashID->encode($task->id)) !!}">{{$task->name}}</a></td>
                                     <td>
-                                        <a href="{!! url('tasks/'.$objectiveIDHashID->encode($task->objective_id)) !!}">{{$task->name}}</a>
+                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id))
+                                        !!}">{{$task->objective_name}}</a>
                                     </td>
                                     <td>
-                                        <a href="{!! url('tasks/'.$unitIDHashID->encode($task->unit_id)) !!}">{{$task->name}}</a>
+                                        <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id)) !!}">{{$task->unit_name}}</a>
                                     </td>
                                     <td>
-
+                                        {!! \App\JobSkill::getSkillNameLink($task->skills) !!}
                                     </td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        @if(empty($task->assigned_to))
+                                            -
+                                        @else
+                                        @endif
+                                    </td>
+                                    <td>{{ucfirst($task->status)}}</td>
                                     <td>
                                         @if(\Auth::check())
                                         <a class="btn btn-xs btn-primary"
                                            href="{!! url('tasks/edit/'.$taskIDHashID->encode($task->id)) !!}" title="edit">
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </a>
+                                        @endif
+                                        <?php $unitAdminID = \App\Task::checkUnitAdmin($task->unit_id); ?>
+                                        @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unitAdminID ==
+                                        $authUserObj->id))
+                                            <a title="delete" href="#" class="btn btn-xs btn-danger delete-task"
+                                               data-id="{{$taskIDHashID->encode($task->id)}}">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </a>
                                         @endif
                                     </td>
                                 </tr>
@@ -76,4 +90,5 @@
     var msg_val ='{{ $msg_val }}';
 </script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/js/tasks/delete_task.js') !!}"></script>
 @endsection

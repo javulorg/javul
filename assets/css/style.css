@@ -56,7 +56,7 @@ a.list-group-item,.list-group-item a{color:#337ab7 ;}
 .select2-container--bootstrap .select2-selection--single .select2-selection__arrow b{border-color: #999 transparent transparent;border-style: solid;border-width: 4px 4px 0;height: 0;left: 0;margin-left: -4px;margin-top: -2px;position: absolute;top: 50%;width: 0;}
 .select2-container--bootstrap.select2-container--open .select2-selection .select2-selection__arrow b{border-color: transparent transparent #999;border-width: 0 4px 4px;}
 .select2-container--bootstrap .select2-selection--multiple{min-height:34px;}
-.select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field{  background: transparent none repeat scroll 0 0;height: 32px;line-height: 1.42857;margin-top: 0;min-width: 5em;padding: 0 12px;}
+.select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field{  background: transparent none repeat scroll 0 0;height: 32px;line-height: 1.42857;margin-top: 0;min-width: 5em;padding: 0 12px;box-shadow: none;}
 .select2-container--bootstrap .select2-results__option--highlighted[aria-selected]{background-color:#337ab7;color:#fff;}	
 .select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered{box-sizing: border-box;display: block;line-height: 1.42857;list-style: outside none none;margin: 0;overflow: hidden;padding: 0;text-overflow: ellipsis;white-space: nowrap;width: 100%;}
 .select2-container--bootstrap .select2-selection--multiple .select2-selection__clear{margin-top:6px;}
@@ -66,8 +66,11 @@ a.list-group-item,.list-group-item a{color:#337ab7 ;}
 
 .smallText{font-size:11px;display: inline-block;}
 .upvote{border-radius: 50%;border:1px solid #36c6d3;padding: 5px;cursor: pointer;}
+.success-upvote{background-color:#36c6d3;color:#fff;}
 .downvote{border-radius: 50%;border:1px solid #ed6b75;padding: 5px;cursor: pointer;}
 #estimated_completion_time_start,#estimated_completion_time_end{ border-radius: 4px 0 0 4px;}
+.prevent-click{pointer-events: none;cursor: default;}
+.text_ellipsis{ display:inline-block;width:483px;white-space: nowrap;overflow:hidden !important;text-overflow: ellipsis;}
 
 .location_loader{position: absolute;top:5px;left:310px;z-index: 1;}
 @media (min-width: 991px) and (max-width: 1200px){

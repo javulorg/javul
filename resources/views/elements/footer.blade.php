@@ -25,11 +25,11 @@
                 <div class="col-sm-4">
                     <div class="row form-group">
                         <div class="col-xs-8">{!! trans('messages.user_registered') !!}</div>
-                        <div class="col-xs-4 text-right"><span class="badge">833</span></div>
+                        <div class="col-xs-4 text-right"><span class="badge">{{$totalRegisteredUsers}}</span></div>
                     </div>
                     <div class="row form-group">
                         <div class="col-xs-8">{!! trans('messages.logged_in') !!}</div>
-                        <div class="col-xs-4 text-right"><span class="badge">1243</span></div>
+                        <div class="col-xs-4 text-right"><span class="badge">{{$totalLoggedinUsers}}</span></div>
                     </div>
                 </div>
                 <div class="col-sm-4 form-group">

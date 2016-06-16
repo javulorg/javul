@@ -3,10 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Hashids\Hashids;
 
 class Objective extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+    public $timestamps = true;
+
     /**
      * The attributes that are mass assignable.
      *

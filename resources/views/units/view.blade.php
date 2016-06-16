@@ -1,4 +1,9 @@
 @extends('layout.default')
+@section('page-css')
+<style>
+    .related_para{margin:0 0 10px;}
+</style>
+@endsection
 @section('content')
 <div class="container">
     <div class="row">
@@ -6,18 +11,53 @@
     </div>
     <div class="row form-group">
         <div class="col-sm-12 ">
-            <div class="col-sm-6 grey-bg unit_description">
+            <div class="col-sm-6 grey-bg unit_description both-div" style="min-height: 250px;">
                 <h1 class="unit-heading">
                     <span class="glyphicon glyphicon-list-alt"></span> {{$unitObj->name}}
 
                 </h1>
                 @if(!empty($cityName))
-                <p><span class="glyphicon glyphicon-map-marker"> </span> &nbsp;{{$cityName->name}}</p>
+                    <p><span class="glyphicon glyphicon-map-marker"> </span> &nbsp;{{$cityName}}</p>
                 @endif
-                <p><span class="glyphicon glyphicon-tag"> </span> &nbsp; {{$unitObj->category_name}}</p>
+                <p><span class="glyphicon glyphicon-tag"> </span> Unit Categories&nbsp;: {{$unitObj->category_name}}</p>
                 <a href="{!! url('units/edit/'.$unitIDHashID->encode($unitObj->id)) !!}" id="edit_unit_btn" class="btn orange-bg">
                     <span class="glyphicon glyphicon-plus"></span> Edit Unit
                 </a>
+                @if(count($related_units) > 0 || !empty($unitObj->parent_id))
+                    <?php $i=1;?>
+                    <p></p>
+                    <p class="related_para">Relations to Other Units:</p>
+                    <ul style="padding-left:15px;">
+                        @if(!empty($unitObj->parent_id))
+                        <li style="list-style: none;">Parent &nbsp;&nbsp;:
+                            <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->parent_id)) !!}">
+                                {{\App\Unit::getUnitName($unitObj->parent_id)}}
+                            </a>
+                        </li>
+                        @endif
+                        @if(!empty($related_units))
+                            <li style="list-style: none;">Related :
+                                @foreach($related_units as $id=>$unit_name)
+                                <a href="{!! url('units/'.$unitIDHashID->encode($id)) !!}">
+                                    @if($i == (count($related_units) - 1))
+                                    {{$unit_name.', '}}
+                                    @else
+                                    {{$unit_name}}
+                                    @endif
+                                </a>
+
+                                <?php $i++; ?>
+                                @endforeach
+                            </li>
+                        @endif
+
+                    </ul>
+                    <h5></h5>
+
+                    <p >
+
+                    </p>
+                @endif
             </div>
             <div class="col-sm-6 grey-bg unit_description">
                 <div class="row">
@@ -48,6 +88,18 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-dark-grey">
+                <div class="panel-heading">
+                    <h4>Unit Description</h4>
+                </div>
+                <div class="panel-body">
+                    {!! $unitObj->description !!}
                 </div>
             </div>
         </div>
@@ -87,14 +139,21 @@
                                 @foreach($objectivesObj as $obj)
                                     <tr>
                                         <td>
-                                            <span class="glyphicon glyphicon-thumbs-up text-success upvote" title="upvote"></span>
+                                            <?php $vote_class=" text-success";
+                                            $flag = \App\ImportanceLevel::checkImportanceLevel($obj->id);
+                                            if($flag)
+                                                $vote_class="success-upvote";
+                                            ?>
+
+                                            <span class="glyphicon glyphicon-thumbs-up upvote {{$vote_class}}"
+                                                  data-id="{{ $objectiveIDHashID->encode($obj->id) }}"
+                                                  title="upvote"></span>
                                             <!--<span class="glyphicon glyphicon-thumbs-down text-danger downvote" title="downvote"></span>-->
                                         </td>
                                         <td>1</td>
                                         <td>{{\App\Library\Helpers::timetostr($obj->created_at)}}</td>
                                         <td>
-                                            <a class="btn btn-xs btn-primary"
-                                               href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id)) !!}" title="edit">
+                                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id)) !!}" title="edit">
                                                 {{$obj->name}}
                                             </a>
                                         </td>
@@ -122,7 +181,7 @@
             </div>
         </div>
         <div class="col-sm-12">
-            <a class="btn orange-bg" id="add_objective_btn" href="{!! url('objectives/create') !!}">
+            <a class="btn orange-bg" id="add_objective_btn" href="{!! url('objectives/create/'.$unitIDHashID->encode($unitObj->id)) !!}">
                 <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}
             </a>
             <!--<button class="btn orange-bg" id="see_all_objective_btn" type="button">{!! trans('messages.see_all_objectives') !!}</button>-->
@@ -179,3 +238,31 @@
 </div>
 @include('elements.footer')
 @stop
+@section('page-scripts')
+@section('page-scripts')
+<script>
+    $(function(){
+        $(".unit_description").css("min-height",($(".both-div").height())+10+'px');
+
+        $(".upvote").click(function(){
+            if(!$(this).hasClass('success-upvote')){
+                var that = $(this);
+                var id=$(this).attr('data-id');
+                if($.trim(id) != ""){
+                    $.ajax({
+                        type:'post',
+                        url:siteURL+'/objectives/importance',
+                        data:{_token:'{!! csrf_token() !!}',id:id},
+                        dataType:'json',
+                        success:function(resp){
+                            if(resp.success)
+                                that.removeClass('text-success').addClass('success-upvote');
+                        }
+                    })
+                }
+            }
+            return false;
+        })
+    })
+</script>
+@endsection

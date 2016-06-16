@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-css')
+<link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+@endsection
 @section('content')
 <div class="container">
     <div class="row">
@@ -100,10 +103,12 @@
                         <option value="">{!! trans('messages.select') !!}</option>
                         @if(count($countries) > 0)
                             @foreach($countries as $id=>$val)
-
+                                @if($val == "dash_line" || $val == "dash_line1")
+                                    <option value="{{$id}}" disabled></option>
+                                @else
                                     <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->country_id == $id)
                                     selected=selected @endif>{{$val}}</option>
-
+                                @endif
                             @endforeach
                         @endif
                     </select>
@@ -183,13 +188,13 @@
             <div class="col-sm-4 form-group">
                 <label class="control-label" style="width: 100%;">Status</label>
                 <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status" @if(!empty($unitObj) &&
-                $unitObj->status == "active") checked @endif>
+                $unitObj->status == "active") checked @elseif(empty($unitObj)) checked @endif>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12 form-group">
                 <label class="control-label">Unit Description</label>
-                <textarea class="form-control" name="description">@if(!empty($unitObj)) {{$unitObj->description}} @endif</textarea>
+                <textarea class="form-control summernote" name="description">@if(!empty($unitObj)) {!! $unitObj->description !!} @endif</textarea>
             </div>
         </div>
         <div class="row form-group">
@@ -208,43 +213,6 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
+<script src="{!! url('assets/plugins/bootstrap-summernote/summernote.min.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/units/units.js') !!}"></script>
-<script>
-    $(function(){
-        function format(country) {
-            alert('d');
-            if (country.id == "dash_line1" || country.id == "dash_line")
-                return "<img class='flag' src='images/flags/" + state.id.toLowerCase() + ".png'/>" + state.text;
-        }
-        $("#country").select2({
-			theme: "bootstrap",
-            placeholder:"Select Country"/*,
-            formatResult: format,
-            formatSelection: format*/
-        });
-
-        $("#state").select2({
-			theme: "bootstrap",
-            placeholder:"Select State"
-        });
-
-        $("#city").select2({
-			theme: "bootstrap",
-            placeholder:"Select City"
-        });
-
-        $("#unit_category").select2({
-			theme: "bootstrap",
-            allowClear: true,
-            placeholder: "Select an option"
-        });
-
-        $("#related_to").select2({
-			theme: "bootstrap",
-            allowClear: true,
-            placeholder: "Select an option"
-        });
-    });
-
-</script>
 @endsection

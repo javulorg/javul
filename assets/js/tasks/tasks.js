@@ -22,7 +22,7 @@ var FormValidation = function () {
                 var end_date = end[0].split("/");
                 var end_time = end[1];
 
-                return moment(start_date[2]+'-'+start_date[1]+'-'+start_date[0]+' '+start_time).isBefore(end_date[2]+'-'+end_date[1]+'-'+end_date[0]+' '+end_time);
+                return moment(start_date[0]+'-'+start_date[1]+'-'+start_date[2]+' '+start_time).isBefore(end_date[0]+'-'+end_date[1]+'-'+end_date[2]+' '+end_time);
             }
             else{
                 jQuery.extend(jQuery.validator.messages, {
@@ -112,7 +112,8 @@ var FormValidation = function () {
                 success2.show();
                 error2.hide();
 
-                var code = $("#action_items").code();
+                // for each task action insert into task_actions table.
+                /*var code = $("#action_items").code();
                 var text = code.replace(/<p>/gi, " ");
                 var data= text.split("</li>");
 
@@ -122,7 +123,7 @@ var FormValidation = function () {
                     else{
                         $(".all_action_items").append('<input type="hidden" name="action_items_array[]" id="action_items_array" class="action_items_class" value="'+data[i]+'"/>')
                     }
-                }
+                }*/
 
                 form.submit();  // submit the form
 
@@ -142,6 +143,105 @@ var FormValidation = function () {
 $(document).ready(function() {
     FormValidation.init();
 
+    $(function(){
+        if(editTask)
+        {
+            $('#datetimepicker1').datetimepicker({
+                format: 'YYYY/MM/DD HH:mm'
+            });
+            $('#datetimepicker2').datetimepicker({
+                format: 'YYYY/MM/DD HH:mm'
+            });
+        }
+        else{
+            $('#datetimepicker1').datetimepicker({
+                format: 'YYYY/MM/DD HH:mm',
+                minDate:moment()
+            });
+            $('#datetimepicker2').datetimepicker({
+                format: 'YYYY/MM/DD HH:mm',
+                minDate:moment()
+            });
+        }
+
+        if(actionListFlag)
+            $('#action_items').code(actionListFlag);
+        else
+            $('#action_items').summernote('insertUnorderedList');
+
+        $('.summernote').summernote({
+            height:100
+        });
+
+        $("#action_items").summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', []],
+                ['fontsize', []],
+                ['color', []],
+                ['para', []],
+                ['height', []]
+            ]
+        });
+
+
+
+
+        $("#unit").select2({
+            allowClear:true,
+            placeholder:"Select Unit"
+        });
+
+        $("#objective").select2({
+            allowClear:true,
+            placeholder:"Select Objective"
+        });
+
+        $("#task_skills").select2({
+            allowClear:true,
+            placeholder:"Select Skills"
+        });
+
+        $("#unit").on('change',function(){
+            var unit_val = $(this).val();
+            var token = $('[name="_token"]').val();
+            if($.trim(unit_val) == "")
+            {
+                $("#objective").html('<option value="">Select</option>');
+                return false;
+            }
+            else
+            {
+                $(".objective_loader.location_loader").show();
+                $("#objective").prop('disabled',true);
+                $.ajax({
+                    type:'POST',
+                    url:siteURL+'/tasks/get_objective',
+                    dataType:'json',
+                    data:{unit_id:unit_val,_token:token },
+                    success:function(resp){
+                        $(".objective_loader.location_loader").hide();
+                        $("#objective").prop('disabled',false);
+                        if(resp.success){
+                            var html='<option value="">Select</option>';
+                            $.each(resp.objectives,function(index,val){
+                                html+='<option value="'+index+'">'+val+'</option>'
+                            });
+                            $("#objective").html(html).select2({allowClear:true,placeholder:"Select Objective"});
+                        }
+                    }
+                })
+            }
+            return false
+        });
+
+        $("#input-id").fileinput({'showUpload':false, 'previewFileType':'any'});
+
+        $(".editFileInput").fileinput({'showUpload':false, 'previewFileType':'any'});
+
+    });
+
     $(document).off('click','.addMoreDocument').on('click',".addMoreDocument",function(){
         cloneTR();
         return false;
@@ -150,21 +250,33 @@ $(document).ready(function() {
     $(document).on("click","table.documents tbody .remove-row", function(){
         var index_tr = $(".documents").find("tbody").find("tr").index($(this));
         var id = $(this).attr('data-id');
-        if($.trim(id) != ""){
-            /*$.ajax({
+        var task_id = $(this).attr('data-task_id');
+        $that = $(this);
+        if($.trim(id) != "" && $.trim(task_id) != ""){
+            $.ajax({
                 type:'get',
-                url:siteURL+'/properties/remove_property_unit',
-                data:{id:id},
+                url:siteURL+'/tasks/remove_task_document',
+                data:{id:id,task_id:task_id},
                 dataType:'json',
                 success:function(resp){
+                    if(resp.success){
+                        toastr['success']('Document deleted successfully.', '');
+                        if ($("table.documents tbody tr").length > 1)
+                            $that.parents('tr:eq(0)').remove();
 
+                        $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
+                    }
+                    else
+                        toastr['error']('Something goes wrong. please try again later.', '');
                 }
-            })*/
+            })
         }
+        else{
         if ($("table.documents tbody tr").length > 1)
             $(this).parents('tr:eq(0)').remove();
 
         $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
+        }
 
         return false;
     })

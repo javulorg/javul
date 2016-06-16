@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\ActivityPoint;
+use App\ImportanceLevel;
 use App\Objective;
 use App\SiteActivity;
+use App\Task;
 use App\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -219,5 +221,75 @@ class ObjectivesController extends Controller
         }
         return view('errors.404');
 
+    }
+
+    public function add_importance(Request $request){
+        $objectiveID = $request->input('id');
+        if(!empty($objectiveID)){
+            $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+            $objectiveID = $objectiveIDHashID->decode($objectiveID);
+            if(!empty($objectiveID)){
+                $objectiveID = $objectiveID[0];
+                $objectiveObj = Objective::with(['unit','tasks'])->where('id',$objectiveID)->first();
+                if(!empty($objectiveObj)){
+                    ImportanceLevel::create([
+                        'user_id'=>Auth::user()->id,
+                        'objective_id'=>$objectiveID,
+                        'importance_upvote'=>1,
+                        'type'=>'Objective'
+                    ]);
+                    return \Response::json(['success'=>true]);
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
+
+    }
+
+    public function delete_objective(Request $request){
+        $objectiveID = $request->input('id');
+        if(!empty($objectiveID)){
+            $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+            $objectiveID = $objectiveIDHashID->decode($objectiveID);
+            if(!empty($objectiveID)){
+                $objectiveID = $objectiveID[0];
+                $objectiveObj = Objective::find($objectiveID);
+                $objectiveTemp = $objectiveObj;
+                if(!empty($objectiveObj)){
+                    $tasksObj = Task::where('objective_id',$objectiveID)->get();
+                    if(count($tasksObj) > 0){
+                        foreach($tasksObj  as $task)
+                            Task::deleteTask($task->id);
+                    }
+                    $objectiveObj->delete();
+
+                    // add activity point for created unit and user.
+                    ActivityPoint::create([
+                        'user_id'=>Auth::user()->id,
+                        'objective_id'=>$objectiveID,
+                        'points'=>1,
+                        'comments'=>'Objective deleted',
+                        'type'=>'objective'
+                    ]);
+
+                    // add site activity record for global statistics.
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                    /*$objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                    $objectiveId = $objectiveIDHashID->encode($objectiveID);*/
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        deleted objective '.$objectiveTemp->name
+                    ]);
+
+                    return \Response::json(['success'=>true]);
+                }
+            }
+
+        }
+        return \Response::json(['success'=>false]);
     }
 }
