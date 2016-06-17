@@ -40,7 +40,8 @@
                                                     @endforeach
                                                 @endif
                                             </td>
-                                            <td><div class="text_wraps"><span class="ellipsis_text">{{$unit->description}}</span></div></td>
+                                            <td><div class="text_wraps"><span
+                                                        class="ellipsis_text">{!!$unit->description!!}</span></div></td>
                                             <td width="11%">
                                                 @if(\Auth::check())
                                                     <a class="btn btn-xs btn-primary"

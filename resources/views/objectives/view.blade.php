@@ -18,7 +18,8 @@
                     </div>
                     <div>
                         @if(Auth::check())
-                        <a class="btn orange-bg" id="edit_object" href="{!! url('objectives/edit/'.$objectiveIDHashID->encode($objectiveObj->id))!!}">
+                        <a class="btn orange-bg" id="edit_object" href="{!! url('objectives/'.$objectiveIDHashID->encode
+                        ($objectiveObj->id).'/edit')!!}">
                             <span class="glyphicon glyphicon-pencil"></span> &nbsp;
                             {!! trans('messages.edit_objective') !!}
                         </a>

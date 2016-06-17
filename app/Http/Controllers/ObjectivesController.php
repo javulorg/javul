@@ -112,6 +112,13 @@ class ObjectivesController extends Controller
                 'status'=>$status
             ])->id;
 
+            ImportanceLevel::create([
+                'user_id'=>Auth::user()->id,
+                'objective_id'=>$objectiveId,
+                'importance_level'=>'+1',
+                'type'=>'Objective'
+            ]);
+
             // add activity point for created unit and user.
             ActivityPoint::create([
                 'user_id'=>Auth::user()->id,

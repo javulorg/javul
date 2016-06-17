@@ -19,8 +19,6 @@ class CreateImportanceLevelTable extends Migration
             $table->integer('objective_id')->nullable();
             $table->integer('issue_id')->nullable();
             $table->string('importance_level')->nullable();
-            $table->integer('importance_upvote');
-            $table->integer('importance_downvote');
             $table->string('type')->comment="objective or issue";
             $table->timestamps();
             $table->softDeletes();

@@ -20,7 +20,7 @@
                     <p><span class="glyphicon glyphicon-map-marker"> </span> &nbsp;{{$cityName}}</p>
                 @endif
                 <p><span class="glyphicon glyphicon-tag"> </span> Unit Categories&nbsp;: {{$unitObj->category_name}}</p>
-                <a href="{!! url('units/edit/'.$unitIDHashID->encode($unitObj->id)) !!}" id="edit_unit_btn" class="btn orange-bg">
+                <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->id).'/edit') !!}" id="edit_unit_btn" class="btn orange-bg">
                     <span class="glyphicon glyphicon-plus"></span> Edit Unit
                 </a>
                 @if(count($related_units) > 0 || !empty($unitObj->parent_id))
@@ -146,7 +146,7 @@
                                         <td>
                                             @if(\Auth::check())
                                             <a class="btn btn-xs btn-primary"
-                                               href="{!! url('objectives/edit/'.$objectiveIDHashID->encode($obj->id)) !!}" title="edit">
+                                               href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/edit') !!}" title="edit">
                                                 <span class="glyphicon glyphicon-edit"></span>
                                             </a>
                                             @endif

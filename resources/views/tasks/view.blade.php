@@ -17,7 +17,7 @@
             <div class="col-sm-12 grey-bg unit_description">
                 <h2 class="unit-heading"><span class="glyphicon glyphicon-edit"></span> &nbsp; <strong>{{$taskObj->name}}</strong></h2>
                 <div class="form-group">
-                    <a class="btn orange-bg" id="edit_task" href="{!! url('tasks/edit/'.$taskIDHashID->encode($taskObj->id))!!}"><span
+                    <a class="btn orange-bg" id="edit_task" href="{!! url('tasks/'.$taskIDHashID->encode($taskObj->id).'/edit')!!}"><span
                             class="glyphicon glyphicon-pencil"></span> &nbsp;
                         {!! trans('messages.edit_task') !!}</a>
                 </div>
