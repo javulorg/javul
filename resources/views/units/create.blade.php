@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">{!! trans('messages.total_units') !!}</div>
-                                    <div class="col-xs-6 text-right">XXX</div>
+                                    <div class="col-xs-6 text-right">{{$totalUnits}}</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">{!! trans('messages.total_fund_available') !!}</div>

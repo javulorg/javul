@@ -1,6 +1,7 @@
 @extends('layout.default')
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
+<link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
 <style>
     .hide-native-select .btn-group, .hide-native-select .btn-group .multiselect, .hide-native-select .btn-group.multiselect-container
     {width:100% !important;}
@@ -63,8 +64,12 @@
                         <option value="">Select</option>
                         @if(count($unitsObj) > 0)
                             @foreach($unitsObj as $unit_id=>$unit)
-                                <option value="{{$unitIDHashID->encode($unit_id)}}" @if(!empty($objectiveObj) && $objectiveObj->unit_id ==
-                        $unit_id) selected=selected @endif>{{$unit}}</option>
+                                <option value="{{$unitIDHashID->encode($unit_id)}}"
+                                    @if(!empty($objectiveObj) && $objectiveObj->unit_id == $unit_id)
+                                        selected=selected
+                                    @elseif(empty($objectiveObj) && !empty($objectives_unit_id) && $unit_id == $objectives_unit_id )
+                                        selected=selected
+                                    @endif>{{$unit}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -103,9 +108,25 @@
             </div>
         </div>-->
         <div class="row">
+            <div class="col-sm-4 form-group">
+                <label class="control-label">Status</label>
+                <select class="form-control" name="status">
+                    @foreach(\App\Objective::objectiveStatus() as $index=>$status)
+                        <option value="{{$index}}"
+                            @if(!empty($objectiveObj) && $objectiveObj->status == $index) selected=selected
+                            @elseif(empty($objectiveObj) && $index != "in-progress") disabled="disabled" @endif>
+                            {{$status}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-sm-12 form-group">
                 <label class="control-label">Objective Description</label>
-                <textarea class="form-control" name="description">@if(!empty($objectiveObj)) {{$objectiveObj->description}} @endif</textarea>
+                <textarea class="form-control summernote" name="description">
+                    @if(!empty($objectiveObj)) {{$objectiveObj->description}} @endif
+                </textarea>
             </div>
         </div>
         <div class="row form-group">
@@ -125,5 +146,6 @@
 @stop
 @section('page-scripts')
 <script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/plugins/bootstrap-summernote/summernote.min.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/objectives/objectives.js') !!}"></script>
 @endsection

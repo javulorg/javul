@@ -79,6 +79,7 @@ class UnitsController extends Controller
         $countries = Unit::getAllCountryWithFrequent();
         $unitsObj = Unit::lists('name','id');
 
+        view()->share('totalUnits',count($unitsObj));
         view()->share('relatedUnitsObj',$unitsObj);
         view()->share('parentUnitsObj',$unitsObj);
         view()->share('countries',$countries);
@@ -171,6 +172,8 @@ class UnitsController extends Controller
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
                 $units = Unit::getUnitWithCategories($unit_id);
+                $totalUnits = Unit::count();
+                view()->share('totalUnits',$totalUnits );
                 //dd($request->all());
                 if(!empty($units) && $request->isMethod('post')){
                     //update unit and redirect to units page

@@ -32,25 +32,29 @@ Route::auth();
 
 
 // unit controller route
+Route::any('units/add', 'UnitsController@create');
+Route::any('units/{unitid}/edit', 'UnitsController@edit');
 Route::post('units/get_state', 'UnitsController@get_state');
 Route::post('units/get_city', 'UnitsController@get_city');
-Route::any('units/create', 'UnitsController@create');
-Route::any('units/edit/{unitid}', 'UnitsController@edit');
+
 Route::get('units/delete_unit', 'UnitsController@delete_unit');
 Route::any('units/{unitid}', 'UnitsController@view');
 
 
 // objective controller route
-Route::any('objectives/create/{unitid}', 'ObjectivesController@create');
-Route::any('objectives/edit/{objectiveid}', 'ObjectivesController@edit');
+Route::any('objectives/add','ObjectivesController@create');
+Route::any('objectives/{unitid}/add', 'ObjectivesController@create');
+Route::any('objectives/{objectiveid}/edit', 'ObjectivesController@edit');
 Route::post('objectives/importance', 'ObjectivesController@add_importance');
 Route::get('objectives/delete_objective', 'ObjectivesController@delete_objective');
 Route::any('objectives/{objectiveid}', 'ObjectivesController@view');
 
 // tasks controller route
+Route::any('tasks/add', 'TasksController@create');
+Route::any('tasks/{unitid}/{objectiveid}/add', 'TasksController@create');
 Route::post('tasks/get_objective', 'TasksController@get_objective');
-Route::any('tasks/create', 'TasksController@create');
-Route::any('tasks/edit/{taskid}', 'TasksController@edit');
+
+Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/remove_task_document', 'TasksController@remove_task_documents');
 Route::get('tasks/delete_task', 'TasksController@delete_task');
 Route::any('tasks/{taskid}', 'TasksController@view');

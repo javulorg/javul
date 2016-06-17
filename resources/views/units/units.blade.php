@@ -44,7 +44,7 @@
                                             <td width="11%">
                                                 @if(\Auth::check())
                                                     <a class="btn btn-xs btn-primary"
-                                                       href="{!! url('units/edit/'.$unitIDHashID->encode($unit->id)) !!}" title="edit">
+                                                       href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/edit') !!}" title="edit">
                                                         <span class="glyphicon glyphicon-edit"></span>
                                                     </a>
                                                 @endif
@@ -68,7 +68,7 @@
                         </table>
                     </div>
                 </div>
-                <a href="{!! url('units/create')!!}"class="btn orange-bg" id="add_unit_btn" type="button">
+                <a href="{!! url('units/add')!!}"class="btn orange-bg" id="add_unit_btn" type="button">
                     <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_unit') !!}
                 </a>
             </div>

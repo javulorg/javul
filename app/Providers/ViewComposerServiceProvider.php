@@ -20,6 +20,9 @@ class ViewComposerServiceProvider extends ServiceProvider
     {
         view()->composer('*',function($view){
             $view->with('authUserObj',auth()->user());
+            $view->with('totalUnits',Unit::count());
+            $view->with('totalObjectives',Objective::count());
+            $view->with('totalTasks',Task::count());
         });
 
         //----------------- for footer ---------------------------
@@ -43,9 +46,7 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('taskDocumentIDHashID',$taskDocumentIDHashID);
 
         view()->composer('elements.footer',function($view){
-            $view->with('totalUnits',Unit::count());
-            $view->with('totalObjectives',Objective::count());
-            $view->with('totalTasks',Task::count());
+
         });
 
         view()->composer('elements.site_activities',function($view){

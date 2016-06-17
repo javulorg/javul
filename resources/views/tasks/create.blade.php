@@ -2,7 +2,7 @@
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.css') !!}" rel="stylesheet" type="text/css" />
-<link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+    <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
 
 <style>
     .hide-native-select .btn-group, .hide-native-select .btn-group .multiselect, .hide-native-select .btn-group.multiselect-container
@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">Total Tasks</div>
-                                    <div class="col-xs-6 text-right">XXX</div>
+                                    <div class="col-xs-6 text-right">{{$totalTasks}}</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">{!! trans('messages.total_fund_available') !!}</div>
@@ -66,8 +66,12 @@
                         <option value="">Select</option>
                         @if(count($unitsObj) > 0)
                             @foreach($unitsObj as $unit_id=>$unit)
-                                <option value="{{$unitIDHashID->encode($unit_id)}}" @if(!empty($taskObj) && $taskObj->unit_id == $unit_id)
-                                    selected=selected @endif>{{$unit}}</option>
+                                <option value="{{$unitIDHashID->encode($unit_id)}}"
+                                    @if(!empty($taskObj) && $taskObj->unit_id == $unit_id)
+                                    selected=selected
+                                    @elseif(empty($taskObj) && $unit_id == $task_unit_id)
+                                    selected=selected
+                                    @endif>{{$unit}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -86,9 +90,12 @@
                         <option value="">Select</option>
                         @if(count($objectiveObj) > 0)
                             @foreach($objectiveObj as $objective)
-                                <option value="{{$objectiveIDHashID->encode($objective->id)}}" @if(!empty($objective) && $objective->id ==
-                        $taskObj->objective_id)
-                                selected=selected @endif>{{$objective->name}}</option>
+                                <option value="{{$objectiveIDHashID->encode($objective->id)}}"
+                                    @if(!empty($taskObj) && $objective->id == $taskObj->objective_id)
+                                        selected=selected
+                                    @elseif(empty($taskObj) && $objective->id == $task_objective_id)
+                                        selected=selected
+                                    @endif>{{$objective->name}}</option>
                             @endforeach
                         @endif
                     </select>

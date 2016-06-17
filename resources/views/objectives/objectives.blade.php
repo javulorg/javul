@@ -32,7 +32,7 @@
                             <td>
                                 @if(\Auth::check())
                                 <a class="btn btn-xs btn-primary"
-                                   href="{!! url('objectives/edit/'.$objectiveIDHashID->encode($objective->id)) !!}" title="edit">
+                                   href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/edit') !!}" title="edit">
                                     <span class="glyphicon glyphicon-edit"></span>
                                 </a>
                                 @endif
@@ -57,7 +57,7 @@
                     </table>
                 </div>
             </div>
-            <a href="{!! url('objectives/create')!!}"class="btn orange-bg" id="add_objective_btn" type="button">
+            <a href="{!! url('objectives/add')!!}"class="btn orange-bg" id="add_objective_btn" type="button">
                 <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}
             </a>
         </div>

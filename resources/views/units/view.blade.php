@@ -114,8 +114,6 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th></th>
-                            <th>{!! trans('messages.importance') !!}</th>
                             <th>{!! trans('messages.date_created') !!}</th>
                             <th>{!! trans('messages.title') !!}</th>
                             <th>{!! trans('messages.task_statistics') !!}</th>
@@ -124,8 +122,6 @@
                             <th></th>
                         </tr>
                         <tr>
-                            <th></th>
-                            <th></th>
                             <th></th>
                             <th></th>
                             <th>{!! trans('messages.available') !!}</th>
@@ -138,19 +134,6 @@
                             @if(count($objectivesObj) > 0)
                                 @foreach($objectivesObj as $obj)
                                     <tr>
-                                        <td>
-                                            <?php $vote_class=" text-success";
-                                            $flag = \App\ImportanceLevel::checkImportanceLevel($obj->id);
-                                            if($flag)
-                                                $vote_class="success-upvote";
-                                            ?>
-
-                                            <span class="glyphicon glyphicon-thumbs-up upvote {{$vote_class}}"
-                                                  data-id="{{ $objectiveIDHashID->encode($obj->id) }}"
-                                                  title="upvote"></span>
-                                            <!--<span class="glyphicon glyphicon-thumbs-down text-danger downvote" title="downvote"></span>-->
-                                        </td>
-                                        <td>1</td>
                                         <td>{{\App\Library\Helpers::timetostr($obj->created_at)}}</td>
                                         <td>
                                             <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id)) !!}" title="edit">
@@ -181,7 +164,7 @@
             </div>
         </div>
         <div class="col-sm-12">
-            <a class="btn orange-bg" id="add_objective_btn" href="{!! url('objectives/create/'.$unitIDHashID->encode($unitObj->id)) !!}">
+            <a class="btn orange-bg" id="add_objective_btn" href="{!! url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') !!}">
                 <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}
             </a>
             <!--<button class="btn orange-bg" id="see_all_objective_btn" type="button">{!! trans('messages.see_all_objectives') !!}</button>-->
@@ -244,25 +227,6 @@
     $(function(){
         $(".unit_description").css("min-height",($(".both-div").height())+10+'px');
 
-        $(".upvote").click(function(){
-            if(!$(this).hasClass('success-upvote')){
-                var that = $(this);
-                var id=$(this).attr('data-id');
-                if($.trim(id) != ""){
-                    $.ajax({
-                        type:'post',
-                        url:siteURL+'/objectives/importance',
-                        data:{_token:'{!! csrf_token() !!}',id:id},
-                        dataType:'json',
-                        success:function(resp){
-                            if(resp.success)
-                                that.removeClass('text-success').addClass('success-upvote');
-                        }
-                    })
-                }
-            }
-            return false;
-        })
     })
 </script>
 @endsection

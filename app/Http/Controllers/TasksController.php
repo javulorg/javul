@@ -62,9 +62,52 @@ class TasksController extends Controller
     /**
      * create task.
      * @param Request $request
-     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
     public function create(Request $request){
+
+        $segments =$request->segments();
+
+        $taskObjectiveObj = [];
+        $task_unit_id = null;
+        $task_objective_id = null;
+
+
+        if(count($segments) == 4){
+
+            $task_unit_id = $request->segment(2);
+            $task_objective_id = $request->segment(3);
+
+            if(empty($task_unit_id) || empty($task_objective_id))
+                return view('errors.404');
+
+            $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $task_unit_id = $unitIDHashID->decode($task_unit_id);
+
+            $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+            $task_objective_id = $objectiveIDHashID->decode($task_objective_id);
+
+            if(empty($task_unit_id) || empty($task_objective_id))
+                return view('errors.404');
+
+            $task_unit_id = $task_unit_id[0];
+            $task_objective_id = $task_objective_id[0];
+
+            $taskUnitObj = Unit::find($task_unit_id);
+            $taskObjectiveObj = Objective::find($task_objective_id);
+
+            if(empty($taskUnitObj) || empty($taskObjectiveObj))
+                return view('errors.404');
+
+            $taskObjectiveObj = Objective::where('unit_id',$task_unit_id)->get();
+        }
+        // ********************* make selected unitid and objectiveid from url in "add" mode **************************
+
+
+        view()->share('task_unit_id',$task_unit_id);
+        view()->share('task_objective_id',$task_objective_id);
+
+        // ********************* end **************************
 
         $unitsObj = Unit::where('status','active')->lists('name','id');
         $task_skills = JobSkill::lists('skill_name','id');
@@ -73,7 +116,7 @@ class TasksController extends Controller
         view()->share('assigned_toUsers',$assigned_toUsers);
         view()->share('task_skills',$task_skills );
         view()->share('unitsObj',$unitsObj);
-        view()->share('objectiveObj',[]);
+        view()->share('objectiveObj',$taskObjectiveObj );
         view()->share('taskObj',[]);
         view()->share('taskDocumentsObj',[]);
         //view()->share('taskActionsObj',[]);
@@ -108,12 +151,9 @@ class TasksController extends Controller
             if(!$flag)
                 return redirect()->back()->withErrors(['objective'=>'Objective doesn\'t exist in database.'])->withInput();
 
-            $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+
             $unit_id = $unitIDHashID->decode($unit_id);
-
-            $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
             $objective_id = $objectiveIDHashID->decode($objective_id);
-
 
             $start_date = '';
             $end_date = '';

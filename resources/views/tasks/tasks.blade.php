@@ -48,7 +48,7 @@
                                     <td>
                                         @if(\Auth::check())
                                         <a class="btn btn-xs btn-primary"
-                                           href="{!! url('tasks/edit/'.$taskIDHashID->encode($task->id)) !!}" title="edit">
+                                           href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}" title="edit">
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </a>
                                         @endif
@@ -72,7 +72,7 @@
                     </table>
                 </div>
             </div>
-            <a href="{!! url('tasks/create')!!}"class="btn orange-bg" id="add_task_btn" type="button">
+            <a href="{!! url('tasks/add')!!}"class="btn orange-bg" id="add_task_btn" type="button">
                 <span class="glyphicon glyphicon-plus"></span> Add Task
             </a>
         </div>

@@ -120,4 +120,12 @@ class Unit extends Model
     public static function getUnitName($unit_id){
         return self::find($unit_id)->name;
     }
+
+    public static function getCategoryNames($category_id)
+    {
+        $categoryObj = UnitCategory::whereIn('id',explode(",",$category_id))->lists('name')->all();
+        if(!empty($categoryObj))
+            return implode(", ",$categoryObj);
+        return "-";
+    }
 }
