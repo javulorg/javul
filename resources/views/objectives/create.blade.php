@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">Total Objectives</div>
-                                    <div class="col-xs-6 text-right">XXX</div>
+                                    <div class="col-xs-6 text-right">{{$totalObjectives}}</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6">{!! trans('messages.total_fund_available') !!}</div>

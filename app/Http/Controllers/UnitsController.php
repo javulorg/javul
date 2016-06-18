@@ -346,7 +346,7 @@ class UnitsController extends Controller
                                 foreach($tasksObj  as $task)
                                     Task::deleteTask($task->id);
                             }
-                            $objectiveObj->delete();
+                            Objective::find($objective->id)->delete();
                         }
                     }
                     $unitObj->delete();

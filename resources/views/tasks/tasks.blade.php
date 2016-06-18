@@ -45,7 +45,7 @@
                                         @endif
                                     </td>
                                     <td>{{ucfirst($task->status)}}</td>
-                                    <td>
+                                    <td width="11%">
                                         @if(\Auth::check())
                                         <a class="btn btn-xs btn-primary"
                                            href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}" title="edit">

@@ -72,7 +72,8 @@ class TasksController extends Controller
         $task_unit_id = null;
         $task_objective_id = null;
 
-
+        $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+        $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
         if(count($segments) == 4){
 
             $task_unit_id = $request->segment(2);
@@ -81,10 +82,10 @@ class TasksController extends Controller
             if(empty($task_unit_id) || empty($task_objective_id))
                 return view('errors.404');
 
-            $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+
             $task_unit_id = $unitIDHashID->decode($task_unit_id);
 
-            $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+
             $task_objective_id = $objectiveIDHashID->decode($task_objective_id);
 
             if(empty($task_unit_id) || empty($task_objective_id))
@@ -239,6 +240,7 @@ class TasksController extends Controller
                                         'file_name'=>$file_name,
                                         'file_path'=>$path
                                     ]);
+                                   $totalAvailableDocs++;
                                 }
                             }
                         }

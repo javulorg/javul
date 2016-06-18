@@ -35,13 +35,13 @@
                                                     @foreach($category_ids as $index=>$category)
                                                         <a href="{!! url('units/category/'.$unitCategoryIDHashID->encode($category)) !!}">{{$category_names[$index]}}</a>
                                                         @if(count($category_ids) > 1 && $index != count($category_ids) -1)
-                                                        ,
+                                                            <span>&#44;</span>
                                                         @endif
                                                     @endforeach
                                                 @endif
                                             </td>
                                             <td><div class="text_wraps"><span
-                                                        class="ellipsis_text">{!!$unit->description!!}</span></div></td>
+                                                        class="ellipsis_text">{!!trim($unit->description)!!}</span></div></td>
                                             <td width="11%">
                                                 @if(\Auth::check())
                                                     <a class="btn btn-xs btn-primary"
