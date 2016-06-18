@@ -137,7 +137,7 @@ class ObjectivesController extends Controller
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
-                'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         created objective <a href="'.url('objectives/'.$objectiveId).'">'.$request->input('objective_name').'</a>'
             ]);
 
@@ -210,7 +210,7 @@ class ObjectivesController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         updated objective <a href="'.url('objectives/'.$objectiveId).'">'.$request->input('objective_name').'</a>'
                     ]);
 
@@ -314,7 +314,7 @@ class ObjectivesController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('users/'.$user_id_encoded).'">'.Auth::user()->first_name.' '.Auth::user()->last_name
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded).'">'.Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a>'.$site_activity_text .' <a href="'.url('objectives/'.$objectiveIDEndcoded) .'">'.$objectiveObj->name.'</a>'
                     ]);
 
@@ -361,7 +361,7 @@ class ObjectivesController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         deleted objective '.$objectiveTemp->name
                     ]);
 

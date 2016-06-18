@@ -265,7 +265,7 @@ class TasksController extends Controller
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
-                'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         created task <a href="'.url('tasks/'.$task_id).'">'.$request->input('task_name').'</a>'
             ]);
 
@@ -421,7 +421,7 @@ class TasksController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         updated task <a href="'.url('tasks/'.$task_id).'">'.$request->input('task_name').'</a>'
                     ]);
 
@@ -582,7 +582,7 @@ class TasksController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         deleted task '.$tasktempObj->name
                     ]);
                 }

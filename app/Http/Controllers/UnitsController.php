@@ -146,7 +146,7 @@ class UnitsController extends Controller
             $unit_id = $unitIDHashID->encode($unitID);
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
-                'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a> created
+                'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a> created
                  unit <a href="'.url('units/'.$unit_id).'">'.$request->input('unit_name').'</a>'
             ]);
 
@@ -246,7 +246,7 @@ class UnitsController extends Controller
                     $unit_id = $unitIDHashID->encode($unit_id);
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         updated unit <a href="'.url('units/'.$unit_id).'">'.$request->input('unit_name').'</a>'
                     ]);
 
@@ -368,7 +368,7 @@ class UnitsController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('users/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         deleted unit '.$unitTemp->name
                     ]);
                     return \Response::json(['success'=>true]);
