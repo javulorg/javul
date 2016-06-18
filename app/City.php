@@ -37,4 +37,8 @@ class City extends Model
         return $this->hasMany('App\User');
     }
 
+    public static function getName($city_id){
+        if(!empty($city_id))
+            return self::find($city_id)->name;
+    }
 }

@@ -44,4 +44,9 @@ class State extends Model
     public function users(){
         return $this->hasMany('App\User');
     }
+
+    public static function getName($state_id){
+        if(!empty($state_id))
+            return self::find($state_id)->name;
+    }
 }

@@ -42,4 +42,9 @@ class Country extends Model
     public function users(){
         return $this->hasMany('App\User');
     }
+
+    public static function getName($country_id){
+        if(!empty($country_id))
+            return self::find($country_id)->name;
+    }
 }
