@@ -96,6 +96,7 @@ hr, p {margin: 10px 0;}
 
 .location_loader{position: absolute;top:5px;left:310px;z-index: 1;}
 .importance-div{float:right;padding-left: 15px;line-height: 30px;}
+.note-editable p{margin:0 0 10px !important;}
 @media (min-width: 991px) and (max-width: 1200px){
     .unit_grey_screen_height{min-height: 145px;}
 }

@@ -72,6 +72,17 @@ var FormValidation = function () {
 $(document).ready(function() {
     FormValidation.init();
     $('.summernote').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline']],
+            ['font', []],
+            ['fontsize', []],
+            ['color', []],
+            ['para', ['ul', 'ol']],
+            ['height', []],
+            ['fullscreen',['fullscreen']],
+            ['codeview',['codeview']]
+        ],
         height:100
     });
 

@@ -170,18 +170,31 @@ $(document).ready(function() {
             $('#action_items').summernote('insertUnorderedList');
 
         $('.summernote').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline']],
+                ['font', []],
+                ['fontsize', []],
+                ['color', []],
+                ['para', ['ul', 'ol']],
+                ['height', []],
+                ['fullscreen',['fullscreen']],
+                ['codeview',['codeview']]
+            ],
             height:100
         });
 
         $("#action_items").summernote({
             toolbar: [
                 // [groupName, [list of button]]
-                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['style', ['bold', 'italic', 'underline']],
                 ['font', []],
                 ['fontsize', []],
                 ['color', []],
                 ['para', []],
-                ['height', []]
+                ['height', []],
+                ['fullscreen',['fullscreen']],
+                ['codeview',['codeview']]
             ]
         });
 
