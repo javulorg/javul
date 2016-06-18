@@ -22,7 +22,7 @@ use Hashids\Hashids;
 class UnitsController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index']]);
+        $this->middleware('auth',['except'=>['index','view']]);
     }
 
     public function index(Request $request){

@@ -16,7 +16,7 @@ use Hashids\Hashids;
 class ObjectivesController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index']]);
+        $this->middleware('auth',['except'=>['index','view']]);
     }
 
     /**
@@ -248,7 +248,7 @@ class ObjectivesController extends Controller
                 $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
 
                 if(is_float($importancePercentage))
-                    $importancePercentage = number_format($importancePercentage,2);
+                    $importancePercentage = ceil($importancePercentage);
                 view()->share('upvotedCnt',$upvotedCnt);
                 view()->share('downvotedCnt',$downvotedCnt);
                 view()->share('importancePercentage',$importancePercentage);
@@ -300,12 +300,12 @@ class ObjectivesController extends Controller
                     $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
 
                     if(is_float($importancePercentage))
-                        $importancePercentage = number_format($importancePercentage,2);
+                        $importancePercentage = ceil($importancePercentage);
                     view()->share('upvotedCnt',$upvotedCnt);
                     view()->share('downvotedCnt',$downvotedCnt);
                     view()->share('importancePercentage',$importancePercentage);
 
-                    $importance_level_html = view('objectives.partials.importance_level')->render();
+                    $importance_level_html = view('objectives.partials.importance_level',['objective_id'=>$objectiveID])->render();
 
                     $user_id = Auth::user()->id;
                     $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));

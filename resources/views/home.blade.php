@@ -103,7 +103,7 @@
                     <div class="panel-body list-group">
                         @if(count($recentUsers) > 0 )
                             @foreach($recentUsers as $user)
-                                <a href="{!! url('user/'.$userIDHashID->encode($user->id)) !!}" class="list-group-item">
+                                <a href="{!! url('users/'.$userIDHashID->encode($user->id)) !!}" class="list-group-item">
                                     <span class="glyphicon glyphicon-user"></span>
                                     {{$user->first_name.' '.$user->last_name}}
                                 </a>

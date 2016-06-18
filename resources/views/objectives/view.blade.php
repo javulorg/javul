@@ -17,39 +17,17 @@
                         {!! $objectiveObj->description !!}
                     </div>
                     <div>
-                        @if(Auth::check())
+
                         <a class="btn orange-bg" id="edit_object" href="{!! url('objectives/'.$objectiveIDHashID->encode
                         ($objectiveObj->id).'/edit')!!}">
                             <span class="glyphicon glyphicon-pencil"></span> &nbsp;
                             {!! trans('messages.edit_objective') !!}
                         </a>
                         <div class="pull-right">
-                            <?php
-                            $upvote_class=" text-success";
-                            $downvote_class=" text-danger";
-                            $flag = \App\ImportanceLevel::checkImportanceLevel($objectiveObj->id);
-                            if($flag == "1")
-                                $upvote_class="success-upvote";
-                            elseif($flag == "-1")
-                                $downvote_class="success-downvote";
-                            ?>
-                            <span class="glyphicon glyphicon-thumbs-up vote upvote {{$upvote_class}}"
-                                  data-id="{{ $objectiveIDHashID->encode($objectiveObj->id) }}"
-                                  data-type="up"
-                                  title="upvote"></span>
-                            <span class="glyphicon glyphicon-thumbs-down vote downvote {{$downvote_class}}"
-                                  data-id="{{ $objectiveIDHashID->encode($objectiveObj->id) }}"
-                                  data-type="down"
-                                  title="downvote"></span>
-                            <div class="importance-div" style="padding-left: 15px;line-height: 30px;">
-                                @include('objectives.partials.importance_level')
+                            <div class="importance-div">
+                                @include('objectives.partials.importance_level',['objective_id'=>$objectiveObj->id])
                             </div>
                         </div>
-                        @else
-                            <div class="importance-div" style="padding-left: 15px;line-height: 30px;">
-                                @include('objectives.partials.importance_level')
-                            </div>
-                        @endif
 
                     </div>
                     @if( !empty($objectiveObj->parent_id))
@@ -199,7 +177,7 @@
     $(function(){
         $(".both-div").css("min-height",($(".objective-desc").height())+10+'px');
 
-        $(".vote").click(function(){
+        $(document).off('click','.vote').on('click',".vote",function(){
             var type = $(this).attr('data-type');
 
             if(type == "up")

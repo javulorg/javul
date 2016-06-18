@@ -23,41 +23,6 @@
                 <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->id).'/edit') !!}" id="edit_unit_btn" class="btn orange-bg">
                     <span class="glyphicon glyphicon-plus"></span> Edit Unit
                 </a>
-                @if(count($related_units) > 0 || !empty($unitObj->parent_id))
-                    <?php $i=1;?>
-                    <p></p>
-                    <p class="related_para">Relations to Other Units:</p>
-                    <ul style="padding-left:15px;">
-                        @if(!empty($unitObj->parent_id))
-                        <li style="list-style: none;">Parent &nbsp;&nbsp;:
-                            <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->parent_id)) !!}">
-                                {{\App\Unit::getUnitName($unitObj->parent_id)}}
-                            </a>
-                        </li>
-                        @endif
-                        @if(!empty($related_units))
-                            <li style="list-style: none;">Related :
-                                @foreach($related_units as $id=>$unit_name)
-                                <a href="{!! url('units/'.$unitIDHashID->encode($id)) !!}">
-                                    @if($i == (count($related_units) - 1))
-                                    {{$unit_name.', '}}
-                                    @else
-                                    {{$unit_name}}
-                                    @endif
-                                </a>
-
-                                <?php $i++; ?>
-                                @endforeach
-                            </li>
-                        @endif
-
-                    </ul>
-                    <h5></h5>
-
-                    <p >
-
-                    </p>
-                @endif
             </div>
             <div class="col-sm-6 grey-bg unit_description">
                 <div class="row">
@@ -92,6 +57,40 @@
             </div>
         </div>
     </div>
+    @if(count($related_units) > 0 || !empty($unitObj->parent_id))
+    <?php $i=1;?>
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-dark-grey">
+                <div class="panel-heading">
+                    <h4>Relations to Other Units</h4>
+                </div>
+                <div class="panel-body relationULPanel">
+                    <ul class="relationUL">
+                        @if(!empty($unitObj->parent_id))
+                        <li>Parent:
+                            <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->parent_id)) !!}" class="no-decoration">
+                                <span class="label label-default">{{\App\Unit::getUnitName($unitObj->parent_id)}}</span>
+                            </a>
+                        </li>
+                        @endif
+                        @if(!empty($related_units))
+                        <li>Related:
+                            @foreach($related_units as $id=>$unit_name)
+                            <a href="{!! url('units/'.$unitIDHashID->encode($id)) !!}" class="no-decoration">
+                                <span class="label label-default">{{$unit_name}} </span>
+                            </a>
+                            <?php $i++; ?>
+                            @endforeach
+                        </li>
+                        @endif
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="row form-group">
         <div class="col-sm-12">
             <div class="panel panel-default panel-dark-grey">

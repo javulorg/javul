@@ -88,10 +88,14 @@ span.select2.select2-container{width:100% !important;}
 .navbar{margin-bottom:10px;}
 hr, p {margin: 10px 0;}
 .h1, .h2, .h3, h1, h2, h3 {margin-top: 10px;margin-bottom: 10px;}
-
+.no-decoration:hover{text-decoration: none;}
+.relationULPanel{padding-left: 0px;}
+.relationUL{padding-left:0px;}
+.relationUL li{list-style: none;padding: 10px;}
+.relationUL li a{padding-right: 5px;}
 
 .location_loader{position: absolute;top:5px;left:310px;z-index: 1;}
-.importance-div{float:right;}
+.importance-div{float:right;padding-left: 15px;line-height: 30px;}
 @media (min-width: 991px) and (max-width: 1200px){
     .unit_grey_screen_height{min-height: 145px;}
 }
