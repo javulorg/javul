@@ -257,7 +257,8 @@ class CountriesTableSeeder extends Seeder
             ['id'=>243,"shortname"=>'YE',"name"=>'Yemen'],
             ['id'=>244,"shortname"=>'YU',"name"=>'Yugoslavia'],
             ['id'=>245,"shortname"=>'ZM',"name"=>'Zambia'],
-            ['id'=>246,"shortname"=>'ZW',"name"=>'Zimbabwe']
+            ['id'=>246,"shortname"=>'ZW',"name"=>'Zimbabwe'],
+            ['id'=>247,"shortname"=>'GL',"name"=>'Global']
         ]);
     }
 }

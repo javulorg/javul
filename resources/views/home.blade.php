@@ -49,7 +49,7 @@
                             <div class="panel-body list-group">
                                 @if(count($recentObjectives) > 0)
                                     @foreach($recentObjectives as $objective)
-                                        <a href="{!! url('objectives/view/'.$objectiveIDHashID->encode($objective->id)) !!}"
+                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id)) !!}"
                                            class="list-group-item"><span class="glyphicon glyphicon-dot"></span>
                                             {{$objective->name}}
                                         </a>
@@ -76,7 +76,7 @@
                             <div class="panel-body list-group">
                                 @if(count($recentTasks) > 0)
                                     @foreach($recentTasks as $task)
-                                        <a href="{!! url('task/view/'.$taskIDHashID->encode($task->id)) !!}" class="list-group-item">
+                                        <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id)) !!}" class="list-group-item">
                                             <span class="glyphicon glyphicon-dot"></span>
                                             {{$task->name}}
                                         </a>
@@ -103,7 +103,7 @@
                     <div class="panel-body list-group">
                         @if(count($recentUsers) > 0 )
                             @foreach($recentUsers as $user)
-                                <a href="{!! url('user/view/'.$userIDHashID->encode($user->id)) !!}" class="list-group-item">
+                                <a href="{!! url('user/'.$userIDHashID->encode($user->id)) !!}" class="list-group-item">
                                     <span class="glyphicon glyphicon-user"></span>
                                     {{$user->first_name.' '.$user->last_name}}
                                 </a>

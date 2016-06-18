@@ -71,6 +71,10 @@ var FormValidation = function () {
 
 $(document).ready(function() {
     FormValidation.init();
+    $('.summernote').summernote({
+        height:100
+    });
+
 });
 
 

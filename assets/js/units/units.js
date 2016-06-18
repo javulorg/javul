@@ -117,13 +117,13 @@ $(document).ready(function() {
     $("#country").on('change',function(){
         var value = $(this).val();
         var token = $('[name="_token"]').val();
-        if($.trim(value) == ""){
+        if($.trim(value) == "" && value != 247){
             $("#state").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select State"});
             $("#city").html('<option value="">Select</option>').select2({allowClear:true,placeholder:"Select City"});
             $("#state").prop('disabled',false);
             $("#city").prop('disabled',false);
         }
-        else if($.trim(value) == "global"){
+        else if($.trim(value) == 247){
             $("#state").prop('disabled',true);
             $("#city").prop('disabled',true);
             return false;
@@ -154,6 +154,9 @@ $(document).ready(function() {
                 }
             })
         }
+    });
+    $('.summernote').summernote({
+        height:100
     });
 
     //get state after selecting country
@@ -188,6 +191,46 @@ $(document).ready(function() {
             })
         }
     });
+
+    $("#country").select2({
+        theme: "bootstrap",
+        placeholder:"Select Country",
+        templateResult:format,
+        escapeMarkup: function(m) {
+            return m;
+        }
+    });
+
+    $("#state").select2({
+        theme: "bootstrap",
+        placeholder:"Select State"
+    });
+
+    $("#city").select2({
+        theme: "bootstrap",
+        placeholder:"Select City"
+    });
+
+    $("#unit_category").select2({
+        theme: "bootstrap",
+        allowClear: true,
+        placeholder: "Select an option"
+    });
+
+    $("#related_to").select2({
+        theme: "bootstrap",
+        allowClear: true,
+        placeholder: "Select an option"
+    });
+
+    function format(country) {
+        if (country.id == "dash_line1" || country.id == "dash_line"){
+            // return ' <span><img src="'+horiz_line+'" style="width:100%"></span> ';
+            return '<hr style="margin:0px;">';
+        }
+        else
+            return country.text;
+    }
 });
 
 

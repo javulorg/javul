@@ -88,6 +88,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
         <script src="{!! url('assets/plugins/select2/js/select2.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/bootstrap-toastr/toastr.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/bootbox/bootbox.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/function.js') !!}" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->

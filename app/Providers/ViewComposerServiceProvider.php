@@ -20,6 +20,9 @@ class ViewComposerServiceProvider extends ServiceProvider
     {
         view()->composer('*',function($view){
             $view->with('authUserObj',auth()->user());
+            $view->with('totalUnits',Unit::count());
+            $view->with('totalObjectives',Objective::count());
+            $view->with('totalTasks',Task::count());
         });
 
         //----------------- for footer ---------------------------
@@ -28,17 +31,22 @@ class ViewComposerServiceProvider extends ServiceProvider
         $unitCategoryIDHashID = new Hashids('unit category id hash',10,\Config::get('app.encode_chars'));
         $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
         $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+        $taskDocumentIDHashID = new Hashids('task document id hash',10,\Config::get('app.encode_chars'));
 
+        $loggedInUser = \App\User::where('loggedin',1)->count();
+        view()->share('totalLoggedinUsers',$loggedInUser);
+
+        $totalUsers = \App\User::count();
+        view()->share('totalRegisteredUsers',$totalUsers );
         view()->share('userIDHashID',$userIDHashID );
         view()->share('unitIDHashID',$unitIDHashID );
         view()->share('unitCategoryIDHashID',$unitCategoryIDHashID);
         view()->share('objectiveIDHashID',$objectiveIDHashID );
         view()->share('taskIDHashID',$taskIDHashID );
+        view()->share('taskDocumentIDHashID',$taskDocumentIDHashID);
 
         view()->composer('elements.footer',function($view){
-            $view->with('totalUnits',Unit::count());
-            $view->with('totalObjectives',Objective::count());
-            $view->with('totalTasks',Task::count());
+
         });
 
         view()->composer('elements.site_activities',function($view){

@@ -32,8 +32,17 @@
                             <td>
                                 @if(\Auth::check())
                                 <a class="btn btn-xs btn-primary"
-                                   href="{!! url('objectives/edit/'.$objectiveIDHashID->encode($objective->id)) !!}" title="edit">
+                                   href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/edit') !!}" title="edit">
                                     <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                                @endif
+                                <?php $unitAdminID = \App\Task::checkUnitAdmin($objective->unit_id); ?>
+
+                                @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unitAdminID ==
+                                $authUserObj->id))
+                                <a title="delete" href="#" class="btn btn-xs btn-danger delete-objective"
+                                   data-id="{{$objectiveIDHashID->encode($objective->id)}}">
+                                    <span class="glyphicon glyphicon-trash"></span>
                                 </a>
                                 @endif
                             </td>
@@ -48,7 +57,7 @@
                     </table>
                 </div>
             </div>
-            <a href="{!! url('objectives/create')!!}"class="btn orange-bg form-group" id="add_objective_btn" type="button">
+            <a href="{!! url('objectives/add')!!}"class="btn orange-bg form-group" id="add_objective_btn" type="button">
                 <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}
             </a>
         </div>
@@ -66,4 +75,5 @@
     var msg_val ='{{ $msg_val }}';
 </script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/js/objectives/delete_objective.js') !!}"></script>
 @endsection

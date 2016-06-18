@@ -22,6 +22,7 @@ class CreateTasksTable extends Migration
             $table->foreign('objective_id')->references('id')->on('objectives');
             $table->string('name');
             $table->text('description');
+            $table->text('task_action');
             $table->text('summary')->nullable();
             $table->string('skills');
             $table->dateTime('estimated_completion_time');

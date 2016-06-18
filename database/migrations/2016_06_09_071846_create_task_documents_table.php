@@ -16,8 +16,10 @@ class CreateTaskDocumentsTable extends Migration
             $table->increments('id');
             $table->integer('task_id')->unsigned();
             $table->foreign('task_id')->references('id')->on('tasks');
+            $table->string('file_name');
             $table->string('file_path');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

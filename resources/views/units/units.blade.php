@@ -35,18 +35,27 @@
                                                     @foreach($category_ids as $index=>$category)
                                                         <a href="{!! url('units/category/'.$unitCategoryIDHashID->encode($category)) !!}">{{$category_names[$index]}}</a>
                                                         @if(count($category_ids) > 1 && $index != count($category_ids) -1)
-                                                        ,
+                                                            <span>&#44;</span>
                                                         @endif
                                                     @endforeach
                                                 @endif
                                             </td>
-                                            <td>{{$unit->description}}</td>
-                                            <td>
+                                            <td><div class="text_wraps"><span
+                                                        class="ellipsis_text">{!!trim($unit->description)!!}</span></div></td>
+                                            <td width="11%">
                                                 @if(\Auth::check())
                                                     <a class="btn btn-xs btn-primary"
-                                                       href="{!! url('units/edit/'.$unitIDHashID->encode($unit->id)) !!}" title="edit">
+                                                       href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/edit') !!}" title="edit">
                                                         <span class="glyphicon glyphicon-edit"></span>
                                                     </a>
+                                                @endif
+
+                                                @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unit->user_id ==
+                                                $authUserObj->id))
+                                                <a title="delete" href="#" class="btn btn-xs btn-danger delete-unit"
+                                                   data-id="{{$unitIDHashID->encode($unit->id)}}">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </a>
                                                 @endif
                                             </td>
                                         </tr>
@@ -60,7 +69,7 @@
                         </table>
                     </div>
                 </div>
-                <a href="{!! url('units/create')!!}"class="btn orange-bg form-group" id="add_unit_btn" type="button">
+                <a href="{!! url('units/add')!!}"class="btn orange-bg form-group" id="add_unit_btn" type="button">
                     <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_unit') !!}
                 </a>
             </div>
@@ -72,10 +81,17 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
+<script src="{!! url('assets/plugins/jquery.ThreeDots.min.js') !!}" type="text/javascript"></script>
 <script type="text/javascript">
     var msg_flag ='{{ $msg_flag }}';
     var msg_type ='{{ $msg_type }}';
     var msg_val ='{{ $msg_val }}';
+    $(function(){
+        var the_obj = $('.text_wraps').ThreeDots({
+            max_rows: 1
+        });
+    })
 </script>
+<script src="{!! url('assets/js/units/delete_unit.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
 @endsection

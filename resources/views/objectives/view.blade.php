@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-css')
+<style>.related_para{margin:0 0 10px;}</style>
+@endsection
 @section('content')
 
 <div class="container">
@@ -15,12 +18,51 @@
                     </div>
                     <div>
                         @if(Auth::check())
-                        <a class="btn orange-bg" id="edit_object" href="{!! url('objectives/edit/'.$objectiveIDHashID->encode($objectiveObj->id))!!}">
+                        <a class="btn orange-bg" id="edit_object" href="{!! url('objectives/'.$objectiveIDHashID->encode
+                        ($objectiveObj->id).'/edit')!!}">
                             <span class="glyphicon glyphicon-pencil"></span> &nbsp;
                             {!! trans('messages.edit_objective') !!}
                         </a>
+                        <div class="pull-right">
+                            <?php
+                            $upvote_class=" text-success";
+                            $downvote_class=" text-danger";
+                            $flag = \App\ImportanceLevel::checkImportanceLevel($objectiveObj->id);
+                            if($flag == "1")
+                                $upvote_class="success-upvote";
+                            elseif($flag == "-1")
+                                $downvote_class="success-downvote";
+                            ?>
+                            <span class="glyphicon glyphicon-thumbs-up vote upvote {{$upvote_class}}"
+                                  data-id="{{ $objectiveIDHashID->encode($objectiveObj->id) }}"
+                                  data-type="up"
+                                  title="upvote"></span>
+                            <span class="glyphicon glyphicon-thumbs-down vote downvote {{$downvote_class}}"
+                                  data-id="{{ $objectiveIDHashID->encode($objectiveObj->id) }}"
+                                  data-type="down"
+                                  title="downvote"></span>
+                            <div class="importance-div" style="padding-left: 15px;line-height: 30px;">
+                                @include('objectives.partials.importance_level')
+                            </div>
+                        </div>
+                        @else
+                            <div class="importance-div" style="padding-left: 15px;line-height: 30px;">
+                                @include('objectives.partials.importance_level')
+                            </div>
                         @endif
+
                     </div>
+                    @if( !empty($objectiveObj->parent_id))
+                        <p></p>
+                        <p class="related_para">Relations to Other Objective:</p>
+                        <ul style="padding-left:15px;">
+                            <li style="list-style: none;">Parent &nbsp;&nbsp;:
+                                <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objectiveObj->parent_id)) !!}">
+                                    {{\App\Objective::getObjectiveName($objectiveObj->parent_id)}}
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
 
                 </div>
                 <div class="col-md-6 unit_description">
@@ -33,9 +75,9 @@
                                             <strong>{!! trans('messages.unit_funds') !!}</strong>
                                         </div>
                                         <div class="col-xs-6">{!! trans('messages.available') !!}</div>
-                                        <div class="col-xs-6 text-right">400 $</div>
+                                        <div class="col-xs-6 text-right">xxx $</div>
                                         <div class="col-xs-6">{!! trans('messages.awarded') !!}</div>
-                                        <div class="col-xs-6 text-right">100 $</div>
+                                        <div class="col-xs-6 text-right">xxx $</div>
                                         <div class="col-xs-12 text-right">
                                             <button class="btn orange-bg btn-sm" id="add_funds_btn">{!! trans('messages.add_funds') !!}</button>
                                         </div>
@@ -51,13 +93,23 @@
                                             <strong>{!! trans('messages.unit_information') !!}</strong>
                                         </div>
                                         <div class="col-xs-5">{!! trans('messages.unit_name') !!}</div>
-                                        <div class="col-xs-7 text-right">Woman's Rights</div>
+                                        <div class="col-xs-7 text-right">
+                                            <a href="{!! url('units/'.$unitIDHashID->encode($objectiveObj->unit_id)) !!}">
+                                                {{\App\Unit::getUnitName($objectiveObj->unit_id)}}
+                                            </a>
+                                        </div>
                                         <div class="col-xs-5">{!! trans('messages.type') !!}</div>
-                                        <div class="col-xs-7 text-right">Non-profit-Human-welfare</div>
+                                        <div class="col-xs-7 text-right">
+                                            @if(!empty($objectiveObj->unit))
+                                                {{\App\Unit::getCategoryNames($objectiveObj->unit->category_id)}}
+                                            @else
+                                                -
+                                            @endif
+                                        </div>
                                         <div class="col-xs-5">{!! trans('messages.funds') !!}</div>
-                                        <div class="col-xs-7 text-right">Available 5000 $</div>
+                                        <div class="col-xs-7 text-right">Available xxxx $</div>
                                         <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
-                                        <div class="col-xs-7 text-right">750 $</div>
+                                        <div class="col-xs-7 text-right">xxx $</div>
                                         <div class="col-xs-12 text-right">
                                             <button class="btn orange-bg btn-sm" id="add_unit_fund_btn">{!! trans('messages.add_funds') !!}</button>
                                         </div>
@@ -111,7 +163,7 @@
                                     <td>{{ucfirst($task->status)}}</td>
                                     <td>
                                         <a class="btn btn-xs btn-primary"
-                                           href="{!! url('tasks/edit/'.$taskIDHashID->encode($task->id)) !!}" title="edit">
+                                           href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}" title="edit">
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </a>
                                     </td>
@@ -126,7 +178,10 @@
                     </table>
                 </div>
             </div>
-            <a href="{!! url('tasks/create')!!}"class="btn orange-bg" id="add_task_btn" type="button">
+            <a href="{!! url('tasks/'.$unitIDHashID->encode($objectiveObj->unit_id).'/'.$objectiveIDHashID->encode($objectiveObj->id)
+            .'/add')
+            !!}"class="btn orange-bg" id="add_task_btn"
+               type="button">
                 <span class="glyphicon glyphicon-plus"></span> Add Task
             </a>
         </div>
@@ -143,6 +198,48 @@
 <script>
     $(function(){
         $(".both-div").css("min-height",($(".objective-desc").height())+10+'px');
+
+        $(".vote").click(function(){
+            var type = $(this).attr('data-type');
+
+            if(type == "up")
+                var flag =!$(this).hasClass('success-upvote');
+            else if(type=="down")
+                var flag =!$(this).hasClass('success-downvote');
+            else
+                return false;
+
+            if(flag){
+                var that = $(this);
+                var id=$(this).attr('data-id');
+                if($.trim(id) != ""){
+                    $.ajax({
+                        type:'post',
+                        url:siteURL+'/objectives/importance',
+                        data:{_token:'{!! csrf_token() !!}',id:id,type:type},
+                        dataType:'json',
+                        success:function(resp){
+                            if(resp.success){
+                                $(".importance-div").html(resp.html);
+                                if(type == "up")
+                                {
+                                    that.removeClass('text-success').addClass('success-upvote');
+                                    $(".downvote[data-id='" + id + "']").removeClass('success-downvote').addClass
+                                        ('text-danger');
+                                }
+                                else{
+                                    that.removeClass('text-danger').addClass('success-downvote');
+                                    $(".upvote[data-id='" + id + "']").removeClass('success-upvote').addClass
+                                        ('text-success');
+                                }
+                            }
+
+                        }
+                    })
+                }
+            }
+            return false;
+        });
     })
 </script>
 @endsection
