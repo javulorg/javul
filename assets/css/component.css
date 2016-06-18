@@ -4041,7 +4041,7 @@ li .icon-large[class*=" fa-"], li .icon-large[class*=" glyphicon-"], li .icon-la
     transition: all 0.3s ease 0s;
 }
 .close {
-    background-image: url("../img/remove-icon-small.png") !important;
+    background-image: url("../images/remove-icon-small.png") !important;
     background-repeat: no-repeat !important;
     display: inline-block;
     height: 9px;

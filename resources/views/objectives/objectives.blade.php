@@ -29,7 +29,7 @@
                             <td><a href="{!! url('units/'.$unitIDHashID->encode($objective->unit_id)) !!}">{{$objective->unit_name}}</a></td>
                             <td><a href="{!! url('users/'.$userIDHashID->encode($objective->user_id)) !!}">{{$objective->first_name.' '.$objective->last_name}}</a></td>
                             <td>{{$objective->status}}</td>
-                            <td>
+                            <td width="11%">
                                 @if(\Auth::check())
                                 <a class="btn btn-xs btn-primary"
                                    href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/edit') !!}" title="edit">
