@@ -100,8 +100,10 @@
                         <option value="">{!! trans('messages.select') !!}</option>
                         @if(count($countries) > 0)
                             @foreach($countries as $id=>$val)
-                                <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->country_id == $id)
-                        selected=selected @endif>{{$val}}</option>
+
+                                    <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->country_id == $id)
+                                    selected=selected @endif>{{$val}}</option>
+
                             @endforeach
                         @endif
                     </select>
@@ -111,7 +113,8 @@
                 <label class="control-label">State</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="state" id="state">
+                    <select class="form-control" name="state" id="state" @if(!empty($unitObj) && $unitObj->country_id == "global")
+                    disabled @endif>
                         @if(!empty($unitObj))
                             @foreach($states as $id=>$val)
                                 <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->state_id == $id)
@@ -130,7 +133,8 @@
                 <label class="control-label">City</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select class="form-control" name="city" id="city">
+                    <select class="form-control" name="city" id="city" @if(!empty($unitObj) && $unitObj->country_id == "global")
+                    disabled @endif>
                         @if(!empty($unitObj))
                             @foreach($cities as $cid=>$val)
                                 <option value="{{$cid}}" @if(!empty($unitObj) && $unitObj->city_id == $cid)
@@ -207,27 +211,40 @@
 <script src="{!! url('assets/js/units/units.js') !!}"></script>
 <script>
     $(function(){
+        function format(country) {
+            alert('d');
+            if (country.id == "dash_line1" || country.id == "dash_line")
+                return "<img class='flag' src='images/flags/" + state.id.toLowerCase() + ".png'/>" + state.text;
+        }
         $("#country").select2({
-            placeholder:"Select Country"
+			theme: "bootstrap",
+            placeholder:"Select Country"/*,
+            formatResult: format,
+            formatSelection: format*/
         });
 
         $("#state").select2({
+			theme: "bootstrap",
             placeholder:"Select State"
         });
 
         $("#city").select2({
+			theme: "bootstrap",
             placeholder:"Select City"
         });
 
         $("#unit_category").select2({
+			theme: "bootstrap",
             allowClear: true,
             placeholder: "Select an option"
         });
 
         $("#related_to").select2({
+			theme: "bootstrap",
             allowClear: true,
             placeholder: "Select an option"
         });
     });
+
 </script>
 @endsection

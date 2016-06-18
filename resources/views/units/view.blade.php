@@ -7,9 +7,17 @@
     <div class="row form-group">
         <div class="col-sm-12 ">
             <div class="col-sm-6 grey-bg unit_description">
-                <h1 class="unit-heading"><span class="glyphicon glyphicon-list-alt"></span> {{$unitObj->name}}</h1><br /><br />
+                <h1 class="unit-heading">
+                    <span class="glyphicon glyphicon-list-alt"></span> {{$unitObj->name}}
+
+                </h1>
+                @if(!empty($cityName))
                 <p><span class="glyphicon glyphicon-map-marker"> </span> &nbsp;{{$cityName->name}}</p>
+                @endif
                 <p><span class="glyphicon glyphicon-tag"> </span> &nbsp; {{$unitObj->category_name}}</p>
+                <a href="{!! url('units/edit/'.$unitIDHashID->encode($unitObj->id)) !!}" id="edit_unit_btn" class="btn orange-bg">
+                    <span class="glyphicon glyphicon-plus"></span> Edit Unit
+                </a>
             </div>
             <div class="col-sm-6 grey-bg unit_description">
                 <div class="row">
@@ -80,11 +88,16 @@
                                     <tr>
                                         <td>
                                             <span class="glyphicon glyphicon-thumbs-up text-success upvote" title="upvote"></span>
-                                            <span class="glyphicon glyphicon-thumbs-down text-danger downvote" title="downvote"></span>
+                                            <!--<span class="glyphicon glyphicon-thumbs-down text-danger downvote" title="downvote"></span>-->
                                         </td>
                                         <td>1</td>
                                         <td>{{\App\Library\Helpers::timetostr($obj->created_at)}}</td>
-                                        <td>{{$obj->name}}</td>
+                                        <td>
+                                            <a class="btn btn-xs btn-primary"
+                                               href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id)) !!}" title="edit">
+                                                {{$obj->name}}
+                                            </a>
+                                        </td>
                                         <td>{{\App\Task::getTaskCount('available',$obj->id)}}</td>
                                         <td>{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
                                         <td>{{\App\Task::getTaskCount('completed',$obj->id)}}</td>

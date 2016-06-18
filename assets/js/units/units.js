@@ -29,10 +29,22 @@ var FormValidation = function () {
                     required: true
                 },
                 state: {
-                    required: true
+                    required: function(){
+                        var c_id = $("#country").val();
+                        if(c_id  == "global")
+                            return false;
+                        else
+                            return true;
+                    }
                 },
                 city: {
-                    required: true
+                    required: function(){
+                        var c_id = $("#country").val();
+                        if(c_id  == "global")
+                            return false;
+                        else
+                            return true;
+                    }
                 }
             },
 
@@ -111,8 +123,14 @@ $(document).ready(function() {
             $("#state").prop('disabled',false);
             $("#city").prop('disabled',false);
         }
+        else if($.trim(value) == "global"){
+            $("#state").prop('disabled',true);
+            $("#city").prop('disabled',true);
+            return false;
+        }
         else
         {
+
             $(".states_loader.location_loader").show();
             $("#state").prop('disabled',true);
             $("#city").prop('disabled',true);

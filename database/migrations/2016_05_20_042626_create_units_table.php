@@ -21,10 +21,9 @@ class CreateUnitsTable extends Migration
             $table->text('description');
             $table->string('credibility')->comment='platinum,gold,silver or bronze';
             $table->integer('country_id')->unsigned();
-            $table->foreign('country_id')->references('id')->on('countries');
-            $table->integer('state_id')->unsigned();
+            $table->integer('state_id')->unsigned()->nullable();
             $table->foreign('state_id')->references('id')->on('states');
-            $table->integer('city_id')->unsigned();
+            $table->integer('city_id')->unsigned()->nullable;
             $table->foreign('city_id')->references('id')->on('cities');
             $table->string('status')->comment="active or disabled";
             $table->integer('parent_id')->nullable();
