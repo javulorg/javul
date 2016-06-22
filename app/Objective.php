@@ -17,7 +17,7 @@ class Objective extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','unit_id','name','description','status','parent_id','modified_by'];
+    protected $fillable = ['user_id','unit_id','name','description','status','parent_id','modified_by','slug'];
 
     /**
      * Get Parent Unit of Objective.
@@ -78,6 +78,10 @@ class Objective extends Model
     public static function getObjectiveName($obj_id){
         return self::find($obj_id)->name;
     }
+    public static function getSlug($obj_id){
+        return self::find($obj_id)->slug;
+    }
+
 
     public static function objectiveStatus()
     {

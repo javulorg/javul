@@ -27,7 +27,7 @@ class Unit extends Model
      * @var array
      */
     protected $fillable = ['user_id','category_id','name','description','credibility','country_id','state_id','city_id','status',
-        'parent_id','modified_by'];
+        'parent_id','modified_by','slug'];
 
     /**
      * Get UnitCategory of Unit
@@ -120,7 +120,9 @@ class Unit extends Model
     public static function getUnitName($unit_id){
         return self::find($unit_id)->name;
     }
-
+    public static function getSlug($unit_id){
+        return self::find($unit_id)->slug;
+    }
     public static function getCategoryNames($category_id)
     {
         $categoryObj = UnitCategory::whereIn('id',explode(",",$category_id))->lists('name')->all();
@@ -128,4 +130,5 @@ class Unit extends Model
             return implode(", ",$categoryObj);
         return "-";
     }
+
 }

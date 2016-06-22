@@ -169,11 +169,13 @@ class TasksController extends Controller
             $end_date  = $end_date->getTimestamp();
 
             // create task
+            $slug=substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
             $task_id = Task::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$unit_id[0],
                 'objective_id'=>$objective_id[0],
                 'name'=>$request->input('task_name'),
+                'slug'=>$slug,
                 'description'=>$request->input('description'),
                 'summary'=>$request->input('summary'),
                 'skills'=>$request->input('task_skills'),
@@ -265,8 +267,9 @@ class TasksController extends Controller
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
-                'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                        created task <a href="'.url('tasks/'.$task_id).'">'.$request->input('task_name').'</a>'
+                'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        created task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
             ]);
 
             // TODO: create forum entry when task is created : in PDF page no - 10
@@ -340,11 +343,13 @@ class TasksController extends Controller
                     $end_date  = $end_date->getTimestamp();
 
                     // update task
+                    $slug=substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
                     Task::where('id',$task_id)->update([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$unit_id[0],
                         'objective_id'=>$objective_id[0],
                         'name'=>$request->input('task_name'),
+                        'slug'=>$slug,
                         'description'=>$request->input('description'),
                         'summary'=>$request->input('summary'),
                         'skills'=>$request->input('task_skills'),
@@ -421,8 +426,10 @@ class TasksController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                        updated task <a href="'.url('tasks/'.$task_id).'">'.$request->input('task_name').'</a>'
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a>
+                        updated task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
                     ]);
 
                     // TODO: create forum entry when task is created : in PDF page no - 10
@@ -582,7 +589,9 @@ class TasksController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a>
                         deleted task '.$tasktempObj->name
                     ]);
                 }

@@ -69,7 +69,9 @@
                     <ul class="relationUL">
                         @if(!empty($unitObj->parent_id))
                         <li>Parent:
-                            <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->parent_id)) !!}" class="no-decoration">
+                            <?php $slug = \App\Unit::getSlug($unitObj->parent_id); ?>
+                            <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->parent_id).'/'.$slug) !!}"
+                               class="no-decoration">
                                 <span class="label label-default">{{\App\Unit::getUnitName($unitObj->parent_id)}}</span>
                             </a>
                         </li>
@@ -77,7 +79,8 @@
                         @if(!empty($related_units))
                         <li>Related:
                             @foreach($related_units as $id=>$unit_name)
-                            <a href="{!! url('units/'.$unitIDHashID->encode($id)) !!}" class="no-decoration">
+                            <?php $slug = \App\Unit::getSlug($id); ?>
+                            <a href="{!! url('units/'.$unitIDHashID->encode($id).'/'.$slug) !!}" class="no-decoration">
                                 <span class="label label-default">{{$unit_name}} </span>
                             </a>
                             <?php $i++; ?>
@@ -135,7 +138,8 @@
                                     <tr>
                                         <td>{{\App\Library\Helpers::timetostr($obj->created_at)}}</td>
                                         <td>
-                                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id)) !!}" title="edit">
+                                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
+                                               title="edit">
                                                 {{$obj->name}}
                                             </a>
                                         </td>

@@ -18,6 +18,7 @@ class CreateUnitsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('category_id')->comment='reference to unit_category. multiple categories with comma.';
             $table->string('name');
+            $table->string('slug');
             $table->text('description');
             $table->string('credibility')->comment='platinum,gold,silver or bronze';
             $table->integer('country_id')->unsigned()->nullable();

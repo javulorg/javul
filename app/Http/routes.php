@@ -15,7 +15,7 @@ Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
 Route::get('/account/logout', 'AccountController@logout');
 Route::any('/userprofiles/{user_id}','UserController@user_profile');
-
+Route::any('/userprofiles/{user_id}/{slug}','UserController@user_profile');
 Route::auth();
 
 
@@ -39,7 +39,7 @@ Route::post('units/get_state', 'UnitsController@get_state');
 Route::post('units/get_city', 'UnitsController@get_city');
 
 Route::get('units/delete_unit', 'UnitsController@delete_unit');
-Route::any('units/{unitid}', 'UnitsController@view');
+Route::any('units/{unitid}/{slug}', 'UnitsController@view');
 
 
 // objective controller route
@@ -48,7 +48,7 @@ Route::any('objectives/{unitid}/add', 'ObjectivesController@create');
 Route::any('objectives/{objectiveid}/edit', 'ObjectivesController@edit');
 Route::post('objectives/importance', 'ObjectivesController@add_importance');
 Route::get('objectives/delete_objective', 'ObjectivesController@delete_objective');
-Route::any('objectives/{objectiveid}', 'ObjectivesController@view');
+Route::any('objectives/{objectiveid}/{slug}', 'ObjectivesController@view');
 
 // tasks controller route
 Route::any('tasks/add', 'TasksController@create');
@@ -58,7 +58,7 @@ Route::post('tasks/get_objective', 'TasksController@get_objective');
 Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/remove_task_document', 'TasksController@remove_task_documents');
 Route::get('tasks/delete_task', 'TasksController@delete_task');
-Route::any('tasks/{taskid}', 'TasksController@view');
+Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 
 
 Route::resource('/issues','IssuesController');

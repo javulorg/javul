@@ -104,12 +104,26 @@ class ObjectivesController extends Controller
                 return redirect()->back()->withErrors(['unit'=>'Unit doesn\'t exist in database.'])->withInput();
 
             // create objective
+            $parent_id = $request->input('parent_objective');
+            if(!empty($parent_id)){
+                $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                $parent_id = $objectiveIDHashID->decode($parent_id);
+                if(!empty($parent_id))
+                    $parent_id=$parent_id[0];
+                else
+                    $parent_id =null;
+            }
+            else
+                $parent_id =null;
+            $slug=substr(str_replace(" ","_",strtolower($request->input('objective_name'))),0,20);
             $objectiveId = Objective::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$unitID,
                 'name'=>$request->input('objective_name'),
+                'slug'=>$slug,
                 'description'=>$request->input('description'),
-                'status'=>$status
+                'status'=>$status,
+                'parent_id'=>$parent_id
             ])->id;
 
             ImportanceLevel::create([
@@ -137,8 +151,9 @@ class ObjectivesController extends Controller
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
-                'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                        created objective <a href="'.url('objectives/'.$objectiveId).'">'.$request->input('objective_name').'</a>'
+                'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        created objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name').'</a>'
             ]);
 
             $request->session()->flash('msg_val', "Objective created successfully!!!");
@@ -183,12 +198,22 @@ class ObjectivesController extends Controller
                         return redirect()->back()->withErrors(['unit'=>'Unit doesn\'t exist in database.'])->withInput();
 
                     // create objective
+                    $slug=substr(str_replace(" ","_",strtolower($request->input('objective_name'))),0,20);
+                    $parent_id = $request->input('parent_objective');
+                    if(!empty($parent_id)){
+                        $parent_id = $objectiveIDHashID->decode($parent_id);
+                        if(!empty($parent_id))
+                            $parent_id=$parent_id[0];
+                    }
                     if(Objective::where('id',$objective_id)->count() > 0){
+
                         Objective::where('id',$objective_id)->update([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$unitID,
                             'name'=>$request->input('objective_name'),
+                            'slug'=>$slug,
                             'description'=>$request->input('description'),
+                            'parent_id'=>$parent_id
                         ]);
                     }
 
@@ -210,8 +235,10 @@ class ObjectivesController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                        updated objective <a href="'.url('objectives/'.$objectiveId).'">'.$request->input('objective_name').'</a>'
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a>
+                        updated objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name').'</a>'
                     ]);
 
                     $request->session()->flash('msg_val', "Objective updated successfully!!!");
@@ -314,8 +341,11 @@ class ObjectivesController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded).'">'.Auth::user()->first_name.' '.Auth::user()->last_name
-                            .'</a>'.$site_activity_text .' <a href="'.url('objectives/'.$objectiveIDEndcoded) .'">'.$objectiveObj->name.'</a>'
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.Auth::user()->first_name.' '.Auth::user()
+                                ->last_name
+                            .'</a>'.$site_activity_text .' <a href="'.url('objectives/'.$objectiveIDEndcoded.'/'.$objectiveObj->slug) .'">'
+                            .$objectiveObj->name
+                            .'</a>'
                     ]);
 
                     return \Response::json(['success'=>true,'html'=>$importance_level_html]);
@@ -361,7 +391,9 @@ class ObjectivesController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name))
+                            .'">'.Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a>
                         deleted objective '.$objectiveTemp->name
                     ]);
 

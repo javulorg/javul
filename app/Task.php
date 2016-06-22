@@ -16,7 +16,7 @@ class Task extends Model
      */
     protected $fillable = ['user_id','unit_id','objective_id','name','description','skills','estimated_completion_time','compensation',
                             'file_attachments','assign_to','status','estimated_completion_time_start','estimated_completion_time_end',
-                            'modified_by','task_action','summary'];
+                            'modified_by','task_action','summary','slug'];
 
 
     /**

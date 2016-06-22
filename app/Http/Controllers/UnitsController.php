@@ -109,9 +109,12 @@ class UnitsController extends Controller
             else
                 $status="active";
 
+            $slug=substr(str_replace(" ","_",strtolower($request->input('unit_name'))),0,20);
+
             $unitID = Unit::create([
                 'user_id'=>Auth::user()->id,
                 'name'=>$request->input('unit_name'),
+                'slug'=>$slug,
                 'category_id'=>implode(",",$request->input('unit_category')),
                 'description'=>trim($request->input('description')),
                 'credibility'=>$request->input('credibility'),
@@ -146,8 +149,10 @@ class UnitsController extends Controller
             $unit_id = $unitIDHashID->encode($unitID);
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
-                'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a> created
-                 unit <a href="'.url('units/'.$unit_id).'">'.$request->input('unit_name').'</a>'
+                'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                created
+                 unit <a href="'.url('units/'.$unit_id.'/'.$slug).'">'.$request->input('unit_name').'</a>'
             ]);
 
             $request->session()->flash('msg_val', "Unit created successfully!!!");
@@ -194,9 +199,12 @@ class UnitsController extends Controller
                     else
                         $status="active";
 
+                    $slug=substr(str_replace(" ","_",strtolower($request->input('unit_name'))),0,20);
+
                     // update unit data.
                     Unit::where('id',$unit_id)->update([
                         'name'=>$request->input('unit_name'),
+                        'slug'=>$slug,
                         'category_id'=>implode(",",$request->input('unit_category')),
                         'description'=>trim($request->input('description')),
                         'credibility'=>$request->input('credibility'),
@@ -246,8 +254,11 @@ class UnitsController extends Controller
                     $unit_id = $unitIDHashID->encode($unit_id);
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                        updated unit <a href="'.url('units/'.$unit_id).'">'.$request->input('unit_name').'</a>'
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name))
+                            .'">'
+                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a>
+                        updated unit <a href="'.url('units/'.$unit_id.'/'.$slug).'">'.$request->input('unit_name').'</a>'
                     ]);
 
                     $request->session()->flash('msg_val', "Unit updated successfully!!!");
@@ -368,7 +379,8 @@ class UnitsController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id).'">'.Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a>
                         deleted unit '.$unitTemp->name
                     ]);
                     return \Response::json(['success'=>true]);

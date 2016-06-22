@@ -24,10 +24,14 @@
                         <tbody>
                         @if(count($objectives) > 0 )
                         @foreach($objectives as $objective)
+                        <?php $unitslug =\App\Unit::getSlug($objective->unit_id); ?>
                         <tr>
-                            <td><a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id)) !!}">{{$objective->name}}</a></td>
-                            <td><a href="{!! url('units/'.$unitIDHashID->encode($objective->unit_id)) !!}">{{$objective->unit_name}}</a></td>
-                            <td><a href="{!! url('users/'.$userIDHashID->encode($objective->user_id)) !!}">{{$objective->first_name.' '.$objective->last_name}}</a></td>
+                            <td><a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/'.$objective->slug)!!}">{{$objective->name}}</a></td>
+                            <td><a href="{!! url('units/'.$unitIDHashID->encode($objective->unit_id).'/'.$unitslug )!!}">{{$objective->unit_name}}</a></td>
+                            <td><a href="{!! url('userprofiles/'.$userIDHashID->encode($objective->user_id).'/'.strtolower
+                            ($objective->first_name.'_'.$objective->last_name))!!}">
+                                    {{$objective->first_name.' '.$objective->last_name}}
+                                </a></td>
                             <td>{{$objective->status}}</td>
                             <td width="11%">
                                 @if(\Auth::check())

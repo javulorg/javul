@@ -36,7 +36,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-9 hidden-xs">
                 <div class="user-header">
                     <h3>{{$userObj->first_name.' '.$userObj->last_name}}</h3>
                 </div>
@@ -69,6 +69,41 @@
                 <span class="glyphicon glyphicon-menu-right"></span>
                 {{\App\City::getName($userObj->city_id)}}
             </div>
+            <div class="col-xs-12 visible-xs text-center">
+                <div class="user-header">
+                    <h3>{{$userObj->first_name.' '.$userObj->last_name}}</h3>
+                </div>
+            </div>
+            <div class="col-xs-12 visible-xs">
+                <div class="user-header">
+                    <span class="glyphicon glyphicon-time"></span>
+                    Account age: {{$userObj->created_at}}</label>
+                </div>
+                <div class="user-header">
+                    <span class="glyphicon glyphicon-thumbs-up"></span>
+                    Skills:
+                    @if(!empty($skills))
+                    @foreach($skills as $skill)
+                    <span class="label label-info tags">{{$skill->skill_name}}</span>
+                    @endforeach
+                    @endif
+                </div>
+                <div class="user-header">
+                    <span class="glyphicon glyphicon-bookmark"></span>
+                    Area of Interest:
+                    @if(!empty($interestObj))
+                    @foreach($interestObj as $interest)
+                    <span class="label label-info tags">{{$interest->title}}</span>
+                    @endforeach
+                    @endif
+                </div>
+                <span class="glyphicon glyphicon-map-marker"></span>
+                {{\App\Country::getName($userObj->country_id)}}
+                <span class="glyphicon glyphicon-menu-right"></span>
+                {{\App\State::getName($userObj->state_id)}}
+                <span class="glyphicon glyphicon-menu-right"></span>
+                {{\App\City::getName($userObj->city_id)}}
+            </div>
         </div>
 
     </div>
@@ -91,9 +126,8 @@
                                 <th></th>
                             </tr>
                             </thead>
-
-                            @if(!empty($unitsObj))
-                                <tbody>
+                            <tbody>
+                                @if(!empty($unitsObj))
                                     @foreach($unitsObj as $unit)
                                         <tr>
                                             <td>{{$unit->name}}</td>
@@ -113,8 +147,12 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                </tbody>
-                            @endif
+                                @else
+                                    <tr>
+                                        <td colspan="3">No record(s) found.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -152,7 +190,7 @@
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="4">No record(s) found.</td>
+                                        <td colspan="3">No record(s) found.</td>
                                     </tr>
                                 @endif
                             </tbody>

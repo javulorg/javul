@@ -19,6 +19,7 @@ class CreateObjectivesTable extends Migration
             $table->integer('unit_id')->unsigned();
             $table->foreign('unit_id')->references('id')->on('units');
             $table->string('name');
+            $table->string('slug');
             $table->text('description');
             $table->string('status')->comment="in-progress, completed or archieved";
             $table->integer('parent_id')->nullable();

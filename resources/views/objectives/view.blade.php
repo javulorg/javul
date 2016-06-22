@@ -17,7 +17,6 @@
                         {!! $objectiveObj->description !!}
                     </div>
                     <div>
-
                         <a class="btn orange-bg" id="edit_object" href="{!! url('objectives/'.$objectiveIDHashID->encode
                         ($objectiveObj->id).'/edit')!!}">
                             <span class="glyphicon glyphicon-pencil"></span> &nbsp;
@@ -28,20 +27,7 @@
                                 @include('objectives.partials.importance_level',['objective_id'=>$objectiveObj->id])
                             </div>
                         </div>
-
                     </div>
-                    @if( !empty($objectiveObj->parent_id))
-                        <p></p>
-                        <p class="related_para">Relations to Other Objective:</p>
-                        <ul style="padding-left:15px;">
-                            <li style="list-style: none;">Parent &nbsp;&nbsp;:
-                                <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objectiveObj->parent_id)) !!}">
-                                    {{\App\Objective::getObjectiveName($objectiveObj->parent_id)}}
-                                </a>
-                            </li>
-                        </ul>
-                    @endif
-
                 </div>
                 <div class="col-md-6 unit_description">
                     <div class="row">
@@ -72,7 +58,8 @@
                                         </div>
                                         <div class="col-xs-5">{!! trans('messages.unit_name') !!}</div>
                                         <div class="col-xs-7 text-right">
-                                            <a href="{!! url('units/'.$unitIDHashID->encode($objectiveObj->unit_id)) !!}">
+                                            <?php $unitSlug = \App\Unit::getSlug($objectiveObj->unit_id); ?>
+                                            <a href="{!! url('units/'.$unitIDHashID->encode($objectiveObj->unit_id).'/'.$unitSlug) !!}">
                                                 {{\App\Unit::getUnitName($objectiveObj->unit_id)}}
                                             </a>
                                         </div>
@@ -100,6 +87,27 @@
             </div>
         </div>
     </div>
+    @if( !empty($objectiveObj->parent_id))
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-dark-grey">
+                <div class="panel-heading">
+                    <h4>Relations to Other Objective</h4>
+                </div>
+                <div class="panel-body relationULPanel">
+                    <ul class="relationUL">
+                        <li>Parent:
+                            <?php $objSlug = \App\Objective::getSlug($objectiveObj->parent_id); ?>
+                            <a class="no-decoration" href="{!! url('objectives/'.$objectiveIDHashID->encode($objectiveObj->parent_id).'/'.$objSlug ) !!}">
+                                <span class="label label-default">{{\App\Objective::getObjectiveName($objectiveObj->parent_id)}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="row form-group">
         <div class="col-sm-12">
             <div class="panel panel-default panel-dark-grey">
@@ -123,14 +131,18 @@
                         @if(count($objectiveObj->tasks) > 0 )
                             @foreach($objectiveObj->tasks as $task)
                                 <tr>
-                                    <td><a href="{!! url('tasks/'.$taskIDHashID->encode($task->id)) !!}">{{$task->name}}</a></td>
+                                    <td><a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/'.$task->slug) !!}">
+                                            {{$task->name}}
+                                        </a>
+                                    </td>
                                    <!-- <td>
                                         <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id)) !!}">
                                             {{\App\Objective::getObjectiveName($task->objective_id)}}
                                         </a>
                                     </td>-->
                                     <td>
-                                        <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id)) !!}">
+                                        <?php $unitSlug = \App\Unit::getSlug($task->unit_id);?>
+                                        <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id).'/'.$unitSlug) !!}">
                                             {{\App\Unit::getUnitName($task->unit_id)}}
                                         </a>
                                     </td>
@@ -156,9 +168,8 @@
                     </table>
                 </div>
             </div>
-            <a href="{!! url('tasks/'.$unitIDHashID->encode($objectiveObj->unit_id).'/'.$objectiveIDHashID->encode($objectiveObj->id)
-            .'/add')
-            !!}"class="btn orange-bg" id="add_task_btn"
+            <a href="{!! url('tasks/'.$unitIDHashID->encode($objectiveObj->unit_id).'/'.$objectiveIDHashID->encode($objectiveObj->id).'/add')!!}"
+               class="btn orange-bg" id="add_task_btn"
                type="button">
                 <span class="glyphicon glyphicon-plus"></span> Add Task
             </a>

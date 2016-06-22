@@ -29,7 +29,7 @@
                                         $category_names  = explode(",",$category_names );
                                         ?>
                                         <tr>
-                                            <td><a href="{!! url('units/'.$unitIDHashID->encode($unit->id)) !!}">{{$unit->name}}</a></td>
+                                            <td><a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}">{{$unit->name}}</a></td>
                                             <td>
                                                 @if(count($category_ids) > 0 )
                                                     @foreach($category_ids as $index=>$category)
@@ -40,7 +40,8 @@
                                                     @endforeach
                                                 @endif
                                             </td>
-                                            <td><div class="text_wraps"><span
+                                            <td><div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
+                                            ($unit->description)!!}"><span
                                                         class="ellipsis_text">{!!trim($unit->description)!!}</span></div></td>
                                             <td width="11%">
                                                 @if(\Auth::check())
@@ -90,6 +91,10 @@
         var the_obj = $('.text_wraps').ThreeDots({
             max_rows: 1
         });
+
+        /*$('[data-toggle="tooltip"]').tooltip({
+            container: 'body'
+        });*/
     })
 </script>
 <script src="{!! url('assets/js/units/delete_unit.js') !!}" type="text/javascript"></script>

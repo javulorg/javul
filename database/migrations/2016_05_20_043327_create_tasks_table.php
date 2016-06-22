@@ -21,6 +21,7 @@ class CreateTasksTable extends Migration
             $table->integer('objective_id')->unsigned()->nullable();
             $table->foreign('objective_id')->references('id')->on('objectives');
             $table->string('name');
+            $table->string('slug');
             $table->text('description');
             $table->text('task_action');
             $table->text('summary')->nullable();

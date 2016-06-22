@@ -26,14 +26,19 @@
                         <tbody>
                         @if(count($tasks) > 0 )
                             @foreach($tasks as $task)
+                                <?php $unitSlug = \App\Unit::getSlug($task->unit_id);
+                                      $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
                                 <tr>
-                                    <td><a href="{!! url('tasks/'.$taskIDHashID->encode($task->id)) !!}">{{$task->name}}</a></td>
+                                    <td><a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/'.$task->slug)!!}">{{$task->name}}</a></td>
                                     <td>
-                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id))
-                                        !!}">{{$task->objective_name}}</a>
+                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id).'/'.$objectiveSlug)!!}">
+                                            {{$task->objective_name}}
+                                        </a>
                                     </td>
                                     <td>
-                                        <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id)) !!}">{{$task->unit_name}}</a>
+                                        <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id).'/'.$unitSlug) !!}">
+                                            {{$task->unit_name}}
+                                        </a>
                                     </td>
                                     <td>
                                         {!! \App\JobSkill::getSkillNameLink($task->skills) !!}

@@ -1,6 +1,17 @@
 @extends('layout.default')
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+<style>
+    .select2-results {
+        max-height: 300px;
+        padding: 0 0 0 4px;
+        margin: 4px 4px 4px 0;
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+</style>
 @endsection
 @section('content')
 <div class="container">

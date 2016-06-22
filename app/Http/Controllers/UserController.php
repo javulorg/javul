@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index']]);
+        $this->middleware('auth',['except'=>['user_profile']]);
     }
 
     public function user_profile(Request $request,$user_id)
@@ -31,8 +31,9 @@ class UserController extends Controller
                 $user_id = $user_id [0];
                 $userObj = User::find($user_id);
                 $unitsObj = Unit::with(['objectives','tasks'])->where('units.user_id',$user_id)->get();
-                $tasksObj = Objective::where('user_id',$user_id)->get();
-                $objectivesObj = Task::where('user_id',$user_id)->get();
+                $objectivesObj = Objective::where('user_id',$user_id)->get();
+                $tasksObj = Task::where('user_id',$user_id)->get();
+
 
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
