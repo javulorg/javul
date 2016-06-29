@@ -152,6 +152,14 @@ $(document).ready(function() {
             $('#datetimepicker2').datetimepicker({
                 format: 'YYYY/MM/DD HH:mm'
             });
+
+            $("#datetimepicker1").on("dp.change", function(e) {
+                addEditedFieldName('datetimepicker1');
+            });
+
+            $("#datetimepicker2").on("dp.change", function(e) {
+                addEditedFieldName('datetimepicker2');
+            });
         }
         else{
             $('#datetimepicker1').datetimepicker({
@@ -266,6 +274,9 @@ $(document).ready(function() {
         var task_id = $(this).attr('data-task_id');
         $that = $(this);
         if($.trim(id) != "" && $.trim(task_id) != ""){
+            var field_name = "remove_doc";
+            addEditedFieldName(field_name);
+
             $.ajax({
                 type:'get',
                 url:siteURL+'/tasks/remove_task_document',
@@ -285,14 +296,62 @@ $(document).ready(function() {
             })
         }
         else{
-        if ($("table.documents tbody tr").length > 1)
-            $(this).parents('tr:eq(0)').remove();
 
-        $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
+            if ($("table.documents tbody tr").length > 1)
+                $(this).parents('tr:eq(0)').remove();
+
+            var addedDocLength = $(".fileinput-new:not(:hidden)").length;
+            if(addedDocLength == 0)
+                $(".changed_items[value='"+field_name+"']").remove();
+
+            $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
         }
 
         return false;
-    })
+    });
+
+
+    // when user click on submit for approval.
+    $(".submit_for_approval").click(function(){
+       var tid = $(this).attr('data-task_id');
+        if($.trim(tid) != ""){
+            $.ajax({
+                type:'get',
+                url:siteURL+'/tasks/submit_for_approval',
+                data:{task_id:tid},
+                dataType:'json',
+                success:function(resp){
+                    if(resp.success){
+                        toastr['success']('Request submitted successfully.', '');
+                    }
+                    else
+                        toastr['error']('Something goes wrong. please try again later.', '');
+                }
+            })
+        }
+    });
+
+    // if edit task then only bind keyup event to all field to get field name which are getting change
+    if(editTask){
+        $("select").on('change',function(){
+            var field_name = $(this).attr('id');
+            addEditedFieldName(field_name);
+        });
+
+        $("input[type='text']").on("input",function(){
+            var field_name = $(this).attr('name');
+            addEditedFieldName(field_name);
+        });
+
+        $(".summernote,#action_items").on("summernote.change", function (e) {   // callback as jquery custom event
+            var field_name = $(this).attr('name');
+            addEditedFieldName(field_name);
+        });
+
+        $("input[name='documents[]'").on('change',function(){
+            addEditedFieldName('add_document');
+        });
+    }
 
 });
 function cloneTR(){
@@ -305,6 +364,14 @@ function cloneTR(){
     // reset all values
     $("table.documents tbody tr:last :input:not(:checked)").val("").removeAttr('selected');
     return false;
+}
+
+function addEditedFieldName(field_name){
+    var cnt = $(".changed_items").length;
+    if($(".changed_items[value='"+field_name+"']").length)
+        $(".changed_items[value='"+field_name+"']").val(field_name);
+    else
+        $('<input type="hidden" class="changed_items" name="changed_items[]" id="'+(cnt+1)+'" value="'+field_name+'"/>').appendTo("#form_sample_2");
 }
 
 

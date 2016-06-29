@@ -22,7 +22,7 @@
                             <div class="panel-body list-group">
                                 @if(count($recentUnits) > 0)
                                     @foreach($recentUnits as $unit)
-                                        <a href="{!! url('units/'.$unitIDHashID->encode($unit->id)) !!}" class="list-group-item"><span
+                                        <a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}" class="list-group-item"><span
                                                 class="glyphicon glyphicon-dot"></span>
                                             {{$unit->name}}
                                         </a>
@@ -49,7 +49,7 @@
                             <div class="panel-body list-group">
                                 @if(count($recentObjectives) > 0)
                                     @foreach($recentObjectives as $objective)
-                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id)) !!}"
+                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/'.$objective->slug) !!}"
                                            class="list-group-item"><span class="glyphicon glyphicon-dot"></span>
                                             {{$objective->name}}
                                         </a>
@@ -76,7 +76,7 @@
                             <div class="panel-body list-group">
                                 @if(count($recentTasks) > 0)
                                     @foreach($recentTasks as $task)
-                                        <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id)) !!}" class="list-group-item">
+                                        <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/'.$task->slug) !!}" class="list-group-item">
                                             <span class="glyphicon glyphicon-dot"></span>
                                             {{$task->name}}
                                         </a>

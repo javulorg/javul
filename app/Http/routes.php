@@ -57,6 +57,7 @@ Route::post('tasks/get_objective', 'TasksController@get_objective');
 
 Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/remove_task_document', 'TasksController@remove_task_documents');
+Route::any('tasks/submit_for_approval', 'TasksController@submit_for_approval');
 Route::get('tasks/delete_task', 'TasksController@delete_task');
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 

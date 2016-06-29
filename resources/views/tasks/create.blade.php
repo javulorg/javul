@@ -209,9 +209,33 @@
                            placeholder="Compensation"/>
                 </div>
             </div>
+            @if(!empty($taskObj))
             <div class="col-sm-4 form-group">
+                <label class="control-label">Status</label>
+                <div class="input-icon right">
+                        <!--<span class="label label-default" style="line-height: 33px;padding:7px 6px;">-->
+                    <span>
+                        {{ucfirst($taskObj->status)}}
+                        <!--</span>-->
+                        @if(!empty($taskEditor) && $taskEditor->submit_for_approval == "not submitted")
+                            @if(count($otherEditorsDone) > 0)
+                                ({{count($otherEditorsDone).' task editor submitted this task for Approval'}}
+                                @if(!empty($availableDays))
+                                    {{"Time left for editing: ".$availableDays." days."}})
+                                @endif
+                            @endif
 
+
+                        (<a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a>)
+
+                        @elseif(count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted")
+                            ( You changed this task status to "Awaiting Approval". Waiting for {{count($otherRemainEditors)}}
+                              other editors to do the same)
+                        @endif
+                    </span>
+                </div>
             </div>
+            @endif
         </div>
         <div class="row">
             <div class="col-sm-12 form-group">

@@ -9,6 +9,7 @@ use App\SiteActivity;
 use App\Task;
 use App\TaskAction;
 use App\TaskDocuments;
+use App\TaskEditor;
 use App\Unit;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
@@ -223,7 +224,7 @@ class TasksController extends Controller
                             $validator = \Validator::make($fileData, $rules);
                             if (!$validator->fails()) {
                                if ($file->isValid()) {
-                                    $destinationPath = 'uploads/tasks/'.$task_id; // upload path
+                                    $destinationPath = base_path().'/uploads/tasks/'.$task_id; // upload path
                                     if(!\File::exists($destinationPath)){
                                         $oldumask = umask(0);
                                         @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
@@ -240,7 +241,7 @@ class TasksController extends Controller
                                     TaskDocuments::create([
                                         'task_id'=>$task_id_decoded,
                                         'file_name'=>$file_name,
-                                        'file_path'=>$path
+                                        'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName
                                     ]);
                                    $totalAvailableDocs++;
                                 }
@@ -360,6 +361,12 @@ class TasksController extends Controller
                         'status'=>'editable'
                     ]);
 
+                    TaskEditor::create([
+                        'task_id'=>$task_id,
+                        'user_id'=>Auth::user()->id,
+                        'submit_for_approval'=>'not submitted'
+                    ]);
+
                     $task_id_decoded= $task_id;
                     $taskIDHashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
                     $task_id = $taskIDHashID->encode($task_id);
@@ -382,7 +389,7 @@ class TasksController extends Controller
                                     $validator = \Validator::make($fileData, $rules);
                                     if (!$validator->fails()) {
                                         if ($file->isValid()) {
-                                            $destinationPath = 'uploads/tasks/'.$task_id; // upload path
+                                            $destinationPath = base_path().'/uploads/tasks/'.$task_id; // upload path
                                             if(!\File::exists($destinationPath)){
                                                 $oldumask = umask(0);
                                                 @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
@@ -398,7 +405,7 @@ class TasksController extends Controller
                                             TaskDocuments::create([
                                                 'task_id'=>$task_id_decoded,
                                                 'file_name'=>$file_name,
-                                                'file_path'=>$path
+                                                'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName
                                             ]);
                                             $totalAvailableDocs++;
                                         }
@@ -447,12 +454,35 @@ class TasksController extends Controller
                 $objectiveObj = Objective::where('unit_id',$taskObj->unit_id)->get();
                 $taskDocumentsObj = TaskDocuments::where('task_id',$task_id)->get();
                 //$taskActionsObj = TaskAction::where('task_id',$task_id)->get();
+                $taskEditor = TaskEditor::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
+                $otherRemainEditors = TaskEditor::where('task_id',$task_id)
+                                    ->where('user_id','!=',Auth::user()->id)->where('submit_for_approval','not submitted')->get();
+                $otherEditorsDone = TaskEditor::where('task_id',$task_id)
+                    ->where('user_id','!=',Auth::user()->id)->where('submit_for_approval','submitted')->get();
+
+                $firstUserSubmitted = TaskEditor::where('task_id',$task_id)
+                    ->where('user_id','!=',Auth::user()->id)->where('submit_for_approval','submitted')->where('first_user_to_submit','yes')
+                    ->first();
+
+                $availableDays ='';
+                if(count($firstUserSubmitted) > 0){
+                    $submittedDate = strtotime($firstUserSubmitted->updated_at);
+                    $availableDays = time() - $submittedDate;
+                    $availableDays = 8 - (int)date('d',$availableDays );
+
+                }
+
                 view()->share('objectiveObj',$objectiveObj);
                 view()->share('assigned_toUsers',$assigned_toUsers);
                 view()->share('task_skills',$task_skills );
                 view()->share('unitsObj',$unitsObj);
                 view()->share('taskObj',$taskObj);
                 view()->share('taskDocumentsObj',$taskDocumentsObj);
+                view()->share('taskEditor',$taskEditor);
+                view()->share('otherRemainEditors',$otherRemainEditors );
+                view()->share('otherEditorsDone',$otherEditorsDone);
+                view()->share('availableDays',$availableDays);
+
                 //view()->share('taskActionsObj',$taskActionsObj);
                 $taskObj->estimated_completion_time_start = date('Y/m/d h:i',strtotime($taskObj->estimated_completion_time_start));
                 $taskObj->estimated_completion_time_end = date('Y/m/d h:i',strtotime($taskObj->estimated_completion_time_end));
@@ -596,6 +626,37 @@ class TasksController extends Controller
                     ]);
                 }
                 return \Response::json(['success'=>true]);
+            }
+        }
+        return \Response::json(['success'=>false]);
+    }
+
+    /**
+     * when user click on Submit for Approval button after edit task.
+     * @param Request $request
+     * @return mixed
+     */
+    public function submit_for_approval(Request $request){
+        $task_id = $request->input('task_id');
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::find($task_id);
+                $taskEditor = TaskEditor::where('task_id',$task_id)->where('user_id',Auth::user()->id)->get();
+                if(!empty($taskObj) && count($taskEditor) > 0){
+                    $otherEditor = TaskEditor::where('task_id',$task_id)->where('user_id','!=',Auth::user()->id)
+                                    ->where('submit_for_approval','submitted')->where('first_user_to_submit','yes')->get();
+
+                    $first_user_to_submit ="yes";
+                    if(count($otherEditor) > 0)
+                        $first_user_to_submit ="no";
+
+                    TaskEditor::where('task_id',$task_id)->where('user_id',Auth::user()->id)->update(['submit_for_approval'=>'submitted',
+                        'first_user_to_submit'=>$first_user_to_submit]);
+                    return \Response::json(['success'=>true]);
+                }
             }
         }
         return \Response::json(['success'=>false]);
