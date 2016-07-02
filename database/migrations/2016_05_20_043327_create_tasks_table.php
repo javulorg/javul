@@ -26,7 +26,8 @@ class CreateTasksTable extends Migration
             $table->text('task_action');
             $table->text('summary')->nullable();
             $table->string('skills');
-            $table->dateTime('estimated_completion_time');
+            $table->dateTime('estimated_completion_time_start');
+            $table->dateTime('estimated_completion_time_end');
             $table->decimal('compensation',10,2);
             $table->integer('assign_to')->unsigned()->nullable();
             $table->foreign('assign_to')->references('id')->on('users');

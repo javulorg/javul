@@ -14,9 +14,9 @@ class Task extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','unit_id','objective_id','name','description','skills','estimated_completion_time','compensation',
-                            'file_attachments','assign_to','status','estimated_completion_time_start','estimated_completion_time_end',
-                            'modified_by','task_action','summary','slug'];
+    protected $fillable = ['user_id','unit_id','objective_id','name','description','skills','compensation',
+                           'assign_to','status','estimated_completion_time_start','estimated_completion_time_end',
+                           'modified_by','task_action','summary','slug'];
 
 
     /**
@@ -40,6 +40,10 @@ class Task extends Model
      */
     public function issues(){
         return $this->hasMany('App\Issue');
+    }
+
+    public function task_editors(){
+        return $this->hasMany('App\TaskEditor');
     }
 
     /**

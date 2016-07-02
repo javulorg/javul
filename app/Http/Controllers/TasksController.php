@@ -10,6 +10,7 @@ use App\Task;
 use App\TaskAction;
 use App\TaskDocuments;
 use App\TaskEditor;
+use App\TaskHistory;
 use App\Unit;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
@@ -295,10 +296,29 @@ class TasksController extends Controller
             $task_id = $taskIDHashID->decode($task_id);
             if(!empty($task_id)){
                 $task_id = $task_id[0];
-                $task = Task::find($task_id);
+                $tempTask = Task::find($task_id);
+
+                $taskEditorObj= TaskEditor::where('task_id',$task_id)->where('user_id',Auth::user()->id)->count();
+                if($taskEditorObj > 0){
+                    $task  = Task::join('task_editors','tasks.id','=','task_editors.task_id')
+                            ->join('task_history','task_editors.task_history_id','=','task_history.id')
+                            ->where('task_id',$task_id)->where('task_editors.user_id',Auth::user()->id)
+                            ->orderBy('task_history.id','desc')
+                            ->select(['tasks.status','task_history.*','tasks.id as id'])
+                            ->first();
+                    $task->task_documents=json_decode($task->task_documents);
+                }
+                else{
+                    $task = Task::find($task_id);
+                    $task->task_documents = [];
+                }
+
 
                 // if user submit the form then update the data.
                 if($request->isMethod('post') && !empty($task)){
+                    if(!empty($tempTask) && $tempTask->status == "awaiting_approval"){
+                        return redirect()->back()->withErrors(['unit'=>'You can\'t edit task.'])->withInput();
+                    }
                     $validator = \Validator::make($request->all(), [
                         'unit' => 'required',
                         'objective' => 'required',
@@ -311,6 +331,13 @@ class TasksController extends Controller
 
                     if ($validator->fails())
                        return redirect()->back()->withErrors($validator)->withInput();
+
+                    // if user didn't change anything then just redirect to task listing page.
+                    $updatedFields= $request->input('changed_items');
+                    if(empty($updatedFields)){
+                        $request->session()->flash('msg_val', "Task updated successfully!!!");
+                        return redirect('tasks');
+                    }
 
                     // check unit id exist in db
                     $unit_id = $request->input('unit');
@@ -345,34 +372,13 @@ class TasksController extends Controller
 
                     // update task
                     $slug=substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
-                    Task::where('id',$task_id)->update([
-                        'user_id'=>Auth::user()->id,
-                        'unit_id'=>$unit_id[0],
-                        'objective_id'=>$objective_id[0],
-                        'name'=>$request->input('task_name'),
-                        'slug'=>$slug,
-                        'description'=>$request->input('description'),
-                        'summary'=>$request->input('summary'),
-                        'skills'=>$request->input('task_skills'),
-                        'estimated_completion_time_start'=>date('Y-m-d h:i',$start_date),
-                        'estimated_completion_time_end'=>date('Y-m-d h:i',$end_date),
-                        'task_action'=>trim($request->input('action_items')),
-                        'compensation'=>$request->input('compensation'),
-                        'status'=>'editable'
-                    ]);
-
-                    TaskEditor::create([
-                        'task_id'=>$task_id,
-                        'user_id'=>Auth::user()->id,
-                        'submit_for_approval'=>'not submitted'
-                    ]);
 
                     $task_id_decoded= $task_id;
                     $taskIDHashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
                     $task_id = $taskIDHashID->encode($task_id);
 
                     // upload documents of task.
-
+                    $task_documents = [];
                     if($request->hasFile('documents')) {
                         $files = $request->file('documents');
                         if(count($files) > 0){
@@ -395,18 +401,19 @@ class TasksController extends Controller
                                                 @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
                                                 umask($oldumask);
                                             }
+                                            $destinationPath=$destinationPath.'/edited_task_docs';
+                                            if(!\File::exists($destinationPath)){
+                                                $oldumask = umask(0);
+                                                @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
+                                                umask($oldumask);
+                                            }
                                             $file_name =$file->getClientOriginalName();
                                             $extension = $file->getClientOriginalExtension(); // getting image extension
                                             $fileName = $task_id.'_'.$totalAvailableDocs . '.' . $extension; // renaming image
                                             $file->move($destinationPath, $fileName); // uploading file to given path
 
-                                            // insert record into task_documents table
-                                            $path = $destinationPath.'/'.$fileName;
-                                            TaskDocuments::create([
-                                                'task_id'=>$task_id_decoded,
-                                                'file_name'=>$file_name,
-                                                'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName
-                                            ]);
+                                            $task_documents[]=['task_id'=>$task_id_decoded,'file_name'=>$file_name,
+                                                'file_path'=>'uploads/tasks/'.$task_id.'/edited_task_docs/'.$fileName];
                                             $totalAvailableDocs++;
                                         }
                                     }
@@ -415,11 +422,58 @@ class TasksController extends Controller
                             }
                         }
                     }
+
+                    // if user edited record second time or more than get updatedFields of last edited record and merge with new
+                    // updatefields and store into new history. because we will display only updated value to unit admin.
+
+                    $taskHistoryObj = TaskEditor::join('task_history','task_editors.task_history_id','=','task_history.id')
+                        ->where('task_editors.user_id',Auth::user()->id)
+                        ->where('task_id',$task_id_decoded)
+                        ->orderBy('task_history.id','desc')
+                        ->first();
+                    if(!empty($taskHistoryObj)){
+                        $oldUpdatedFields= json_decode($taskHistoryObj->updatedFields);
+                        if(!empty($oldUpdatedFields))
+                            $updatedFields = array_merge($updatedFields,$oldUpdatedFields );
+
+                    }
+
+                    // add record into task_history for task history.
+                    $task_history_id =TaskHistory::create([
+                        'unit_id'=>$unit_id[0],
+                        'objective_id'=>$objective_id[0],
+                        'name'=>$request->input('task_name'),
+                        'description'=>$request->input('description'),
+                        'summary'=>$request->input('summary'),
+                        'skills'=>$request->input('task_skills'),
+                        'estimated_completion_time_start'=>date('Y-m-d h:i',$start_date),
+                        'estimated_completion_time_end'=>date('Y-m-d h:i',$end_date),
+                        'task_action'=>trim($request->input('action_items')),
+                        'task_documents'=>json_encode($task_documents),
+                        'compensation'=>$request->input('compensation'),
+                        'updatedFields'=>json_encode($updatedFields)
+                    ])->id;
+
+                    $taskEditorObj = TaskEditor::where('task_id',$task_id_decoded)->where('user_id',Auth::user()->id)->count();
+                    if($taskEditorObj > 0){
+                        TaskEditor::where('task_id',$task_id_decoded)->where('user_id',Auth::user()->id)->update([
+                            'task_history_id'=>$task_history_id
+                        ]);
+                    }
+                    else{
+                        TaskEditor::create([
+                            'task_id'=>$task_id_decoded,
+                            'task_history_id'=>$task_history_id,
+                            'user_id'=>Auth::user()->id,
+                            'submit_for_approval'=>'not_submitted'
+                        ]);
+                    }
+
                     // add activity point for created task.
 
                     ActivityPoint::create([
                         'user_id'=>Auth::user()->id,
-                        'task_id'=>$task_id,
+                        'task_id'=>$task_id_decoded,
                         'points'=>2,
                         'comments'=>'Task Updated',
                         'type'=>'task'
@@ -439,8 +493,6 @@ class TasksController extends Controller
                         updated task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
                     ]);
 
-                    // TODO: create forum entry when task is created : in PDF page no - 10
-
                     $request->session()->flash('msg_val', "Task updated successfully!!!");
                     return redirect('tasks');
                 }
@@ -456,7 +508,7 @@ class TasksController extends Controller
                 //$taskActionsObj = TaskAction::where('task_id',$task_id)->get();
                 $taskEditor = TaskEditor::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
                 $otherRemainEditors = TaskEditor::where('task_id',$task_id)
-                                    ->where('user_id','!=',Auth::user()->id)->where('submit_for_approval','not submitted')->get();
+                                    ->where('user_id','!=',Auth::user()->id)->where('submit_for_approval','not_submitted')->get();
                 $otherEditorsDone = TaskEditor::where('task_id',$task_id)
                     ->where('user_id','!=',Auth::user()->id)->where('submit_for_approval','submitted')->get();
 
@@ -507,28 +559,51 @@ class TasksController extends Controller
     public function remove_task_documents(Request $request){
         $task_id = $request->input('task_id');
         $id = $request->input('id');
+        $fromEdit = $request->input('fromEdit');
 
         $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
         $taskDocumentIDHashID = new Hashids('task document id hash',10,\Config::get('app.encode_chars'));
 
         $task_id = $taskIDHashID->decode($task_id);
-        $id = $taskDocumentIDHashID->decode($id);
 
-        if(empty($task_id) || empty($id)){
+        if(empty($task_id)){
             return \Response::json(['success'=>false]);
         }
-
         $task_id = $task_id[0];
-        $id= $id[0];
 
-        $taskDocumentObj = TaskDocuments::where('task_id',$task_id)->where('id',$id)->get();
-
-        if(count($taskDocumentObj) > 0){
-            TaskDocuments::where('task_id',$task_id)->where('id',$id)->delete();
-            return \Response::json(['success'=>true]);
+        if($fromEdit  == "yes"){
+            $taskHistoryObj = TaskEditor::join('task_history','task_editors.task_history_id','=','task_history.id')
+                            ->where('task_id',$task_id)->where('user_id',Auth::user()->id)->orderBy('task_history.id','desc')->first();
+            if(!empty($taskHistoryObj)){
+                $taskDocuments = json_decode($taskHistoryObj->task_documents);
+                if(!empty($taskDocuments)){
+                    foreach($taskDocuments as $index=>$document)
+                    {
+                        if($id == $index){
+                            if(file_exists($document->file_path))
+                                unlink($document->file_path);
+                            unset($taskDocuments[$index]);
+                        }
+                    }
+                    TaskHistory::find($taskHistoryObj->id)->update(['task_documents'=>json_encode($taskDocuments)]);
+                    return \Response::json(['success'=>true]);
+                }
+            }
         }
-        else
-            return \Response::json(['success'=>false]);
+        else{
+            $id = $taskDocumentIDHashID->decode($id);
+            if(empty($id)){
+                return \Response::json(['success'=>false]);
+            }
+            $id= $id[0];
+            $taskDocumentObj = TaskDocuments::where('task_id',$task_id)->where('id',$id)->get();
+
+            if(count($taskDocumentObj) > 0){
+                TaskDocuments::where('task_id',$task_id)->where('id',$id)->delete();
+                return \Response::json(['success'=>true]);
+            }
+        }
+        return \Response::json(['success'=>false]);
     }
 
     /**
@@ -655,7 +730,18 @@ class TasksController extends Controller
 
                     TaskEditor::where('task_id',$task_id)->where('user_id',Auth::user()->id)->update(['submit_for_approval'=>'submitted',
                         'first_user_to_submit'=>$first_user_to_submit]);
-                    return \Response::json(['success'=>true]);
+
+                    $taskEditorObj =  TaskEditor::where('task_id',$task_id)->where('submit_for_approval','not_submitted')->count();
+                    if($taskEditorObj == 0){
+                        $taskObj = Task::find($task_id);
+                        if(!empty($taskObj)){
+                            $taskObj->update(['status'=>'awaiting_approval']);
+                            return \Response::json(['success'=>true,'status'=>'awaiting_approval']);
+                        }
+                    }
+
+
+                    return \Response::json(['success'=>true,'status'=>'']);
                 }
             }
         }

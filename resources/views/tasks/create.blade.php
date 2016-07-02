@@ -215,9 +215,9 @@
                 <div class="input-icon right">
                         <!--<span class="label label-default" style="line-height: 33px;padding:7px 6px;">-->
                     <span>
-                        {{ucfirst($taskObj->status)}}
+                        {{\App\SiteConfigs::task_status($taskObj->status)}}
                         <!--</span>-->
-                        @if(!empty($taskEditor) && $taskEditor->submit_for_approval == "not submitted")
+                        @if($taskObj->status == "editable" && !empty($taskEditor) && $taskEditor->submit_for_approval == "not_submitted")
                             @if(count($otherEditorsDone) > 0)
                                 ({{count($otherEditorsDone).' task editor submitted this task for Approval'}}
                                 @if(!empty($availableDays))
@@ -225,10 +225,11 @@
                                 @endif
                             @endif
 
-
+                        @if($taskObj->status == "editable")
                         (<a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a>)
+                        @endif
 
-                        @elseif(count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted")
+                        @elseif($taskObj->status == "editable" && count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted")
                             ( You changed this task status to "Awaiting Approval". Waiting for {{count($otherRemainEditors)}}
                               other editors to do the same)
                         @endif
@@ -249,43 +250,31 @@
                                 </tr>
                             </thead>
                             <tbody>
+
                             @if(!empty($taskDocumentsObj))
                             <?php $i=1; ?>
                                 @foreach($taskDocumentsObj as $document)
-                                    <tr>
-                                        <td>
-                                            <span>
-                                                <?php $doc_name = explode("/",$document->file_path); ?>
-                                                <a href="{!! url($document->file_path) !!}" target="_blank">
-                                                    {{--$doc_name[count($doc_name)-1]--}}
-                                                    {{$document->file_name}}
-                                                </a>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="remove-row text-danger" data-task_id="{{$taskIDHashID->encode($taskObj->id)}}"
-                                               data-id="{{$taskDocumentIDHashID->encode($document->id)}}">
-                                                <i class="fa fa-remove"></i>
-                                            </a>
-                                            <?php $addMoreUnitClass = ""; ?>
-                                            @if(count($taskDocumentsObj) > 1)
-                                            <?php $addMoreUnitClass = "hide";?>
-                                            @endif
-                                            @if(count($taskDocumentsObj) == $i)
-                                            <?php $addMoreUnitClass = "";?>
-                                            @endif
-                                            <span class="{{$addMoreUnitClass}}">
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                                <a href="#" class="addMoreUnit">
-                                                    <i class="fa fa-plus"></i>
-                                                </a>
-                                            </span>
-                                        </td>
-                                    </tr>
+                                    @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'no'])
                                 @endforeach
-                                @include('tasks.partials.document_upload')
+                                @if(!empty($taskObj->task_documents))
+                                    @foreach($taskObj->task_documents as $arr_index=>$document)
+                                        <?php $document = (object)$document; $document->id=$arr_index; ?>
+                                        @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'yes'])
+                                    @endforeach
+                                @endif
+                                @if(empty($taskObj) || ($taskObj->status == "editable"))
+                                    @include('tasks.partials.document_upload')
+                                @endif
                             @else
-                                @include('tasks.partials.document_upload')
+                                @if(!empty($taskObj->task_documents))
+                                    @foreach($taskObj->task_documents as $arr_index=>$document)
+                                        <?php $document = (object)$document; $document->id=$arr_index; ?>
+                                        @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'yes'])
+                                    @endforeach
+                                @endif
+                                @if(empty($taskObj) || ($taskObj->status == "editable"))
+                                    @include('tasks.partials.document_upload')
+                                @endif
                             @endif
                             </tbody>
                         </table>
@@ -317,13 +306,15 @@
         </div>
         <div class="row form-group">
             <div class="col-sm-12 ">
-                <button class="btn orange-bg" id="create_objective" type="submit">
+
+                <button class="btn orange-bg" id="create_objective" type="submit"  @if(empty($taskObj) || ($taskObj->status != "editable")) disabled="disabled" @endif>
                     @if(!empty($taskObj))
                         <span class="glyphicon glyphicon-edit"></span> Update Task
                     @else
                         <span class="glyphicon glyphicon-plus"></span> Create Task
                     @endif
                 </button>
+                
             </div>
         </div>
     </form>

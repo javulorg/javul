@@ -22,6 +22,14 @@ class TaskEditor extends Model
      *
      * @var array
      */
-    protected $fillable = ['task_id','user_id','submit_for_approval','first_user_to_submit'];
+    protected $fillable = ['task_id','task_history_id','user_id','submit_for_approval','first_user_to_submit'];
+
+    public function task(){
+        return $this->belongsTo('App\Task');
+    }
+
+    public function task_history(){
+        return $this->hasMany('App\TaskHistory');
+    }
 
 }

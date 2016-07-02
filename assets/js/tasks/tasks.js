@@ -272,6 +272,7 @@ $(document).ready(function() {
         var index_tr = $(".documents").find("tbody").find("tr").index($(this));
         var id = $(this).attr('data-id');
         var task_id = $(this).attr('data-task_id');
+        var fromEdit = $(this).attr('data-from_edit');
         $that = $(this);
         if($.trim(id) != "" && $.trim(task_id) != ""){
             addEditedFieldName("remove_doc");
@@ -279,7 +280,7 @@ $(document).ready(function() {
             $.ajax({
                 type:'get',
                 url:siteURL+'/tasks/remove_task_document',
-                data:{id:id,task_id:task_id},
+                data:{id:id,task_id:task_id,fromEdit:fromEdit },
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
@@ -322,12 +323,15 @@ $(document).ready(function() {
                 success:function(resp){
                     if(resp.success){
                         toastr['success']('Request submitted successfully.', '');
+                        if($.trim(resp.status) != "" && resp.status == "awaiting_approval")
+                            window.location.reload(true);
                     }
                     else
                         toastr['error']('Something goes wrong. please try again later.', '');
                 }
             })
         }
+        return false;
     });
 
     // if edit task then only bind keyup event to all field to get field name which are getting change
