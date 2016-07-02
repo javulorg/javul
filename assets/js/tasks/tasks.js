@@ -274,8 +274,7 @@ $(document).ready(function() {
         var task_id = $(this).attr('data-task_id');
         $that = $(this);
         if($.trim(id) != "" && $.trim(task_id) != ""){
-            var field_name = "remove_doc";
-            addEditedFieldName(field_name);
+            addEditedFieldName("remove_doc");
 
             $.ajax({
                 type:'get',
