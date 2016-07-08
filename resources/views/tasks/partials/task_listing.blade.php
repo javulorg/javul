@@ -16,9 +16,12 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
         {!! \App\JobSkill::getSkillNameLink($task->skills) !!}
     </td>
     <td>
-        @if(empty($task->assigned_to))
-        -
+        @if(empty($task->assign_to))
+            -
         @else
+            <a href="{!! url('userprofiles/'.$userIDHashID->encode($task->assign_to).'/'.strtolower(\App\User::getUserName($task->assign_to))) !!}">
+                {{\App\User::getUserName($task->assign_to)}}
+            </a>
         @endif
     </td>
     <td>{{ucfirst($task->status)}}</td>
@@ -39,12 +42,11 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
             @endif
         @elseif($task->status == "approval")
             @if(\App\TaskBidder::checkBid($task->id))
-                <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)) !!}" class="btn btn-xs
-                                             btn-primary">
+                <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)) !!}" class="btn btn-xs btn-primary">
                     <!--<span><img src="{!! url('assets/images/bid_small.png') !!}"/></span>-->
                     Bid now
                 </a>
-        @else
+            @else
                 <a title="applied bid" class="btn btn-xs btn-warning">
                     Applied Bid
                 </a>

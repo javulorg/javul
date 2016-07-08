@@ -65,4 +65,12 @@ class User extends Authenticatable
     {
         return $this->first_name . " " . $this->last_name;
     }
+
+    public static function getUserName($user_id){
+        $userObj = self::find($user_id);
+        if(!empty($userObj)){
+            return $userObj->first_name.' '.$userObj->last_name;
+        }
+        return '';
+    }
 }

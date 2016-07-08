@@ -16,11 +16,13 @@
         <div class="col-sm-12">
             <div class="col-sm-12 grey-bg unit_description">
                 <h2 class="unit-heading"><span class="glyphicon glyphicon-edit"></span> &nbsp; <strong>{{$taskObj->name}}</strong></h2>
-                <div class="form-group">
-                    <a class="btn orange-bg" id="edit_task" href="{!! url('tasks/'.$taskIDHashID->encode($taskObj->id).'/edit')!!}"><span
-                            class="glyphicon glyphicon-pencil"></span> &nbsp;
-                        {!! trans('messages.edit_task') !!}</a>
-                </div>
+                @if($taskObj->status == "editable")
+                    <div class="form-group">
+                        <a class="btn orange-bg" id="edit_task" href="{!! url('tasks/'.$taskIDHashID->encode($taskObj->id).'/edit')!!}"><span
+                                class="glyphicon glyphicon-pencil"></span> &nbsp;
+                            {!! trans('messages.edit_task') !!}</a>
+                    </div>
+                @endif
                 <div class="panel">
                     <div class="panel-body">
                         <div class="row">
@@ -51,6 +53,9 @@
                 <li><a href="#task_actions" data-toggle="tab">Task Actions</a></li>
                 <li><a href="#objective_details" data-toggle="tab">Objective Details</a></li>
                 <li><a href="#unit_details" data-toggle="tab">Unit Details</a></li>
+                @if(!empty($taskBidders))
+                <li><a href="#task_bidders" data-toggle="tab">Task Bidders</a></li>
+                @endif
             </ul>
             <div id="my-tab-content" class="tab-content">
                 <div class="list-group tab-pane active" id="task_details">
@@ -143,6 +148,9 @@
                         {!! $taskObj->unit->description !!}
                     </div>
                 </div>
+                @if(!empty($taskBidders))
+                    @include('tasks.partials.task_bidders_list',['taskBidders'=>$taskBidders,'taskObj'=>$taskObj])
+                @endif
             </div>
         </div>
     </div>
@@ -151,9 +159,44 @@
 @include('elements.footer')
 @endsection
 @section('page-scripts')
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-top-right",
+        "onclick": null,
+        "showDuration": "1000",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+</script>
 <script type="text/javascript">
     $(function(){
         $('#tabs').tab();
+
+        $(".assign_now").on('click',function(){
+            var uid = $(this).attr('data-uid');
+            var tid = $(this).attr('data-tid');
+            if($.trim(uid) != "" && $.trim(tid) != ""){
+                $.ajax({
+                    type:'get',
+                    url:siteURL+'/tasks/assign',
+                    data:{uid:uid,tid:tid },
+                    dataType:'json',
+                    success:function(resp){
+                        if(resp.success){
+                            toastr['success']('Task assign successfully', '');
+                            window.location.reload(true);
+                        }
+                    }
+                })
+            }
+        });
     })
 </script>
 @endsection

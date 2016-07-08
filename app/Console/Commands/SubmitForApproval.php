@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Task;
 use App\TaskEditor;
 use Illuminate\Console\Command;
 
@@ -20,16 +21,6 @@ class SubmitForApproval extends Command
      * @var string
      */
     protected $description = 'Submit for approval all task editors after 7 days of edit.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -53,6 +44,9 @@ class SubmitForApproval extends Command
                         }
                     }
                 }
+                $taskObj = Task::find($task->task_id);
+                if(!empty($taskObj ))
+                    $taskObj->update(['status'=>'approval']);
             }
         }
     }

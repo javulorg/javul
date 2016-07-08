@@ -8,6 +8,7 @@ use App\JobSkill;
 use App\Objective;
 use App\SiteActivity;
 use App\Task;
+use App\TaskBidder;
 use App\Unit;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
@@ -59,5 +60,17 @@ class UserController extends Controller
             }
         }
         return view('errors.404');
+    }
+
+    public function my_tasks(){
+        $myBids = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')->where('task_bidders.user_id',
+            Auth::user()->id)->whereNull('task_bidders.status')->select(['tasks.name','tasks.slug','tasks.status as task_status',
+                'task_bidders.*'])->get();
+        $myAssignedTask = Task::where('status','in_progress')->where('assign_to',Auth::user()->id)->get();
+
+        view()->share('myBids',$myBids);
+        view()->share('myAssignedTask',$myAssignedTask);
+
+        return view('users.my_tasks');
     }
 }

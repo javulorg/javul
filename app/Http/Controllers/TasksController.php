@@ -646,11 +646,32 @@ class TasksController extends Controller
             if(!empty($task_id)){
                 $task_id = $task_id[0];
                 $taskObj = Task::with(['objective','task_documents'])->find($task_id);
+                if(empty($taskObj))
+                    return ('errors.404');
+
                 $taskObj->unit=[];
                 if(!empty($taskObj->objective))
                     $taskObj->unit = Unit::getUnitWithCategories($taskObj->objective->unit_id);
                 if(!empty($taskObj)){
                     view()->share('taskObj',$taskObj );
+
+                    // to display listing of bidders to task creator or unit admin of this task.
+                    /*$flag = Task::isTaskCreator($task_id);
+                    if(!$flag ){
+                        $flag =Task::isUnitAdminOfTask($task_id);
+                    }*/
+
+                    $flag =Task::isUnitAdminOfTask($task_id); // right now considered only unit admin can assigned task to bidder if they
+                    // want task creator can also assign task to bidder then remove this and uncomment above lines
+                    $taskBidders = [];
+                    if($flag){
+                        $taskBidders = TaskBidder::join('users','task_bidders.user_id','=','users.id')
+                                        ->select(['users.first_name','users.last_name','users.id as user_id','task_bidders.*'])
+                                        ->where('task_id',$task_id)->get();
+                    }
+                    view()->share('taskBidders',$taskBidders);
+                    // end display listing of bidders
+
                     return view('tasks.view');
                 }
             }
@@ -713,6 +734,7 @@ class TasksController extends Controller
      */
     public function submit_for_approval(Request $request){
         $task_id = $request->input('task_id');
+        $task_id_encoded=$task_id;
         if(!empty($task_id)){
             $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
@@ -738,6 +760,27 @@ class TasksController extends Controller
                             //$taskObj->update(['status'=>'awaiting_approval']);
                             $taskObj->update(['status'=>'approval']);
                             return \Response::json(['success'=>true,'status'=>'awaiting_approval']);
+
+
+                            // add activity point for submit for approval task.
+                            ActivityPoint::create([
+                                'user_id'=>Auth::user()->id,
+                                'task_id'=>$task_id,
+                                'points'=>2,
+                                'comments'=>'Task Approved',
+                                'type'=>'task'
+                            ]);
+
+                            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                            $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                    .Auth::user()->first_name.' '.Auth::user()->last_name
+                                    .'</a> submitted task approval <a href="'.url('tasks/'.$task_id_encoded.'/'.$taskObj->slug).'">'
+                                    .$taskObj->name.'</a>'
+                            ]);
                         }
                     }
 
@@ -751,11 +794,15 @@ class TasksController extends Controller
 
     public function bid_now(Request $request,$task_id){
         if(!empty($task_id)){
+            $task_id_encoded = $task_id;
             $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
+
             if(!empty($task_id)){
                 $task_id = $task_id[0];
                 $taskObj = Task::find($task_id);
+                if($taskObj->status != "approval")
+                    return \Redirect::to('/tasks');
                 if(!empty($taskObj)){
                     if($request->isMethod('post')){
 
@@ -793,6 +840,18 @@ class TasksController extends Controller
                             'first_to_bid'=>$first_to_bid,
                             'charge_type'=>$chargeAmountType
                         ]);
+
+                        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                        SiteActivity::create([
+                            'user_id'=>Auth::user()->id,
+                            'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name
+                                .'</a> bid <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                                .$taskObj->name.'</a>'
+                        ]);
+
                         $request->session()->flash('msg_val', "Task bid successfully!!!");
                         return redirect('tasks');
                     }
@@ -805,6 +864,178 @@ class TasksController extends Controller
                         view()->share('taskObj',$taskObj);
                         return view('tasks.bid_now');
                     }
+                }
+            }
+        }
+        return view('errors.404');
+    }
+
+    public function assign_task(Request $request){
+        $user_id = $request->input('uid');
+        $task_id = $request->input('tid');
+        $task_id_encoded =$task_id;
+        if(!empty($task_id) && !empty($user_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+
+            $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $user_id = $userIDHashID->decode($user_id);
+
+            if(!empty($task_id) && !empty($user_id)){
+                $task_id = $task_id[0];
+                $user_id = $user_id[0];
+                $taskObj = Task::find($task_id);
+                $userObj = User::find($user_id);
+                if(!empty($taskObj) && !empty($userObj)){
+                    $taskBidderObj = TaskBidder::where('task_id',$task_id)->where('user_id',$user_id)->first();
+                    if(!empty($taskBidderObj)){
+                        $taskBidderObj->update(['status'=>'offer_sent']);
+                        Task::where('id','=',$task_id)->update(['status'=>'assigned','assign_to'=>$user_id]);
+
+                        // add activity point for submit for approval task.
+                        ActivityPoint::create([
+                            'user_id'=>Auth::user()->id,
+                            'task_id'=>$task_id,
+                            'points'=>3,
+                            'comments'=>'Bid Selection',
+                            'type'=>'task'
+                        ]);
+
+                        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        $loggedin_user_id = $userIDHashID->encode(Auth::user()->id);
+                        $user_id = $userIDHashID->encode($user_id);
+
+                        SiteActivity::create([
+                            'user_id'=>Auth::user()->id,
+                            'comment'=>'<a href="'.url('userprofiles/'.$loggedin_user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name
+                                .'</a> assigned <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                                .$taskObj->name.'</a> to <a href="'.url('userprofiles/'.$user_id .'/'.strtolower($userObj->first_name.'_'.$userObj->last_name)).'">'
+                                .$userObj->first_name.' '.$userObj->last_name
+                                .'</a>'
+                        ]);
+                    }
+                    return \Response::json(['success'=>true]);
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
+    }
+
+    public function check_assigned_task(){
+        $taskBidderObj = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')
+                        ->where('task_bidders.status','=','offer_sent')
+                        ->where('task_bidders.user_id',Auth::user()->id)
+                        ->select(['tasks.name','tasks.slug','task_bidders.*'])
+                        ->first();
+        if(!empty($taskBidderObj)){
+
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->encode($taskBidderObj->task_id);
+
+           /* $html = "Your bid has been selected and task (<a href='".url('tasks/'.$task_id.'/'.$taskBidderObj->slug)."'>".$taskBidderObj->name."</a>) " .
+                "has been assigned to you.";*/
+
+            $html = "Your bid has been selected and task(<b>".$taskBidderObj->name."</b>) has been assigned to you.";
+
+            return \Response::json(['success'=>true,'html'=>$html,'task_id'=>$task_id]);
+
+        }
+        return \Response::json(['success'=>false]);
+    }
+
+    public function accept_offer(Request $request){
+        $task_id = $request->input('task_id');
+        $task_id_encoded=$task_id;
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::find($task_id);
+                if(!empty($taskObj)){
+                    $taskObj->update(['status'=>'in_progress']);
+                    $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
+                    if(!empty($taskBidder)){
+                        $taskBidder->update(['status'=>'offer_accepted']);
+                    }
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a> accept offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                            .$taskObj->name.'</a>'
+                    ]);
+
+                }
+            }
+        }
+        return \Response::json(['success'=>true]);
+    }
+
+    public function reject_offer(Request $request){
+        $task_id = $request->input('task_id');
+        $task_id_encoded =$task_id;
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::find($task_id);
+                if(!empty($taskObj)){
+                    $taskObj->update(['assign_to'=>null,'status'=>'awaiting_assignment']);
+                    $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
+                    if(!empty($taskBidder)){
+                        $taskBidder->update(['status'=>'offer_rejected']);
+                    }
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a> reject offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                            .$taskObj->name.'</a>'
+                    ]);
+                }
+            }
+        }
+        return \Response::json(['success'=>true]);
+    }
+
+    public function get_biding_details(Request $request){
+        $id = $request->input('id');
+        if(!empty($id)){
+            $taskBidder = TaskBidder::find($id);
+            if(!empty($taskBidder)){
+                $html = '<div class="row "><div class="col-sm-12 form-group">' .
+                        '<label class="control-label" style="width:100%;font-weight:bold">Amount</label><span>'.$taskBidder->amount.
+                        '</div><div class="col-sm-12 form-group">' .
+                        '<label class="control-label" style="width:100%;font-weight:bold">Charge Type</label><span>'.$taskBidder->charge_type.
+                        '</div><div class="col-sm-12 form-group">' .
+                        '<label class="control-label" style="width:100%;font-weight:bold">Comment</label><span>'.$taskBidder->comment.
+                        '</div></div>';
+            return \Response::json(['success'=>true,'html'=>$html]);
+            }
+
+        }
+        return \Response::json(['success'=>false]);
+    }
+
+    public function complete_task(Request $request,$task_id){
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::where('id','=',$task_id)->where('assign_to',Auth::user()->id)->where('status','in_progress')->get();
+                if(!empty($taskObj)){
+                    view()->share('taskObj',$taskObj);
+                    //return view('tasks.partials.complete_task');
                 }
             }
         }

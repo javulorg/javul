@@ -16,6 +16,7 @@ Route::get('/home', 'HomeController@index');
 Route::get('/account/logout', 'AccountController@logout');
 Route::any('/userprofiles/{user_id}','UserController@user_profile');
 Route::any('/userprofiles/{user_id}/{slug}','UserController@user_profile');
+Route::get('/my_tasks','UserController@my_tasks');
 Route::auth();
 
 
@@ -55,11 +56,18 @@ Route::any('objectives/{objectiveid}/{slug}', 'ObjectivesController@view');
 Route::any('tasks/add', 'TasksController@create');
 Route::any('tasks/{unitid}/{objectiveid}/add', 'TasksController@create');
 Route::post('tasks/get_objective', 'TasksController@get_objective');
+Route::get('tasks/get_biding_details','TasksController@get_biding_details');
+Route::get('tasks/check_assigned_task', 'TasksController@check_assigned_task');
+Route::get('tasks/accept_offer', 'TasksController@accept_offer');
+Route::get('tasks/reject_offer', 'TasksController@reject_offer');
 Route::any('tasks/remove_task_document', 'TasksController@remove_task_documents');
 Route::any('tasks/submit_for_approval', 'TasksController@submit_for_approval');
 Route::get('tasks/delete_task', 'TasksController@delete_task');
+Route::get('tasks/assign', 'TasksController@assign_task');
+Route::get('tasks/complete_task/{task_id}','TasksController@complete_task');
 Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
+
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 
 

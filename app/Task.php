@@ -104,4 +104,34 @@ class Task extends Model
         // delete Task
         self::find($task_id)->delete();
     }
+
+
+    /**
+     * function will check the loggedin user is creator of task or not.
+     * @param $task_id
+     * @return bool
+     */
+    public static function isTaskCreator($task_id){
+        $taskObj = self::find($task_id);
+        if(!empty($taskObj)){
+            if($taskObj->user_id == \Auth::user()->id)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * function will check whether loggedin user is creator of task's unit or not
+     * @param $task_id
+     * @return bool
+     */
+    public static function isUnitAdminOfTask($task_id){
+        $taskObj = self::find($task_id);
+        if(!empty($taskObj)){
+            $unitObj = Unit::where('id',$taskObj->unit_id)->where('units.user_id','=',\Auth::user()->id)->count();
+            if($unitObj  > 0)
+                return true;
+        }
+        return false;
+    }
 }

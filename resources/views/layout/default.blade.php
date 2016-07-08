@@ -67,6 +67,7 @@ License: You must have a valid license purchased only from themeforest(the above
         </div>
         <script>
             var siteURL = '{!! url('') !!}';
+            var login = '{{ \Auth::check() }}';
         </script>
         <!--[if lt IE 9]>
         <script src="{!! url('assets/plugins/respond.min.js') !!}"></script>
