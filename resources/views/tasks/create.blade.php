@@ -26,33 +26,7 @@
                     @endif
                 </h1><br /><br />
             </div>
-            <div class="col-sm-6 grey-bg unit_grey_screen_height">
-                <div class="row">
-                    <div class="col-sm-offset-4 col-sm-8">
-                        <div class="panel form-group marginTop10">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <strong>Task Information</strong>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6">Total Tasks</div>
-                                    <div class="col-xs-6 text-right">{{$totalTasks}}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6">{!! trans('messages.total_fund_available') !!}</div>
-                                    <div class="col-xs-6 text-right">XXX $</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6">{!! trans('messages.total_fund_rewarded') !!}</div>
-                                    <div class="col-xs-6 text-right">XXXX $</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @include('tasks.partials.task_information')
         </div>
     </div>
     <form role="form" method="post" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data">
@@ -129,7 +103,7 @@
                 <label class="control-label">Task Skills</label>
                 <div class="input-icon right">
                     <i class="fa select-error"></i>
-                    <select name="task_skills" class="form-control" id="task_skills" multiple="multiple">
+                    <select name="task_skills[]" class="form-control" id="task_skills" multiple="multiple">
                         <option value="">Select</option>
                         @if(!empty($task_skills))
                             @foreach($task_skills as $skill_id=>$skill)
@@ -256,22 +230,10 @@
                                 @foreach($taskDocumentsObj as $document)
                                     @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'no'])
                                 @endforeach
-                                @if(!empty($taskObj->task_documents))
-                                    @foreach($taskObj->task_documents as $arr_index=>$document)
-                                        <?php $document = (object)$document; $document->id=$arr_index; ?>
-                                        @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'yes'])
-                                    @endforeach
-                                @endif
                                 @if(empty($taskObj) || ($taskObj->status == "editable"))
                                     @include('tasks.partials.document_upload')
                                 @endif
                             @else
-                                @if(!empty($taskObj->task_documents))
-                                    @foreach($taskObj->task_documents as $arr_index=>$document)
-                                        <?php $document = (object)$document; $document->id=$arr_index; ?>
-                                        @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'yes'])
-                                    @endforeach
-                                @endif
                                 @if(empty($taskObj) || ($taskObj->status == "editable"))
                                     @include('tasks.partials.document_upload')
                                 @endif
@@ -307,7 +269,8 @@
         <div class="row form-group">
             <div class="col-sm-12 ">
 
-                <button class="btn orange-bg" id="create_objective" type="submit"  @if(empty($taskObj) || ($taskObj->status != "editable")) disabled="disabled" @endif>
+                <button id="create_objective" type="submit"  @if(!empty($taskObj) && ($taskObj->status !="editable"))
+                class="btn" disabled="disabled" style="background-color:#e1672c;"@else class="btn orange-bg" @endif>
                     @if(!empty($taskObj))
                         <span class="glyphicon glyphicon-edit"></span> Update Task
                     @else

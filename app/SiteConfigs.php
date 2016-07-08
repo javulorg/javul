@@ -27,7 +27,8 @@ class SiteConfigs extends Model
    }
 
     public static function task_status($status=''){
-        $task_status = ['editable'=>'Editable','awaiting_approval'=>'Awaiting Approval','open_for_bidding'=>'Open for Bidding'];
+        $task_status = ['editable'=>'Editable','awaiting_approval'=>'Awaiting Approval','approval'=>'Approval',
+            'open_for_bidding'=>'Open for Bidding'];
         if(!empty($status) && isset($task_status[$status]))
             return $task_status[$status];
         return $task_status;

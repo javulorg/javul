@@ -11,6 +11,7 @@ use App\SiteActivity;
 use App\SiteConfigs;
 use App\State;
 use App\Task;
+use App\TaskBidder;
 use App\Unit;
 use App\UnitCategory;
 use Illuminate\Http\Request;
@@ -321,11 +322,19 @@ class UnitsController extends Controller
                     $objectives = Objective::where('unit_id',$unit_id)->get();
                     $tasks = Task::where('objective_id',1)->get();
                     $related_units = RelatedUnit::getRelatedUnitName($unit_id);
+                    $taskForBidding = Task::where('unit_id', '=', $unit_id)->where('status', '=', "approval")->count();
+                    $taskBidders = Task::join('task_bidders','tasks.id','=','task_bidders.task_id')->where('task_bidders.user_id',
+                        Auth::user()->id)->where('unit_id',$unit_id)->where('tasks.status', '=', "approval")->count();
+
+                    if($taskForBidding > 0)
+                        $taskForBidding = $taskForBidding - $taskBidders;
 
                     if($unit->country_id == 247)
                         $cityName = "Global";
                     else
                         $cityName = City::find($unit->city_id)->name;
+
+                    view()->share('taskForBidding',$taskForBidding);
                     view()->share('cityName',$cityName);
                     view()->share('related_units',$related_units);
                     view()->share('unitObj',$unit );
@@ -390,6 +399,23 @@ class UnitsController extends Controller
         return \Response::json(['success'=>false]);
     }
 
+
+    public function available_bids($unit_id){
+        if(!empty($unit_id)){
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id = $unit_id[0];
+                $unitObj = Unit::find($unit_id);
+                if(!empty($unitObj)){
+                    $taskObj = Task::where('unit_id', '=', $unit_id)->where('status', '=', "approval")->get();
+                    view()->share('taskObj',$taskObj);
+                    return view('tasks.available_for_bid');
+                }
+            }
+        }
+        return view('errors.404');
+    }
     public function show()
     {
 

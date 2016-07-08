@@ -152,10 +152,16 @@
                                     <td></td>
                                     <td>{{ucfirst($task->status)}}</td>
                                     <td>
-                                        <a class="btn btn-xs btn-primary"
-                                           href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}" title="edit">
-                                            <span class="glyphicon glyphicon-edit"></span>
-                                        </a>
+                                        @if($task->status=="editable")
+                                            <a class="btn btn-xs btn-primary"
+                                               href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}" title="edit">
+                                                <span class="glyphicon glyphicon-edit"></span>
+                                            </a>
+                                        @elseif($task->status =="approval")
+                                            <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)) !!}" class="btn btn-xs
+                                             btn-primary">Bid now
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

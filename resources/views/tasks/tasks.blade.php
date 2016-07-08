@@ -26,47 +26,7 @@
                         <tbody>
                         @if(count($tasks) > 0 )
                             @foreach($tasks as $task)
-                                <?php $unitSlug = \App\Unit::getSlug($task->unit_id);
-                                      $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
-                                <tr>
-                                    <td><a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/'.$task->slug)!!}">{{$task->name}}</a></td>
-                                    <td>
-                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id).'/'.$objectiveSlug)!!}">
-                                            {{$task->objective_name}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id).'/'.$unitSlug) !!}">
-                                            {{$task->unit_name}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {!! \App\JobSkill::getSkillNameLink($task->skills) !!}
-                                    </td>
-                                    <td>
-                                        @if(empty($task->assigned_to))
-                                            -
-                                        @else
-                                        @endif
-                                    </td>
-                                    <td>{{ucfirst($task->status)}}</td>
-                                    <td width="11%">
-                                        @if(\Auth::check())
-                                        <a class="btn btn-xs btn-primary"
-                                           href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}" title="edit">
-                                            <span class="glyphicon glyphicon-edit"></span>
-                                        </a>
-                                        @endif
-                                        <?php $unitAdminID = \App\Task::checkUnitAdmin($task->unit_id); ?>
-                                        @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unitAdminID ==
-                                        $authUserObj->id))
-                                            <a title="delete" href="#" class="btn btn-xs btn-danger delete-task"
-                                               data-id="{{$taskIDHashID->encode($task->id)}}">
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </a>
-                                        @endif
-                                    </td>
-                                </tr>
+                                @include('tasks.partials.task_listing',['task'=>$task])
                             @endforeach
                         @else
                         <tr>

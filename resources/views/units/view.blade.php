@@ -52,6 +52,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-8">
+                                        <strong>Tasks for bidding</strong>
+                                    </div>
+                                    <div class="col-xs-4 text-right">
+                                        @if($taskForBidding > 0)
+                                        <a href="{!! url('units/available_bid/'.$unitIDHashID->encode($unitObj->id)) !!}">
+                                            {{$taskForBidding}} (bid now)
+                                        </a>
+                                        @else
+                                            <span class="badge">0</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

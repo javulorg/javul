@@ -20,7 +20,9 @@ class CreateTaskBiddersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->decimal('amount',10,2);
             $table->text('comment');
+            $table->string('first_to_bid')->default('no');
             $table->string('status')->nullable();
+            $table->string('charge_type');
             $table->timestamps();
             $table->softDeletes();
         });

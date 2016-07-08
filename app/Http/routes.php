@@ -39,6 +39,7 @@ Route::post('units/get_state', 'UnitsController@get_state');
 Route::post('units/get_city', 'UnitsController@get_city');
 
 Route::get('units/delete_unit', 'UnitsController@delete_unit');
+Route::get('units/available_bid/{unit_id}','UnitsController@available_bids');
 Route::any('units/{unitid}/{slug}', 'UnitsController@view');
 
 
@@ -54,11 +55,11 @@ Route::any('objectives/{objectiveid}/{slug}', 'ObjectivesController@view');
 Route::any('tasks/add', 'TasksController@create');
 Route::any('tasks/{unitid}/{objectiveid}/add', 'TasksController@create');
 Route::post('tasks/get_objective', 'TasksController@get_objective');
-
-Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/remove_task_document', 'TasksController@remove_task_documents');
 Route::any('tasks/submit_for_approval', 'TasksController@submit_for_approval');
 Route::get('tasks/delete_task', 'TasksController@delete_task');
+Route::any('tasks/{taskid}/edit', 'TasksController@edit');
+Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 
 

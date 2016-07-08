@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\ActivityPoint;
 use App\JobSkill;
+use App\Library\Helpers;
 use App\Objective;
 use App\SiteActivity;
 use App\Task;
 use App\TaskAction;
+use App\TaskBidder;
 use App\TaskDocuments;
 use App\TaskEditor;
 use App\TaskHistory;
@@ -180,7 +182,7 @@ class TasksController extends Controller
                 'slug'=>$slug,
                 'description'=>$request->input('description'),
                 'summary'=>$request->input('summary'),
-                'skills'=>$request->input('task_skills'),
+                'skills'=>implode(",",$request->input('task_skills')),
                 'estimated_completion_time_start'=>date('Y-m-d h:i',$start_date),
                 'estimated_completion_time_end'=>date('Y-m-d h:i',$end_date),
                 'task_action'=>$request->input('action_items'),
@@ -296,27 +298,11 @@ class TasksController extends Controller
             $task_id = $taskIDHashID->decode($task_id);
             if(!empty($task_id)){
                 $task_id = $task_id[0];
-                $tempTask = Task::find($task_id);
-
-                $taskEditorObj= TaskEditor::where('task_id',$task_id)->where('user_id',Auth::user()->id)->count();
-                if($taskEditorObj > 0){
-                    $task  = Task::join('task_editors','tasks.id','=','task_editors.task_id')
-                            ->join('task_history','task_editors.task_history_id','=','task_history.id')
-                            ->where('task_id',$task_id)->where('task_editors.user_id',Auth::user()->id)
-                            ->orderBy('task_history.id','desc')
-                            ->select(['tasks.status','task_history.*','tasks.id as id'])
-                            ->first();
-                    $task->task_documents=json_decode($task->task_documents);
-                }
-                else{
-                    $task = Task::find($task_id);
-                    $task->task_documents = [];
-                }
-
+                $task = Task::find($task_id);
 
                 // if user submit the form then update the data.
                 if($request->isMethod('post') && !empty($task)){
-                    if(!empty($tempTask) && $tempTask->status == "awaiting_approval"){
+                    if($task->status == "awaiting_approval" || $task->status == "approval"){
                         return redirect()->back()->withErrors(['unit'=>'You can\'t edit task.'])->withInput();
                     }
                     $validator = \Validator::make($request->all(), [
@@ -334,10 +320,6 @@ class TasksController extends Controller
 
                     // if user didn't change anything then just redirect to task listing page.
                     $updatedFields= $request->input('changed_items');
-                    if(empty($updatedFields)){
-                        $request->session()->flash('msg_val', "Task updated successfully!!!");
-                        return redirect('tasks');
-                    }
 
                     // check unit id exist in db
                     $unit_id = $request->input('unit');
@@ -372,13 +354,28 @@ class TasksController extends Controller
 
                     // update task
                     $slug=substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
+                    Task::where('id',$task_id)->update([
+                        'user_id'=>Auth::user()->id,
+                        'unit_id'=>$unit_id[0],
+                        'objective_id'=>$objective_id[0],
+                        'name'=>$request->input('task_name'),
+                        'slug'=>$slug,
+                        'description'=>$request->input('description'),
+                        'summary'=>$request->input('summary'),
+                        'skills'=>implode(",",$request->input('task_skills')),
+                        'estimated_completion_time_start'=>date('Y-m-d h:i',$start_date),
+                        'estimated_completion_time_end'=>date('Y-m-d h:i',$end_date),
+                        'task_action'=>trim($request->input('action_items')),
+                        'compensation'=>$request->input('compensation'),
+                        'status'=>'editable'
+                    ]);
 
                     $task_id_decoded= $task_id;
                     $taskIDHashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
                     $task_id = $taskIDHashID->encode($task_id);
 
                     // upload documents of task.
-                    $task_documents = [];
+                    $task_documents=[];
                     if($request->hasFile('documents')) {
                         $files = $request->file('documents');
                         if(count($files) > 0){
@@ -401,19 +398,21 @@ class TasksController extends Controller
                                                 @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
                                                 umask($oldumask);
                                             }
-                                            $destinationPath=$destinationPath.'/edited_task_docs';
-                                            if(!\File::exists($destinationPath)){
-                                                $oldumask = umask(0);
-                                                @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
-                                                umask($oldumask);
-                                            }
+
                                             $file_name =$file->getClientOriginalName();
                                             $extension = $file->getClientOriginalExtension(); // getting image extension
                                             $fileName = $task_id.'_'.$totalAvailableDocs . '.' . $extension; // renaming image
                                             $file->move($destinationPath, $fileName); // uploading file to given path
 
+                                            // insert record into task_documents table
                                             $task_documents[]=['task_id'=>$task_id_decoded,'file_name'=>$file_name,
-                                                'file_path'=>'uploads/tasks/'.$task_id.'/edited_task_docs/'.$fileName];
+                                                'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName];
+
+                                            TaskDocuments::create([
+                                                'task_id'=>$task_id_decoded,
+                                                'file_name'=>$file_name,
+                                                'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName
+                                            ]);
                                             $totalAvailableDocs++;
                                         }
                                     }
@@ -445,7 +444,7 @@ class TasksController extends Controller
                         'name'=>$request->input('task_name'),
                         'description'=>$request->input('description'),
                         'summary'=>$request->input('summary'),
-                        'skills'=>$request->input('task_skills'),
+                        'skills'=>implode(",",$request->input('task_skills')),
                         'estimated_completion_time_start'=>date('Y-m-d h:i',$start_date),
                         'estimated_completion_time_end'=>date('Y-m-d h:i',$end_date),
                         'task_action'=>trim($request->input('action_items')),
@@ -549,6 +548,7 @@ class TasksController extends Controller
                 return view('tasks.create');
             }
         }
+        return view('errors.404');
     }
 
     /**
@@ -735,7 +735,8 @@ class TasksController extends Controller
                     if($taskEditorObj == 0){
                         $taskObj = Task::find($task_id);
                         if(!empty($taskObj)){
-                            $taskObj->update(['status'=>'awaiting_approval']);
+                            //$taskObj->update(['status'=>'awaiting_approval']);
+                            $taskObj->update(['status'=>'approval']);
                             return \Response::json(['success'=>true,'status'=>'awaiting_approval']);
                         }
                     }
@@ -746,5 +747,67 @@ class TasksController extends Controller
             }
         }
         return \Response::json(['success'=>false]);
+    }
+
+    public function bid_now(Request $request,$task_id){
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::find($task_id);
+                if(!empty($taskObj)){
+                    if($request->isMethod('post')){
+
+                        \Validator::extend('isCurrency', function($field,$value,$parameters){
+                            //return true if field value is foo
+                            return Helpers::isCurrency($value);
+                        });
+
+                        $validator = \Validator::make($request->all(), [
+                            'amount' => 'required|isCurrency',
+                            'comment' => 'required'
+                        ],[
+                            'amount.required' => 'This field is required.',
+                            'amount.is_currency'=>'Please enter digits only'
+                        ]);
+
+                        if ($validator->fails())
+                            return redirect()->back()->withErrors($validator)->withInput();
+
+                        $taskBidders = TaskBidder::where('task_id',$task_id)->where('first_to_bid','yes')->count();
+                        $first_to_bid="no";
+                        if($taskBidders == 0)
+                           $first_to_bid ="yes";
+
+                        $chargeType = $request->input('charge_type');
+                        $chargeAmountType ="points";
+                        if($chargeType == "on")
+                            $chargeAmountType ="amount";
+
+                        TaskBidder::create([
+                           'task_id'=>$task_id,
+                            'user_id'=>Auth::user()->id,
+                            'amount'=>$request->input('amount'),
+                            'comment'=>$request->input('comment'),
+                            'first_to_bid'=>$first_to_bid,
+                            'charge_type'=>$chargeAmountType
+                        ]);
+                        $request->session()->flash('msg_val', "Task bid successfully!!!");
+                        return redirect('tasks');
+                    }
+                    else{
+                        $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
+                        $daysRemainingTobid = TaskBidder::getCountDown($task_id);
+
+                        view()->share('daysRemainingTobid',$daysRemainingTobid);
+                        view()->share('taskBidder',$taskBidder );
+                        view()->share('taskObj',$taskObj);
+                        return view('tasks.bid_now');
+                    }
+                }
+            }
+        }
+        return view('errors.404');
     }
 }
