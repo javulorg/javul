@@ -24,7 +24,7 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
             </a>
         @endif
     </td>
-    <td>{{ucfirst($task->status)}}</td>
+    <td>{{\App\SiteConfigs::task_status($task->status)}}</td>
     <td width="11%">
         @if($task->status == "editable")
             @if(\Auth::check())

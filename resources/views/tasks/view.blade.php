@@ -62,13 +62,18 @@
 
                     <div class="list-group-item">
                         <h4 class="text-orange">{!! strtoupper(trans('messages.task_status')) !!}</h4>
-                        @if(empty($taskObj->assigned_to))
+                        @if(empty($taskObj->assign_to))
                             <div>Unassigned</div>
-                        @elseif($taskObj->status == "completed")
+                        @elseif($taskObj->status == "completed" && !empty($taskObj->assign_to))
                             <div>Completed</div>
                             <div>Completed On: date 23/05/2016</div>
                         @else
-                            <div>assigned to user X</div>
+                            <div>assigned to
+                                <a href="{!! url('userprofiles/'.$userIDHashID->encode($taskObj->assign_to).'/'
+                                .str_replace(' ','_',strtolower(\App\User::getUserName($taskObj->assign_to))))!!}">
+                                {{\App\User::getUserName($taskObj->assign_to)}}
+                                </a>
+                            </div>
                         @endif
                     </div>
                     <div class="list-group-item">
