@@ -759,7 +759,7 @@ class TasksController extends Controller
                         if(!empty($taskObj)){
                             //$taskObj->update(['status'=>'awaiting_approval']);
                             $taskObj->update(['status'=>'approval']);
-                            return \Response::json(['success'=>true,'status'=>'awaiting_approval']);
+
 
 
                             // add activity point for submit for approval task.
@@ -781,6 +781,7 @@ class TasksController extends Controller
                                     .'</a> submitted task approval <a href="'.url('tasks/'.$task_id_encoded.'/'.$taskObj->slug).'">'
                                     .$taskObj->name.'</a>'
                             ]);
+                            return \Response::json(['success'=>true,'status'=>'awaiting_approval']);
                         }
                     }
 

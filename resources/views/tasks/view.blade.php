@@ -53,7 +53,7 @@
                 <li><a href="#task_actions" data-toggle="tab">Task Actions</a></li>
                 <li><a href="#objective_details" data-toggle="tab">Objective Details</a></li>
                 <li><a href="#unit_details" data-toggle="tab">Unit Details</a></li>
-                @if(!empty($taskBidders))
+                @if(!empty($taskBidders) && ($taskObj->status != "editable" && $taskObj->status != "awaiting_approval"))
                 <li><a href="#task_bidders" data-toggle="tab">Task Bidders</a></li>
                 @endif
             </ul>
@@ -148,9 +148,7 @@
                         {!! $taskObj->unit->description !!}
                     </div>
                 </div>
-                @if(!empty($taskBidders))
-                    @include('tasks.partials.task_bidders_list',['taskBidders'=>$taskBidders,'taskObj'=>$taskObj])
-                @endif
+                @include('tasks.partials.task_bidders_list',['taskBidders'=>$taskBidders,'taskObj'=>$taskObj])
             </div>
         </div>
     </div>

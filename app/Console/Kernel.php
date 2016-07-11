@@ -27,6 +27,6 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('SubmitForApproval')->daily();
+        $schedule->command('SubmitForApproval')->dailyAt('08:00');
     }
 }

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Task extends Model
 {
@@ -112,9 +113,13 @@ class Task extends Model
      * @return bool
      */
     public static function isTaskCreator($task_id){
+        $user = Auth::user();
+        if(empty($user ))
+            return false;
+
         $taskObj = self::find($task_id);
         if(!empty($taskObj)){
-            if($taskObj->user_id == \Auth::user()->id)
+            if($taskObj->user_id == Auth::user()->id)
                 return true;
         }
         return false;
@@ -126,9 +131,12 @@ class Task extends Model
      * @return bool
      */
     public static function isUnitAdminOfTask($task_id){
+        $user = Auth::user();
+        if(empty($user ))
+            return false;
         $taskObj = self::find($task_id);
         if(!empty($taskObj)){
-            $unitObj = Unit::where('id',$taskObj->unit_id)->where('units.user_id','=',\Auth::user()->id)->count();
+            $unitObj = Unit::where('id',$taskObj->unit_id)->where('units.user_id','=',Auth::user()->id)->count();
             if($unitObj  > 0)
                 return true;
         }
