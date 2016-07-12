@@ -68,6 +68,30 @@ class UserController extends Controller
                 'task_bidders.*'])->get();
         $myAssignedTask = Task::where('status','in_progress')->where('assign_to',Auth::user()->id)->get();
 
+        $myEvaluationTask =[];
+        $myCancelledTask = [];
+        if(Auth::user()->role == "superadmin"){
+            $myEvaluationTask = Task::join('task_complete','tasks.id','=','task_complete.task_id')
+                ->join('users','task_complete.user_id','=','users.id')
+                ->select(['tasks.name','slug','tasks.status','users.first_name','users.last_name','users.id as user_id',
+                    'tasks.id as task_id','task_complete.attachments','task_complete.comments'])
+                ->where('tasks.status','completion_evaluation')
+                ->groupBy('task_complete.task_id')
+                ->get();
+
+            $myCancelledTask = Task::join('task_cancel','tasks.id','=','task_cancel.task_id')
+                ->join('users','task_cancel.user_id','=','users.id')
+                ->select(['tasks.name','slug','tasks.status','users.first_name','users.last_name','users.id as user_id',
+                    'tasks.id as task_id','task_cancel.comments'])
+                ->where('tasks.status','cancelled')
+                ->groupBy('task_cancel.task_id')
+                ->get();
+            /*$myEvaluationTask = Task::with(['task_complete','task_complete.users'])
+                    ->where('status','completion_evaluation')
+                    ->get();*/
+        }
+        view()->share('myCancelledTask',$myCancelledTask);
+        view()->share('myEvaluationTask',$myEvaluationTask);
         view()->share('myBids',$myBids);
         view()->share('myAssignedTask',$myAssignedTask);
 

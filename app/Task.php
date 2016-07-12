@@ -47,6 +47,9 @@ class Task extends Model
         return $this->hasMany('App\TaskEditor');
     }
 
+    public function task_complete(){
+        return $this->hasMany('App\TaskComplete');
+    }
     /**
      * return tasks of specified conditions
      * @param string $task_type

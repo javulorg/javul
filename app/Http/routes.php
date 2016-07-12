@@ -64,7 +64,10 @@ Route::any('tasks/remove_task_document', 'TasksController@remove_task_documents'
 Route::any('tasks/submit_for_approval', 'TasksController@submit_for_approval');
 Route::get('tasks/delete_task', 'TasksController@delete_task');
 Route::get('tasks/assign', 'TasksController@assign_task');
-Route::get('tasks/complete_task/{task_id}','TasksController@complete_task');
+Route::any('tasks/cancel_task/{task_id}','TasksController@cancel_task');
+Route::any('tasks/complete_task/{task_id}','TasksController@complete_task');
+Route::any('tasks/re_assign/{task_id}','TasksController@re_assign');
+Route::get('tasks/mark_task_complete','TasksController@mark_as_complete');
 Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
 

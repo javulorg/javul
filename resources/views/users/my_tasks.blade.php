@@ -70,8 +70,12 @@
                                 <td>{{\App\SiteConfigs::task_status($assigned_task->status)}}</td>
                                 <td>
                                     <a href="{!! url('tasks/complete_task/'.$taskIDHashID->encode($assigned_task->id)) !!}"
-                                       class="btn btn-xs btn-success complete_task" >
+                                       class="btn btn-xs btn-success" >
                                         Complete Task
+                                    </a>
+                                    <a href="{!! url('tasks/cancel_task/'.$taskIDHashID->encode($assigned_task->id)) !!}"
+                                       class="btn btn-xs btn-danger" >
+                                        Cancel Task
                                     </a>
                                 </td>
                         </tr>
@@ -89,7 +93,117 @@
         </div>
     </div>
 </div>
-
+<!-- only super admin can evaluate the completed task -->
+@if($authUserObj->role == "superadmin")
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <div class="panel panel-default panel-dark-grey">
+                <div class="panel-heading">
+                    <h4>Task Evaluation</h4>
+                </div>
+                <div class="panel-body table-inner table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Task Name</th>
+                            <th>Completed By</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if(count($myEvaluationTask) > 0)
+                        @foreach($myEvaluationTask as $completed_task)
+                        <tr>
+                            <td>
+                                <a href="{!! url('tasks/'.$taskIDHashID->encode($completed_task->task_id).'/'.$completed_task->slug)!!}">
+                                    {{$completed_task->name}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{!! url('userprofiles/'.$userIDHashID->encode($completed_task->user_id).'/'.strtolower
+                                ($completed_task->first_name.'_'.$completed_task->last_name)) !!}">
+                                    {{$completed_task->first_name.' '.$completed_task->last_name}}
+                                </a>
+                            </td>
+                            <td>{{\App\SiteConfigs::task_status($completed_task->status)}}</td>
+                            <td>
+                                <a href="{!! url('tasks/complete_task/'.$taskIDHashID->encode($completed_task->task_id)) !!}"
+                                   class="btn btn-xs btn-success mark-complete" >
+                                    Mark as Complete
+                                </a>
+                                <a href="{!! url('tasks/complete_task/'.$taskIDHashID->encode($completed_task->task_id)) !!}"
+                                   class="btn btn-xs btn-danger re-assigned" >
+                                    Re Assign
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                        @else
+                        <tr>
+                            <td colspan="4">
+                                No record found.
+                            </td>
+                        </tr>
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 form-group">
+            <div class="panel panel-default panel-dark-grey">
+                <div class="panel-heading">
+                    <h4>Task Cancellation</h4>
+                </div>
+                <div class="panel-body table-inner table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Task Name</th>
+                            <th>Cancelled By</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if(count($myCancelledTask) > 0)
+                        @foreach($myCancelledTask as $cancel_task)
+                        <tr>
+                            <td>
+                                <a href="{!! url('tasks/'.$taskIDHashID->encode($cancel_task->task_id).'/'.$cancel_task->slug)!!}">
+                                    {{$cancel_task->name}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{!! url('userprofiles/'.$userIDHashID->encode($cancel_task->user_id).'/'.strtolower
+                                ($cancel_task->first_name.'_'.$cancel_task->last_name)) !!}">
+                                    {{$cancel_task->first_name.' '.$cancel_task->last_name}}
+                                </a>
+                            </td>
+                            <td>{{\App\SiteConfigs::task_status($cancel_task->status)}}</td>
+                            <td>
+                                <a href="{!! url('tasks/cancel_task/'.$taskIDHashID->encode($cancel_task->task_id)) !!}"
+                                   class="btn btn-xs btn-success mark-complete" >
+                                   Cancel Task
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                        @else
+                        <tr>
+                            <td colspan="4">
+                                No record found.
+                            </td>
+                        </tr>
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 </div>
 @endsection
 @section('page-scripts')

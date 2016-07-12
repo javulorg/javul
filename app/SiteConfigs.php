@@ -29,7 +29,8 @@ class SiteConfigs extends Model
     public static function task_status($status=''){
         $task_status = ['editable'=>'Editable','awaiting_approval'=>'Awaiting Approval','approval'=>'Approval',
             'open_for_bidding'=>'Open for Bidding','assigned'=>'Assigned','awaiting_assignment'=>'Awaiting Assignment',
-            'in_progress'=>'In Progress'];
+            'in_progress'=>'In Progress','completion_evaluation'=>'Completion Evaluation','completed'=>'Completed',
+            'cancelled'=>'Cancelled'];
         if(!empty($status) && isset($task_status[$status]))
             return $task_status[$status];
         return $task_status;

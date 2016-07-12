@@ -37,9 +37,11 @@
                             <div class="col-xs-7 text-right">{!! trans('messages.available') !!}: xxxx$</div>
                             <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
                             <div class="col-xs-7 text-right">xxx$</div>
+                            @if($taskObj->status != "completed")
                             <div class="col-xs-12 text-right">
                                 <button class="btn orange-bg btn-sm" id="add_funds">{!! trans('messages.add_funds') !!}</button>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>

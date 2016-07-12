@@ -29,10 +29,14 @@ class TaskBidder extends Model
     }
 
     public static function checkBid($task_id){
-        $cnt = self::where('task_id',$task_id)->where('user_id',\Auth::user()->id)->count();
+        $user = \Auth::user();
+        if(empty($user))
+            return false;
 
+        $cnt = self::where('task_id',$task_id)->where('user_id',\Auth::user()->id)->count();
         if($cnt > 0)
             return false;
+
         return true;
     }
 

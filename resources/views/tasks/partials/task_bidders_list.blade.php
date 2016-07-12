@@ -23,10 +23,12 @@
                     <td>
                         @if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to)
                             <a class="btn btn-xs btn-warning" style="color:#fff;">Assigned</a>
+                        @elseif($taskObj->status=="completion_evaluation" && $bidder->user_id == $taskObj->assign_to)
+                            <a class="btn btn-xs btn-success" style="color:#fff;">Completed</a>
                         @elseif($bidder->status == "offer_rejected")
                             <a class="btn btn-xs btn-danger" style="color:#fff;">Offer Rejected</a>
                         @elseif($taskObj->status=="in_progress" && $bidder->user_id == $taskObj->assign_to)
-                            <a class="btn btn-xs btn-success" style="color:#fff;">In Progress</a>
+                            <a class="btn btn-xs btn-info" style="color:#fff;">In Progress</a>
                         @elseif(empty($taskObj->assign_to))
                             <a class="btn btn-xs btn-primary assign_now"
                                data-uid="{{$userIDHashID->encode($bidder->user_id)}}"

@@ -10,6 +10,8 @@ use App\SiteActivity;
 use App\Task;
 use App\TaskAction;
 use App\TaskBidder;
+use App\TaskCancel;
+use App\TaskComplete;
 use App\TaskDocuments;
 use App\TaskEditor;
 use App\TaskHistory;
@@ -41,6 +43,10 @@ class TasksController extends Controller
             $request->session()->forget('msg_val');
             $msg_flag = true;
             $msg_type = "success";
+            if($request->session()->has('msg_type')){
+                $msg_type = $request->session()->get('msg_type');
+                $request->session()->forget('msg_type');
+            }
         }
         view()->share('msg_flag',$msg_flag);
         view()->share('msg_val',$msg_val);
@@ -925,10 +931,11 @@ class TasksController extends Controller
 
     public function check_assigned_task(){
         $taskBidderObj = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')
-                        ->where('task_bidders.status','=','offer_sent')
+                        ->whereIn('task_bidders.status',['offer_sent','re_assigned'])
                         ->where('task_bidders.user_id',Auth::user()->id)
                         ->select(['tasks.name','tasks.slug','task_bidders.*'])
                         ->first();
+
         if(!empty($taskBidderObj)){
 
             $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
@@ -937,7 +944,25 @@ class TasksController extends Controller
            /* $html = "Your bid has been selected and task (<a href='".url('tasks/'.$task_id.'/'.$taskBidderObj->slug)."'>".$taskBidderObj->name."</a>) " .
                 "has been assigned to you.";*/
 
-            $html = "Your bid has been selected and task(<b>".$taskBidderObj->name."</b>) has been assigned to you.";
+            if($taskBidderObj->status == "offer_sent"){
+                $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:0px;margin-top:10px;">'.
+                          '<a href="#" class="close" data-dismiss="alert" aria-label="close" style="display:none;">&times;</a>'.
+                          '<strong>Task Assigned!</strong> Your bid has been selected and task(<b>'.$taskBidderObj->name.'</b>) ' .
+                            'has been assigned to you.'.
+                        '<div class="pull-right">' .
+                            '<a class="btn btn-success btn-xs offer" data-task_id="'.$task_id.'" style="margin-right:5px;">Accept</a>' .
+                            '<a class="btn btn-danger btn-xs offer" data-task_id="'.$task_id.'">Reject</a></div>'.
+                        '</div>';
+            }
+            else{
+                $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:0px;margin-top:10px;">'.
+                    '<strong>Task Re-Assigned!</strong> The task (<b>'.$taskBidderObj->name.'</b>) has been re-assigned to you.' .
+                    '<a href="#" class="close" data-dismiss="alert" aria-label="close" style="display:none;">&times;</a>'.
+                    '<div class="pull-right">' .
+                        '<a class="btn btn-success btn-xs re_assigned offer" data-task_id="'.$task_id.'" style="margin-right:5px;">Ok</a>' .
+                        '<a class="btn btn-danger btn-xs re_assigned offer" data-task_id="'.$task_id.'">Cancel</a></div>'.
+                    '</div>';
+            }
 
             return \Response::json(['success'=>true,'html'=>$html,'task_id'=>$task_id]);
 
@@ -945,6 +970,11 @@ class TasksController extends Controller
         return \Response::json(['success'=>false]);
     }
 
+    /**
+     * function is used to accept the offer sent by unit admin
+     * @param Request $request
+     * @return mixed
+     */
     public function accept_offer(Request $request){
         $task_id = $request->input('task_id');
         $task_id_encoded=$task_id;
@@ -977,6 +1007,11 @@ class TasksController extends Controller
         return \Response::json(['success'=>true]);
     }
 
+    /**
+     * Function is used to reject the offer sent by unit admin.
+     * @param Request $request
+     * @return mixed
+     */
     public function reject_offer(Request $request){
         $task_id = $request->input('task_id');
         $task_id_encoded =$task_id;
@@ -1008,6 +1043,11 @@ class TasksController extends Controller
         return \Response::json(['success'=>true]);
     }
 
+    /**
+     * function is used to get bidding information.
+     * @param Request $request
+     * @return mixed
+     */
     public function get_biding_details(Request $request){
         $id = $request->input('id');
         if(!empty($id)){
@@ -1028,18 +1068,276 @@ class TasksController extends Controller
     }
 
     public function complete_task(Request $request,$task_id){
+        $task_id_encoded=$task_id;
         if(!empty($task_id)){
             $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
             if(!empty($task_id)){
                 $task_id = $task_id[0];
-                $taskObj = Task::where('id','=',$task_id)->where('assign_to',Auth::user()->id)->where('status','in_progress')->get();
+                $taskCompleteObj  = TaskComplete::join('users','task_complete.user_id','=','users.id')
+                    ->where('task_id',$task_id)
+                    ->select(['task_complete.*','users.first_name','users.last_name'])
+                    ->orderBy('id','asc')
+                    ->get();
+                if(Auth::user()->role == "superadmin")
+                    $taskObj = Task::where('id','=',$task_id)->first();
+                else
+                    $taskObj = Task::where('id','=',$task_id)->where('assign_to',Auth::user()->id)->where('status','in_progress')->first();
                 if(!empty($taskObj)){
-                    view()->share('taskObj',$taskObj);
-                    //return view('tasks.partials.complete_task');
+                    if($request->isMethod('post')){
+                        $validator = \Validator::make($request->all(), [
+                            'comment' => 'required'
+                        ]);
+
+                        if ($validator->fails())
+                            return redirect()->back()->withErrors($validator)->withInput();
+
+                        // upload documents of task.
+                        $task_documents=[];
+                        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
+                        if($request->hasFile('attachments')) {
+                            $files = $request->file('attachments');
+                            if(count($files) > 0){
+                                $totalAvailableDocs = TaskComplete::where('task_id',$task_id)->get();
+                                $totalAvailableDocs= count($totalAvailableDocs) + 1;
+                                foreach($files as $index=>$file){
+                                    if(!empty($file)){
+
+                                        $rules = ['attachments' => 'required', 'extension' => 'required|in:doc,docx,pdf,txt,jpg,png,ppt,pptx,jpeg,doc,xls,xlsx'];
+                                        $fileData = ['attachments' => $file, 'extension' => strtolower($file->getClientOriginalExtension())];
+                                        // doing the validation, passing post data, rules and the messages
+                                        $validator = \Validator::make($fileData, $rules);
+                                        if (!$validator->fails()) {
+                                            if ($file->isValid()) {
+                                                $destinationPath = base_path().'/uploads/tasks/'.$task_id_encoded; // upload path
+                                                if(!\File::exists($destinationPath)){
+                                                    $oldumask = umask(0);
+                                                    @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
+                                                    umask($oldumask);
+                                                }
+
+                                                $destinationPath =$destinationPath.'/completed_docs';
+                                                if(!\File::exists($destinationPath)){
+                                                    $oldumask = umask(0);
+                                                    @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
+                                                    umask($oldumask);
+                                                }
+
+                                                $destinationPath =$destinationPath.'/'.$user_id_encoded;
+                                                if(!\File::exists($destinationPath)){
+                                                    $oldumask = umask(0);
+                                                    @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
+                                                    umask($oldumask);
+                                                }
+
+                                                $file_name =$file->getClientOriginalName();
+                                                $extension = $file->getClientOriginalExtension(); // getting image extension
+                                                $fileName = $task_id_encoded.'_'.$totalAvailableDocs . '.' . $extension; // renaming image
+                                                $file->move($destinationPath, $fileName); // uploading file to given path
+
+                                                // insert record into task_documents table
+                                                $task_documents[]=['file_name'=>$file_name,
+                                                    'file_path'=>'uploads/tasks/'.$task_id_encoded.'/completed_docs/'.$user_id_encoded.'/'.$fileName];
+
+                                                $totalAvailableDocs++;
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
+                        TaskComplete::create([
+                            'user_id'=>Auth::user()->id,
+                            'task_id'=>$task_id,
+                            'attachments'=>json_encode($task_documents),
+                            'comments'=>$request->input('comment')
+                        ]);
+
+                        $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->where('task_bidders.status',
+                            'offer_accepted')->first();
+                        if(!empty($taskBidder))
+                            $taskBidder->update(['status'=>'task_completed']);
+
+                        Task::find($task_id)->update(['status'=>'completion_evaluation']);
+
+                        // add activity point for submit for approval task.
+                        ActivityPoint::create([
+                            'user_id'=>Auth::user()->id,
+                            'task_id'=>$task_id,
+                            'points'=>50,
+                            'comments'=>'Task Completed',
+                            'type'=>'task'
+                        ]);
+
+                        SiteActivity::create([
+                            'user_id'=>Auth::user()->id,
+                            'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name
+                                .'</a> complete task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                                .$taskObj->name.'</a>'
+                        ]);
+                        $request->session()->flash('msg_val', "Task Completed successfully!!!");
+                        return redirect('tasks');
+                    }
+                    else{
+                        view()->share('taskObj',$taskObj);
+                        view()->share('taskCompleteObj',$taskCompleteObj);
+                        return view('tasks.partials.complete_task');
+                    }
                 }
             }
         }
         return view('errors.404');
+    }
+
+    public function re_assign(Request $request,$task_id){
+        $task_id_encoded = $task_id;
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::find($task_id);
+                if(!empty($taskObj)){
+                    Task::find($task_id)->update(['status'=>'assigned']);
+                    $taskBidderObj = TaskBidder::where('task_id',$task_id)->where('user_id',$taskObj->assign_to)->first();
+                    if(!empty($taskBidderObj))
+                        $taskBidderObj->update(['status'=>'re_assigned']);
+
+                    $validator = \Validator::make($request->all(), [
+                        'comment' => 'required'
+                    ]);
+
+                    if ($validator->fails())
+                        return redirect()->back()->withErrors($validator)->withInput();
+
+                    TaskComplete::create([
+                        'user_id'=>Auth::user()->id,
+                        'task_id'=>$task_id,
+                        'attachments'=>null,
+                        'comments'=>$request->input('comment')
+                    ]);
+
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a> re-assigned task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                            .$taskObj->name.'</a>'
+                    ]);
+                    $request->session()->flash('msg_val', "Task assigned successfully!!!");
+                    return redirect('tasks');
+                }
+            }
+        }
+        $request->session()->flash('msg_val', "Task were not found. Please again later.");
+        $request->session()->flash('msg_type', "danger");
+
+        return redirect('tasks');
+    }
+
+    public function mark_as_complete(Request $request){
+        $task_id = $request->input('tid');
+        $task_id_encoded=$task_id;
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::find($task_id);
+                if(!empty($taskObj)){
+                    Task::find($task_id)->update(['status'=>'completed']);
+
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .'</a> approved completed task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                            .$taskObj->name.'</a>'
+                    ]);
+
+                    return \Response::json(['success'=>true]);
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
+    }
+
+    public function cancel_task(Request $request,$task_id){
+        $task_id_encoded=$task_id;
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskCancelObj  = TaskCancel::join('users','task_cancel.user_id','=','users.id')
+                    ->where('task_id',$task_id)
+                    ->select(['task_cancel.*','users.first_name','users.last_name'])
+                    ->orderBy('id','asc')
+                    ->get();
+                if(Auth::user()->role == "superadmin")
+                    $taskObj = Task::where('id','=',$task_id)->first();
+                else
+                    $taskObj = Task::where('id','=',$task_id)->where('assign_to',Auth::user()->id)->where('status','in_progress')->first();
+                if(!empty($taskObj)){
+                    if($request->isMethod('post')){
+                        $validator = \Validator::make($request->all(), [
+                            'comment' => 'required'
+                        ]);
+
+                        if ($validator->fails())
+                            return redirect()->back()->withErrors($validator)->withInput();
+
+                        TaskCancel::create([
+                            'user_id'=>Auth::user()->id,
+                            'task_id'=>$task_id,
+                            'comments'=>$request->input('comment')
+                        ]);
+
+                        $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->where('task_bidders.status',
+                            'offer_accepted')->first();
+                        if(!empty($taskBidder))
+                            $taskBidder->update(['status'=>'task_canceled']);
+
+                        Task::find($task_id)->update(['status'=>'cancelled']);
+
+                        // add activity point for submit for approval task.
+                       /* ActivityPoint::create([
+                            'user_id'=>Auth::user()->id,
+                            'task_id'=>$task_id,
+                            'points'=>50,
+                            'comments'=>'Task Completed',
+                            'type'=>'task'
+                        ]);*/
+
+                        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
+
+                        SiteActivity::create([
+                            'user_id'=>Auth::user()->id,
+                            'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name
+                                .'</a> cancelled task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                                .$taskObj->name.'</a>'
+                        ]);
+                        $request->session()->flash('msg_val', "Task Cancelled successfully!!!");
+                        return redirect('tasks');
+                    }
+                    else{
+                        view()->share('taskObj',$taskObj);
+                        view()->share('taskCancelObj',$taskCancelObj);
+                        return view('tasks.partials.cancel_task');
+                    }
+                }
+            }
+        }
     }
 }

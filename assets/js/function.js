@@ -8,6 +8,15 @@ $(function(){
     });
     if(login){
         check_assigned_task();
+        $(document).off('click','.offer').on('click','.offer',function(){
+            var tid=$(this).attr('data-task_id');
+            if($(this).hasClass('btn-success'))
+                accept_reject_offer(tid,'/tasks/accept_offer');
+            else if($(this).hasClass('re_assigned'))
+                accept_reject_offer(tid,'/tasks/accept_offer');
+            else if($(this).hasClass('btn-danger'))
+                accept_reject_offer(tid,'/tasks/reject_offer');
+        })
     }
 })
 
@@ -18,26 +27,29 @@ function check_assigned_task(){
         dataType:'json',
         success:function(resp){
             if(resp.success){
-                bootbox.dialog({
+                if($(".confirmation_box_"+resp.task_id).length == 0){
+                    $(".user-menu").parent('.col-sm-12').after('<div class="col-sm-12">'+resp.html+'</div>');
+                }
+                /*bootbox.dialog({
                     message: resp.html,
-                    title: "Bid Selected by Unit Admin",
+                    title: resp.title,
                     buttons: {
                         success: {
-                            label: "Accept",
+                            label: resp.ok,
                             className: "btn-success",
                             callback: function() {
                                 accept_reject_offer(resp.task_id,'/tasks/accept_offer');
                             }
                         },
                         danger: {
-                            label: "Reject",
+                            label: resp.cancel,
                             className: "btn-danger",
                             callback: function() {
                                 accept_reject_offer(resp.task_id,'/tasks/reject_offer');
                             }
                         }
                     }
-                });
+                });*/
             }else
             {
                 setTimeout(function(){
@@ -55,6 +67,7 @@ function accept_reject_offer(task_id,url){
         data:{task_id:task_id},
         dataType:'json',
         success:function(resp){
+            $(".close").trigger('click');
             setTimeout(function(){
                 check_assigned_task();
             },15000)

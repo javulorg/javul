@@ -57,6 +57,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Issue');
     }
 
+    public function task_complete(){
+        return $this->belongsTo('App\TaskComplete');
+    }
+
     /**
      * Define accessor for concate first name and last name
      * @return string
