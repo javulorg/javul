@@ -15,7 +15,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
     'encode_chars'=>'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
-
+    'support_email'=>'aadhyatechnologies34@gmail.com',
+    'site_name'=>'Javul.org',
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

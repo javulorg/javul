@@ -1256,6 +1256,18 @@ class TasksController extends Controller
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
 
+                    $taskBidderObj = TaskBidder::where('task_id',$taskObj->id)->where('user_id',
+                        $taskObj->assign_to)->where('charge_type','points')->first();
+                    if(!empty($taskBidderObj) && count($taskBidderObj) > 0)
+                    {
+                        ActivityPoint::create([
+                            'user_id'=>$taskObj->assign_to,
+                            'task_id'=>$taskObj->id,
+                            'points'=>$taskBidderObj->amount,
+                            'comments'=>'Task Completed Points',
+                            'type'=>'task'
+                        ]);
+                    }
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
@@ -1339,5 +1351,9 @@ class TasksController extends Controller
                 }
             }
         }
+    }
+
+    public function email(){
+        return view('welcome');
     }
 }

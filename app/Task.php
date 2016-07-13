@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Hashids\Hashids;
 
 class Task extends Model
 {
@@ -142,6 +143,20 @@ class Task extends Model
             $unitObj = Unit::where('id',$taskObj->unit_id)->where('units.user_id','=',Auth::user()->id)->count();
             if($unitObj  > 0)
                 return true;
+        }
+        return false;
+    }
+
+    public function decodeTaskID_CheckTaskIDExist($task_id){
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = self::find($task_id);
+                if(!empty($taskObj) && count($taskObj) > 0)
+                    return true;
+            }
         }
         return false;
     }

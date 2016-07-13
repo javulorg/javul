@@ -6,6 +6,7 @@ use App\Objective;
 use App\Task;
 use App\Unit;
 use App\User;
+use Illuminate\Support\Facades\Mail;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -69,7 +70,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $userData=User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
@@ -79,6 +80,19 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
             'role'=>'user'
         ]);
+
+        $toEmail = $data['email'];
+        $toName= $data['first_name'].' '.$data['last_name'];
+        $subject="Welcome To Javul.org";
+
+        \Mail::send('emails.registration', ['userObj'=> $userData ], function($message) use ($toEmail,$toName,$subject)
+        {
+            $message->to($toEmail,$toName)->subject($subject);
+            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+        });
+
+        return $userData;
+
     }
 
     /**
@@ -88,7 +102,6 @@ class AuthController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function authenticated( \Illuminate\Http\Request $request, \App\User $user ) {
-        $user->update(['loggedin'=>1]);
         return redirect()->intended($this->redirectPath());
     }
 }
