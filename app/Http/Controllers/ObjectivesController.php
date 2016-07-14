@@ -8,6 +8,7 @@ use App\Objective;
 use App\SiteActivity;
 use App\Task;
 use App\Unit;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;

@@ -214,30 +214,45 @@ $(document).ready(function() {
         return false;
     });
 
-    $("#reassign_task").on('click',function(){
-        var flag = $(".comment_block").is(':visible');
-        if(!flag){
-            $(".comment_block").show();
+
+    $("#reassign_task_btn").on('click',function(){
+        $(".reward-panel").hide();
+        $(".comment_block").show();
+        $(".complete_assign_btn").hide();
+        return false;
+    });
+
+    $("#ok_reassign").on('click',function(){
+        var code = $('#comment').code(),
+            filteredContent = $(code).text().replace(/\s+/g, '');
+
+        if(filteredContent.length == 0) {
+            $("#comment").parents('.col-sm-12').removeClass("has-success").addClass('has-error');
+            $("#comment").parents('.col-sm-12').find(".note-editor").css('border','1px solid #a94442')
             return false;
         }
         else{
-            var code = $('#comment').code(),
-                filteredContent = $(code).text().replace(/\s+/g, '');
-
-            if(filteredContent.length == 0) {
-                $("#comment").parents('.col-sm-12').removeClass("has-success").addClass('has-error');
-                $("#comment").parents('.col-sm-12').find(".note-editor").css('border','1px solid #a94442')
-                return false;
-            }
-            else{
-                var task_id = $(this).attr('data-tid');
-                $("#form_sample_2").attr('action',siteURL+'/tasks/re_assign/'+task_id);
-                $("#form_sample_2").submit();
-            }
+            var task_id = $(this).attr('data-tid');
+            $("#form_sample_2").attr('action',siteURL+'/tasks/re_assign/'+task_id);
+            $("#form_sample_2").submit();
         }
     })
 
+    $(".cancel_btn").on('click',function(){
+        $(".comment_block").hide();
+        $(".reward-panel").hide();
+        $(".complete_assign_btn").show();
+        return false;
+    })
+
     $("#mark_as_complete").on('click',function(){
+        $(".comment_block").hide();
+        $(".reward-panel").show();
+        $(".complete_assign_btn").hide();
+        return false;
+    });
+
+    $("#ok_complete").on('click',function(){
         var tid = $(this).attr('data-tid');
         if($.trim(tid) != ""){
             $.ajax({
@@ -255,8 +270,8 @@ $(document).ready(function() {
                 }
             })
         }
+        return false;
     });
-
     /*$('.amount_percentage').on('keyup', function() {
 
         var val = this.value,

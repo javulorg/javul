@@ -1226,7 +1226,7 @@ class TasksController extends Controller
 
                 $taskEditors = RewardAssignment::where('task_id',$task_id)->get();
                 $rewardAssigned=true;
-                if(empty($taskEditors)){
+                if(empty($taskEditors) || count($taskEditors) == 0){
                     $taskEditors = TaskEditor::where('task_id',$task_id)->where('user_id','!=',$taskObj->assign_to)->get();
                     $rewardAssigned=false;
                 }
@@ -1326,11 +1326,19 @@ class TasksController extends Controller
                             $allUsersRewardPercentage = $request->input('amount_percentage');
                             if(!empty($allUsersRewardPercentage)){
                                 foreach($allUsersRewardPercentage  as $u_id=>$percentage){
-                                    RewardAssignment::create([
-                                        'task_id'=>$task_id,
-                                        'user_id'=>$u_id,
-                                        'reward_percentage'=>$percentage
-                                    ]);
+                                    $rewardAssignedObj = RewardAssignment::where('task_id',$task_id)->where('user_id',$u_id)->first();
+                                    if(!empty($rewardAssignedObj) && count($rewardAssignedObj) > 0){
+                                        $rewardAssignedObj->update([
+                                            'reward_percentage'=>$percentage
+                                        ]);
+                                    }
+                                    else{
+                                        RewardAssignment::create([
+                                            'task_id'=>$task_id,
+                                            'user_id'=>$u_id,
+                                            'reward_percentage'=>$percentage
+                                        ]);
+                                    }
                                 }
                             }
                         }
