@@ -156,6 +156,23 @@ class ObjectivesController extends Controller
                         created objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name').'</a>'
             ]);
 
+            // After Created Unit send mail to site admin
+            $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+            $unitCreator = User::find(Auth::user()->id);
+
+            $toEmail = $unitCreator->email;
+            $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+            $subject="Objective Created";
+
+            \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+            {
+                $message->to($toEmail,$toName)->subject($subject);
+                if(!empty($siteAdminemails))
+                    $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+            });
+
             $request->session()->flash('msg_val', "Objective created successfully!!!");
             return redirect('objectives');
 
@@ -240,6 +257,23 @@ class ObjectivesController extends Controller
                             .'</a>
                         updated objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name').'</a>'
                     ]);
+
+                    // After Created Unit send mail to site admin
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find(Auth::user()->id);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Objective Updated";
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
 
                     $request->session()->flash('msg_val', "Objective updated successfully!!!");
                     return redirect('objectives');
@@ -396,6 +430,23 @@ class ObjectivesController extends Controller
                             .'</a>
                         deleted objective '.$objectiveTemp->name
                     ]);
+
+                    // After Created Unit send mail to site admin
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find(Auth::user()->id);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Objective Deleted";
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
 
                     return \Response::json(['success'=>true]);
                 }

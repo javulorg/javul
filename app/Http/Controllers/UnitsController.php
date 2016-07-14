@@ -14,6 +14,7 @@ use App\Task;
 use App\TaskBidder;
 use App\Unit;
 use App\UnitCategory;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -125,6 +126,24 @@ class UnitsController extends Controller
                 'status'=>$status,
                 'parent_id'=>$request->input('parent_unit')
             ])->id;
+
+
+            // After Created Unit send mail to site admin
+            $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+            $unitCreator = User::find(Auth::user()->id);
+
+            $toEmail = $unitCreator->email;
+            $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+            $subject="Unit Created";
+
+            \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+            {
+                $message->to($toEmail,$toName)->subject($subject);
+                if(!empty($siteAdminemails))
+                    $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+            });
 
             //if user selected related to unit then insert record to related_units table
             $related_unit = $request->input('related_to');
@@ -262,6 +281,23 @@ class UnitsController extends Controller
                         updated unit <a href="'.url('units/'.$unit_id.'/'.$slug).'">'.$request->input('unit_name').'</a>'
                     ]);
 
+                    // After Created Unit send mail to site admin
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find(Auth::user()->id);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Unit Updated";
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
+
                     $request->session()->flash('msg_val', "Unit updated successfully!!!");
                     return redirect('units');
 
@@ -392,6 +428,24 @@ class UnitsController extends Controller
                             .'</a>
                         deleted unit '.$unitTemp->name
                     ]);
+
+                    // After Created Unit send mail to site admin
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find(Auth::user()->id);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Unit Deleted";
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
+
                     return \Response::json(['success'=>true]);
                 }
             }

@@ -6,6 +6,7 @@ use App\ActivityPoint;
 use App\JobSkill;
 use App\Library\Helpers;
 use App\Objective;
+use App\RewardAssignment;
 use App\SiteActivity;
 use App\Task;
 use App\TaskAction;
@@ -284,6 +285,23 @@ class TasksController extends Controller
 
             // TODO: create forum entry when task is created : in PDF page no - 10
 
+            // After Created Unit send mail to site admin
+            $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+            $unitCreator = User::find(Auth::user()->id);
+
+            $toEmail = $unitCreator->email;
+            $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+            $subject="Task Created";
+
+            \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+            {
+                $message->to($toEmail,$toName)->subject($subject);
+                if(!empty($siteAdminemails))
+                    $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+            });
+
             $request->session()->flash('msg_val', "Task created successfully!!!");
             return redirect('tasks');
         }
@@ -361,7 +379,7 @@ class TasksController extends Controller
                     // update task
                     $slug=substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
                     Task::where('id',$task_id)->update([
-                        'user_id'=>Auth::user()->id,
+                        //'user_id'=>Auth::user()->id,
                         'unit_id'=>$unit_id[0],
                         'objective_id'=>$objective_id[0],
                         'name'=>$request->input('task_name'),
@@ -497,6 +515,23 @@ class TasksController extends Controller
                             .'</a>
                         updated task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
                     ]);
+
+                    // After Created Unit send mail to site admin
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find(Auth::user()->id);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Task Updated";
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
 
                     $request->session()->flash('msg_val', "Task updated successfully!!!");
                     return redirect('tasks');
@@ -726,6 +761,23 @@ class TasksController extends Controller
                             .'</a>
                         deleted task '.$tasktempObj->name
                     ]);
+
+                    // After Created Unit send mail to site admin
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find(Auth::user()->id);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Task Deleted";
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
                 }
                 return \Response::json(['success'=>true]);
             }
@@ -787,6 +839,24 @@ class TasksController extends Controller
                                     .'</a> submitted task approval <a href="'.url('tasks/'.$task_id_encoded.'/'.$taskObj->slug).'">'
                                     .$taskObj->name.'</a>'
                             ]);
+
+                            // After Created Unit send mail to site admin
+                            $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                            $unitCreator = User::find(Auth::user()->id);
+
+                            $toEmail = $unitCreator->email;
+                            $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                            $subject="Task approval submitted by".Auth::user()->first_name.' '.Auth::user()->last_name;
+
+                            \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                            {
+                                $message->to($toEmail,$toName)->subject($subject);
+                                if(!empty($siteAdminemails))
+                                    $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                            });
+
                             return \Response::json(['success'=>true,'status'=>'awaiting_approval']);
                         }
                     }
@@ -859,6 +929,22 @@ class TasksController extends Controller
                                 .$taskObj->name.'</a>'
                         ]);
 
+                        $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                        $unitCreator = User::find(Auth::user()->id);
+
+                        $toEmail = $unitCreator->email;
+                        $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                        $subject="Task bid by".Auth::user()->first_name.' '.Auth::user()->last_name;
+
+                        \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                        {
+                            $message->to($toEmail,$toName)->subject($subject);
+                            if(!empty($siteAdminemails))
+                                $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        });
+
                         $request->session()->flash('msg_val', "Task bid successfully!!!");
                         return redirect('tasks');
                     }
@@ -908,6 +994,22 @@ class TasksController extends Controller
                             'type'=>'task'
                         ]);
 
+                        $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                        $unitCreator = User::find($user_id);
+
+                        $toEmail = $unitCreator->email;
+                        $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                        $subject="Task assigned to ".$unitCreator->first_name.' '.$unitCreator->last_name;
+
+                        \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                        {
+                            $message->to($toEmail,$toName)->subject($subject);
+                            if(!empty($siteAdminemails))
+                                $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        });
+
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                         $loggedin_user_id = $userIDHashID->encode(Auth::user()->id);
                         $user_id = $userIDHashID->encode($user_id);
@@ -921,6 +1023,8 @@ class TasksController extends Controller
                                 .$userObj->first_name.' '.$userObj->last_name
                                 .'</a>'
                         ]);
+
+
                     }
                     return \Response::json(['success'=>true]);
                 }
@@ -945,7 +1049,7 @@ class TasksController extends Controller
                 "has been assigned to you.";*/
 
             if($taskBidderObj->status == "offer_sent"){
-                $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:0px;margin-top:10px;">'.
+                $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:0px;margin-top:10px;margin-bottom:10px">'.
                           '<a href="#" class="close" data-dismiss="alert" aria-label="close" style="display:none;">&times;</a>'.
                           '<strong>Task Assigned!</strong> Your bid has been selected and task(<b>'.$taskBidderObj->name.'</b>) ' .
                             'has been assigned to you.'.
@@ -1001,10 +1105,27 @@ class TasksController extends Controller
                             .$taskObj->name.'</a>'
                     ]);
 
+
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find(Auth::user()->id);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Task accepted by ".$unitCreator->first_name.' '.$unitCreator->last_name;
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
+                    return \Response::json(['success'=>true]);
                 }
             }
         }
-        return \Response::json(['success'=>true]);
+        return \Response::json(['success'=>false]);
     }
 
     /**
@@ -1037,10 +1158,28 @@ class TasksController extends Controller
                             .'</a> reject offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
+
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find(Auth::user()->id);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Task rejected by ".$unitCreator->first_name.' '.$unitCreator->last_name;
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
+
+                    return \Response::json(['success'=>true]);
                 }
             }
         }
-        return \Response::json(['success'=>true]);
+        return \Response::json(['success'=>false]);
     }
 
     /**
@@ -1079,18 +1218,51 @@ class TasksController extends Controller
                     ->select(['task_complete.*','users.first_name','users.last_name'])
                     ->orderBy('id','asc')
                     ->get();
+
                 if(Auth::user()->role == "superadmin")
                     $taskObj = Task::where('id','=',$task_id)->first();
                 else
                     $taskObj = Task::where('id','=',$task_id)->where('assign_to',Auth::user()->id)->where('status','in_progress')->first();
+
+                $taskEditors = RewardAssignment::where('task_id',$task_id)->get();
+                $rewardAssigned=true;
+                if(empty($taskEditors)){
+                    $taskEditors = TaskEditor::where('task_id',$task_id)->where('user_id','!=',$taskObj->assign_to)->get();
+                    $rewardAssigned=false;
+                }
+
                 if(!empty($taskObj)){
                     if($request->isMethod('post')){
+
                         $validator = \Validator::make($request->all(), [
                             'comment' => 'required'
                         ]);
 
                         if ($validator->fails())
                             return redirect()->back()->withErrors($validator)->withInput();
+
+
+                        // validate percentage split.
+                        $percentageError = [];
+                        $totalPercentage=0;
+                        if(!empty($taskEditors) > 0 && !$rewardAssigned){
+                            $allUsersRewardPercentage = $request->input('amount_percentage');
+                            if(!empty($allUsersRewardPercentage)){
+                                foreach($allUsersRewardPercentage  as $u_id=>$percentage){
+                                    $editorExist = TaskEditor::where('task_id',$task_id)->where('user_id',$u_id)->get();
+                                    if($taskObj->user_id != $u_id && (empty($editorExist) || count($editorExist) == 0))
+                                        $percentageError['amount_percentage['.$u_id.']']="Please enter percentage";
+                                    else
+                                        $totalPercentage+=intval($percentage);
+                                }
+                            }
+
+                            if(!empty($percentageError))
+                                return redirect()->back()->withErrors($percentageError)->withInput();
+
+                            if($totalPercentage < 100 || $totalPercentage > 100)
+                                return redirect()->back()->withErrors(['split_error'=>"Please split 100% among all users."])->withInput();
+                        }
 
                         // upload documents of task.
                         $task_documents=[];
@@ -1149,6 +1321,20 @@ class TasksController extends Controller
                             }
                         }
 
+                        // insert task reward assignment into table. to use where transaction take place. to give % of amount to user.
+                        if(!empty($taskEditors) > 0 && !$rewardAssigned){
+                            $allUsersRewardPercentage = $request->input('amount_percentage');
+                            if(!empty($allUsersRewardPercentage)){
+                                foreach($allUsersRewardPercentage  as $u_id=>$percentage){
+                                    RewardAssignment::create([
+                                        'task_id'=>$task_id,
+                                        'user_id'=>$u_id,
+                                        'reward_percentage'=>$percentage
+                                    ]);
+                                }
+                            }
+                        }
+
                         TaskComplete::create([
                             'user_id'=>Auth::user()->id,
                             'task_id'=>$task_id,
@@ -1179,12 +1365,31 @@ class TasksController extends Controller
                                 .'</a> complete task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                                 .$taskObj->name.'</a>'
                         ]);
+
+                        $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                        $unitCreator = User::find(Auth::user()->id);
+
+                        $toEmail = $unitCreator->email;
+                        $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                        $subject="Task completed by ".$unitCreator->first_name.' '.$unitCreator->last_name;
+
+                        \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                        {
+                            $message->to($toEmail,$toName)->subject($subject);
+                            if(!empty($siteAdminemails))
+                                $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        });
+
                         $request->session()->flash('msg_val', "Task Completed successfully!!!");
                         return redirect('tasks');
                     }
                     else{
                         view()->share('taskObj',$taskObj);
                         view()->share('taskCompleteObj',$taskCompleteObj);
+                        view()->share('taskEditors',$taskEditors );
+                        view()->share('rewardAssigned',$rewardAssigned);
                         return view('tasks.partials.complete_task');
                     }
                 }
@@ -1230,6 +1435,22 @@ class TasksController extends Controller
                             .'</a> re-assigned task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
+
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find($taskObj->assign_to);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Task re-assigned to ".$unitCreator->first_name.' '.$unitCreator->last_name;
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
                     $request->session()->flash('msg_val', "Task assigned successfully!!!");
                     return redirect('tasks');
                 }
@@ -1275,6 +1496,23 @@ class TasksController extends Controller
                             .'</a> approved completed task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
+
+
+                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                    $unitCreator = User::find($taskObj->assign_to);
+
+                    $toEmail = $unitCreator->email;
+                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                    $subject="Task completed by supperadmin ";
+
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    {
+                        $message->to($toEmail,$toName)->subject($subject);
+                        if(!empty($siteAdminemails))
+                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
 
                     return \Response::json(['success'=>true]);
                 }
@@ -1340,6 +1578,23 @@ class TasksController extends Controller
                                 .'</a> cancelled task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                                 .$taskObj->name.'</a>'
                         ]);
+
+                        $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
+                        $unitCreator = User::find(Auth::user()->id);
+
+                        $toEmail = $unitCreator->email;
+                        $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
+                        $subject="Task cancelled by ".$toName;
+
+                        \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                        {
+                            $message->to($toEmail,$toName)->subject($subject);
+                            if(!empty($siteAdminemails))
+                                $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        });
+
                         $request->session()->flash('msg_val', "Task Cancelled successfully!!!");
                         return redirect('tasks');
                     }
@@ -1351,9 +1606,5 @@ class TasksController extends Controller
                 }
             }
         }
-    }
-
-    public function email(){
-        return view('welcome');
     }
 }

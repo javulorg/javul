@@ -29,6 +29,45 @@ var FormValidation = function () {
 
         }, 'This field is required.');
 
+
+
+        $.validator.addMethod('calculatePercentage', function (value, element, param) {
+            //Your Validation Here
+
+            var val=0;
+            var flag = true;
+            $(".amount_percentage").each(function(){
+               if($.trim($(this).val()) == ""){
+                   $(this).parents('.row').removeClass("has-success").addClass('has-error');
+                   flag=false;
+               }else{
+                   $(this).parents('.row').removeClass("has-error").addClass('has-success');
+                   val+=parseInt($(this).val());
+               }
+            });
+            if(val < 100 || val > 100){
+                $(".amount_percentage").each(function(){
+                    $(this).parents('.row').removeClass("has-success").addClass('has-error');
+                });
+                if($(".error-not-100").length == 0){
+                    $(".reward-assignment-body").append('<span class="has-error error-not-100"><span class="control-label">Please split 100% among all users.</span></span>')
+                }
+                flag= false;
+            }
+            else{
+                if($(".error-not-100").length > 0)
+                    $(".reward-assignment-body").find('.error-not-100').remove();
+            }
+            return flag;
+
+        }, 'This field is required.');
+
+        $.validator.addClassRules('amount_percentage', {
+            calculatePercentage: true/*,
+             other rules */
+        });
+
+
         form2.validate({
             errorElement: 'span', //default input error message container
             errorClass: 'help-block help-block-error', // default input error message class
@@ -104,9 +143,10 @@ var FormValidation = function () {
 
 }();
 
+
+
 $(document).ready(function() {
     FormValidation.init();
-
     $(function(){
         $("#comment").summernote({
             toolbar: [
@@ -215,7 +255,20 @@ $(document).ready(function() {
                 }
             })
         }
-    })
+    });
+
+    /*$('.amount_percentage').on('keyup', function() {
+
+        var val = this.value,
+            $allInputs = $('.amount_percentage');
+        if(val > 100) {
+            $allInputs.val(100/$allInputs.length);
+        }
+        else {
+            var length
+            $('.amount_percentage').not(this).val( (100-val)/ ($allInputs.length-1)  ) ;
+        }
+    });*/
 
 
 });
