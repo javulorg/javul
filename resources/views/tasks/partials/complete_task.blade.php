@@ -77,67 +77,6 @@
 @if($authUserObj->role == "superadmin")
     @include('tasks.partials.complete_evaluation')
 @else
-    @if(!empty($taskEditors) && count($taskEditors) > 0)
-        <div class="panel panel-default panel-dark-grey">
-            <div class="panel-heading">
-                <h4>Reward Assignment</h4>
-                <span class="text-right">( 10% of task reward among all task editor and task creator)</span>
-            </div>
-
-            <div class="panel-body reward-assignment-body">
-                @if(!$rewardAssigned)
-                <div class="row form-group {{  $errors->has('split_error') ? ' has-error' : ''  }}
-                        {{  $errors->has('amount_percentage['.$taskObj->user_id.']')? ' has-error' : ''  }}">
-                    <div class="col-sm-4 col-xs-8">
-                        {{\App\User::getUserName($taskObj->user_id)}} (<b>task creator</b>)
-                    </div>
-                    <div class="col-sm-2 col-xs-4">
-                        <input type="text" name="amount_percentage[{{$taskObj->user_id}}]"
-                               value="{{ old('amount_percentage['.$taskObj->user_id.']') }}"
-                               class="form-control onlyDigits amount_percentage"
-                               style="display:inline-block;float:left;width:50px"/>
-                        <span style="line-height:35px;padding-left:2px">%</span>
-                    </div>
-                </div>
-                @endif
-                @foreach($taskEditors as $editor)
-                    <div class="row form-group {{  $errors->has('split_error') ? ' has-error' : ''  }}
-                            {{  $errors->has('amount_percentage['.$editor->user_id.']')? ' has-error' : ''  }}">
-                        <div class="col-sm-4 col-xs-8">
-                            {{\App\User::getUserName($editor->user_id)}}
-                            @if($rewardAssigned && $editor->user_id == $taskObj->user_id)
-                                (<b>task creator</b>)
-                            @else
-                                (<b>task editor</b>)
-                            @endif
-                        </div>
-                        <div class="col-sm-2 col-xs-4">
-                            <input type="text" name="amount_percentage[{{$editor->user_id}}]"
-                                   @if($rewardAssigned) value="{{ $editor->reward_percentage}}" @else
-                            value="{{ old('amount_percentage['.$editor->user_id.']')}}" @endif "
-                                   class="form-control onlyDigits amount_percentage"
-                                   @if($rewardAssigned) disabled=disabled @endif
-                                   style="display:inline-block;float:left;width:50px"/>
-                            <span style="line-height:35px;padding-left:2px">%</span>
-                        </div>
-                    </div>
-                @endforeach
-                @if($errors->has('split_error'))
-                    <span class="has-error error-not-100">
-                        <span class="control-label">{{$errors->first('split_error')}}</span>
-                    </span>
-                @elseif($errors->has('amount_percentage['.$taskObj->user_id.']'))
-                    <span class="has-error error-not-100">
-                        <span class="control-label">Please enter percentage</span>
-                    </span>
-                @elseif(count($errors) > 0 && !$error->has('comment'))
-                    <span class="has-error error-not-100">
-                        <span class="control-label">Please enter percentage</span>
-                    </span>
-                @endif
-            </div>
-        </div>
-    @endif
     <div class="row">
         <div class="col-sm-12 form-group">
             <div class="attachment_listing_div">
