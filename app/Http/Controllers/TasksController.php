@@ -28,6 +28,7 @@ class TasksController extends Controller
 {
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view']]);
+        \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
     }
 
     /**
@@ -1241,29 +1242,6 @@ class TasksController extends Controller
                         if ($validator->fails())
                             return redirect()->back()->withErrors($validator)->withInput();
 
-
-                        // validate percentage split.
-                        $percentageError = [];
-                        $totalPercentage=0;
-                        if(!empty($taskEditors) > 0 && !$rewardAssigned){
-                            $allUsersRewardPercentage = $request->input('amount_percentage');
-                            if(!empty($allUsersRewardPercentage)){
-                                foreach($allUsersRewardPercentage  as $u_id=>$percentage){
-                                    $editorExist = TaskEditor::where('task_id',$task_id)->where('user_id',$u_id)->get();
-                                    if($taskObj->user_id != $u_id && (empty($editorExist) || count($editorExist) == 0))
-                                        $percentageError['amount_percentage['.$u_id.']']="Please enter percentage";
-                                    else
-                                        $totalPercentage+=intval($percentage);
-                                }
-                            }
-
-                            if(!empty($percentageError))
-                                return redirect()->back()->withErrors($percentageError)->withInput();
-
-                            if($totalPercentage < 100 || $totalPercentage > 100)
-                                return redirect()->back()->withErrors(['split_error'=>"Please split 100% among all users."])->withInput();
-                        }
-
                         // upload documents of task.
                         $task_documents=[];
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
@@ -1317,28 +1295,6 @@ class TasksController extends Controller
                                         }
                                     }
 
-                                }
-                            }
-                        }
-
-                        // insert task reward assignment into table. to use where transaction take place. to give % of amount to user.
-                        if(!empty($taskEditors) > 0 && !$rewardAssigned){
-                            $allUsersRewardPercentage = $request->input('amount_percentage');
-                            if(!empty($allUsersRewardPercentage)){
-                                foreach($allUsersRewardPercentage  as $u_id=>$percentage){
-                                    $rewardAssignedObj = RewardAssignment::where('task_id',$task_id)->where('user_id',$u_id)->first();
-                                    if(!empty($rewardAssignedObj) && count($rewardAssignedObj) > 0){
-                                        $rewardAssignedObj->update([
-                                            'reward_percentage'=>$percentage
-                                        ]);
-                                    }
-                                    else{
-                                        RewardAssignment::create([
-                                            'task_id'=>$task_id,
-                                            'user_id'=>$u_id,
-                                            'reward_percentage'=>$percentage
-                                        ]);
-                                    }
                                 }
                             }
                         }
@@ -1470,8 +1426,7 @@ class TasksController extends Controller
         return redirect('tasks');
     }
 
-    public function mark_as_complete(Request $request){
-        $task_id = $request->input('tid');
+    public function mark_as_complete(Request $request,$task_id){
         $task_id_encoded=$task_id;
         if(!empty($task_id)){
             $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
@@ -1480,6 +1435,58 @@ class TasksController extends Controller
                 $task_id = $task_id[0];
                 $taskObj = Task::find($task_id);
                 if(!empty($taskObj)){
+                    $taskEditors = RewardAssignment::where('task_id',$task_id)->get();
+
+                    if(empty($taskEditors) || count($taskEditors) == 0)
+                        $taskEditors = TaskEditor::where('task_id',$task_id)->where('user_id','!=',$taskObj->assign_to)->get();
+
+                    // validate percentage split.
+                    $percentageError = [];
+                    $totalPercentage=0;
+                    if(!empty($taskEditors) > 0){
+                        $allUsersRewardPercentage = $request->input('amount_percentage');
+                        if(!empty($allUsersRewardPercentage)){
+                            foreach($allUsersRewardPercentage  as $u_id=>$percentage){
+                                $editorExist = TaskEditor::where('task_id',$task_id)->where('user_id',$u_id)->get();
+                                if($taskObj->user_id != $u_id && (empty($editorExist) || count($editorExist) == 0))
+                                    $percentageError['amount_percentage['.$u_id.']']="Please enter percentage";
+                                else
+                                    $totalPercentage+=intval($percentage);
+                            }
+                        }
+
+                        if(!empty($percentageError))
+                            return redirect()->back()->withErrors($percentageError)->withInput();
+
+                        if($totalPercentage < 100 || $totalPercentage > 100)
+                            return redirect()->back()->withErrors(['split_error'=>"Please split 100% among all users."])->withInput();
+                    }
+
+                    // insert task reward assignment into table. to use where transaction take place. to give % of amount to user.
+                    if(!empty($taskEditors) > 0 ){
+                        $allUsersRewardPercentage = $request->input('amount_percentage');
+                        if(!empty($allUsersRewardPercentage)){
+                            foreach($allUsersRewardPercentage  as $u_id=>$percentage){
+                                $rewardAssignedObj = RewardAssignment::where('task_id',$task_id)->where('user_id',$u_id)->first();
+                                if(!empty($rewardAssignedObj) && count($rewardAssignedObj) > 0){
+                                    $rewardAssignedObj->update([
+                                        'reward_percentage'=>$percentage
+                                    ]);
+                                }
+                                else{
+                                    RewardAssignment::create([
+                                        'task_id'=>$task_id,
+                                        'user_id'=>$u_id,
+                                        'reward_percentage'=>$percentage
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+
+                    // Transfer rewards to all users
+                    \App\User::transferRewards($task_id);
+
                     Task::find($task_id)->update(['status'=>'completed']);
 
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
@@ -1522,11 +1529,12 @@ class TasksController extends Controller
                         $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                     });
 
-                    return \Response::json(['success'=>true]);
+                    $request->session()->flash('msg_val', "Task Compelted successfully!!!");
+                    return redirect('tasks');
                 }
             }
         }
-        return \Response::json(['success'=>false]);
+        return redirect('errors.404');
     }
 
     public function cancel_task(Request $request,$task_id){
@@ -1567,7 +1575,7 @@ class TasksController extends Controller
 
                         Task::find($task_id)->update(['status'=>'cancelled']);
 
-                        // add activity point for submit for approval task.
+                        // add activity point for submit for cancel task.
                        /* ActivityPoint::create([
                             'user_id'=>Auth::user()->id,
                             'task_id'=>$task_id,

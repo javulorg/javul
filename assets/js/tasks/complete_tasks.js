@@ -12,7 +12,8 @@ var FormValidation = function () {
 
         $.validator.addMethod('notEmpty', function (value, element, param) {
             //Your Validation Here
-
+            if(tp)
+                return true;
             var code = $('#comment').code(),
                 filteredContent = $(code).text().replace(/\s+/g, '');
 
@@ -33,7 +34,8 @@ var FormValidation = function () {
 
         $.validator.addMethod('calculatePercentage', function (value, element, param) {
             //Your Validation Here
-
+            if(!tp)
+                return true;
             var val=0;
             var flag = true;
             $(".amount_percentage").each(function(){
@@ -82,7 +84,7 @@ var FormValidation = function () {
             invalidHandler: function (event, validator) { //display error alert on form submit
                 success2.hide();
                 error2.show();
-                App.scrollTo(error2, -200);
+                //App.scrollTo(error2, -200);
             },
 
             errorPlacement: function (error, element) { // render error placement for each input type
@@ -253,9 +255,13 @@ $(document).ready(function() {
     });
 
     $("#ok_complete").on('click',function(){
+
         var tid = $(this).attr('data-tid');
         if($.trim(tid) != ""){
-            $.ajax({
+            var task_id = $(this).attr('data-tid');
+            $("#form_sample_2").attr('action',siteURL+'/tasks/mark_task_complete/'+task_id);
+            $("#form_sample_2").submit();
+            /*$.ajax({
                 type:'get',
                 url:siteURL+'/tasks/mark_task_complete',
                 data:{tid:tid},
@@ -268,7 +274,7 @@ $(document).ready(function() {
                     else
                         toastr['error']('Something goes wrong. please try again later.', '');
                 }
-            })
+            })*/
         }
         return false;
     });

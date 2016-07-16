@@ -31,6 +31,10 @@ class CreateUsersTable extends Migration
             $table->string('area_of_interest')->comment="reference to area_of_interest table. multiple with comma.";
             $table->string('role');
             $table->tinyInteger('loggedin');
+            $table->string('stripe_id')->nullable();
+            $table->string('card_brand')->nullable();
+            $table->string('card_last_four')->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

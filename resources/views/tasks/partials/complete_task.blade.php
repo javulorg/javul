@@ -144,6 +144,7 @@
 @stop
 @section('page-scripts')
 <script>
+    var tp = '{{($authUserObj->role == "superadmin") ? true : false}}';
     toastr.options = {
         "closeButton": true,
         "debug": false,

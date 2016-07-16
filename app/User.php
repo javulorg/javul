@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
+    use Billable;
     /**
      * The attributes that are mass assignable.
      *
@@ -76,5 +78,18 @@ class User extends Authenticatable
             return $userObj->first_name.' '.$userObj->last_name;
         }
         return '';
+    }
+
+    /**
+     * Function will returns all credit cards of user.
+     * @param $user_id
+     * @return array
+     */
+    public static function getAllCreditCards($user_id){
+        if(!empty($user_id)){
+            $creditCards = CreditCards::where('user_id',$user_id)->get();
+            return $creditCards;
+        }
+        return [];
     }
 }

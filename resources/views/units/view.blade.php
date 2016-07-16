@@ -38,6 +38,14 @@
                                     <div class="col-xs-6">{!! trans('messages.awarded') !!}</div>
                                     <div class="col-xs-6 text-right">XXX $</div>
                                 </div>
+                                <div>
+                                    <div class="col-xs-12 text-right" style="padding-right: 0px;">
+                                        <a class="btn orange-bg btn-xs" href="{!! url('funds/donate/unit/'.$unitIDHashID->encode($unitObj->id)) !!}">
+                                            {!! trans('messages.add_funds') !!}
+                                        </a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <div class="panel">

@@ -67,18 +67,20 @@ Route::get('tasks/assign', 'TasksController@assign_task');
 Route::any('tasks/cancel_task/{task_id}','TasksController@cancel_task');
 Route::any('tasks/complete_task/{task_id}','TasksController@complete_task');
 Route::any('tasks/re_assign/{task_id}','TasksController@re_assign');
-Route::get('tasks/mark_task_complete','TasksController@mark_as_complete');
+Route::post('tasks/mark_task_complete/{task_id}','TasksController@mark_as_complete');
 Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
 
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 
+Route::get('funds/donate/unit/{unit_id}','FundsController@donate_to_unit_objective_task');
 
 Route::resource('/issues','IssuesController');
 Route::resource('/objectives','ObjectivesController');
 Route::resource('/tasks','TasksController');
 Route::resource('/units','UnitsController');
 Route::resource('/user','UserController');
+Route::resource('/funds','FundsController');
 
 
 
