@@ -13,6 +13,7 @@ use App\SiteConfigs;
 use App\State;
 use App\Task;
 use App\TaskBidder;
+use App\Transaction;
 use App\Unit;
 use App\UnitCategory;
 use App\User;
@@ -69,8 +70,16 @@ class FundsController extends Controller
             }
 
             if($exists){
+                $creditedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit')->sum('amount');
+                $debitedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit')->sum('amount');
+
+                $availableBalance = $creditedBalance - $debitedBalance;
                 $users_cards = User::getAllCreditCards(Auth::user()->id);
+                $expiry_years = SiteConfigs::getCardExpiryYear();
+                view()->share('expiry_years',$expiry_years);
                 view()->share('credit_cards',$users_cards);
+                view()->share('availableBalance',100);
+
                 return view('funds.donation');
             }
         }

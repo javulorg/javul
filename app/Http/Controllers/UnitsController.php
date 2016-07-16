@@ -359,6 +359,9 @@ class UnitsController extends Controller
                     $tasks = Task::where('objective_id',1)->get();
                     $related_units = RelatedUnit::getRelatedUnitName($unit_id);
                     $taskForBidding = Task::where('unit_id', '=', $unit_id)->where('status', '=', "approval")->count();
+                    $userAuth = Auth::user();
+                    $taskBidders = [];
+                    if(!empty($userAuth))
                     $taskBidders = Task::join('task_bidders','tasks.id','=','task_bidders.task_id')->where('task_bidders.user_id',
                         Auth::user()->id)->where('unit_id',$unit_id)->where('tasks.status', '=', "approval")->count();
 

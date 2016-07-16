@@ -123,13 +123,13 @@ hr, p {margin: 10px 0;}
     -o-transition: border 0.15s ease-in-out;
     transition: border 0.15s ease-in-out; }
 .radio label::after {
+    height: 9px;
+    left: 4px;
+    top: 4px;
+    width: 9px;
     display: inline-block;
     position: absolute;
     content: " ";
-    width: 10px;
-    height: 10px;
-    left: 4px;
-    top: 3px;
     margin-left: -20px;
     border-radius: 50%;
     background-color: #555555;
@@ -291,6 +291,9 @@ input:disabled, input.disabled {
     font-size: 12px;
 
 }
+.new_credit_card{background-image: url('../images/credit_cards_small.png')}
+#pay_now{margin-left: 15px;position: relative;top:-4px;}
+.card_image{position:relative;top:-38px;right:-238px}
 @media (min-width: 991px) and (max-width: 1200px){
     .unit_grey_screen_height{min-height: 145px;}
 }
@@ -300,6 +303,10 @@ input:disabled, input.disabled {
     .unit-heading {margin-top: 0;padding-top: 20px;}
     .search_div_main{width: 200px;}
     .unit_grey_screen_height{min-height: 162px;}
+}
+@media (max-width: 768px){
+    .card_image{position:relative;top:-34px;right:-210px}
+    .card_image img{height:20px;}
 }
 @media (max-width: 767px){
     .importance-div{float:none;padding-top: 15px;}
@@ -312,5 +319,6 @@ input:disabled, input.disabled {
     .user-menu.alert a{padding:5px;}
 }
 @media (max-width: 392px){
+    #pay_now{margin-left: 0px;position: relative;top:0px;margin-top: 15px;}
     .user-menu.alert a{font-size:12px;}
 }

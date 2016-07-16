@@ -36,4 +36,13 @@ class SiteConfigs extends Model
         return $task_status;
 
     }
+
+    public static function getCardExpiryYear(){
+        $currentYear = (int)date('Y');
+        $years = [];
+        for($i=$currentYear;$i<($currentYear+35);$i++ ){
+            $years[$i]=$i;
+        }
+        return $years;
+    }
 }

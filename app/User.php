@@ -92,4 +92,84 @@ class User extends Authenticatable
         }
         return [];
     }
+
+    /**
+     * while task completer complete the task. assign rewards to completer and task creator,task editors
+     * as mentioned in doc.
+     * @param $task_id
+     */
+    public static function transferRewards($task_id){
+        $taskObj = Task::find($task_id);
+        if(!empty($taskObj) && count($taskObj) > 0){
+            $taskCompleter = $taskObj->assign_to;
+            $taskCompleterObj = User::find($taskCompleter);
+            $rewards = $taskObj->compensation;
+            $debitFrom = User::where('role','superadmin')->pluck('id');
+            if(!empty($rewards)){
+                /**************************** reward given to task completer *******************************/
+                Transaction::create([
+                    'user_id'=>$taskCompleter,
+                    'amount'=>$rewards,
+                    'trans_type'=>'credit',
+                    'comments'=>$rewards.' rewards given to '.$taskCompleterObj->first_name.' '.$taskCompleterObj->last_name
+                ]);
+
+                // debit from superadmin account
+
+                Transaction::create([
+                    'user_id'=>$debitFrom ,
+                    'amount'=>$rewards,
+                    'trans_type'=>'debit',
+                    'comments'=>$rewards.' rewards given to '.$taskCompleterObj->first_name.' '.$taskCompleterObj->last_name
+                ]);
+
+                /**************************** reward given to task completer end *******************************/
+
+                /**************************** reward given to task creator and editor *******************************/
+                $taskEditors = RewardAssignment::where('task_id')->get();
+                if(!empty($taskEditors) && count($taskEditors) > 0){
+                    foreach($taskEditors as $editor){
+                        $taskEditorObj = User::find($editor->user_id);
+                        $percentageReward = ($rewards * $editor->reward_percentage) / 100;
+                        Transaction::create([
+                            'user_id'=>$editor->user_id,
+                            'amount'=>$percentageReward,
+                            'trans_type'=>'credit',
+                            'comments'=>$percentageReward.' rewards given to '.$taskEditorObj->first_name.' '.$taskEditorObj->last_name
+                        ]);
+
+                        // debit from superadmin account
+
+                        Transaction::create([
+                            'user_id'=>$debitFrom ,
+                            'amount'=>$percentageReward,
+                            'trans_type'=>'debit',
+                            'comments'=>$percentageReward.' rewards given to '.$taskEditorObj->first_name.' '.$taskEditorObj->last_name
+                        ]);
+                    }
+                }
+                else{
+                    $taskCreatorID = $taskObj->user_id;
+                    $taskCreatorObj = User::find($taskCreatorID);
+                    $percentageReward= ($rewards * 10)/100;
+                    Transaction::create([
+                        'user_id'=>$taskCreatorID,
+                        'amount'=>$percentageReward,
+                        'trans_type'=>'credit',
+                        'comments'=>$percentageReward.' rewards given to '.$taskCreatorObj->first_name.' '.$taskCreatorObj->last_name
+                    ]);
+
+                    // debit from superadmin account
+
+                    Transaction::create([
+                        'user_id'=>$debitFrom ,
+                        'amount'=>$percentageReward,
+                        'trans_type'=>'debit',
+                        'comments'=>$percentageReward.' rewards given to '.$taskCreatorObj->first_name.' '.$taskCreatorObj->last_name
+                    ]);
+                }
+                /**************************** reward given to task creator and editor end *******************************/
+            }
+        }
+    }
 }

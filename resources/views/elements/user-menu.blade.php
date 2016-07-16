@@ -9,8 +9,10 @@
         <a href="{!! url('tasks') !!}" class="btn blue-bg btn-md @if($page=='tasks') active @endif">
             <span class="glyphicon glyphicon-tasks"></span> Tasks
         </a>
+        @if(!empty($authUserObj))
         <a href="{!! url('my_tasks') !!}" class="btn blue-bg btn-md pull-right @if($page=='my_tasks') active @endif">
             <span class="glyphicon glyphicon-tasks"></span> My Tasks
         </a>
+        @endif
     </div>
 </div>

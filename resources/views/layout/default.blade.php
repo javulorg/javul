@@ -56,8 +56,8 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="icon" type="image/png" sizes="96x96" href="{!! url('assets/images/favicon-96x96.png') !!}">
     <link rel="icon" type="image/png" sizes="16x16" href="{!! url('assets/images/favicon-16x16.png') !!}">
     @yield('page-css')
-    <!--<script type="text/javascript" src="//js.stripe.com/v2/"></script>
-    <script type="text/javascript">Stripe.setPublishableKey('{{env("STRIPE_SECRET")}}');</script>-->
+    <script type="text/javascript" src="//js.stripe.com/v2/"></script>
+    <script type="text/javascript">Stripe.setPublishableKey('{{env("STRIPE_SECRET")}}');</script>
 </head>
 <!-- END HEAD -->
     <!-- If login page reload every 15 minutes. -->
