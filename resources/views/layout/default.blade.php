@@ -63,6 +63,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- If login page reload every 15 minutes. -->
     <body>
         @include('elements.header')
+        <div id="loadingDiv" style="display: none;"><img id="loading" src="{!! url('assets/images/loader.gif') !!}" alt="" /></div>
         <!-- BEGIN LOGIN -->
         <div class="content">
              @yield('content')

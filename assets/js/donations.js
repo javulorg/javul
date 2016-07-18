@@ -21,7 +21,35 @@ $(function(){
         $('.cc-brand').text(cardType);
         $('.validation').removeClass('text-danger text-success');
         if($('.has-error').length == 0){
-            $(this)[0].submit(false);
+            $(this).find('.submit').prop('disabled', true);
+            Stripe.card.createToken($(this), stripeResponseHandler);
+        }
+    });
+
+
+    $('#reused-credit-card-form').submit(function(e) {
+        var $form = $('#reused-credit-card-form');
+        e.preventDefault();
+        var selectCard = $("[name='credit_cards']").val();
+        var flag = true;
+        if(selectCard == ""){
+            flag=false
+            $("[name='credit_cards']").css('border','1px solid #a94442');
+        }
+        else
+            $("[name='credit_cards']").css('border','1px solid #ccc');
+
+        var amount = $("#amount_reused_card").val();
+        if($.trim(amount) == "" || parseInt(amount) <= 0){
+            flag=false
+            $("[id='amount_reused_card']").css('border','1px solid #a94442');
+        }
+        else
+            $("[id='amount_reused_card']").css('border','1px solid #ccc');
+
+        if(flag){
+            $(this).find('.reuse-card').prop('disabled', true);
+            $form.get(0).submit();
         }
     });
 
@@ -58,5 +86,55 @@ $(function(){
             $("[name='amount_from_available_bal']").parent('div').addClass('has-error');
             return false;
         }
-    })
+    });
+
+    //change card number on selected card
+    $("[name='credit_cards']").on('change',function(){
+        var val =$(this).val();
+        if(val == "")
+            $("[name='card_number']").val('');
+        else{
+            $loading.show();
+            $.ajax({
+                type:'get',
+                data:{last4:val},
+                url:siteURL+'/funds/get-card-name',
+                success:function(resp){
+                    if($.trim(resp) != ""){
+                        $(".reused_card_image").html('<img src="'+siteURL+'/assets/images/'+resp+'" style="height:40px;"/>');
+                    }
+                    else
+                        $(".reused_card_image").html('');
+                    $loading.hide();
+                }
+            });
+            $("[name='card_number']").val('XXXX XXXX XXXX '+val);
+        }
+        return false;
+    });
 })
+function stripeResponseHandler(status, response) {
+    // Grab the form:
+    var $form = $('#new-credit-card-form');
+
+    if (response.error) { // Problem!
+
+        // Show the errors on the form:
+        $form.find('.payment-errors').text(response.error.message);
+        $form.find('.submit').prop('disabled', false); // Re-enable submission
+
+    } else { // Token was created!
+
+        // Get the token ID:
+        var token = response.id;
+        var cardId = response.card.id;
+
+        // Insert the token ID into the form so it gets submitted to the server:
+        $form.append($('<input type="hidden" name="stripeToken">').val(token));
+        $form.append($('<input type="hidden" name="cardId" />').val(cardId));
+
+        // Submit the form:
+        $form.get(0).submit();
+    }
+};
+

@@ -6,6 +6,9 @@ $(function(){
             return false;
         }
     });
+
+    //show loaded on ajax calls.
+    $loading = $('#loadingDiv').hide();
     if(login){
         check_assigned_task();
         $(document).off('click','.offer').on('click','.offer',function(){

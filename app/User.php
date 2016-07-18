@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
@@ -15,7 +16,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name','last_name', 'email', 'password','phone','mobile','address','country_id','state_id','city_id','role','job_skills',
-        'area_of_interest','loggedin'
+        'area_of_interest','loggedin','stripe_customer_id'
     ];
 
     /**
@@ -82,14 +83,11 @@ class User extends Authenticatable
 
     /**
      * Function will returns all credit cards of user.
-     * @param $user_id
      * @return array
      */
-    public static function getAllCreditCards($user_id){
-        if(!empty($user_id)){
-            $creditCards = CreditCards::where('user_id',$user_id)->get();
-            return $creditCards;
-        }
+    public static function getAllCreditCards(){
+        if(!empty(Auth::user()->stripe_customer_id))
+            return \Stripe\Customer::retrieve(Auth::user()->stripe_customer_id)->sources->all(["object" => "card"]);
         return [];
     }
 
@@ -104,7 +102,7 @@ class User extends Authenticatable
             $taskCompleter = $taskObj->assign_to;
             $taskCompleterObj = User::find($taskCompleter);
             $rewards = $taskObj->compensation;
-            $debitFrom = User::where('role','superadmin')->pluck('id');
+            $debitFrom = User::where('role','superadmin')->first()->id;
             if(!empty($rewards)){
                 /**************************** reward given to task completer *******************************/
                 Transaction::create([
@@ -170,6 +168,135 @@ class User extends Authenticatable
                 }
                 /**************************** reward given to task creator and editor end *******************************/
             }
+        }
+    }
+
+    public static function createCustomer($stripeToken){
+        $customer=[];
+        $stripe_error='';
+        try{
+            $customer = \Stripe\Customer::create(array(
+                    "source" => $stripeToken,
+                    "description" => "customer created with ".Auth::user()->first_name.' '.Auth::user()->last_name)
+            );
+
+        }catch (\Stripe\Error\Card $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\InvalidRequest $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\Authentication $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\ApiConnection  $e) {
+            $network_error = true;
+            $stripe_error = $e->getMessage();
+        } catch(\Stripe\Error\Base $e){
+            $stripe_error=$e->getMessage();
+        } catch(Exception $e){
+            $stripe_error="Something is wrong. please try again later.";
+        }
+        if(!empty($customer)){
+            $userObj = User::find(Auth::user()->id);
+            if(!empty($userObj) && count($userObj) > 0){
+                $userObj->stripe_customer_id =$customer->id;
+                $userObj->save();
+            }
+        }
+        return ['customer'=>$customer,'error_msg'=>$stripe_error];
+    }
+
+    public static function donateUsingCreditCard($data=[]){
+
+        if(empty(Auth::user()->stripe_customer_id)){
+            $customer = self::createCustomer($data['stripeToken']);
+            if(empty($customer['customer']))
+                return ['success'=>false,'error_msg'=>$customer['error_msg']];
+            $customer = $customer['customer'];
+            $customer_id = $customer->id;
+        }
+        else{
+            $customer_id = Auth::user()->stripe_customer_id;
+        }
+
+        if($data['opt_typ'] == "used"){
+            $amount = $data['amount_reused_card'] * 100;
+            $allCards = self::getAllCreditCards();
+            $last4= $data['credit_cards'];
+            if(isset($allCards->data) && count($allCards->data) > 0){
+                foreach($allCards->data as $card)
+                {
+                    if($card->last4 == $last4)
+                        $data['cardId'] = $card->id;
+                }
+            }
+        }
+        else{
+            // create card if user uses new card to pay
+            $allCards = self::getAllCreditCards();
+            $last4= substr(str_replace(" ","",$data['cc-number']),-4);
+            $flag = false;
+            if(isset($allCards->data) && count($allCards->data) > 0){
+                foreach($allCards->data as $card)
+                {
+                    if($card->last4 == $last4)
+                        $flag= true;
+                }
+            }
+            if(!$flag){
+                if(isset($allCards->data) && count($allCards->data) > 0){
+                    $customer = \Stripe\Customer::retrieve($customer_id);
+                    $customer->sources->create(["source" => $data['stripeToken']]);
+                }
+            }
+            $amount = $data['cc-amount'] * 100;
+        }
+        // set default card this last id
+        self::setDefaultCreditCard($customer_id,$data['cardId']);
+        $charge = [];
+        $stripe_error='';
+        try{
+            $charge = \Stripe\Charge::create(array(
+                    "amount" => $amount, // amount in cents, again
+                    "currency" => "usd",
+                    "customer" => $customer_id,
+                    "description"=>$data['message'])
+            );
+        }catch (\Stripe\Error\Card $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\InvalidRequest $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\Authentication $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\ApiConnection  $e) {
+            $network_error = true;
+        } catch(\Stripe\Error\Base $e){
+            $stripe_error=$e->getMessage();
+        } catch(Exception $e){
+            $stripe_error="Something is wrong. please try again later.";
+        }
+
+        if(empty($charge))
+            return ['success'=>false,'error_msg'=>$stripe_error];
+        else
+            return ['success'=>true];
+    }
+
+    public static function setDefaultCreditCard($customer_id,$card_id){
+        try{
+            $customer = \Stripe\Customer::retrieve($customer_id);
+            $customer->default_source = $card_id;
+            $customer->save();
+        }catch (\Stripe\Error\Card $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\InvalidRequest $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\Authentication $e) {
+            $stripe_error = $e->getMessage();
+        } catch (\Stripe\Error\ApiConnection  $e) {
+            $network_error = true;
+        } catch(\Stripe\Error\Base $e){
+            $stripe_error=$e->getMessage();
+        } catch(Exception $e){
+            $stripe_error="Something is wrong. please try again later.";
         }
     }
 }

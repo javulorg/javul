@@ -18,4 +18,9 @@ class CreditCards extends Model
      * @var array
      */
     protected $fillable = ['user_id','card_number'];
+
+
+    public static function getCardName($customer_id){
+
+    }
 }

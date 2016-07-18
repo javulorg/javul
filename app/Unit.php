@@ -130,4 +130,17 @@ class Unit extends Model
             return implode(", ",$categoryObj);
         return "-";
     }
+
+    public static function getObj($unit_id){
+        $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+        $unit_id = $unitIDHashID->decode($unit_id );
+
+        if(empty($unit_id))
+            return [];
+        $unit_id = $unit_id[0];
+
+        if(Unit::find($unit_id)->count() > 0)
+            return Unit::find($unit_id);
+        return [];
+    }
 }

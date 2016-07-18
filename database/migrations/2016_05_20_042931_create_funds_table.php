@@ -18,9 +18,10 @@ class CreateFundsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('unit_id')->nullable();
             $table->integer('objective_id')->nullable();
+            $table->integer('task_id')->nullable();
             $table->decimal('amount',10,2);
             $table->string('transaction_type')->comment="donated or rewarded";
-            $table->string('fund_type')->comment="units or objectives or general purpose";
+            $table->string('fund_type')->comment="units or objectives or tasks or general purpose";
             $table->timestamps();
             $table->softDeletes();
         });
