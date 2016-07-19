@@ -36,14 +36,17 @@
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="col-xs-12">
-                                            <strong>{!! trans('messages.unit_funds') !!}</strong>
+                                            <strong>Objective's Funds</strong>
                                         </div>
                                         <div class="col-xs-6">{!! trans('messages.available') !!}</div>
-                                        <div class="col-xs-6 text-right">xxx $</div>
+                                        <div class="col-xs-6 text-right">{{number_format($availableObjFunds,0)}}$</div>
                                         <div class="col-xs-6">{!! trans('messages.awarded') !!}</div>
-                                        <div class="col-xs-6 text-right">xxx $</div>
+                                        <div class="col-xs-6 text-right">{{number_format($awardedObjFunds,0)}}$</div>
                                         <div class="col-xs-12 text-right">
-                                            <button class="btn orange-bg btn-sm" id="add_funds_btn">{!! trans('messages.add_funds') !!}</button>
+                                            <a class="btn orange-bg btn-sm" id="add_funds_btn" href="{!! url('funds/donate/objective/'
+                                            .$objectiveIDHashID->encode($objectiveObj->id)) !!}">
+                                                {!! trans('messages.add_funds')!!}
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -72,11 +75,14 @@
                                             @endif
                                         </div>
                                         <div class="col-xs-5">{!! trans('messages.funds') !!}</div>
-                                        <div class="col-xs-7 text-right">Available xxxx $</div>
+                                        <div class="col-xs-7 text-right">Available {{number_format($availableUnitFunds,0)}}$</div>
                                         <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
-                                        <div class="col-xs-7 text-right">xxx $</div>
+                                        <div class="col-xs-7 text-right">{{number_format($awardedUnitFunds,0)}}$</div>
                                         <div class="col-xs-12 text-right">
-                                            <button class="btn orange-bg btn-sm" id="add_unit_fund_btn">{!! trans('messages.add_funds') !!}</button>
+                                            <a class="btn orange-bg btn-sm" id="add_funds_btn" href="{!! url('funds/donate/unit/'
+                                            .$unitIDHashID->encode($objectiveObj->unit_id)) !!}">
+                                                {!! trans('messages.add_funds')!!}
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

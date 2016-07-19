@@ -27,19 +27,20 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-12">
-                                <strong>{!! trans('messages.unit_information') !!}<span class="caret"></span> </strong>
+                                <strong>Task Information<span class="caret"></span> </strong>
                             </div>
-                            <div class="col-xs-5">{!! trans('messages.unit_name') !!}</div>
-                            <div class="col-xs-7 text-right">{{$taskObj->unit->name}}</div>
-                            <div class="col-xs-5">{!! trans('messages.type') !!}</div>
-                            <div class="col-xs-7 text-right">{{$taskObj->unit->category_name}}</div>
+                            <div class="col-xs-5">Task Name</div>
+                            <div class="col-xs-7 text-right">{{$taskObj->name}}</div>
                             <div class="col-xs-5">{!! trans('messages.funds') !!}</div>
-                            <div class="col-xs-7 text-right">{!! trans('messages.available') !!}: xxxx$</div>
+                            <div class="col-xs-7 text-right">{!! trans('messages.available') !!}: {{number_format($availableFunds,0)}}$</div>
                             <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
-                            <div class="col-xs-7 text-right">xxx$</div>
+                            <div class="col-xs-7 text-right">{{number_format($awardedFunds,0)}}$</div>
                             @if($taskObj->status != "completed")
                             <div class="col-xs-12 text-right">
-                                <button class="btn orange-bg btn-sm" id="add_funds">{!! trans('messages.add_funds') !!}</button>
+                                <a class="btn orange-bg btn-sm" id="add_funds_btn" href="{!! url('funds/donate/task/'
+                                            .$taskIDHashID->encode($taskObj->id)) !!}">
+                                    {!! trans('messages.add_funds')!!}
+                                </a>
                             </div>
                             @endif
                         </div>

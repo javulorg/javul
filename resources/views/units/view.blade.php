@@ -34,9 +34,9 @@
                                         <strong>{!! trans('messages.unit_funds')!!}</strong>
                                     </div>
                                     <div class="col-xs-6">{!! trans('messages.available') !!}</div>
-                                    <div class="col-xs-6 text-right">XXX $</div>
+                                    <div class="col-xs-6 text-right">{{number_format($availableFunds,0)}}$</div>
                                     <div class="col-xs-6">{!! trans('messages.awarded') !!}</div>
-                                    <div class="col-xs-6 text-right">XXX $</div>
+                                    <div class="col-xs-6 text-right">{{number_format($awardedFunds,0)}}$</div>
                                 </div>
                                 <div>
                                     <div class="col-xs-12 text-right" style="padding-right: 0px;">

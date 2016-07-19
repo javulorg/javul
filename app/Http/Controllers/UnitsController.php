@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ActivityPoint;
 use App\City;
 use App\Country;
+use App\Fund;
 use App\Objective;
 use App\RelatedUnit;
 use App\SiteActivity;
@@ -379,6 +380,12 @@ class UnitsController extends Controller
                     view()->share('unitObj',$unit );
                     view()->share('objectivesObj',$objectives );
                     view()->share('taskObj',$tasks );
+
+                    $availableFunds =Fund::getUnitDonatedFund($unit_id);
+                    $awardedFunds =Fund::getUnitAwardedFund($unit_id);
+
+                    view()->share('availableFunds',$availableFunds );
+                    view()->share('awardedFunds',$awardedFunds );
                     return view('units.view');
                 }
             }

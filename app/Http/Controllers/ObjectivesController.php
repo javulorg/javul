@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ActivityPoint;
+use App\Fund;
 use App\ImportanceLevel;
 use App\Objective;
 use App\SiteActivity;
@@ -301,22 +302,37 @@ class ObjectivesController extends Controller
             $objective_id = $objectiveIDHashID->decode($objective_id);
             if(!empty($objective_id)){
                 $objective_id = $objective_id[0];
-                $objectiveObj = Objective::with(['unit','tasks'])->where('id',$objective_id)->first();
-                $upvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','+1')->count();
-                $downvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','-1')->count();
+                $obj = Objective::checkObjectiveExist($objective_id,false);
+                if($obj){
+                    $objectiveObj = Objective::with(['unit','tasks'])->where('id',$objective_id)->first();
+                    $upvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','+1')->count();
+                    $downvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','-1')->count();
 
-                if($upvotedCnt ==0)
-                    $upvotedCnt= 1;
-                $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
+                    if($upvotedCnt ==0)
+                        $upvotedCnt= 1;
+                    $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
 
-                if(is_float($importancePercentage))
-                    $importancePercentage = ceil($importancePercentage);
-                view()->share('upvotedCnt',$upvotedCnt);
-                view()->share('downvotedCnt',$downvotedCnt);
-                view()->share('importancePercentage',$importancePercentage);
-                if(!empty($objectiveObj)){
-                    view()->share('objectiveObj',$objectiveObj);
-                    return view('objectives.view');
+                    if(is_float($importancePercentage))
+                        $importancePercentage = ceil($importancePercentage);
+                    view()->share('upvotedCnt',$upvotedCnt);
+                    view()->share('downvotedCnt',$downvotedCnt);
+                    view()->share('importancePercentage',$importancePercentage);
+                    if(!empty($objectiveObj)){
+                        view()->share('objectiveObj',$objectiveObj);
+                        $availableFunds =Fund::getObjectiveDonatedFund($objective_id);
+                        $awardedFunds =Fund::getObjectiveAwardedFund($objective_id);
+
+                        view()->share('availableObjFunds',$availableFunds );
+                        view()->share('awardedObjFunds',$awardedFunds );
+
+                        $availableUnitFunds =Fund::getUnitDonatedFund($objectiveObj->unit_id);
+                        $awardedUnitFunds =Fund::getUnitAwardedFund($objectiveObj->unit_id);
+
+                        view()->share('availableUnitFunds',$availableUnitFunds );
+                        view()->share('awardedUnitFunds',$awardedUnitFunds );
+
+                        return view('objectives.view');
+                    }
                 }
             }
         }

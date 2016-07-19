@@ -67,33 +67,39 @@ class FundsController extends Controller
             switch($type){
                 case 'unit':
                     $exists = Unit::checkUnitExist($id,true);
-                    $obj= Unit::getObj($id);
-                    $donateTo =" unit ";
-                    $controller="units";
-                    $addFunds=['unit_id'=>$obj->id];
-                    $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
-                    $availableFunds =Fund::getUnitDonatedFund($obj->id);
-                    $awardedFunds =Fund::getUnitAwardedFund($obj->id);
+                    if($exists){
+                        $obj= Unit::getObj($id);
+                        $donateTo =" unit ";
+                        $controller="units";
+                        $addFunds=['unit_id'=>$obj->id];
+                        $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                        $availableFunds =Fund::getUnitDonatedFund($obj->id);
+                        $awardedFunds =Fund::getUnitAwardedFund($obj->id);
+                    }
                     break;
                 case 'objective':
                     $exists = Objective::checkObjectiveExist($id,true);
-                    $obj= Objective::getObj($id);
-                    $donateTo =" objective ";
-                    $controller="objectives";
-                    $addFunds=['objective_id'=>$obj->id];
-                    $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
-                    $availableFunds =Fund::getObjectiveDonatedFund($obj->id);
-                    $awardedFunds =Fund::getObjectiveAwardedFund($obj->id);
+                    if($exists){
+                        $obj= Objective::getObj($id);
+                        $donateTo =" objective ";
+                        $controller="objectives";
+                        $addFunds=['objective_id'=>$obj->id];
+                        $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                        $availableFunds =Fund::getObjectiveDonatedFund($obj->id);
+                        $awardedFunds =Fund::getObjectiveAwardedFund($obj->id);
+                    }
                     break;
                 case 'task':
-                    $exists = Task::checkTaskExist($id,true);
-                    $obj= Task::getObj($id);
-                    $donateTo =" task ";
-                    $controller="tasks";
-                    $addFunds=['task_id'=>$obj->id];
-                    $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
-                    $availableFunds =Fund::getTaskDonatedFund($obj->id);
-                    $awardedFunds =Fund::getTaskAwardedFund($obj->id);
+                    $exists = Task::checkUnitExist($id,true);
+                    if($exists){
+                        $obj= Task::getObj($id);
+                        $donateTo =" task ";
+                        $controller="tasks";
+                        $addFunds=['task_id'=>$obj->id];
+                        $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                        $availableFunds =Fund::getTaskDonatedFund($obj->id);
+                        $awardedFunds =Fund::getTaskAwardedFund($obj->id);
+                    }
                     break;
                 default:
                     $exists=false;
@@ -138,7 +144,7 @@ class FundsController extends Controller
                             'user_id'=>Auth::user()->id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                                donate $'.$request->input($field).' to'.$donateTo.' '.$obj->name.' <a href="'.url($controller.'/'
+                                donate $'.$request->input($field).' to'.$donateTo.' <a href="'.url($controller.'/'
                                 .$hashID->encode
                                         ($obj->id).'/'
                                 .$obj->slug).'">'.$obj->name.'</a>'

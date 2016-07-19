@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ActivityPoint;
+use App\Fund;
 use App\JobSkill;
 use App\Library\Helpers;
 use App\Objective;
@@ -713,6 +714,12 @@ class TasksController extends Controller
                     }
                     view()->share('taskBidders',$taskBidders);
                     // end display listing of bidders
+
+                    $availableFunds =Fund::getTaskDonatedFund($task_id);
+                    $awardedFunds =Fund::getTaskAwardedFund($task_id);
+
+                    view()->share('availableFunds',$availableFunds );
+                    view()->share('awardedFunds',$awardedFunds );
 
                     return view('tasks.view');
                 }

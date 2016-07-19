@@ -74,6 +74,8 @@ Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 
 Route::any('funds/donate/unit/{unit_id}','FundsController@donate_to_unit_objective_task');
+Route::any('funds/donate/objective/{objective_id}','FundsController@donate_to_unit_objective_task');
+Route::any('funds/donate/task/{task_id}','FundsController@donate_to_unit_objective_task');
 Route::get('funds/get-card-name','FundsController@get_card_name');
 
 Route::resource('/issues','IssuesController');

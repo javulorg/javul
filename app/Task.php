@@ -147,17 +147,33 @@ class Task extends Model
         return false;
     }
 
-    public function decodeTaskID_CheckTaskIDExist($task_id){
-        if(!empty($task_id)){
+    public static function checkUnitExist($task_id,$needToDecode=false)
+    {
+        if($needToDecode){
             $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
-            if(!empty($task_id)){
-                $task_id = $task_id[0];
-                $taskObj = self::find($task_id);
-                if(!empty($taskObj) && count($taskObj) > 0)
-                    return true;
-            }
+
+            if(empty($task_id))
+                return false;
+            $task_id = $task_id[0];
+
+            if(self::find($task_id)->count() == 0)
+                return false;
+            return true;
         }
-        return false;
+
+    }
+
+    public static function getObj($task_id){
+        $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+        $task_id = $taskIDHashID->decode($task_id );
+
+        if(empty($task_id))
+            return [];
+        $task_id = $task_id[0];
+
+        if(self::find($task_id)->count() > 0)
+            return self::find($task_id);
+        return [];
     }
 }

@@ -72,6 +72,11 @@ class Objective extends Model
                 return false;
             return true;
         }
+        else{
+            if(self::find($objective_id)->count() == 0)
+                return false;
+            return true;
+        }
 
     }
 
@@ -82,6 +87,18 @@ class Objective extends Model
         return self::find($obj_id)->slug;
     }
 
+    public static function getObj($objective_id){
+        $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+        $objective_id = $objectiveIDHashID->decode($objective_id );
+
+        if(empty($objective_id))
+            return [];
+        $objective_id = $objective_id[0];
+
+        if(self::find($objective_id)->count() > 0)
+            return self::find($objective_id);
+        return [];
+    }
 
     public static function objectiveStatus()
     {
