@@ -82,6 +82,38 @@ class User extends Authenticatable
         return '';
     }
 
+    public static function checkUserExist($user_id,$needToDecode=false){
+        if($needToDecode){
+            $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $user_id = $userIDHashID->decode($user_id );
+
+            if(empty($user_id))
+                return false;
+            $user_id = $user_id[0];
+
+            if(self::find($user_id)->count() == 0)
+                return false;
+            return true;
+        }
+        else{
+            if(self::find($user_id)->count() == 0)
+                return false;
+            return true;
+        }
+    }
+
+    public static function getObj($user_id){
+        $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $user_id = $userIDHashID->decode($user_id );
+
+        if(empty($user_id))
+            return [];
+        $user_id = $user_id[0];
+
+        if(self::find($user_id)->count() > 0)
+            return self::find($user_id);
+        return [];
+    }
     /**
      * Function will returns all credit cards of user.
      * @return array

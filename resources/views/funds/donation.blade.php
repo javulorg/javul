@@ -15,23 +15,28 @@
     <div class="row form-group">
         <div class="col-sm-12">
             <div class="col-sm-12 grey-bg unit_description">
-                <h2 class="unit-heading"><span class="glyphicon glyphicon-edit"></span> &nbsp; <strong>{{$obj->name}}</strong></h2>
+                @if(\Request::segment(3) == "user")
+                    @include('users.user-profile',['userObj'=>$obj])
+                @else
+                    <h2 class="unit-heading"><span class="glyphicon glyphicon-edit"></span> &nbsp; <strong>{{$obj->name}}</strong></h2>
+                    <div class="panel">
+                        <div class="panel-body">
 
-                <div class="panel">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <strong>{{ucfirst(trim($donateTo))}} Information<span class="caret"></span> </strong>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <strong>{{ucfirst(trim($donateTo))}} Information<span class="caret"></span> </strong>
+                                </div>
+                                <div class="col-xs-5">{{{ucfirst(trim($donateTo))}}} Name</div>
+                                <div class="col-xs-7 text-right">{{$obj->name}}</div>
+                                <div class="col-xs-5">{!! trans('messages.funds') !!}</div>
+                                <div class="col-xs-7 text-right">{!! trans('messages.available') !!}: {{number_format($availableFunds,0)}}$</div>
+                                <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
+                                <div class="col-xs-7 text-right">{{number_format($awardedFunds,0)}}$</div>
                             </div>
-                            <div class="col-xs-5">{{{ucfirst(trim($donateTo))}}} Name</div>
-                            <div class="col-xs-7 text-right">{{$obj->name}}</div>
-                            <div class="col-xs-5">{!! trans('messages.funds') !!}</div>
-                            <div class="col-xs-7 text-right">{!! trans('messages.available') !!}: {{number_format($availableFunds,0)}}$</div>
-                            <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
-                            <div class="col-xs-7 text-right">{{number_format($awardedFunds,0)}}$</div>
+
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>

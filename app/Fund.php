@@ -88,4 +88,18 @@ class Fund extends Model
         return 0;
     }
 
+    public static function getUserDonatedFund($user_id=''){
+        if(!empty($user_id)){
+            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','credit')->sum('amount');
+        }
+        return 0;
+    }
+
+    public static function getUserAwardedFund($user_id=''){
+        if(!empty($user_id)){
+            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','debit')->sum('amount');
+        }
+        return 0;
+    }
+
 }

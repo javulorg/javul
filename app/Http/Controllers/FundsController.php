@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\ActivityPoint;
+use App\AreaOfInterest;
 use App\City;
 use App\Country;
 use App\CreditCards;
 use App\Fund;
+use App\JobSkill;
 use App\Objective;
 use App\RelatedUnit;
 use App\SiteActivity;
@@ -101,6 +103,31 @@ class FundsController extends Controller
                         $awardedFunds =Fund::getTaskAwardedFund($obj->id);
                     }
                     break;
+                case 'user':
+                    $exists = User::checkUserExist($id,true);
+                    if($exists){
+                        $obj= User::getObj($id);
+                        $obj->name=$obj->first_name.' '.$obj->last_name;
+                        $obj->slug=strtolower($obj->first_name.'_'.$obj->last_name);
+                        $donateTo =" user ";
+                        $controller="userprofiles";
+                        $addFunds=['task_id'=>$obj->id];
+                        $hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        $availableFunds =Fund::getUserDonatedFund($obj->id);
+                        $awardedFunds =Fund::getUserAwardedFund($obj->id);
+
+                        $skills = [];
+                        if(!empty($obj->job_skills))
+                            $skills = JobSkill::whereIn('id',explode(",",$obj->job_skills))->get();
+
+                        $interestObj = [];
+                        if(!empty($obj->job_skills))
+                            $interestObj = AreaOfInterest::whereIn('id',explode(",",$obj->area_of_interest))->get();
+
+                        view()->share('interestObj',$interestObj);
+                        view()->share('skills',$skills);
+                    }
+                    break;
                 default:
                     $exists=false;
                     break;
@@ -127,13 +154,12 @@ class FundsController extends Controller
                     $message = Auth::user()->first_name.' '.Auth::user()->last_name. " donate $".$request->input($field).' to'
                         .$donateTo.' '.$obj->name;
 
-
-
-
                     $all = $request->all();
                     $all['message']=$message;
 
+                    // Donate amount to Unit/Objective/Task/User
                     $response = User::donateUsingCreditCard($all);
+
                     if($response['success'])
                     {
                         //insert into site activity table for log.
@@ -145,17 +171,33 @@ class FundsController extends Controller
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                                 donate $'.$request->input($field).' to'.$donateTo.' <a href="'.url($controller.'/'
-                                .$hashID->encode
-                                        ($obj->id).'/'
-                                .$obj->slug).'">'.$obj->name.'</a>'
+                                .$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>'
                         ]);
-                        $addFunds['user_id']=Auth::user()->id;
-                        $addFunds['amount']=$request->input($field);
-                        $addFunds['transaction_type']='donated';
-                        $addFunds['fund_type']=$donateTo;
-                        // insert record into funds table to maintain fund availability for unit/objective/task
-                        Fund::create($addFunds);
+                        if($type == "user"){
+                            Transaction::create([
+                                'created_by'=>Auth::user()->id,
+                                'user_id'=>$obj->id,
+                                'amount'=>$request->input($field),
+                                'trans_type'=>'credit',
+                                'comments'=>'$'.$request->input($field).' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name
+                            ]);
 
+                            Transaction::create([
+                                'created_by'=>Auth::user()->id,
+                                'user_id'=>Auth::user()->id,
+                                'amount'=>$request->input($field),
+                                'trans_type'=>'debit',
+                                'comments'=>'$'.$request->input($field).' donation given to '.$obj->name
+                            ]);
+                        }
+                        else{
+                            $addFunds['user_id']=Auth::user()->id;
+                            $addFunds['amount']=$request->input($field);
+                            $addFunds['transaction_type']='donated';
+                            $addFunds['fund_type']=$donateTo;
+                            // insert record into funds table to maintain fund availability for unit/objective/task
+                            Fund::create($addFunds);
+                        }
                         $request->session()->flash('msg_val', "Amount donate successfully");
                         $request->session()->flash('msg_type', "success");
                         return redirect($request->url());
