@@ -153,10 +153,20 @@
                                         </a>
                                     </td>
                                     <td>
-
+                                        {!! \App\JobSkill::getSkillNameLink($task->skills) !!}
                                     </td>
-                                    <td></td>
-                                    <td>{{ucfirst($task->status)}}</td>
+                                    <td>
+                                        @if($task->status == "assigned" || $task->status == "in_progress" || $task->status == "completion_evaluation")
+                                        <?php $username = \App\User::getUserName($task->assign_to);
+                                                $slug = str_replace(" ","_",strtolower($username));?>
+                                        <a title="bid now" href="{!! url('userprofiles/'.$userIDHashID->encode($task->assign_to).'/'.$slug) !!}">
+                                            {{$username}}
+                                        </a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>{{\App\SiteConfigs::task_status($task->status)}}</td>
                                     <td>
                                         @if($task->status=="editable")
                                             <a class="btn btn-xs btn-primary"

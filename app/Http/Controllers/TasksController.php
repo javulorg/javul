@@ -1447,10 +1447,12 @@ class TasksController extends Controller
                     if(empty($taskEditors) || count($taskEditors) == 0)
                         $taskEditors = TaskEditor::where('task_id',$task_id)->where('user_id','!=',$taskObj->assign_to)->get();
 
+
+
                     // validate percentage split.
                     $percentageError = [];
                     $totalPercentage=0;
-                    if(!empty($taskEditors) > 0){
+                    if(!empty($taskEditors) && count($taskEditors) > 0){
                         $allUsersRewardPercentage = $request->input('amount_percentage');
                         if(!empty($allUsersRewardPercentage)){
                             foreach($allUsersRewardPercentage  as $u_id=>$percentage){
@@ -1470,7 +1472,7 @@ class TasksController extends Controller
                     }
 
                     // insert task reward assignment into table. to use where transaction take place. to give % of amount to user.
-                    if(!empty($taskEditors) > 0 ){
+                    if(!empty($taskEditors) && count($taskEditors) > 0 ){
                         $allUsersRewardPercentage = $request->input('amount_percentage');
                         if(!empty($allUsersRewardPercentage)){
                             foreach($allUsersRewardPercentage  as $u_id=>$percentage){
@@ -1536,7 +1538,7 @@ class TasksController extends Controller
                         $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', "Task Compelted successfully!!!");
+                    $request->session()->flash('msg_val', "Task completed successfully!!!");
                     return redirect('tasks');
                 }
             }

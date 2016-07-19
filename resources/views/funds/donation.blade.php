@@ -83,7 +83,7 @@
             <div id="my-tab-content" class="tab-content">
                 <div class="list-group tab-pane" id="saved_details">
                 @if(!empty($credit_cards) && count($credit_cards) > 0)
-                    <form novalidate autocomplete="on" method="POST"  id="reused-credit-card-form">
+                    <form novalidate autocomplete="off" method="POST"  id="reused-credit-card-form">
                         {!! csrf_field() !!}
                         <input type="hidden" name="opt_typ" value="used"/>
                         <div class="list-group tab-pane" id="saved_details">
@@ -131,7 +131,7 @@
                 <div class="list-group tab-pane active" id="credit_card">
                     <div class="row form-group">
                         <div class="col-sm-12">
-                            <form novalidate autocomplete="on" method="POST" id="new-credit-card-form">
+                            <form novalidate autocomplete="off" method="POST" id="new-credit-card-form">
                                 <input type="hidden" name="opt_typ" value="new"/>
                                 {!! csrf_field() !!}
                                 <div class="form-row form-group" style="position: relative;">

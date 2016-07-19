@@ -88,9 +88,15 @@
 @if($taskObj->status == "completion_evaluation")
 <div class="row form-group">
     <div class="col-sm-12 complete_assign_btn">
-        <button id="mark_as_complete" type="button"  class="btn btn-success" >
-            <span class="glyphicon glyphicon-check"></span> Mark as Complete
-        </button>
+        @if(!empty($taskEditors) && count($taskEditors) > 0)
+            <button id="mark_as_complete" type="button"  class="btn btn-success" >
+                <span class="glyphicon glyphicon-check"></span> Mark as Complete
+            </button>
+        @else
+            <button id="ok_complete" type="button"  class="btn btn-success" data-tid="{{$taskIDHashID->encode($taskObj->id)}}">
+                <span class="glyphicon glyphicon-check"></span> Mark as Complete
+            </button>
+        @endif
         <button id="reassign_task_btn" type="button"  class="btn orange-bg">
             <span class="glyphicon glyphicon-new-window"></span> Re Assign
         </button>

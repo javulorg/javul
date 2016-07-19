@@ -17,5 +17,5 @@ class Transaction extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','amount','trans_type','comments'];
+    protected $fillable = ['created_by','user_id','amount','trans_type','comments'];
 }
