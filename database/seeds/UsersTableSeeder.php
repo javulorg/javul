@@ -19,9 +19,9 @@ class UsersTableSeeder extends Seeder
             'phone'=>'9925633210',
             'mobile'=>'9963256320',
             'address'=>'Address',
-            'country_id'=>1,
-            'state_id'=>1,
-            'city_id'=>1,
+            'country_id' => 231,
+            'state_id' => 3924,
+            'city_id' => 43070,
             'role'=>'superadmin'
         ]);
     }

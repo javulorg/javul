@@ -181,14 +181,6 @@ class FundsController extends Controller
                                 'trans_type'=>'credit',
                                 'comments'=>'$'.$request->input($field).' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name
                             ]);
-
-                            Transaction::create([
-                                'created_by'=>Auth::user()->id,
-                                'user_id'=>Auth::user()->id,
-                                'amount'=>$request->input($field),
-                                'trans_type'=>'debit',
-                                'comments'=>'$'.$request->input($field).' donation given to '.$obj->name
-                            ]);
                         }
                         else{
                             $addFunds['user_id']=Auth::user()->id;

@@ -13,6 +13,7 @@
 
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
+Route::get('/account', 'AccountController@index');
 Route::get('/account/logout', 'AccountController@logout');
 Route::any('/userprofiles/{user_id}','UserController@user_profile');
 Route::any('/userprofiles/{user_id}/{slug}','UserController@user_profile');
