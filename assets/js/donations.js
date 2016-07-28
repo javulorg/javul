@@ -11,6 +11,7 @@ $(function(){
 
     $('#new-credit-card-form').submit(function(e) {
         e.preventDefault();
+        var $form = $('#new-credit-card-form');
         var cardType = $.payment.cardType($('.cc-number').val());
         $('.cc-number').toggleInputError(!$.payment.validateCardNumber($('.cc-number').val()));
         //$('.cc-exp').toggleInputError(!$.payment.validateCardExpiry($('.cc-exp').payment('cardExpiryVal')));
@@ -18,11 +19,12 @@ $(function(){
             $("[name='exp_year']").val()));
         $('.cc-cvc').toggleInputError(!$.payment.validateCardCVC($('.cc-cvc').val(), cardType));
         $("#cc-amount").toggleInputError(!$.payment.validateAmount($('#cc-amount').val()));
+        $("#cc-card-type").toggleInputError(!$.payment.validateCardType($('#cc-card-type').val()));
         $('.cc-brand').text(cardType);
         $('.validation').removeClass('text-danger text-success');
         if($('.has-error').length == 0){
             $(this).find('.submit').prop('disabled', true);
-            Stripe.card.createToken($(this), stripeResponseHandler);
+            $form.get(0).submit();
         }
     });
 
@@ -57,10 +59,14 @@ $(function(){
     $("#cc-number").on('keyup',function(){
         var cardType = $.payment.cardType($(this).val());
 
-        if($.trim(cardType) != "" && cardType != 'null')
+        if($.trim(cardType) != "" && cardType != 'null'){
             $(".card_image").html('<img src="'+url+'/'+cardType+'.png" height="30px;">');
-        else
+            $("#cc-card-type").val(cardType);
+        }
+        else{
             $(".card_image").html('');
+            $("#cc-card-type").val('');
+        }
 
     })
 
@@ -94,21 +100,27 @@ $(function(){
         if(val == "")
             $("[name='card_number']").val('');
         else{
-            $loading.show();
-            $.ajax({
-                type:'get',
-                data:{last4:val},
-                url:siteURL+'/funds/get-card-name',
-                success:function(resp){
-                    if($.trim(resp) != ""){
-                        $(".reused_card_image").html('<img src="'+siteURL+'/assets/images/'+resp+'" style="height:40px;"/>');
-                    }
-                    else
-                        $(".reused_card_image").html('');
-                    $loading.hide();
-                }
-            });
-            $("[name='card_number']").val('XXXX XXXX XXXX '+val);
+            var img = '';
+            var type= $(this).find(':selected').data('type');
+            var last4 = $(this).find(':selected').data('last4');
+            if(type =="amex")
+                img = 'amex.png';
+            if(type == "discover")
+                img = 'discover.png';
+            if(type == "MasterCard")
+                img = 'mastercard.png';
+            if(type == "visa")
+                img =  'visa.png';
+            if(type == "maestro")
+                img = 'maestro.png';
+
+
+            if($.trim(img) != '')
+                $(".reused_card_image").html('<img src="'+siteURL+'/assets/images/'+img+'" style="height:40px;"/>');
+            else
+                $(".reused_card_image").html('');
+
+            $("[name='card_number']").val('XXXX XXXX XXXX '+last4);
         }
         return false;
     });

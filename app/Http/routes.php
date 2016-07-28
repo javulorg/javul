@@ -18,6 +18,12 @@ Route::get('/account/logout', 'AccountController@logout');
 Route::any('/userprofiles/{user_id}','UserController@user_profile');
 Route::any('/userprofiles/{user_id}/{slug}','UserController@user_profile');
 Route::get('/my_tasks','UserController@my_tasks');
+Route::post('/account/withdraw','AccountController@withdraw');
+Route::post('/account/paypal_email_check','AccountController@paypal_email_check');
+/*Route::any('/notification/success','NotificationController@success_payment');
+Route::any('/notification/error','NotificationController@error_payment');
+Route::any('/notification/ipn_payment','NotificationController@ipn_payment');*/
+
 Route::auth();
 
 

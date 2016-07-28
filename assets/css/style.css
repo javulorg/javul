@@ -82,7 +82,6 @@ a.list-group-item,.list-group-item a{color:#337ab7 ;}
 span.select2.select2-container{width:100% !important;}
 
 /*Custom Bootstrap Style...*/
-.alert{padding:7px;}
 .form-group {margin-bottom: 7px;}
 .panel-heading{padding:5px 15px;}
 .panel{margin-bottom:10px;}
@@ -249,7 +248,7 @@ hr, p {margin: 10px 0;}
 .text-input {
     border: 1px solid #d4d4d4;
     border-radius: 3px;
-    font-family: "Open Sans";
+    font-family: "Roboto";
     height: 30px;
 }
 input:disabled, input.disabled {

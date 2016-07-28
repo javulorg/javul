@@ -10,6 +10,7 @@ use App\CreditCards;
 use App\Fund;
 use App\JobSkill;
 use App\Objective;
+use App\Paypal;
 use App\RelatedUnit;
 use App\SiteActivity;
 use App\SiteConfigs;
@@ -30,7 +31,6 @@ class FundsController extends Controller
 {
     public function __construct(){
         $this->middleware('auth');
-        \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
     }
 
     public function index(Request $request){
@@ -135,15 +135,24 @@ class FundsController extends Controller
 
             if($exists){
                 if($request->isMethod('post')){
-
-                    $opt_typ = $request->input('opt_typ');
+                    $user_credit_card_id = Auth::user()->credit_card_id;
                     $field = 'cc-amount';
-                    if($opt_typ == "used"){
+                    $inputData = $request->all();
+                    if(!empty($user_credit_card_id)){
                         $field="amount_reused_card";
+                        $validator = \Validator::make($inputData, [
+                            'amount_reused_card'=> 'required|numeric'
+                        ]);
+                    }else{
+                        $inputData['cc-number'] = str_replace(" ","",$inputData['cc-number']);
+                        $validator = \Validator::make($inputData, [
+                            'cc-amount'=> 'required|numeric',
+                            'cc-card-type'=>'required',
+                            'exp_month'=>'required',
+                            'exp_year'=>'required',
+                            'cc-number'=>'required|numeric'
+                        ]);
                     }
-                    $validator = \Validator::make($request->all(), [
-                        $field => 'required|numeric'
-                    ]);
 
                     if ($validator->fails())
                         return redirect()->back()->withErrors($validator)->withInput();
@@ -151,15 +160,15 @@ class FundsController extends Controller
                     if(empty($obj) || count($obj) == 0)
                         return redirect()->back()->withErrors(['error'=>'Something goes wrong. Please try again.'])->withInput();
 
-                    $message = Auth::user()->first_name.' '.Auth::user()->last_name. " donate $".$request->input($field).' to'
-                        .$donateTo.' '.$obj->name;
+                    $amount = $request->input($field);
+                    $paypalFees = (($amount * 2.9)/100) + 0.3;
+                    $amount = $amount - $paypalFees ;
+                    $message = Auth::user()->first_name.' '.Auth::user()->last_name. " donate $".$amount.' to'.$donateTo.$obj->name;
 
-                    $all = $request->all();
-                    $all['message']=$message;
+                    $inputData['message']=$message;
 
                     // Donate amount to Unit/Objective/Task/User
-                    $response = User::donateUsingCreditCard($all);
-
+                    $response = User::donateAmount($inputData);
                     if($response['success'])
                     {
                         //insert into site activity table for log.
@@ -170,36 +179,36 @@ class FundsController extends Controller
                             'user_id'=>Auth::user()->id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                                donate $'.$request->input($field).' to'.$donateTo.' <a href="'.url($controller.'/'
+                                donate $'.$amount.' to'.$donateTo.' <a href="'.url($controller.'/'
                                 .$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>'
                         ]);
                         if($type == "user"){
                             Transaction::create([
                                 'created_by'=>Auth::user()->id,
                                 'user_id'=>$obj->id,
-                                'amount'=>$request->input($field),
+                                'amount'=>$amount,
                                 'trans_type'=>'credit',
-                                'comments'=>'$'.$request->input($field).' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name
+                                'comments'=>'$'.$amount.' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name
                             ]);
                         }
                         else{
                             $addFunds['user_id']=Auth::user()->id;
-                            $addFunds['amount']=$request->input($field);
+                            $addFunds['amount']=$amount;
                             $addFunds['transaction_type']='donated';
                             $addFunds['fund_type']=$donateTo;
                             // insert record into funds table to maintain fund availability for unit/objective/task
                             Fund::create($addFunds);
                         }
+
                         $request->session()->flash('msg_val', "Amount donate successfully");
                         $request->session()->flash('msg_type', "success");
                         return redirect($request->url());
                     }
                     else{
-                        $request->session()->flash('msg_val', "Something goes wrong. Please try again.");
+                        $request->session()->flash('msg_val', $response['error_msg']);
                         $request->session()->flash('msg_type', "error");
                         return redirect($request->url());
                     }
-
                 }
                 $creditedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit')->sum('amount');
                 $debitedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit')->sum('amount');
@@ -209,7 +218,9 @@ class FundsController extends Controller
                 $expiry_years = SiteConfigs::getCardExpiryYear();
                 view()->share('expiry_years',$expiry_years);
 
-                $users_cards = User::getAllCreditCards();
+                $users_cards=[];
+                if(!empty(Auth::user()->credit_card_id))
+                    $users_cards= Paypal::getCreditCard(Auth::user()->credit_card_id);
                 view()->share('credit_cards',$users_cards);
 
                 $msg_flag = false;

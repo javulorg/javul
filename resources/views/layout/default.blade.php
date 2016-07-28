@@ -25,7 +25,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <meta content="" name="description" />
     <meta content="" name="author" />
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/font-awesome/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap-toastr/toastr.min.css') !!}" rel="stylesheet" type="text/css" />
@@ -58,6 +58,7 @@ License: You must have a valid license purchased only from themeforest(the above
     @yield('page-css')
     <script type="text/javascript" src="//js.stripe.com/v2/"></script>
     <script type="text/javascript">Stripe.setPublishableKey('{{env("STRIPE_SECRET")}}');</script>
+    {!! Analytics::render() !!}
 </head>
 <!-- END HEAD -->
     <!-- If login page reload every 15 minutes. -->

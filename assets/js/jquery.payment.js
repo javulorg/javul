@@ -19,7 +19,7 @@
   defaultFormat = /(\d{1,4})/g;
 
   $.payment.cards = cards = [
-    {
+    /*{
       type: 'elo',
       patterns: [4011, 4312, 4389, 4514, 4573, 4576, 5041, 5066, 5067, 509, 6277, 6362, 6363, 650, 6516, 6550],
       format: defaultFormat,
@@ -33,14 +33,14 @@
       length: [16],
       cvcLength: [3],
       luhn: true
-    }, {
+    },*/ {
       type: 'maestro',
       patterns: [5018, 502, 503, 506, 56, 58, 639, 6220, 67],
       format: defaultFormat,
       length: [12, 13, 14, 15, 16, 17, 18, 19],
       cvcLength: [3],
       luhn: true
-    }, {
+    }/*, {
       type: 'forbrugsforeningen',
       patterns: [600],
       format: defaultFormat,
@@ -54,7 +54,7 @@
       length: [16],
       cvcLength: [3],
       luhn: true
-    }, {
+    }*/, {
       type: 'visa',
       patterns: [4],
       format: defaultFormat,
@@ -76,20 +76,13 @@
       cvcLength: [3, 4],
       luhn: true
     }, {
-      type: 'dinersclub',
-      patterns: [30, 36, 38, 39],
-      format: /(\d{1,4})(\d{1,6})?(\d{1,4})?/,
-      length: [14],
-      cvcLength: [3],
-      luhn: true
-    }, {
       type: 'discover',
       patterns: [60, 64, 65, 622],
       format: defaultFormat,
       length: [16],
       cvcLength: [3],
       luhn: true
-    }, {
+    }/*, {
       type: 'unionpay',
       patterns: [62, 88],
       format: defaultFormat,
@@ -103,7 +96,7 @@
       length: [16],
       cvcLength: [3],
       luhn: true
-    }
+    }*/
   ];
 
   cardFromNumber = function(num) {
@@ -558,6 +551,11 @@
     return (_ref = num.length, __indexOf.call(card.length, _ref) >= 0) && (card.luhn === false || luhnCheck(num));
   };
 
+    $.payment.validateEmail = function(email){
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    };
+
   $.payment.validateCardExpiry = function(month, year) {
     var currentTime, expiry, _ref;
     if (typeof month === 'object' && 'month' in month) {
@@ -602,6 +600,13 @@
             return false;
         }
         return true;
+    };
+
+    $.payment.validateCardType = function(type){
+        type = $.trim(type);
+        if($.trim(type) != "")
+            return true;
+        return false;
     };
 
   $.payment.validateCardCVC = function(cvc, type) {

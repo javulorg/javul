@@ -390,14 +390,15 @@ class ObjectivesController extends Controller
                     $user_id_encoded = $userIDHashID->encode($user_id);
 
 
-                    SiteActivity::create([
+                    // add comment : issue : skype text sir (26.07.2016)
+                    /*SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.Auth::user()->first_name.' '.Auth::user()
                                 ->last_name
                             .'</a>'.$site_activity_text .' <a href="'.url('objectives/'.$objectiveIDEndcoded.'/'.$objectiveObj->slug) .'">'
                             .$objectiveObj->name
                             .'</a>'
-                    ]);
+                    ]);*/
 
                     return \Response::json(['success'=>true,'html'=>$importance_level_html]);
                 }

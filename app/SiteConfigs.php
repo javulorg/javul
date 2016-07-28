@@ -45,4 +45,38 @@ class SiteConfigs extends Model
         }
         return $years;
     }
+
+
+    public static function getCreditCardType($number)
+    {
+        $number=preg_replace('/[^\d]/','',$number);
+        if (preg_match('/^3[47][0-9]{13}$/',$number))
+        {
+            return 'American Express';
+        }
+        elseif (preg_match('/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/',$number))
+        {
+            return 'Diners Club';
+        }
+        elseif (preg_match('/^6(?:011|5[0-9][0-9])[0-9]{12}$/',$number))
+        {
+            return 'Discover';
+        }
+        elseif (preg_match('/^(?:2131|1800|35\d{3})\d{11}$/',$number))
+        {
+            return 'JCB';
+        }
+        elseif (preg_match('/^5[1-5][0-9]{14}$/',$number))
+        {
+            return 'MasterCard';
+        }
+        elseif (preg_match('/^4[0-9]{12}(?:[0-9]{3})?$/',$number))
+        {
+            return 'Visa';
+        }
+        else
+        {
+            return 'Unknown';
+        }
+    }
 }

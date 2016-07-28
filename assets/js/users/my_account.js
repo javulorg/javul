@@ -1,52 +1,134 @@
-$(function(){
+var FormValidation = function () {
+
+    // validation using icons
+    var handleValidation = function() {
+
+        // for more info visit the official plugin documentation:
+        // http://docs.jquery.com/Plugins/Validation
+
+        var form_withdraw = $('#withdraw-amount');
+        var error2 = $('.alert-danger', form_withdraw);
+        var success2 = $('.alert-success', form_withdraw);
+
+        form_withdraw.validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block help-block-error', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",  // validate all fields including form hidden input
+            rules: {
+                paypal_email: {
+                    required: true,
+                    email:true
+                },
+                "cc-amount": {
+                    required: true,
+                    number:true
+                }
+            },
+
+            invalidHandler: function (event, validator) { //display error alert on form submit
+                success2.hide();
+                error2.show();
+                App.scrollTo(error2, -200);
+            },
+
+            errorPlacement: function (error, element) { // render error placement for each input type
+                var field_name = $(element).attr('name');
+                var icon = $(element).parent('.input-icon').children('i');
+                icon.removeClass('fa-check').addClass("fa-warning");
+                icon.attr("data-original-title", error.text()).tooltip({'container': 'body'});
+            },
+
+            highlight: function (element) { // hightlight error inputs
+                $(element)
+                    .closest('.col-sm-4').removeClass("has-success").addClass('has-error'); // set error class to the control group
+
+            },
+
+            unhighlight: function (element) { // revert the change done by hightlight
+
+            },
+
+            success: function (label, element) {
+                var field_name = $(element).attr('name');
+                var icon = $(element).parent('.input-icon').children('i');
+                $(element).closest('.col-sm-4').removeClass('has-error').addClass('has-success'); // set success class to the control group
+                icon.removeClass("fa-warning").addClass("fa-check");
+            },
+
+            submitHandler: function (form) {
+                success2.show();
+                error2.hide();
+
+                $(form).find('.withdraw-submit').prop('disabled', true);
+                $(".withdraw-submit").html('<span class="saving">Checking Email<span>.</span><span>.</span><span>.</span></span>');
+                $.ajax({
+                    type:'post',
+                    data:$(form).serialize(),
+                    url:siteURL+'/account/paypal_email_check',
+                    success:function(resp){
+                        if(!resp.success){
+                            console.log(resp);
+                            $("#withdraw-amount").prepend('<div class="alert alert-danger">' +
+                                '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                                '<strong>Error!</strong> '+resp.message+
+                                '</div>')
+                            $(".withdraw-submit").html('<span class="withdraw-text">Withdraw</span>');
+                            $(form).find('.withdraw-submit').prop('disabled', false);
+                            /*var icon = $("#paypal_email").parent('.input-icon').children('i');
+                            $("#paypal_email").closest('.col-sm-4').removeClass('has-success').addClass('has-error'); // set success class to the control group
+                            icon.removeClass("fa-check").addClass("fa-warning");
+                            icon.attr("data-original-title", 'Email does not exist in paypal.').tooltip({'container': 'body'});*/
+                        }
+                        else{
+                            $(".withdraw-submit").html('<span class="saving">Submitting<span>.</span><span>.</span><span>.</span></span>');
+                            form.submit(); // submit the form
+                        }
+                    }
+                });
+                return false;
+            }
+        });
+    }
+
+    return {
+        //main function to initiate the module
+        init: function () {
+            handleValidation();
+        }
+    };
+
+}();
+
+$(document).ready(function() {
     $('#tabs').tab();
+    FormValidation.init();
 
-
+    $('[data-numeric]').payment('restrictNumeric');
+    $('.cc-number').payment('formatCardNumber');
+    $('.cc-cvc').payment('formatCardCVC');
+    $.fn.toggleInputError = function(erred) {
+        this.parents('.form-row').toggleClass('has-error', erred);
+        return this;
+    };
 
     $('#new-credit-card-form').submit(function(e) {
         e.preventDefault();
+        var $form = $('#new-credit-card-form');
         var cardType = $.payment.cardType($('.cc-number').val());
         $('.cc-number').toggleInputError(!$.payment.validateCardNumber($('.cc-number').val()));
         //$('.cc-exp').toggleInputError(!$.payment.validateCardExpiry($('.cc-exp').payment('cardExpiryVal')));
         $('[name="exp_month"]').toggleInputError(!$.payment.validateCardExpiry($("[name='exp_month']").val(),
             $("[name='exp_year']").val()));
         $('.cc-cvc').toggleInputError(!$.payment.validateCardCVC($('.cc-cvc').val(), cardType));
-        $("#cc-amount").toggleInputError(!$.payment.validateAmount($('#cc-amount').val()));
+        $("#cc-card-type").toggleInputError(!$.payment.validateCardType($('#cc-card-type').val()));
         $('.cc-brand').text(cardType);
         $('.validation').removeClass('text-danger text-success');
         if($('.has-error').length == 0){
             $(this).find('.submit').prop('disabled', true);
-            Stripe.card.createToken($(this), stripeResponseHandler);
-        }
-    });
-
-
-    $('#reused-credit-card-form').submit(function(e) {
-        var $form = $('#reused-credit-card-form');
-        e.preventDefault();
-        var selectCard = $("[name='credit_cards']").val();
-        var flag = true;
-        if(selectCard == ""){
-            flag=false
-            $("[name='credit_cards']").css('border','1px solid #a94442');
-        }
-        else
-            $("[name='credit_cards']").css('border','1px solid #ccc');
-
-        var amount = $("#amount_reused_card").val();
-        if($.trim(amount) == "" || parseInt(amount) <= 0){
-            flag=false
-            $("[id='amount_reused_card']").css('border','1px solid #a94442');
-        }
-        else
-            $("[id='amount_reused_card']").css('border','1px solid #ccc');
-
-        if(flag){
-            $(this).find('.reuse-card').prop('disabled', true);
             $form.get(0).submit();
         }
     });
-
 
     $("#cc-number").on('keyup',function(){
         var cardType = $.payment.cardType($(this).val());
@@ -201,33 +283,7 @@ $(function(){
         theme: "bootstrap",
         placeholder:"Select City"
     });
-
-
-})
-function stripeResponseHandler(status, response) {
-    // Grab the form:
-    var $form = $('#new-credit-card-form');
-
-    if (response.error) { // Problem!
-
-        // Show the errors on the form:
-        $form.find('.payment-errors').text(response.error.message);
-        $form.find('.submit').prop('disabled', false); // Re-enable submission
-
-    } else { // Token was created!
-
-        // Get the token ID:
-        var token = response.id;
-        var cardId = response.card.id;
-
-        // Insert the token ID into the form so it gets submitted to the server:
-        $form.append($('<input type="hidden" name="stripeToken">').val(token));
-        $form.append($('<input type="hidden" name="cardId" />').val(cardId));
-
-        // Submit the form:
-        $form.get(0).submit();
-    }
-};
+});
 
 function format(country) {
     if (country.id == "dash_line1" || country.id == "dash_line"){

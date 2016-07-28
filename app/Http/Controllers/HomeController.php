@@ -11,6 +11,13 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
+use Illuminate\Support\Facades\Config;
+use PayPal\Service\AdaptivePaymentsService;
+use PayPal\Types\AP\PaymentDetailsRequest;
+use PayPal\Types\AP\PayRequest;
+use PayPal\Types\AP\Receiver;
+use PayPal\Types\AP\ReceiverList;
+use PayPal\Types\Common\RequestEnvelope;
 
 class HomeController extends Controller
 {
@@ -42,5 +49,9 @@ class HomeController extends Controller
         view()->share('recentUsers',$recentUsers);
 
         return view('home');
+    }
+
+    public function paypal(Request $request){
+
     }
 }

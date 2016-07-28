@@ -9,6 +9,75 @@
         padding: 0 0 0 4px;
         position: relative;
     }
+    hr, p{margin:0 0 10px !important;}
+    .files_image:hover{text-decoration: none;}
+    .file_documents{display: inline-block;padding: 10px;}
+    select[name='exp_month']{width:80px;display: inline-block;}
+    select[name="exp_year"]{width:100px;display: inline-block;}
+    @keyframes blink {
+        /**
+         * At the start of the animation the dot
+         * has an opacity of .2
+         */
+        0% {
+            opacity: .2;
+        }
+        /**
+         * At 20% the dot is fully visible and
+         * then fades out slowly
+         */
+        20% {
+            opacity: 1;
+        }
+        /**
+         * Until it reaches an opacity of .2 and
+         * the animation can start again
+         */
+        100% {
+            opacity: .2;
+        }
+    }
+
+    .saving span {
+        /**
+         * Use the blink animation, which is defined above
+         */
+        animation-name: blink;
+        /**
+         * The animation should take 1.4 seconds
+         */
+        animation-duration: 1.4s;
+        /**
+         * It will repeat itself forever
+         */
+        animation-iteration-count: infinite;
+        /**
+         * This makes sure that the starting style (opacity: .2)
+         * of the animation is applied before the animation starts.
+         * Otherwise we would see a short flash or would have
+         * to set the default styling of the dots to the same
+         * as the animation. Same applies for the ending styles.
+         */
+        animation-fill-mode: both;
+    }
+
+    .saving span:nth-child(2) {
+        /**
+         * Starts the animation of the third dot
+         * with a delay of .2s, otherwise all dots
+         * would animate at the same time
+         */
+        animation-delay: .2s;
+    }
+
+    .saving span:nth-child(3) {
+        /**
+         * Starts the animation of the third dot
+         * with a delay of .4s, otherwise all dots
+         * would animate at the same time
+         */
+        animation-delay: .4s;
+    }
 </style>
 @endsection
 @section('content')
@@ -65,7 +134,7 @@
                                     Donations Received:
                                 </div>
                                 <div class="col-xs-5 text-right">
-                                    1,200 $
+                                    {{number_format($availableBalance,2)}} $
                                 </div>
                             </div>
                         </div>
@@ -77,11 +146,23 @@
             <div class="col-sm-12">
                 <!-- tabs left -->
                 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                    <li class="active"><a href="#personal_info" data-toggle="tab">Personal Info</a></li>
+                    <li @if(count($errors) == 0 || ($errors->has('active') && $errors->first('active')=="personal_info"))
+                    class="active"
+                    @endif><a
+                        href="#personal_info" data-toggle="tab">Personal Info</a></li>
+                    @if(!empty($authUserObj) && !empty($authUserObj->credit_card_id))
+                        <li><a href="#credit_card_setting" data-toggle="tab">Credit Card Details</a></li>
+                    @endif
+                    @if(!empty($availableBalance) && $availableBalance >= 20)
+                    <li @if($errors->has('active') && $errors->first('active')=="withdraw") class="active" @endif>
+                        <a href="#withdraw_amount" data-toggle="tab">Withdraw</a>
+                    </li>
+                    @endif
                     <li><a href="#account_settings" data-toggle="tab">Account Settings</a></li>
                 </ul>
                 <div id="my-tab-content" class="tab-content">
-                    <div class="list-group tab-pane active" id="personal_info">
+                    <div class="list-group tab-pane @if(count($errors) == 0 || ($errors->has('active') && $errors->first('active')
+                    =='personal_info')) active @endif" id="personal_info">
                         <form novalidate autocomplete="off" method="POST"  id="personal-info">
                             {!! csrf_field() !!}
                             <input type="hidden" name="opt_typ" value="used"/>
@@ -182,7 +263,9 @@
                             </div>
                         </form>
                     </div>
-                    <div class="list-group tab-pane " id="account_settings">
+
+                    <div class="list-group tab-pane @if($errors->has('active') && $errors->first('active')=='credit_card') active @endif"
+                         id="credit_card_setting">
                         <div class="row form-group">
                             <div class="col-sm-12">
                                 <form novalidate autocomplete="off" method="POST" id="new-credit-card-form">
@@ -190,9 +273,53 @@
                                     {!! csrf_field() !!}
                                     <div class="form-row form-group" style="position: relative;">
                                         <label for="cc-number" class="control-label">ENTER CARD NUMBER
-                                            <input id="cc-number" type="tel" >
+                                            <input id="cc-number" type="tel" class="input-lg form-control cc-number" name="cc-number"
+                                                   data-stripe="number"
+                                                   autocomplete="cc-number" required style="width:300px;">
+                                            <span style="" class="card_image"></span>
                                         </label>
                                     </div>
+                                    <div class="form-row form-group">
+                                        <label class="control-label">
+                                            <span style="display: block;">CARD TYPE</span>
+                                            <select name="cc-card-type" id="cc-card-type" class="form-control" required="">
+                                                <option value="">Select Card Type</option>
+                                                <option value="visa">Visa</option>
+                                                <option value="mastercard">MasterCard</option>
+                                                <option value="amex">American Express</option>
+                                                <option value="discover">Discover</option>
+                                                <option value="maestro">Maestro</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="form-row form-group">
+                                        <label class="control-label">
+                                            <span style="display: block;">EXPIRY DATE</span>
+                                            <select name="exp_month" data-stripe="exp_month" class="form-control" required="">
+                                                <option value="">MM</option>
+                                                <option value="01">01</option>
+                                                <option value="02">02</option>
+                                                <option value="03">03</option>
+                                                <option value="04">04</option>
+                                                <option value="05">05</option>
+                                                <option value="06">06</option>
+                                                <option value="07">07</option>
+                                                <option value="08">08</option>
+                                                <option value="09">09</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                            </select>
+                                            <select name="exp_year" data-stripe="exp_year" class="form-control" required="">
+                                                <option value="">YYYY</option>
+                                                @foreach($expiry_years as $year)
+                                                <option value="{{$year}}">{{$year}}</option>
+                                                @endforeach
+                                            </select>
+                                        </label>
+
+                                    </div>
+
                                     <div class="form-row form-group">
                                         <label for="cc-cvc" class="control-label">CVC
                                             <input id="cc-cvc" type="password" class="input-lg form-control cc-cvc" name="cc-cvc"
@@ -200,25 +327,55 @@
                                                    data-stripe="cvc" required>
                                         </label>
                                     </div>
-
-                                    <div class="form-row form-group">
-                                        <label for="cc-amount" class="control-label">AMOUNT
-                                            <input id="cc-amount" name="cc-amount" type="text" class="input-lg form-control cc-amount"
-                                                   autocomplete="off"
-                                                   data-stripe="amount" required data-numeric>
-                                        </label>
-                                    </div>
-
-                                    <input type="submit" class="submit btn orange-bg" value="Submit Payment">
+                                   <!-- <input type="submit" class="submit btn orange-bg" value="Save Details">-->
                                 </form>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="list-group tab-pane @if($errors->has('active') && $errors->first('active')=='withdraw') active @endif" id="withdraw_amount">
+                        <form role="form" method="post" id="withdraw-amount"  novalidate="novalidate" action="{!! url('account/withdraw') !!}">
+                            {!! csrf_field() !!}
+                            @if($errors->has('error'))
+                            <div class="alert alert-danger">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Error!</strong> {{$errors->first('error')}}.
+                            </div>
+                            @endif
+                            <div class="row form-group">
+                                <div class="col-sm-4">
+                                    <label for="paypal_email" class="control-label">Paypal Email ID</label>
+                                    <div class="input-icon right">
+                                        <i class="fa"></i>
+                                        <input id="paypal_email" type="email" class="form-control" value="{{old('paypal_email')}}"
+                                               name="paypal_email"
+                                               autocomplete="off" required >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-sm-4">
+                                    <label for="cc-amount" class="control-label">Amount to withdraw</label>
+                                    <div class="input-icon right">
+                                        <i class="fa"></i>
+                                        <input id="cc-amount" name="cc-amount" type="text" class="form-control cc-amount"
+                                               value="{{old('cc-amount')}}" autocomplete="off" required data-numeric>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn orange-bg withdraw-submit">
+                                <span class="withdraw-text">Withdraw</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="list-group tab-pane " id="account_settings">
+                         Account Settings
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     @include('elements.footer')
 @endsection
 @section('page-scripts')
@@ -230,4 +387,6 @@
 </script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
 <script type="text/javascript" src="{!! url('assets/js/users/my_account.js') !!}"></script>
+<script type="text/javascript" src="{!! url('assets/js/jquery.payment.js') !!}"></script>
+<script type="text/javascript" src="{!! url('assets/js/donations.js') !!}"></script>
 @endsection

@@ -4,8 +4,10 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Laravel\Cashier\Billable;
 use Hashids\Hashids;
+use App\Paypal;
 
 class User extends Authenticatable
 {
@@ -17,7 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name','last_name', 'email', 'password','phone','mobile','address','country_id','state_id','city_id','role','job_skills',
-        'area_of_interest','loggedin','stripe_customer_id'
+        'area_of_interest','loggedin','stripe_customer_id','credit_card_id'
     ];
 
     /**
@@ -112,15 +114,6 @@ class User extends Authenticatable
 
         if(self::find($user_id)->count() > 0)
             return self::find($user_id);
-        return [];
-    }
-    /**
-     * Function will returns all credit cards of user.
-     * @return array
-     */
-    public static function getAllCreditCards(){
-        if(!empty(Auth::user()->stripe_customer_id))
-            return \Stripe\Customer::retrieve(Auth::user()->stripe_customer_id)->sources->all(["object" => "card"]);
         return [];
     }
 
@@ -308,132 +301,40 @@ class User extends Authenticatable
         }
     }
 
-    public static function createCustomer($stripeToken){
-        $customer=[];
-        $stripe_error='';
-        try{
-            $customer = \Stripe\Customer::create(array(
-                    "source" => $stripeToken,
-                    "description" => "customer created with ".Auth::user()->first_name.' '.Auth::user()->last_name)
-            );
+    public static function donateAmount($data=[]){
 
-        }catch (\Stripe\Error\Card $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\InvalidRequest $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\Authentication $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\ApiConnection  $e) {
-            $network_error = true;
-            $stripe_error = $e->getMessage();
-        } catch(\Stripe\Error\Base $e){
-            $stripe_error=$e->getMessage();
-        } catch(Exception $e){
-            $stripe_error="Something is wrong. please try again later.";
-        }
-        if(!empty($customer)){
-            $userObj = User::find(Auth::user()->id);
-            if(!empty($userObj) && count($userObj) > 0){
-                $userObj->stripe_customer_id =$customer->id;
-                $userObj->save();
-            }
-        }
-        return ['customer'=>$customer,'error_msg'=>$stripe_error];
-    }
+        $error='';
+        $userCreditCardID = Auth::user()->credit_card_id;
 
-    public static function donateUsingCreditCard($data=[]){
-
-        if(empty(Auth::user()->stripe_customer_id)){
-            $customer = self::createCustomer($data['stripeToken']);
-            if(empty($customer['customer']))
-                return ['success'=>false,'error_msg'=>$customer['error_msg']];
-            $customer = $customer['customer'];
-            $customer_id = $customer->id;
-        }
+        if(!empty($userCreditCardID))
+            $amount = $data['amount_reused_card'];
         else{
-            $customer_id = Auth::user()->stripe_customer_id;
+            $amount = $data['cc-amount'];
         }
 
-        if($data['opt_typ'] == "used"){
-            $amount = $data['amount_reused_card'] * 100;
-            $allCards = self::getAllCreditCards();
-            $last4= $data['credit_cards'];
-            if(isset($allCards->data) && count($allCards->data) > 0){
-                foreach($allCards->data as $card)
-                {
-                    if($card->last4 == $last4)
-                        $data['cardId'] = $card->id;
-                }
-            }
-        }
+        if(!is_numeric($amount) || $amount == 0 || $amount < 0)
+            return ['success'=>false,'error_msg'=>'Amount should be greater than zero.' ];
+
+        if(!empty($userCreditCardID))
+            $creditCardID = $userCreditCardID;
         else{
-            // create card if user uses new card to pay
-            $allCards = self::getAllCreditCards();
-            $last4= substr(str_replace(" ","",$data['cc-number']),-4);
-            $flag = false;
-            if(isset($allCards->data) && count($allCards->data) > 0){
-                foreach($allCards->data as $card)
-                {
-                    if($card->last4 == $last4)
-                        $flag= true;
-                }
-            }
-            if(!$flag){
-                if(isset($allCards->data) && count($allCards->data) > 0){
-                    $customer = \Stripe\Customer::retrieve($customer_id);
-                    $customer->sources->create(["source" => $data['stripeToken']]);
-                }
-            }
-            $amount = $data['cc-amount'] * 100;
-        }
-        // set default card this last id
-        self::setDefaultCreditCard($customer_id,$data['cardId']);
-        $charge = [];
-        $stripe_error='';
-        try{
-            $charge = \Stripe\Charge::create(array(
-                    "amount" => $amount, // amount in cents, again
-                    "currency" => "usd",
-                    "customer" => $customer_id,
-                    "description"=>$data['message'])
-            );
-        }catch (\Stripe\Error\Card $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\InvalidRequest $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\Authentication $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\ApiConnection  $e) {
-            $network_error = true;
-        } catch(\Stripe\Error\Base $e){
-            $stripe_error=$e->getMessage();
-        } catch(Exception $e){
-            $stripe_error="Something is wrong. please try again later.";
+            $saveCardResponse = Paypal::saveCard($data);
+            if($saveCardResponse['success'])
+                $creditCardID=$saveCardResponse['card_id'];
+            else
+                return ['success'=>false,'error_msg'=>$saveCardResponse['error']];
         }
 
-        if(empty($charge))
-            return ['success'=>false,'error_msg'=>$stripe_error];
-        else
-            return ['success'=>true];
-    }
+        if(empty($creditCardID))
+            return ['success'=>false,'error_msg'=>$error ];
+        else{
 
-    public static function setDefaultCreditCard($customer_id,$card_id){
-        try{
-            $customer = \Stripe\Customer::retrieve($customer_id);
-            $customer->default_source = $card_id;
-            $customer->save();
-        }catch (\Stripe\Error\Card $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\InvalidRequest $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\Authentication $e) {
-            $stripe_error = $e->getMessage();
-        } catch (\Stripe\Error\ApiConnection  $e) {
-            $network_error = true;
-        } catch(\Stripe\Error\Base $e){
-            $stripe_error=$e->getMessage();
-        } catch(Exception $e){
-            $stripe_error="Something is wrong. please try again later.";
+            $paymentResponse = Paypal::makePaymentUsingCC($creditCardID,$amount,'USD',$data['message']);
+
+            if($paymentResponse['success'])
+                return ['success'=>true,'payment'=>$paymentResponse['payment']];
+            else
+                return ['success'=>false,'error_msg'=>$paymentResponse['error']];
         }
     }
 }

@@ -17,10 +17,22 @@ class CreditCards extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','card_number'];
+    protected $fillable = ['user_id','card_id'];
 
 
     public static function getCardName($customer_id){
 
+    }
+
+    /**
+     * Function will insert record in credit_card table.
+     * @param $user_id
+     * @param $card_id
+     */
+    public static function insert($user_id,$card_id){
+        self::create([
+            'user_id'=>$user_id,
+            'card_id'=>$card_id
+        ]);
     }
 }
