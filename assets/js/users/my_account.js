@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $('#tabs').tab();
     $(document).off('click',".withdraw-submit").on('click','.withdraw-submit',function(){
+        $(".remove-alert").remove();
         var Emailflag = validateEmail();
         if(!Emailflag)
             return false;
@@ -14,7 +15,7 @@ $(document).ready(function() {
             url:siteURL+'/account/paypal_email_check',
             success:function(resp){
                 if(!resp.success){
-                    $("#withdraw-amount").prepend('<div class="alert alert-danger">' +
+                    $("#withdraw-amount").prepend('<div class="remove-alert alert alert-danger">' +
                         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
                         '<strong>Error!</strong> '+resp.message+
                         '</div>')
@@ -34,6 +35,7 @@ $(document).ready(function() {
     });
 
     $(document).off('click',".withdraw-amount-btn").on('click','.withdraw-amount-btn',function(){
+        $(".remove-alert").remove();
         var $form = $("#withdraw-amount");
         var Emailflag = validateEmail();
         var amountFlag = validateAmount();
@@ -54,7 +56,7 @@ $(document).ready(function() {
                     $.each(resp.errors,function(index,val){
                         html+="<span>"+val+"</span>";
                     })
-                    var errorHTML = '<div class="alert alert-danger">'+
+                    var errorHTML = '<div class="remove-alert alert alert-danger">'+
                         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+html
                     '</div>';
                     $form.prepend(errorHTML);
@@ -64,13 +66,14 @@ $(document).ready(function() {
                 else
                 {
                     $form.find("input,select").val('');
-                    var errorHTML = '<div class="alert alert-success">'+
+                    var errorHTML = '<div class="remove-alert alert alert-success">'+
                         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
                         '<strong>Success!!!</strong> Amount transfered successfully.'+
                         '</div>';
                     $form.prepend(errorHTML);
                     $that.prop('disabled', false);
                     $(".amount-field").hide();
+                    $(".donation_received").html(resp.availableBalance);
                     $(".withdraw-amount-btn").addClass('withdraw-submit').removeClass('withdraw-amount-btnt').html('<span class="withdraw-text">Verify Email</span>');
                 }
             }
@@ -86,8 +89,8 @@ $(document).ready(function() {
         return this;
     };
 
-    $('#new-credit-card-form').submit(function(e) {
-        e.preventDefault();
+    $('.update-creditcard').on('click',function() {
+        $(".remove-alert").remove();
         var $form = $('#new-credit-card-form');
         var cardType = $.payment.cardType($('.cc-number').val());
         $('.cc-number').toggleInputError(!$.payment.validateCardNumber($('.cc-number').val()));
@@ -97,10 +100,39 @@ $(document).ready(function() {
         $('.cc-cvc').toggleInputError(!$.payment.validateCardCVC($('.cc-cvc').val(), cardType));
         $("#cc-card-type").toggleInputError(!$.payment.validateCardType($('#cc-card-type').val()));
         $('.cc-brand').text(cardType);
-        $('.validation').removeClass('text-danger text-success');
         if($('.has-error').length == 0){
-            $(this).find('.submit').prop('disabled', true);
-            $form.get(0).submit();
+            $(this).prop('disabled', true);
+            $that = $(this);
+            $that.html('<span class="saving">Updating<span>.</span><span>.</span><span>.</span></span>');
+            $.ajax({
+                type:'post',
+                data:$form.serialize(),
+                url:siteURL+'/account/update-creditcard',
+                success:function(resp){
+                    if(!resp.success){
+                        var html = '';
+                        $.each(resp.errors,function(index,val){
+                            html+="<span>"+val+"</span>";
+                        })
+                        var errorHTML = '<div class="remove-alert alert alert-danger">'+
+                            '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+html
+                        '</div>';
+                        $form.prepend(errorHTML);
+                        $that.prop('disabled', false);
+                        $that.html('Update Details');
+                    }
+                    else{
+                        var errorHTML = '<div class="remove-alert alert alert-success">'+
+                            '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> ' +
+                            '<strong>Success!!!</strong> Credit card details updated'+
+                        '</div>';
+                        $form.prepend(errorHTML);
+                        $form.find('input').val('');
+                        $that.prop('disabled', false);
+                        $that.html('Update Details');
+                    }
+                }
+            });
         }
     });
 
@@ -139,7 +171,7 @@ $(document).ready(function() {
     });
 
     //change card number on selected card
-    $("[name='credit_cards']").on('change',function(){
+    /*$("[name='credit_cards']").on('change',function(){
         var val =$(this).val();
         if(val == "")
             $("[name='card_number']").val('');
@@ -161,7 +193,7 @@ $(document).ready(function() {
             $("[name='card_number']").val('XXXX XXXX XXXX '+val);
         }
         return false;
-    });
+    });*/
 
 
     $("#country").on('change',function(){

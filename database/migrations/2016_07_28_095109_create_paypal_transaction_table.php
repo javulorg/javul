@@ -18,7 +18,8 @@ class CreatePaypalTransactionTable extends Migration
             $table->foreign('transaction_id')->references('id')->on('transactions');
             $table->integer('fund_id')->unsigned()->nullable();
             $table->foreign('fund_id')->references('id')->on('funds');
-            $table->text('response');
+            $table->string('donate_paypal_id')->nullable();
+            $table->string('pay_key')->nullable();
             $table->timestamps();
         });
     }

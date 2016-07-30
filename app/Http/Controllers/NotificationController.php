@@ -73,4 +73,8 @@ class NotificationController extends Controller
             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
         });
     }
+
+    public function ipn_donation(Request $request){
+
+    }
 }

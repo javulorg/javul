@@ -14,70 +14,6 @@
     .file_documents{display: inline-block;padding: 10px;}
     select[name='exp_month']{width:80px;display: inline-block;}
     select[name="exp_year"]{width:100px;display: inline-block;}
-    @keyframes blink {
-        /**
-         * At the start of the animation the dot
-         * has an opacity of .2
-         */
-        0% {
-            opacity: .2;
-        }
-        /**
-         * At 20% the dot is fully visible and
-         * then fades out slowly
-         */
-        20% {
-            opacity: 1;
-        }
-        /**
-         * Until it reaches an opacity of .2 and
-         * the animation can start again
-         */
-        100% {
-            opacity: .2;
-        }
-    }
-
-    .saving span {
-        /**
-         * Use the blink animation, which is defined above
-         */
-        animation-name: blink;
-        /**
-         * The animation should take 1.4 seconds
-         */
-        animation-duration: 1.4s;
-        /**
-         * It will repeat itself forever
-         */
-        animation-iteration-count: infinite;
-        /**
-         * This makes sure that the starting style (opacity: .2)
-         * of the animation is applied before the animation starts.
-         * Otherwise we would see a short flash or would have
-         * to set the default styling of the dots to the same
-         * as the animation. Same applies for the ending styles.
-         */
-        animation-fill-mode: both;
-    }
-
-    .saving span:nth-child(2) {
-        /**
-         * Starts the animation of the third dot
-         * with a delay of .2s, otherwise all dots
-         * would animate at the same time
-         */
-        animation-delay: .2s;
-    }
-
-    .saving span:nth-child(3) {
-        /**
-         * Starts the animation of the third dot
-         * with a delay of .4s, otherwise all dots
-         * would animate at the same time
-         */
-        animation-delay: .4s;
-    }
 </style>
 @endsection
 @section('content')
@@ -134,7 +70,7 @@
                                     Donations Received:
                                 </div>
                                 <div class="col-xs-5 text-right">
-                                    {{number_format($availableBalance,2)}} $
+                                    <span class="donation_received">{{number_format($availableBalance,2)}}</span> $
                                 </div>
                             </div>
                         </div>
@@ -274,7 +210,6 @@
                                     <div class="form-row form-group" style="position: relative;">
                                         <label for="cc-number" class="control-label">ENTER CARD NUMBER
                                             <input id="cc-number" type="tel" class="input-lg form-control cc-number" name="cc-number"
-                                                   data-stripe="number"
                                                    autocomplete="cc-number" required style="width:300px;">
                                             <span style="" class="card_image"></span>
                                         </label>
@@ -295,7 +230,7 @@
                                     <div class="form-row form-group">
                                         <label class="control-label">
                                             <span style="display: block;">EXPIRY DATE</span>
-                                            <select name="exp_month" data-stripe="exp_month" class="form-control" required="">
+                                            <select name="exp_month" class="form-control" required="">
                                                 <option value="">MM</option>
                                                 <option value="01">01</option>
                                                 <option value="02">02</option>
@@ -310,7 +245,7 @@
                                                 <option value="11">11</option>
                                                 <option value="12">12</option>
                                             </select>
-                                            <select name="exp_year" data-stripe="exp_year" class="form-control" required="">
+                                            <select name="exp_year" class="form-control" required="">
                                                 <option value="">YYYY</option>
                                                 @foreach($expiry_years as $year)
                                                 <option value="{{$year}}">{{$year}}</option>
@@ -323,11 +258,12 @@
                                     <div class="form-row form-group">
                                         <label for="cc-cvc" class="control-label">CVC
                                             <input id="cc-cvc" type="password" class="input-lg form-control cc-cvc" name="cc-cvc"
-                                                   autocomplete="off"
-                                                   data-stripe="cvc" required>
+                                                   autocomplete="off" required>
                                         </label>
                                     </div>
-                                   <!-- <input type="submit" class="submit btn orange-bg" value="Save Details">-->
+                                    <button type="button" class="btn orange-bg update-creditcard">
+                                        <span class="update-cc-text">Update Details</span>
+                                    </button>
                                 </form>
                             </div>
                         </div>

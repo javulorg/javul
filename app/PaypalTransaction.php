@@ -17,5 +17,5 @@ class PaypalTransaction extends Model
      *
      * @var array
      */
-    protected $fillable = ['transaction_id','response'];
+    protected $fillable = ['transaction_id','fund_id','donate_paypal_id','pay_key'];
 }

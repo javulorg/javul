@@ -11,6 +11,7 @@ $(function(){
 
     $('.new_cc_submit').on('click',function(e) {
         e.preventDefault();
+        $(".remove-alert ").remove();
         var $form = $('#new-credit-card-form');
         var cardType = $.payment.cardType($('.cc-number').val());
         $('.cc-number').toggleInputError(!$.payment.validateCardNumber($('.cc-number').val()));
@@ -37,7 +38,7 @@ $(function(){
                         $.each(resp.errors,function(index,val){
                             html+="<span>"+val+"</span>";
                         })
-                        var errorHTML = '<div class="alert alert-danger">'+
+                        var errorHTML = '<div class="remove-alert alert alert-danger">'+
                                 '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+html
                             '</div>';
                         $form.prepend(errorHTML);
@@ -48,7 +49,7 @@ $(function(){
                     else
                     {
                         $form.find("input,select").val('');
-                        var errorHTML = '<div class="alert alert-success">'+
+                        var errorHTML = '<div class="remove-alert alert alert-success">'+
                             '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
                             '<strong>Success!!!</strong> Amount donated successfully.'+
                         '</div>';
@@ -65,6 +66,7 @@ $(function(){
 
 
     $('.reuse-card').on('click',function(e) {
+        $(".remove-alert ").remove();
         var $form = $('#reused-credit-card-form');
         e.preventDefault();
         var selectCard = $("[name='credit_cards']").val();
@@ -85,6 +87,7 @@ $(function(){
             $("[id='amount_reused_card']").css('border','1px solid #ccc');
 
         if(flag){
+            $(".old_cc_btn_text").html('<span class="saving">Submitting<span>.</span><span>.</span><span>.</span></span>');
             $(this).prop('disabled', true);
             $that = $(this);
             //$form.get(0).submit();
@@ -99,7 +102,7 @@ $(function(){
                         $.each(resp.errors,function(index,val){
                             html+="<span>"+val+"</span>";
                         })
-                        var errorHTML = '<div class="alert alert-danger">'+
+                        var errorHTML = '<div class="remove-alert alert alert-danger">'+
                             '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+html
                         '</div>';
                         $form.prepend(errorHTML);
@@ -110,13 +113,14 @@ $(function(){
                     else
                     {
                         $form.find("input,select").val('');
-                        var errorHTML = '<div class="alert alert-success">'+
+                        var errorHTML = '<div class="remove-alert alert alert-success">'+
                             '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
                             '<strong>Success!!!</strong> Amount donated successfully.'+
                             '</div>';
                         $form.prepend(errorHTML);
                         $that.prop('disabled', false);
                         $(".old_cc_btn_text").html('Submit Payment');
+                        window.location.reload(true);
                     }
                 }
             });
@@ -194,28 +198,4 @@ $(function(){
         return false;
     });
 })
-function stripeResponseHandler(status, response) {
-    // Grab the form:
-    var $form = $('#new-credit-card-form');
-
-    if (response.error) { // Problem!
-
-        // Show the errors on the form:
-        $form.find('.payment-errors').text(response.error.message);
-        $form.find('.submit').prop('disabled', false); // Re-enable submission
-
-    } else { // Token was created!
-
-        // Get the token ID:
-        var token = response.id;
-        var cardId = response.card.id;
-
-        // Insert the token ID into the form so it gets submitted to the server:
-        $form.append($('<input type="hidden" name="stripeToken">').val(token));
-        $form.append($('<input type="hidden" name="cardId" />').val(cardId));
-
-        // Submit the form:
-        $form.get(0).submit();
-    }
-};
 

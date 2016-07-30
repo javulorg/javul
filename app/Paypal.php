@@ -77,13 +77,13 @@ class Paypal extends Model{
         $card->setExpireYear($params['exp_year']);
         $card->setCvv2($params['cc-cvc']);
 
-        $timeout_error= false;
+        $timeoutError= false;
         $error='';
         try{
             $card->create(self::$apiContext);
         }catch(PayPalConnectionException $e){
 			$error = "Could not connect to Paypal. Please try again later.";
-            $timeout_error= true;
+            $timeoutError= true;
         }catch(PayPalConfigurationException $e){
             $error = $e->getMessage();
         }catch(PayPalInvalidCredentialException $e){
@@ -93,7 +93,7 @@ class Paypal extends Model{
         }
 
         if(!empty($error))
-            return ['success'=>false,'error'=>$error];
+            return ['success'=>false,'timeout_error'=>$timeoutError,'message'=>$error];
         else{
             $card_id = $card->getId();
             //save credit card id into table.

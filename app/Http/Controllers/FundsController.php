@@ -190,8 +190,8 @@ class FundsController extends Controller
 
             $url = URL::previous();
             $url =explode("/",$url );
-            $type = $url[5]; // for local 6
-            $id = $url[6]; // for localhost 7
+            $type = $url[5]; // for local 6. for live 5
+            $id = $url[6]; // for localhost 7. for live 6
             $exists = false;
             $obj = [];
             $donateTo = '';
@@ -325,12 +325,12 @@ class FundsController extends Controller
                         // insert record into funds table to maintain fund availability for unit/objective/task
                         $fund_id = Fund::create($addFunds)->id;
                     }
-
                     // store actual paypal transaction details.
                     PaypalTransaction::create([
                         'transaction_id'=>$transaction_id,
                         'fund_id'=>$fund_id,
-                        'response'=>json_encode($response['payment'])
+                        'donate_paypal_id'=>$response['payment']->id,
+                        'pay_key'=>null
                     ]);
 
                     return \Response::json(['success'=>true]);

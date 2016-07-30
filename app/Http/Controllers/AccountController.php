@@ -122,15 +122,21 @@ class AccountController extends Controller
                     'comments'=>'$'.$data['cc-amount'].' withdrawn by '.Auth::user()->first_name.' '.Auth::user()->last_name
                 ])->id;
 
+
                 // insert actual paypal response in database
                 PaypalTransaction::create([
                     'transaction_id'=>$transactionID,
                     'fund_id'=>$fundID,
-                    'response'=>json_encode($payment['paymentResponse'])
+                    'donate_paypal_id'=>null,
+                    'pay_key'=>$payment['paymentResponse']->payKey
                 ]);
 
 
-                return \Response::json(['success'=>true]);
+                $creditedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit')->sum('amount');
+                $debitedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit')->sum('amount');
+                $availableBalance = $creditedBalance - $debitedBalance;
+
+                return \Response::json(['success'=>true,'availableBalance'=>number_format($availableBalance,2)]);
             }
             return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again later.']]);
         }
@@ -158,6 +164,32 @@ class AccountController extends Controller
 
         if($checkEmailExist['success'])
             return \Response::json(['success'=>true]);
+    }
+
+    public function update_creditcard(Request $request){
+        $inputData = $request->all();
+        $inputData['cc-number'] = str_replace(" ","",$inputData['cc-number']);
+        $validator = \Validator::make($inputData, [
+            'cc-card-type'=>'required',
+            'exp_month'=>'required',
+            'exp_year'=>'required',
+            'cc-number'=>'required|numeric'
+        ],[
+            'cc-card-type.required'=>'Please select card type',
+            'exp_month.required'=>'Please select expire month',
+            'exp_year.required'=>'Please select expire year',
+            'cc-number.required'=>'Please enter card number',
+            'cc-number.numeric'=>'Card number must be numeric'
+        ]);
+
+        if ($validator->fails())
+            return \Response::json(['success'=>false,'errors'=>$validator->errors()]);
+
+        $saveCardResponse = Paypal::saveCard($inputData);
+        if($saveCardResponse['success'])
+            return \Response::json(['success'=>true]);
+        else if($saveCardResponse['timeout_error'])
+            return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later.']]);
     }
     public function logout(){
         return redirect('logout');
