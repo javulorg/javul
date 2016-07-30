@@ -306,7 +306,7 @@ class User extends Authenticatable
         $error='';
         $userCreditCardID = Auth::user()->credit_card_id;
 
-        if(!empty($userCreditCardID))
+        if($data['frmTyp'] == 'old')
             $amount = $data['amount_reused_card'];
         else{
             $amount = $data['cc-amount'];
@@ -315,7 +315,7 @@ class User extends Authenticatable
         if(!is_numeric($amount) || $amount == 0 || $amount < 0)
             return ['success'=>false,'error_msg'=>'Amount should be greater than zero.' ];
 
-        if(!empty($userCreditCardID))
+        if($data['frmTyp'] == 'old')
             $creditCardID = $userCreditCardID;
         else{
             $saveCardResponse = Paypal::saveCard($data);
@@ -328,7 +328,6 @@ class User extends Authenticatable
         if(empty($creditCardID))
             return ['success'=>false,'error_msg'=>$error ];
         else{
-
             $paymentResponse = Paypal::makePaymentUsingCC($creditCardID,$amount,'USD',$data['message']);
 
             if($paymentResponse['success'])

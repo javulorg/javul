@@ -1,108 +1,82 @@
-var FormValidation = function () {
-
-    // validation using icons
-    var handleValidation = function() {
-
-        // for more info visit the official plugin documentation:
-        // http://docs.jquery.com/Plugins/Validation
-
-        var form_withdraw = $('#withdraw-amount');
-        var error2 = $('.alert-danger', form_withdraw);
-        var success2 = $('.alert-success', form_withdraw);
-
-        form_withdraw.validate({
-            errorElement: 'span', //default input error message container
-            errorClass: 'help-block help-block-error', // default input error message class
-            focusInvalid: false, // do not focus the last invalid input
-            ignore: "",  // validate all fields including form hidden input
-            rules: {
-                paypal_email: {
-                    required: true,
-                    email:true
-                },
-                "cc-amount": {
-                    required: true,
-                    number:true
-                }
-            },
-
-            invalidHandler: function (event, validator) { //display error alert on form submit
-                success2.hide();
-                error2.show();
-                App.scrollTo(error2, -200);
-            },
-
-            errorPlacement: function (error, element) { // render error placement for each input type
-                var field_name = $(element).attr('name');
-                var icon = $(element).parent('.input-icon').children('i');
-                icon.removeClass('fa-check').addClass("fa-warning");
-                icon.attr("data-original-title", error.text()).tooltip({'container': 'body'});
-            },
-
-            highlight: function (element) { // hightlight error inputs
-                $(element)
-                    .closest('.col-sm-4').removeClass("has-success").addClass('has-error'); // set error class to the control group
-
-            },
-
-            unhighlight: function (element) { // revert the change done by hightlight
-
-            },
-
-            success: function (label, element) {
-                var field_name = $(element).attr('name');
-                var icon = $(element).parent('.input-icon').children('i');
-                $(element).closest('.col-sm-4').removeClass('has-error').addClass('has-success'); // set success class to the control group
-                icon.removeClass("fa-warning").addClass("fa-check");
-            },
-
-            submitHandler: function (form) {
-                success2.show();
-                error2.hide();
-
-                $(form).find('.withdraw-submit').prop('disabled', true);
-                $(".withdraw-submit").html('<span class="saving">Checking Email<span>.</span><span>.</span><span>.</span></span>');
-                $.ajax({
-                    type:'post',
-                    data:$(form).serialize(),
-                    url:siteURL+'/account/paypal_email_check',
-                    success:function(resp){
-                        if(!resp.success){
-                            console.log(resp);
-                            $("#withdraw-amount").prepend('<div class="alert alert-danger">' +
-                                '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                                '<strong>Error!</strong> '+resp.message+
-                                '</div>')
-                            $(".withdraw-submit").html('<span class="withdraw-text">Withdraw</span>');
-                            $(form).find('.withdraw-submit').prop('disabled', false);
-                            /*var icon = $("#paypal_email").parent('.input-icon').children('i');
-                            $("#paypal_email").closest('.col-sm-4').removeClass('has-success').addClass('has-error'); // set success class to the control group
-                            icon.removeClass("fa-check").addClass("fa-warning");
-                            icon.attr("data-original-title", 'Email does not exist in paypal.').tooltip({'container': 'body'});*/
-                        }
-                        else{
-                            $(".withdraw-submit").html('<span class="saving">Submitting<span>.</span><span>.</span><span>.</span></span>');
-                            form.submit(); // submit the form
-                        }
-                    }
-                });
-                return false;
-            }
-        });
-    }
-
-    return {
-        //main function to initiate the module
-        init: function () {
-            handleValidation();
-        }
-    };
-
-}();
-
 $(document).ready(function() {
     $('#tabs').tab();
-    FormValidation.init();
+    $(document).off('click',".withdraw-submit").on('click','.withdraw-submit',function(){
+        var Emailflag = validateEmail();
+        if(!Emailflag)
+            return false;
+        $(this).prop('disabled', true);
+        $that = $(this);
+        $(".withdraw-submit").html('<span class="saving">Verifying Email<span>.</span><span>.</span><span>.</span></span>');
+        var $form = $("#withdraw-amount");
+        $.ajax({
+            type:'post',
+            data:$form.serialize(),
+            url:siteURL+'/account/paypal_email_check',
+            success:function(resp){
+                if(!resp.success){
+                    $("#withdraw-amount").prepend('<div class="alert alert-danger">' +
+                        '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                        '<strong>Error!</strong> '+resp.message+
+                        '</div>')
+                    $(".withdraw-submit").html('<span class="withdraw-text">Verify Email</span>');
+                    $that.prop('disabled', false);
+                }
+                else{
+                    $(".amount-field").show();
+                    $(".withdraw-submit").html('<span class="withdraw-text">Withdraw</span>');
+                    $(".withdraw-submit").addClass('withdraw-amount-btn').removeClass('withdraw-submit');
+                    $that.prop('disabled', false);
+                }
+            }
+        });
+        return false;
+
+    });
+
+    $(document).off('click',".withdraw-amount-btn").on('click','.withdraw-amount-btn',function(){
+        var $form = $("#withdraw-amount");
+        var Emailflag = validateEmail();
+        var amountFlag = validateAmount();
+        if(!Emailflag)
+            return false;
+        if(!amountFlag)
+            return false;
+
+        $(this).prop('disabled', true);
+        $(".withdraw-amount-btn").html('<span class="saving">Submitting<span>.</span><span>.</span><span>.</span></span>');
+        $.ajax({
+            type:'post',
+            data:$form.serialize(),
+            url:siteURL+'/account/withdraw',
+            success:function(resp){
+                if(!resp.success){
+                    var html = '';
+                    $.each(resp.errors,function(index,val){
+                        html+="<span>"+val+"</span>";
+                    })
+                    var errorHTML = '<div class="alert alert-danger">'+
+                        '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+html
+                    '</div>';
+                    $form.prepend(errorHTML);
+                    $that.prop('disabled', false);
+                    $(".withdraw-amount-btn").html('<span class="withdraw-text">Withdraw</span>');
+                }
+                else
+                {
+                    $form.find("input,select").val('');
+                    var errorHTML = '<div class="alert alert-success">'+
+                        '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                        '<strong>Success!!!</strong> Amount transfered successfully.'+
+                        '</div>';
+                    $form.prepend(errorHTML);
+                    $that.prop('disabled', false);
+                    $(".amount-field").hide();
+                    $(".withdraw-amount-btn").addClass('withdraw-submit').removeClass('withdraw-amount-btnt').html('<span class="withdraw-text">Verify Email</span>');
+                }
+            }
+        });
+        return false;
+    });
 
     $('[data-numeric]').payment('restrictNumeric');
     $('.cc-number').payment('formatCardNumber');
@@ -285,6 +259,54 @@ $(document).ready(function() {
     });
 });
 
+function validateEmail(){
+    var email=$("#paypal_email").val();
+    if($.trim(email) =="")
+    {
+        $("#paypal_email").closest('.col-sm-4').addClass('has-error');
+        var icon = $("#paypal_email").parent('.input-icon').children('i');
+        icon.removeClass('fa-check').addClass("fa-warning");
+        icon.attr("data-original-title", 'Please enter paypal email').tooltip({'container': 'body'});
+        return false;
+    }
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var flag = re.test(email);
+    if(!flag){
+        $("#paypal_email").closest('.col-sm-4').addClass('has-error');
+        var icon = $("#paypal_email").parent('.input-icon').children('i');
+        icon.removeClass('fa-check').addClass("fa-warning");
+        icon.attr("data-original-title", 'Email address is invalid').tooltip({'container': 'body'});
+        return false;
+    }
+    var icon = $("#paypal_email").parent('.input-icon').children('i');
+    $("#paypal_email").closest('.col-sm-4').removeClass('has-error').addClass('has-success'); // set success class to the control group
+    icon.removeClass("fa-warning").addClass("fa-check");
+    return true;
+}
+
+function validateAmount(){
+    var amount=$("#cc-amount").val();
+    if($.trim(amount) =="")
+    {
+        $("#cc-amount").closest('.col-sm-4').addClass('has-error');
+        var icon = $("#cc-amount").parent('.input-icon').children('i');
+        icon.removeClass('fa-check').addClass("fa-warning");
+        icon.attr("data-original-title", 'Please enter amount').tooltip({'container': 'body'});
+        return false;
+    }
+
+    if(isNaN(amount)){
+        $("#cc-amount").closest('.col-sm-4').addClass('has-error');
+        var icon = $("#cc-amount").parent('.input-icon').children('i');
+        icon.removeClass('fa-check').addClass("fa-warning");
+        icon.attr("data-original-title", 'Amount must be numeric only').tooltip({'container': 'body'});
+        return false;
+    }
+    var icon = $("#cc-amount").parent('.input-icon').children('i');
+    $("#cc-amount").closest('.col-sm-4').removeClass('has-error').addClass('has-success'); // set success class to the control group
+    icon.removeClass("fa-warning").addClass("fa-check");
+    return true;
+}
 function format(country) {
     if (country.id == "dash_line1" || country.id == "dash_line"){
         // return ' <span><img src="'+horiz_line+'" style="width:100%"></span> ';

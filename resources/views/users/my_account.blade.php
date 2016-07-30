@@ -353,7 +353,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row form-group">
+                            <div class="row form-group amount-field" style="display: none;">
                                 <div class="col-sm-4">
                                     <label for="cc-amount" class="control-label">Amount to withdraw</label>
                                     <div class="input-icon right">
@@ -363,8 +363,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn orange-bg withdraw-submit">
-                                <span class="withdraw-text">Withdraw</span>
+                            <button type="button" class="btn orange-bg withdraw-submit">
+                                <span class="withdraw-text">Verify Email</span>
                             </button>
                         </form>
                     </div>

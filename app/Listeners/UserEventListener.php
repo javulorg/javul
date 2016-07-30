@@ -14,7 +14,7 @@ class UserEventListener {
         $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode($event->user->id);
 
-        // add comment : issue : skype text sir (26.07.2016)
+        // add comment : issue : skype text by sir (26.07.2016)
        /* SiteActivity::create([
             'user_id'=>$event->user->id,
             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower($event->user->first_name.'_'.$event->user->last_name)).'">'
@@ -33,7 +33,7 @@ class UserEventListener {
         $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode($event->user->id);
 
-        // add comment : issue : skype text sir (26.07.2016)
+        // add comment : issue : skype text by sir (26.07.2016)
        /* SiteActivity::create([
             'user_id'=>$event->user->id,
             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower($event->user->first_name.'_'.$event->user->last_name)).'">'

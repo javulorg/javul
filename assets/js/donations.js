@@ -9,7 +9,7 @@ $(function(){
         return this;
     };
 
-    $('#new-credit-card-form').submit(function(e) {
+    $('.new_cc_submit').on('click',function(e) {
         e.preventDefault();
         var $form = $('#new-credit-card-form');
         var cardType = $.payment.cardType($('.cc-number').val());
@@ -23,13 +23,48 @@ $(function(){
         $('.cc-brand').text(cardType);
         $('.validation').removeClass('text-danger text-success');
         if($('.has-error').length == 0){
-            $(this).find('.submit').prop('disabled', true);
-            $form.get(0).submit();
+            $that = $(this);
+            $that.prop('disabled', true);
+            $(".new_cc_btn_text").html('<span class="saving">Submitting<span>.</span><span>.</span><span>.</span></span>');
+            $.ajax({
+                type:'post',
+                url:siteURL+'/funds/donate-amount',
+                data:$form.serialize(),
+                dataType:'json',
+                success:function(resp){
+                    if(!resp.success){
+                        var html = '';
+                        $.each(resp.errors,function(index,val){
+                            html+="<span>"+val+"</span>";
+                        })
+                        var errorHTML = '<div class="alert alert-danger">'+
+                                '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+html
+                            '</div>';
+                        $form.prepend(errorHTML);
+                        $that.prop('disabled', false);
+                        $(".new_cc_btn_text").html('Submit Payment');
+
+                    }
+                    else
+                    {
+                        $form.find("input,select").val('');
+                        var errorHTML = '<div class="alert alert-success">'+
+                            '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                            '<strong>Success!!!</strong> Amount donated successfully.'+
+                        '</div>';
+                        $form.prepend(errorHTML);
+                        $that.prop('disabled', false);
+                        $(".new_cc_btn_text").html('Submit Payment');
+                    }
+                }
+            });
+            return false;
+            //$form.get(0).submit();
         }
     });
 
 
-    $('#reused-credit-card-form').submit(function(e) {
+    $('.reuse-card').on('click',function(e) {
         var $form = $('#reused-credit-card-form');
         e.preventDefault();
         var selectCard = $("[name='credit_cards']").val();
@@ -50,8 +85,42 @@ $(function(){
             $("[id='amount_reused_card']").css('border','1px solid #ccc');
 
         if(flag){
-            $(this).find('.reuse-card').prop('disabled', true);
-            $form.get(0).submit();
+            $(this).prop('disabled', true);
+            $that = $(this);
+            //$form.get(0).submit();
+            $.ajax({
+                type:'post',
+                url:siteURL+'/funds/donate-amount',
+                data:$form.serialize(),
+                dataType:'json',
+                success:function(resp){
+                    if(!resp.success){
+                        var html = '';
+                        $.each(resp.errors,function(index,val){
+                            html+="<span>"+val+"</span>";
+                        })
+                        var errorHTML = '<div class="alert alert-danger">'+
+                            '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+html
+                        '</div>';
+                        $form.prepend(errorHTML);
+                        $that.prop('disabled', false);
+                        $(".old_cc_btn_text").html('Submit Payment');
+
+                    }
+                    else
+                    {
+                        $form.find("input,select").val('');
+                        var errorHTML = '<div class="alert alert-success">'+
+                            '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                            '<strong>Success!!!</strong> Amount donated successfully.'+
+                            '</div>';
+                        $form.prepend(errorHTML);
+                        $that.prop('disabled', false);
+                        $(".old_cc_btn_text").html('Submit Payment');
+                    }
+                }
+            });
+            return false;
         }
     });
 

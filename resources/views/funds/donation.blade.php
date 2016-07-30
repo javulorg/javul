@@ -91,6 +91,7 @@
                 @if(!empty($credit_cards) && count($credit_cards) > 0)
                     <form novalidate autocomplete="off" method="POST"  id="reused-credit-card-form">
                         {!! csrf_field() !!}
+                        <input type="hidden" name="frmTyp" value="{{$formType}}"/>
                         <input type="hidden" name="opt_typ" value="used"/>
                         <div class="list-group tab-pane" id="saved_details">
                             <!--<div class="row form-group">
@@ -131,7 +132,9 @@
                                         </div>
                                     </div>
                                     <div class="clearfix"></div>
-                                    <button class="btn orange-bg reuse-card submit" style="margin-top: 20px;">Submit Payment</button>
+                                    <button class="btn orange-bg reuse-card submit" style="margin-top: 20px;">
+                                        <span class="old_cc_btn_text">Submit Payment</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -143,10 +146,11 @@
                         <div class="col-sm-12">
                             <form novalidate autocomplete="off" method="POST" id="new-credit-card-form">
                                 {!! csrf_field() !!}
+                                <input type="hidden" name="frmTyp" value="{{$formType}}"/>
                                 <div class="form-row form-group" style="position: relative;">
                                     <label for="cc-number" class="control-label">ENTER CARD NUMBER
                                         <input id="cc-number" type="tel" class="input-lg form-control cc-number" name="cc-number"
-                                               data-stripe="number"
+                                               value="{{old('cc-number')}}"
                                                autocomplete="cc-number" required style="width:300px;">
                                         <span style="" class="card_image"></span>
                                     </label>
@@ -154,7 +158,8 @@
                                 <div class="form-row form-group">
                                     <label class="control-label">
                                         <span style="display: block;">CARD TYPE</span>
-                                        <select name="cc-card-type" id="cc-card-type" class="form-control" required="">
+                                        <select name="cc-card-type" id="cc-card-type" class="form-control" required=""
+                                                value="{{old('cc-card-type')}}">
                                             <option value="">Select Card Type</option>
                                             <option value="visa">Visa</option>
                                             <option value="mastercard">MasterCard</option>
@@ -167,7 +172,7 @@
                                 <div class="form-row form-group">
                                     <label class="control-label">
                                         <span style="display: block;">EXPIRY DATE</span>
-                                        <select name="exp_month" data-stripe="exp_month" class="form-control" required="">
+                                        <select name="exp_month" class="form-control" required="" value="{{old('exp_month')}}">
                                             <option value="">MM</option>
                                             <option value="01">01</option>
                                             <option value="02">02</option>
@@ -182,7 +187,7 @@
                                             <option value="11">11</option>
                                             <option value="12">12</option>
                                         </select>
-                                        <select name="exp_year" data-stripe="exp_year" class="form-control" required="">
+                                        <select name="exp_year" class="form-control" required="" value="{{old('exp_year')}}">
                                             <option value="">YYYY</option>
                                             @foreach($expiry_years as $year)
                                                 <option value="{{$year}}">{{$year}}</option>
@@ -195,20 +200,20 @@
                                 <div class="form-row form-group">
                                     <label for="cc-cvc" class="control-label">CVC
                                         <input id="cc-cvc" type="password" class="input-lg form-control cc-cvc" name="cc-cvc"
-                                               autocomplete="off"
-                                               data-stripe="cvc" required>
+                                               autocomplete="off" required>
                                     </label>
                                 </div>
 
                                 <div class="form-row form-group">
                                     <label for="cc-amount" class="control-label">AMOUNT
                                         <input id="cc-amount" name="cc-amount" type="text" class="input-lg form-control cc-amount"
-                                               autocomplete="off"
-                                               data-stripe="amount" required data-numeric>
+                                               autocomplete="off" value="{{old('cc-amount')}}"
+                                               required data-numeric>
                                     </label>
                                 </div>
-
-                                <input type="submit" class="submit btn orange-bg" value="Submit Payment">
+                                <button class="new_cc_submit submit btn orange-bg" type="button">
+                                    <span class="new_cc_btn_text">Submit Payment</span>
+                                </button>
                             </form>
                         </div>
                     </div>

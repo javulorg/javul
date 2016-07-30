@@ -20,9 +20,9 @@ Route::any('/userprofiles/{user_id}/{slug}','UserController@user_profile');
 Route::get('/my_tasks','UserController@my_tasks');
 Route::post('/account/withdraw','AccountController@withdraw');
 Route::post('/account/paypal_email_check','AccountController@paypal_email_check');
-/*Route::any('/notification/success','NotificationController@success_payment');
+Route::any('/notification/success','NotificationController@success_payment');
 Route::any('/notification/error','NotificationController@error_payment');
-Route::any('/notification/ipn_payment','NotificationController@ipn_payment');*/
+Route::any('/notification/ipn_payment','NotificationController@ipn_payment');
 
 Route::auth();
 
@@ -80,11 +80,12 @@ Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
 
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 
-Route::any('funds/donate/unit/{unit_id}','FundsController@donate_to_unit_objective_task');
-Route::any('funds/donate/objective/{objective_id}','FundsController@donate_to_unit_objective_task');
-Route::any('funds/donate/task/{task_id}','FundsController@donate_to_unit_objective_task');
-Route::any('funds/donate/user/{user_id}','FundsController@donate_to_unit_objective_task');
+Route::get('funds/donate/unit/{unit_id}','FundsController@donate_to_unit_objective_task');
+Route::get('funds/donate/objective/{objective_id}','FundsController@donate_to_unit_objective_task');
+Route::get('funds/donate/task/{task_id}','FundsController@donate_to_unit_objective_task');
+Route::get('funds/donate/user/{user_id}','FundsController@donate_to_unit_objective_task');
 Route::get('funds/get-card-name','FundsController@get_card_name');
+Route::post('funds/donate-amount','FundsController@donate_amount');
 
 Route::resource('/issues','IssuesController');
 Route::resource('/objectives','ObjectivesController');

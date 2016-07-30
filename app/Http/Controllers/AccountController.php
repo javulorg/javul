@@ -8,10 +8,12 @@ use App\Http\Requests;
 use App\Library\Helpers;
 use App\Objective;
 use App\Paypal;
+use App\PaypalTransaction;
 use App\SiteActivity;
 use App\SiteConfigs;
 use App\State;
 use App\Task;
+use App\Transaction;
 use App\Unit;
 use App\User;
 use Illuminate\Http\Request;
@@ -81,47 +83,57 @@ class AccountController extends Controller
             'cc-amount'=>'required'
         ]);
         if ($validator->fails())
-            return redirect()->back()->withErrors($validator)->withInput();
+            return \Response::json(['success'=>false,'errors'=>$validator->errors()]);
 
         $requestedAmount = $request->input('cc-amount');
         $isCurrency = Helpers::isCurrency($requestedAmount);
         if(!$isCurrency)
-            return redirect()->back()->withErrors(['error'=>'Please enter amount correctly.'])->withInput();
+            return \Response::json(['success'=>false,'errors'=>['error'=>'Please enter amount correctly.']]);
 
         $checkEmailExist = Paypal::checkEmailExistINPaypal($request->input('paypal_email'));
-        if(empty($checkEmailExist))
-            return redirect()->back()->withErrors(['error'=>'Email does not exist.'])->withInput();
-        else{
+
+        if(!$checkEmailExist['success'] && $checkEmailExist['timeout_error'])
+            return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later']]);
+        else if(!$checkEmailExist['success'])
+            return \Response::json(['success'=>false,'errors'=>['error'=>'Email does not exist in Paypal.']]);
+        else if($checkEmailExist['success']){
             $creditedBalance = Fund::getUserDonatedFund(Auth::user()->id);
             $debitedBalance = Fund::getUserAwardedFund(Auth::user()->id);
             $availableBalance = $creditedBalance - $debitedBalance;
 
             if($requestedAmount > $availableBalance)
-                return redirect()->back()->withErrors(['error'=>'Insufficient balance.'])->withInput();
-
+                return \Response::json(['success'=>false,'errors'=>['error'=>'Insufficient balance.']]);
 
             //transfer requested amount to user on given email id. (paypal)
             $data = $request->all();
             $payment = Paypal::transferAmountToUser($data);
 
             if(!$payment['success'])
-                return redirect()->back()->withErrors(['active'=>'withdraw','error'=>'Could not connect to Paypal. Please try again later'])->withInput();
+                return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later']]);
 
             if($payment['success'] && !empty($payment['paymentResponse'])){
-                Transaction::create([
+                $transactionID = null;
+                $fundID = null;
+                $transactionID = Transaction::create([
                     'created_by'=>Auth::user()->id,
                     'user_id'=>Auth::user()->id,
                     'amount'=>$data['cc-amount'],
                     'trans_type'=>'debit',
                     'comments'=>'$'.$data['cc-amount'].' withdrawn by '.Auth::user()->first_name.' '.Auth::user()->last_name
+                ])->id;
+
+                // insert actual paypal response in database
+                PaypalTransaction::create([
+                    'transaction_id'=>$transactionID,
+                    'fund_id'=>$fundID,
+                    'response'=>json_encode($payment['paymentResponse'])
                 ]);
 
-                $request->session()->flash('msg_val', 'Amount transfer successfully.');
-                $request->session()->flash('msg_type', "success");
-                return redirect('account');
-            }
-        }
 
+                return \Response::json(['success'=>true]);
+            }
+            return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again later.']]);
+        }
     }
 
     /**
@@ -138,6 +150,7 @@ class AccountController extends Controller
             return \Response::json(['success'=>false,'message'=>'Email is invalid.']);
 
         $checkEmailExist = Paypal::checkEmailExistINPaypal($email);
+
         if(!$checkEmailExist['success'] && $checkEmailExist['timeout_error'])
             return \Response::json(['success'=>false,'message'=>'Could not connect to Paypal. Please try again later.' ]);
         else if(!$checkEmailExist['success'] && !$checkEmailExist['timeout_error'])
@@ -147,7 +160,6 @@ class AccountController extends Controller
             return \Response::json(['success'=>true]);
     }
     public function logout(){
-        Auth::user()->update(['loggedin'=>null]);
         return redirect('logout');
     }
 

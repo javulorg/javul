@@ -5,7 +5,10 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Facades\Config;
 
+use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Exception\PayPalConnectionException;
+use PayPal\Exception\PayPalInvalidCredentialException;
+use PayPal\Exception\PayPalMissingCredentialException;
 use PayPal\Exception\PPConfigurationException;
 use PayPal\Exception\PPConnectionException;
 use PayPal\Rest\ApiContext;
@@ -74,10 +77,20 @@ class Paypal extends Model{
         $card->setExpireYear($params['exp_year']);
         $card->setCvv2($params['cc-cvc']);
 
+        $timeout_error= false;
         $error='';
         try{
             $card->create(self::$apiContext);
-        }catch(Exception $e){ $error = $e->getMessage();}
+        }catch(PayPalConnectionException $e){
+			$error = "Could not connect to Paypal. Please try again later.";
+            $timeout_error= true;
+        }catch(PayPalConfigurationException $e){
+            $error = $e->getMessage();
+        }catch(PayPalInvalidCredentialException $e){
+            $error = $e->getMessage();
+        }catch(PayPalMissingCredentialException $e){
+            $error = $e->getMessage();
+        }
 
         if(!empty($error))
             return ['success'=>false,'error'=>$error];
@@ -98,7 +111,21 @@ class Paypal extends Model{
      */
     public static function getCreditCard($cardId) {
         self::initializeContext();
-        return CreditCard::get($cardId, self::$apiContext);
+        $creditCard = [];
+        $timeout_error= false;
+        try{
+            $creditCard = CreditCard::get($cardId, self::$apiContext);
+        }catch(PayPalConnectionException $e){
+            $error = $e->getMessage();
+            $timeout_error = true;
+        }catch(PayPalConfigurationException $e){
+            $error = $e->getMessage();
+        }catch(PayPalInvalidCredentialException $e){
+            $error = $e->getMessage();
+        }catch(PayPalMissingCredentialException $e){
+            $error = $e->getMessage();
+        }
+        return $creditCard;
     }
 
 
