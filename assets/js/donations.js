@@ -2,14 +2,27 @@ $(function(){
     $('#tabs').tab();
 
     $('[data-numeric]').payment('restrictNumeric');
-    $('.cc-number').payment('formatCardNumber');
-    $('.cc-cvc').payment('formatCardCVC');
+    /*$('.cc-number').payment('formatCardNumber');
+    $('.cc-cvc').payment('formatCardCVC');*/
     $.fn.toggleInputError = function(erred) {
-        this.parents('.form-row').toggleClass('has-error', erred);
+        this.parents('.col-sm-4').toggleClass('has-error', erred);
         return this;
     };
 
-    $('.new_cc_submit').on('click',function(e) {
+    $("#submit_donate").on('click',function(e){
+        e.preventDefault();
+        $(".remove-alert ").remove();
+        var $form = $('#donate_amount_form');
+        $("#donate_amount").toggleInputError(!$.payment.validateAmount($('#donate_amount').val()));
+        if($('.has-error').length == 0){
+            $("#donate_amount").attr('readonly','readonly');
+            $(this).prop('disabled',true);
+            $form.get(0).submit();
+        }
+    })
+
+
+    /*$('.new_cc_submit').on('click',function(e) {
         e.preventDefault();
         $(".remove-alert ").remove();
         var $form = $('#new-credit-card-form');
@@ -141,7 +154,7 @@ $(function(){
             $("#cc-card-type").val('');
         }
 
-    })
+    })*/
 
     $("[name='amount_from_available_bal']").on('keyup keydown',function(e){
         var val = $(this).val();

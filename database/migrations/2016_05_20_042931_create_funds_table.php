@@ -21,6 +21,8 @@ class CreateFundsTable extends Migration
             $table->integer('task_id')->nullable();
             $table->decimal('amount',10,2);
             $table->string('transaction_type')->comment="donated or rewarded";
+            $table->string('payment_id');
+            $table->string('status');
             $table->string('fund_type')->comment="units or objectives or tasks or general purpose";
             $table->timestamps();
             $table->softDeletes();

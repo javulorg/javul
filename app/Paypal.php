@@ -5,6 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Facades\Config;
 
+use PayPal\Api\Item;
+use PayPal\Api\ItemList;
+use PayPal\Core\PayPalHttpConnection;
 use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Exception\PayPalConnectionException;
 use PayPal\Exception\PayPalInvalidCredentialException;
@@ -31,6 +34,7 @@ use PayPal\Types\AP\PaymentDetailsRequest;
 use PayPal\Types\AP\PayRequest;
 use PayPal\Types\AP\Receiver;
 use PayPal\Types\AP\ReceiverList;
+use PayPal\Types\AP\SetPaymentOptionsRequest;
 use PayPal\Types\Common\RequestEnvelope;
 
 
@@ -219,6 +223,19 @@ class Paypal extends Model{
         $amount->setCurrency($currency);
         $amount->setTotal($total);
 
+
+        $item1 = new Item();
+        $item1->setName($paymentDesc)
+            ->setCurrency('USD')
+            ->setQuantity(1)
+            ->setSku("123123") // Similar to `item_number` in Classic API
+            ->setPrice($total);
+
+        $itemList = new ItemList();
+
+        $itemList->setItems(array($item1));
+
+
         // ###Transaction
         // A transaction defines the contract of a
         // payment - what is the payment for and who
@@ -227,6 +244,7 @@ class Paypal extends Model{
         $transaction = new PaypalTransaction();
         $transaction->setAmount($amount);
         $transaction->setDescription($paymentDesc);
+        $transaction->setItemList($itemList);
 
         $redirectUrls = new RedirectUrls();
         $redirectUrls->setReturnUrl($returnUrl);
@@ -238,10 +256,50 @@ class Paypal extends Model{
         $payment->setPayer($payer);
         $payment->setTransactions(array($transaction));
 
-        $payment->create(self::$apiContext);
-      return $payment;
+        $error ='';
+
+        try {
+            $payment->create(self::$apiContext);
+        }catch (\PayPal\Exception\PayPalConnectionException $e) {
+            $error = $e->getMessage();
+        }catch(Exception $e){ $error = $e->getMessage();}
+
+        if(!empty($error))
+            return ['success'=>false,'error'=>$error];
+        elseif(!empty($payment))
+            return ['success'=>true,'payment'=>$payment];
+        else
+            return ['success'=>false,'error'=>'Something goes wrong. Please try again later.'];
     }
 
+    public static function getLink(array $links, $type) {
+        foreach($links as $link) {
+            if($link->getRel() == $type) {
+                return $link->getHref();
+            }
+        }
+        return "";
+    }
+
+    public static function parseApiError($errorJson) {
+        $msg = '';
+
+        $data = json_decode($errorJson, true);
+        if(isset($data['name']) && isset($data['message'])) {
+            $msg .= $data['name'] . " : " .  $data['message'] . "<br/>";
+        }
+        if(isset($data['details'])) {
+            $msg .= "<ul>";
+            foreach($data['details'] as $detail) {
+                $msg .= "<li>" . $detail['field'] . " : " . $detail['issue'] . "</li>";
+            }
+            $msg .= "</ul>";
+        }
+        if($msg == '') {
+            $msg = $errorJson;
+        }
+        return $msg;
+    }
 
     /**
      * Completes the payment once buyer approval has been
@@ -253,15 +311,27 @@ class Paypal extends Model{
      *
      * @param string $payerId PayerId as returned by PayPal post
      * 		buyer approval.
+     * @return array
      */
     public static function executePayment($paymentId, $payerId) {
         self::initializeContext();
         $payment = self::getPaymentDetails($paymentId);
         $paymentExecution = new PaymentExecution();
         $paymentExecution->setPayerId($payerId);
-        $payment = $payment->execute($paymentExecution, self::$apiContext);
 
-        return $payment;
+        $error ='';
+        try{
+            $payment = $payment->execute($paymentExecution, self::$apiContext);
+        }catch (PayPalConnectionException $e) {
+            $error = $e->getMessage();
+        }catch(Exception $e){ $error = $e->getMessage();}
+
+        if(!empty($error))
+            return ['success'=>false,'error'=>$error];
+        elseif(!empty($payment))
+            return ['success'=>true,'payment'=>$payment];
+        else
+            return ['success'=>false,'error'=>'Something goes wrong. Please try again later.'];
     }
 
     /**
@@ -350,17 +420,19 @@ class Paypal extends Model{
 
         $receiverList = new ReceiverList($receiver);
         $payRequest->receiverList = $receiverList;
-        $payRequest->senderEmail = "selleracc@paypalsandbox.com";
-        $payRequest->feesPayer = "SENDER";
+        if(isset($data['ajax']) && $data['ajax'])
+            $payRequest->senderEmail = "selleracc@paypalsandbox.com";
+
+        //$payRequest->feesPayer = "SENDER";
 
 
         $requestEnvelope = new RequestEnvelope("en_US");
         $payRequest->requestEnvelope = $requestEnvelope;
         $payRequest->actionType = "PAY";
-        $payRequest->cancelUrl = "http://javul.org/notification/error";
-        $payRequest->returnUrl = "http://javul.org/notification/success";
+        $payRequest->cancelUrl = $data['cancelURL'];
+        $payRequest->returnUrl = $data['returnURL'];
         $payRequest->currencyCode = "USD";
-        $payRequest->ipnNotificationUrl = "http://javul.org/notification/ipn_payment";
+        //$payRequest->ipnNotificationUrl = "http://javul.org/notification/ipn_payment";
 
         $adaptivePaymentsService = new AdaptivePaymentsService(self::$sdkConfig);
         $error = '';
@@ -383,8 +455,7 @@ class Paypal extends Model{
             $ack = strtoupper($payResponse->responseEnvelope->ack);
             if($ack != "SUCCESS")
                 return ['success'=>false,'timeout_error'=>$timeoutError,'message'=>"Something goes wrong. Please try again."];
-
-            return ['success'=>true,'paymentResponse'=>$payResponse];
+            return ['success'=>true,'paymentResponse'=>$payResponse,'paykey'=>$payResponse->payKey,'status'=>$payResponse->paymentExecStatus];
         }
         else
             return ['success'=>true,'message'=>"Something goes wrong. Please try again."];

@@ -65,6 +65,11 @@ class AccountController extends Controller
         $availableBalance = $creditedBalance - $debitedBalance;
         view()->share('availableBalance',$availableBalance);
 
+        $users_card=[];
+        /*if(!empty(Auth::user()->credit_card_id))
+            $users_card= Paypal::getCreditCard(Auth::user()->credit_card_id);*/
+        view()->share('users_cards',$users_card);
+
         //expiry years of card
         $expiry_years = SiteConfigs::getCardExpiryYear();
 
@@ -78,57 +83,83 @@ class AccountController extends Controller
      * @return $this
      */
     public function withdraw(Request $request){
-        $validator = \Validator::make($request->all(), [
-            'paypal_email'=> 'required|email',
-            'cc-amount'=>'required'
-        ]);
-        if ($validator->fails())
-            return \Response::json(['success'=>false,'errors'=>$validator->errors()]);
 
-        $requestedAmount = $request->input('cc-amount');
+
+        if(empty(Auth::user()->paypal_email)){
+            $validator = \Validator::make($request->all(), [
+                'paypal_email'=> 'required|email'
+            ]);
+            if ($validator->fails()){
+                $errors = $validator->messages()->toArray();
+                foreach($errors as $index=>$err)
+                    $errors[$index]=$err[0];
+
+                $errors['active'] = 'withdraw';
+                return \Response::json(['success'=>false,'errors'=>$errors]);
+            }
+            $paypal_email = $request->input('paypal_email');
+        }
+        else
+            $paypal_email=Auth::user()->paypal_email;
+
+
+        /*$requestedAmount = $request->input('cc-amount');
         $isCurrency = Helpers::isCurrency($requestedAmount);
         if(!$isCurrency)
-            return \Response::json(['success'=>false,'errors'=>['error'=>'Please enter amount correctly.']]);
+            return \Response::json(['success'=>false,'errors'=>['error'=>'Please enter amount correctly.']]);*/
 
-        $checkEmailExist = Paypal::checkEmailExistINPaypal($request->input('paypal_email'));
+        $checkEmailExist = Paypal::checkEmailExistINPaypal($paypal_email);
 
         if(!$checkEmailExist['success'] && $checkEmailExist['timeout_error'])
             return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later']]);
         else if(!$checkEmailExist['success'])
-            return \Response::json(['success'=>false,'errors'=>['error'=>'Email does not exist in Paypal.']]);
+            return \Response::json(['success'=>false,'errors'=>['error'=>'Email does not exist in Paypal']]);
         else if($checkEmailExist['success']){
+            Auth::user()->paypal_email = $paypal_email;
+            Auth::user()->save();
+
             $creditedBalance = Fund::getUserDonatedFund(Auth::user()->id);
             $debitedBalance = Fund::getUserAwardedFund(Auth::user()->id);
             $availableBalance = $creditedBalance - $debitedBalance;
 
-            if($requestedAmount > $availableBalance)
-                return \Response::json(['success'=>false,'errors'=>['error'=>'Insufficient balance.']]);
+            $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
+
+            $transactionData['created_by'] =Auth::user()->id;
+            $transactionData['user_id'] =Auth::user()->id;
+            $transactionData['amount'] =$availableBalance;
+            $transactionData['comments']='$'.$availableBalance.' withdrawn by '.Auth::user()->first_name.' '.Auth::user()->last_name;
+            $transactionData['trans_type'] ='debit';
+            $transactionID = Transaction::create($transactionData)->id;
+
 
             //transfer requested amount to user on given email id. (paypal)
-            $data = $request->all();
-            $payment = Paypal::transferAmountToUser($data);
+            $data['paypal_email'] =Auth::user()->paypal_email;
+            $data['cc-amount'] =$availableBalance;
+            $data['returnURL'] = url('funds/success?type=user&orderID='.$orderIDHashID->encode($transactionID));
+            $data['cancelURL'] = url('funds/cancel?type=user&orderID='.$orderIDHashID->encode($transactionID));
+            $data['ajax'] = true;
 
-            if(!$payment['success'])
-                return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later']]);
+            $payment = Paypal::transferAmountToUser($data);
+            $transactionObj = Transaction::find($transactionID);
+
+            if(!$payment['success']){
+                $transactionObj->update(['status'=>'cancelled']);
+                return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later.']]);
+            }
 
             if($payment['success'] && !empty($payment['paymentResponse'])){
-                $transactionID = null;
-                $fundID = null;
-                $transactionID = Transaction::create([
-                    'created_by'=>Auth::user()->id,
-                    'user_id'=>Auth::user()->id,
-                    'amount'=>$data['cc-amount'],
-                    'trans_type'=>'debit',
-                    'comments'=>'$'.$data['cc-amount'].' withdrawn by '.Auth::user()->first_name.' '.Auth::user()->last_name
-                ])->id;
-
+                if(count($transactionObj) > 0 && !empty($transactionObj)){
+                    if($payment['status'] == "completed")
+                        $payment['status']="approved";
+                    $transactionObj->update(['pay_key'=>$payment['paykey'],'status'=>strtolower($payment['status'])]);
+                }
 
                 // insert actual paypal response in database
                 PaypalTransaction::create([
                     'transaction_id'=>$transactionID,
-                    'fund_id'=>$fundID,
+                    'fund_id'=>null,
                     'donate_paypal_id'=>null,
-                    'pay_key'=>$payment['paymentResponse']->payKey
+                    'pay_key'=>$payment['paykey']
                 ]);
 
 
@@ -138,6 +169,9 @@ class AccountController extends Controller
 
                 return \Response::json(['success'=>true,'availableBalance'=>number_format($availableBalance,2)]);
             }
+            else
+                $transactionObj->update(['status'=>'cancelled']);
+            $transactionObj->update(['status'=>'cancelled']);
             return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again later.']]);
         }
     }

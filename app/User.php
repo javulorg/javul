@@ -303,37 +303,18 @@ class User extends Authenticatable
 
     public static function donateAmount($data=[]){
 
-        $error='';
-        $userCreditCardID = Auth::user()->credit_card_id;
-
-        if($data['frmTyp'] == 'old')
-            $amount = $data['amount_reused_card'];
-        else{
-            $amount = $data['cc-amount'];
-        }
+        $amount = $data['donate_amount'];
 
         if(!is_numeric($amount) || $amount == 0 || $amount < 0)
             return ['success'=>false,'error_msg'=>'Amount should be greater than zero.' ];
 
-        if($data['frmTyp'] == 'old')
-            $creditCardID = $userCreditCardID;
-        else{
-            $saveCardResponse = Paypal::saveCard($data);
-            if($saveCardResponse['success'])
-                $creditCardID=$saveCardResponse['card_id'];
-            else
-                return ['success'=>false,'error_msg'=>$saveCardResponse['error']];
-        }
+        $paymentResponse = Paypal::makePaymentUsingPayPal($amount,'USD',$data['message'],$data['returnURL'],$data['cancelURL']);
 
-        if(empty($creditCardID))
-            return ['success'=>false,'error_msg'=>$error ];
-        else{
-            $paymentResponse = Paypal::makePaymentUsingCC($creditCardID,$amount,'USD',$data['message']);
+        if($paymentResponse['success'])
+            return ['success'=>true,'url'=>Paypal::getLink($paymentResponse['payment']->getLinks(),'approval_url'),
+                'payment_id'=>$paymentResponse['payment']->getId(),'status'=>$paymentResponse['payment']->getState()];
+        else
+            return ['success'=>false,'error_msg'=>$paymentResponse['error']];
 
-            if($paymentResponse['success'])
-                return ['success'=>true,'payment'=>$paymentResponse['payment']];
-            else
-                return ['success'=>false,'error_msg'=>$paymentResponse['error']];
-        }
     }
 }

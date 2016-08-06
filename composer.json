@@ -21,7 +21,8 @@
         "ipunkt/laravel-analytics": "~1.0",
         "fahim/laravel5-paypal-ipn": "dev-master@dev",
         "paypal/adaptivepayments-sdk-php":"*",
-        "paypal/adaptiveaccounts-sdk-php":"*"
+        "paypal/adaptiveaccounts-sdk-php":"*",
+		"netshell/paypal":"dev-master"
     },
     "autoload": {
         "classmap": [

@@ -76,152 +76,35 @@
         </div>
     </div>-->
     @endif
-    <div class="row form-group donationDiv credit_card"  >
-        <div class="col-sm-12">
-            <!-- tabs left -->
-            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                @if(!empty($credit_cards) && count($credit_cards) > 0)
-                    <li class="active"><a href="#saved_details" data-toggle="tab">Saved Details</a></li>
-                @else
-                    <li class="active"><a href="#credit_card" data-toggle="tab">Credit Card</a></li>
-                @endif
-            </ul>
-            <div id="my-tab-content" class="tab-content">
-                <div class="list-group tab-pane @if(!empty($credit_cards)) active @endif" id="saved_details">
-                @if(!empty($credit_cards) && count($credit_cards) > 0)
-                    <form novalidate autocomplete="off" method="POST"  id="reused-credit-card-form">
-                        {!! csrf_field() !!}
-                        <input type="hidden" name="frmTyp" value="{{$formType}}"/>
-                        <input type="hidden" name="opt_typ" value="used"/>
-                        <div class="list-group tab-pane" id="saved_details">
-                            <!--<div class="row form-group">
-                                <div class="col-sm-4">
-                                    @if(!empty($credit_cards) && count($credit_cards) > 0)
-                                    <label class="sr-only">Card Type</label>
-                                    <select name="credit_cards" class="form-control">
-                                        <option value="">Select Card</option>
-                                        @foreach($credit_cards as $card_id=>$card)
-                                            <option value="{{$card_id}}" data-type="{{$card['type']}}"
-                                                    data-last4="{{substr($card['number'],-4)}}">
-                                                {{'XXXX-XXXX-XXXX-'.substr($card['number'],-4)}}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @endif
-                                </div>
-                            </div>-->
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="credit_card_box">
-                                        <div class="credit_card_heading">
-                                            <span class="reused_card_image" style="float:left">
-                                                <img src="{!! url('assets/images/'.$credit_cards->type.'.png') !!}"  style="height:40px;"/>
-                                            </span>
-                                             <span class="remove_card" style="float:right">
-                                                <!--<a class="" href="#">Remove Card</a>-->
-                                            </span>
-                                        </div>
-                                        <div style="padding:10px 20px;">
-                                            <input type="text" value="XXXX XXXX XXXX {{substr($credit_cards->number,-4)}}"
-                                                   disabled="disabled"
-                                                   class="text-input fl disabled credit_card_number" name="card_number">
-                                            <input type="text" value="" name="amount_reused_card" id="amount_reused_card" data-numeric
-                                                   placeholder="Amount"
-                                                   class="form-control
-                                            amount-reuse-card">
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <button class="btn orange-bg reuse-card submit" style="margin-top: 20px;">
-                                        <span class="old_cc_btn_text">Submit Payment</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                @endif
-                </div>
-                <div class="list-group tab-pane @if(empty($credit_cards)) active @endif" id="credit_card">
-                    <div class="row form-group">
-                        <div class="col-sm-12">
-                            <form novalidate autocomplete="off" method="POST" id="new-credit-card-form">
-                                {!! csrf_field() !!}
-                                <input type="hidden" name="frmTyp" value="{{$formType}}"/>
-                                <div class="form-row form-group" style="position: relative;">
-                                    <label for="cc-number" class="control-label">ENTER CARD NUMBER
-                                        <input id="cc-number" type="tel" class="input-lg form-control cc-number" name="cc-number"
-                                               value="{{old('cc-number')}}"
-                                               autocomplete="cc-number" required style="width:300px;">
-                                        <span style="" class="card_image"></span>
-                                    </label>
-                                </div>
-                                <div class="form-row form-group">
-                                    <label class="control-label">
-                                        <span style="display: block;">CARD TYPE</span>
-                                        <select name="cc-card-type" id="cc-card-type" class="form-control" required=""
-                                                value="{{old('cc-card-type')}}">
-                                            <option value="">Select Card Type</option>
-                                            <option value="visa">Visa</option>
-                                            <option value="mastercard">MasterCard</option>
-                                            <option value="amex">American Express</option>
-                                            <option value="discover">Discover</option>
-                                            <option value="maestro">Maestro</option>
-                                        </select>
-                                    </label>
-                                </div>
-                                <div class="form-row form-group">
-                                    <label class="control-label">
-                                        <span style="display: block;">EXPIRY DATE</span>
-                                        <select name="exp_month" class="form-control" required="" value="{{old('exp_month')}}">
-                                            <option value="">MM</option>
-                                            <option value="01">01</option>
-                                            <option value="02">02</option>
-                                            <option value="03">03</option>
-                                            <option value="04">04</option>
-                                            <option value="05">05</option>
-                                            <option value="06">06</option>
-                                            <option value="07">07</option>
-                                            <option value="08">08</option>
-                                            <option value="09">09</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                        </select>
-                                        <select name="exp_year" class="form-control" required="" value="{{old('exp_year')}}">
-                                            <option value="">YYYY</option>
-                                            @foreach($expiry_years as $year)
-                                                <option value="{{$year}}">{{$year}}</option>
-                                            @endforeach
-                                        </select>
-                                    </label>
 
-                                </div>
+    <form accept-charset="UTF-8" action="{!! url('funds/donate-amount') !!}" class="simple_form form-horizontal" method="post"
+          novalidate="novalidate" id="donate_amount_form">
+        {{ csrf_field() }}
+        @if(count($errors->all()) > 0)
+            <?php $err_msg ='';?>
+            @foreach($errors->all() as $err)
+            <?php $err_msg.='<span>'.$err.'</span>';?>
+            @endforeach
 
-                                <div class="form-row form-group">
-                                    <label for="cc-cvc" class="control-label">CVC
-                                        <input id="cc-cvc" type="password" class="input-lg form-control cc-cvc" name="cc-cvc"
-                                               autocomplete="off" required>
-                                    </label>
-                                </div>
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Error!</strong> {!!$err_msg!!}
+            </div>
 
-                                <div class="form-row form-group">
-                                    <label for="cc-amount" class="control-label">AMOUNT
-                                        <input id="cc-amount" name="cc-amount" type="text" class="input-lg form-control cc-amount"
-                                               autocomplete="off" value="{{old('cc-amount')}}"
-                                               required data-numeric>
-                                    </label>
-                                </div>
-                                <button class="new_cc_submit submit btn orange-bg" type="button">
-                                    <span class="new_cc_btn_text">Submit Payment</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+        @endif
+        <div class="row form-group donationDiv credit_card"  >
+            <div class="col-sm-4">
+                <label for="amount" class="control-label">Amount to Donate</label>
+                <input type="text" value="" name="donate_amount" id="donate_amount" data-numeric
+                       placeholder="Amount" class="form-control" required>
             </div>
         </div>
+        <div class="row form-group donationDiv credit_card"  >
+            <div class="col-sm-4">
+                <input type="image" id="submit_donate"  src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif"/>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
 @include('elements.footer')

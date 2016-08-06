@@ -83,12 +83,7 @@
                 <!-- tabs left -->
                 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                     <li @if(count($errors) == 0 || ($errors->has('active') && $errors->first('active')=="personal_info"))
-                    class="active"
-                    @endif><a
-                        href="#personal_info" data-toggle="tab">Personal Info</a></li>
-                    @if(!empty($authUserObj) && !empty($authUserObj->credit_card_id))
-                        <li><a href="#credit_card_setting" data-toggle="tab">Credit Card Details</a></li>
-                    @endif
+                    class="active" @endif><a href="#personal_info" data-toggle="tab">Personal Info</a></li>
                     @if(!empty($availableBalance) && $availableBalance >= 20)
                     <li @if($errors->has('active') && $errors->first('active')=="withdraw") class="active" @endif>
                         <a href="#withdraw_amount" data-toggle="tab">Withdraw</a>
@@ -200,75 +195,6 @@
                         </form>
                     </div>
 
-                    <div class="list-group tab-pane @if($errors->has('active') && $errors->first('active')=='credit_card') active @endif"
-                         id="credit_card_setting">
-                        <div class="row form-group">
-                            <div class="col-sm-12">
-                                <form novalidate autocomplete="off" method="POST" id="new-credit-card-form">
-                                    <input type="hidden" name="opt_typ" value="new"/>
-                                    {!! csrf_field() !!}
-                                    <div class="form-row form-group" style="position: relative;">
-                                        <label for="cc-number" class="control-label">ENTER CARD NUMBER
-                                            <input id="cc-number" type="tel" class="input-lg form-control cc-number" name="cc-number"
-                                                   autocomplete="cc-number" required style="width:300px;">
-                                            <span style="" class="card_image"></span>
-                                        </label>
-                                    </div>
-                                    <div class="form-row form-group">
-                                        <label class="control-label">
-                                            <span style="display: block;">CARD TYPE</span>
-                                            <select name="cc-card-type" id="cc-card-type" class="form-control" required="">
-                                                <option value="">Select Card Type</option>
-                                                <option value="visa">Visa</option>
-                                                <option value="mastercard">MasterCard</option>
-                                                <option value="amex">American Express</option>
-                                                <option value="discover">Discover</option>
-                                                <option value="maestro">Maestro</option>
-                                            </select>
-                                        </label>
-                                    </div>
-                                    <div class="form-row form-group">
-                                        <label class="control-label">
-                                            <span style="display: block;">EXPIRY DATE</span>
-                                            <select name="exp_month" class="form-control" required="">
-                                                <option value="">MM</option>
-                                                <option value="01">01</option>
-                                                <option value="02">02</option>
-                                                <option value="03">03</option>
-                                                <option value="04">04</option>
-                                                <option value="05">05</option>
-                                                <option value="06">06</option>
-                                                <option value="07">07</option>
-                                                <option value="08">08</option>
-                                                <option value="09">09</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                            </select>
-                                            <select name="exp_year" class="form-control" required="">
-                                                <option value="">YYYY</option>
-                                                @foreach($expiry_years as $year)
-                                                <option value="{{$year}}">{{$year}}</option>
-                                                @endforeach
-                                            </select>
-                                        </label>
-
-                                    </div>
-
-                                    <div class="form-row form-group">
-                                        <label for="cc-cvc" class="control-label">CVC
-                                            <input id="cc-cvc" type="password" class="input-lg form-control cc-cvc" name="cc-cvc"
-                                                   autocomplete="off" required>
-                                        </label>
-                                    </div>
-                                    <button type="button" class="btn orange-bg update-creditcard">
-                                        <span class="update-cc-text">Update Details</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="list-group tab-pane @if($errors->has('active') && $errors->first('active')=='withdraw') active @endif" id="withdraw_amount">
                         <form role="form" method="post" id="withdraw-amount"  novalidate="novalidate" action="{!! url('account/withdraw') !!}">
                             {!! csrf_field() !!}
@@ -278,6 +204,14 @@
                                 <strong>Error!</strong> {{$errors->first('error')}}.
                             </div>
                             @endif
+
+                            @if($errors->has('paypal_email'))
+                            <div class="alert alert-danger">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Error!</strong> {{$errors->first('paypal_email')}}.
+                            </div>
+                            @endif
+                            @if(empty(Auth::user()->paypal_email))
                             <div class="row form-group">
                                 <div class="col-sm-4">
                                     <label for="paypal_email" class="control-label">Paypal Email ID</label>
@@ -289,18 +223,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row form-group amount-field" style="display: none;">
-                                <div class="col-sm-4">
-                                    <label for="cc-amount" class="control-label">Amount to withdraw</label>
-                                    <div class="input-icon right">
-                                        <i class="fa"></i>
-                                        <input id="cc-amount" name="cc-amount" type="text" class="form-control cc-amount"
-                                               value="{{old('cc-amount')}}" autocomplete="off" required data-numeric>
-                                    </div>
-                                </div>
-                            </div>
+                            @endif
                             <button type="button" class="btn orange-bg withdraw-submit">
-                                <span class="withdraw-text">Verify Email</span>
+                                <span class="withdraw-text">Transfer my full balance to my Paypal account</span>
                             </button>
                         </form>
                     </div>

@@ -20,6 +20,8 @@ class CreateTransactionsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->decimal('amount',10,2);
             $table->string('trans_type',10)->comment='debit or credit';
+            $table->string('pay_key');
+            $table->string('status');
             $table->text('comments');
             $table->timestamps();
             $table->softDeletes();

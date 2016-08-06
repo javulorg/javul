@@ -17,6 +17,7 @@ return [
     'encode_chars'=>'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
     'support_email'=>'aadhyatechnologies34@gmail.com',
     'site_name'=>'Javul.org',
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -160,6 +161,7 @@ return [
         App\Providers\ViewComposerServiceProvider::class,
         Laravel\Cashier\CashierServiceProvider::class,
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
+		Netshell\Paypal\PaypalServiceProvider::class,
 
     ],
 
@@ -207,6 +209,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
+		'Paypal' => Netshell\Paypal\Facades\Paypal::class,
 
     ],
 

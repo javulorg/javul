@@ -11,7 +11,7 @@ class Fund extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','unit_id','objective_id','task_id','amount','transaction_type','fund_type'];
+    protected $fillable = ['user_id','unit_id','objective_id','task_id','amount','transaction_type','payment_id','status','fund_type'];
 
 
     /**
@@ -90,14 +90,14 @@ class Fund extends Model
 
     public static function getUserDonatedFund($user_id=''){
         if(!empty($user_id)){
-            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','credit')->sum('amount');
+            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','credit')->where('status','approved')->sum('amount');
         }
         return 0;
     }
 
     public static function getUserAwardedFund($user_id=''){
         if(!empty($user_id)){
-            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','debit')->sum('amount');
+            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','debit')->where('status','approved')->sum('amount');
         }
         return 0;
     }

@@ -31,6 +31,7 @@ class CreateUsersTable extends Migration
             $table->string('area_of_interest')->comment="reference to area_of_interest table. multiple with comma.";
             $table->string('role');
             $table->tinyInteger('loggedin');
+            $table->string('paypal_email');
             $table->string('stripe_id')->nullable();
             $table->string('stripe_customer_id')->nullable();
             $table->rememberToken();

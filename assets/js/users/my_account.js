@@ -1,32 +1,67 @@
 $(document).ready(function() {
     $('#tabs').tab();
-    $(document).off('click',".withdraw-submit").on('click','.withdraw-submit',function(){
+    $(document).off('click',".withdraw-submit").on('click','.withdraw-submit',function(e){
         $(".remove-alert").remove();
-        var Emailflag = validateEmail();
-        if(!Emailflag)
-            return false;
-        $(this).prop('disabled', true);
         $that = $(this);
-        $(".withdraw-submit").html('<span class="saving">Verifying Email<span>.</span><span>.</span><span>.</span></span>');
         var $form = $("#withdraw-amount");
-        $.ajax({
-            type:'post',
-            data:$form.serialize(),
-            url:siteURL+'/account/paypal_email_check',
-            success:function(resp){
-                if(!resp.success){
-                    $("#withdraw-amount").prepend('<div class="remove-alert alert alert-danger">' +
-                        '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                        '<strong>Error!</strong> '+resp.message+
-                        '</div>')
-                    $(".withdraw-submit").html('<span class="withdraw-text">Verify Email</span>');
-                    $that.prop('disabled', false);
-                }
-                else{
-                    $(".amount-field").show();
-                    $(".withdraw-submit").html('<span class="withdraw-text">Withdraw</span>');
-                    $(".withdraw-submit").addClass('withdraw-amount-btn').removeClass('withdraw-submit');
-                    $that.prop('disabled', false);
+        if($('#paypal_email').length > 0){
+            var Emailflag = validateEmail();
+            if(!Emailflag){
+                e.preventDefault();
+                return false;
+            }
+        }
+        $(this).prop('disabled', true);
+        var text = "Transfer all your balance of $"+$(".donation_received").html()+" to your Paypal account?";
+        bootbox.dialog({
+            message: text,
+            title: "Transfer amount to Paypal account",
+            buttons: {
+                success: {
+                    label: "Yes",
+                    className: "btn-success",
+                    callback: function() {
+                        $(".withdraw-submit").html('<span class="saving">Transferring amount<span>.</span><span>.</span><span>.</span></span>');
+                        $.ajax({
+                            type:'post',
+                            data:$form.serialize(),
+                            url:siteURL+'/account/withdraw',
+                            success:function(resp){
+                                if(!resp.success){
+                                    var html = '';
+                                    $.each(resp.errors,function(index,val){
+                                        html+="<span>"+val+"</span>";
+                                    })
+                                    var errorHTML = '<div class="remove-alert alert alert-danger">'+
+                                        '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+html
+                                    '</div>';
+                                    $form.prepend(errorHTML);
+                                    $that.prop('disabled', false);
+                                    $(".withdraw-submit").html('<span class="withdraw-text">Transfer my full balance to my Paypal account</span>');
+                                }
+                                else
+                                {
+                                    $form.find("input,select").val('');
+                                    var errorHTML = '<div class="remove-alert alert alert-success">'+
+                                        '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                                        '<strong>Success!!!</strong> Amount transfered successfully.'+
+                                        '</div>';
+                                    $form.prepend(errorHTML);
+                                    $that.prop('disabled', false);
+                                    $(".amount-field").hide();
+                                    $(".donation_received").html(resp.availableBalance);
+                                    $(".withdraw-submit").html('<span class="withdraw-text">Transfer my full balance to my Paypal account</span>');
+                                }
+                            }
+                        });
+                    }
+                },
+                danger: {
+                    label: "Cancel",
+                    className: "btn-danger",
+                    callback:function(){
+                        $that.prop('disabled', false);
+                    }
                 }
             }
         });
@@ -127,7 +162,8 @@ $(document).ready(function() {
                             '<strong>Success!!!</strong> Credit card details updated'+
                         '</div>';
                         $form.prepend(errorHTML);
-                        $form.find('input').val('');
+                        $form.find('input,select').val('');
+                        $(".card_image").html('');
                         $that.prop('disabled', false);
                         $that.html('Update Details');
                     }

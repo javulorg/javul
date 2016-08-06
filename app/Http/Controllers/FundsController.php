@@ -146,8 +146,8 @@ class FundsController extends Controller
                 view()->share('expiry_years',$expiry_years);
 
                 $users_cards=[];
-                if(!empty(Auth::user()->credit_card_id))
-                    $users_cards= Paypal::getCreditCard(Auth::user()->credit_card_id);
+                /*if(!empty(Auth::user()->credit_card_id))
+                    $users_cards= Paypal::getCreditCard(Auth::user()->credit_card_id);*/
 
                 $formType = Helpers::encrypt_decrypt('encrypt','new');
                 if(!empty($users_cards))
@@ -183,15 +183,15 @@ class FundsController extends Controller
         if($request->isMethod('post')){
 
             //check payment from new credit card or old?
-            $fromType = $request->input('frmTyp');
+           /* $fromType = $request->input('frmTyp');
             $fromType = Helpers::encrypt_decrypt('decrypt',$fromType);
             if($fromType != "new" && $fromType != "old")
-                return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again.']]);
+                return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again.']]);*/
 
             $url = URL::previous();
             $url =explode("/",$url );
-            $type = $url[5]; // for local 6. for live 5
-            $id = $url[6]; // for localhost 7. for live 6
+            $type = $url[6]; // for local 6. for live 5
+            $id = $url[7]; // for localhost 7. for live 6
             $exists = false;
             $obj = [];
             $donateTo = '';
@@ -247,54 +247,193 @@ class FundsController extends Controller
                     break;
             }
             if($exists){
-                $field = 'cc-amount';
                 $inputData = $request->all();
-                $inputData['frmTyp']=$fromType;
+                $validator = \Validator::make($inputData, [
+                    'donate_amount'=> 'required|numeric'
+                ],[
+                    'donate_amount.required'=>'Please enter amount to donate',
+                    'donate_amount.numeric'=>'Amount must be numeric'
+                ]);
 
-                if($fromType == "old"){
-                    $field="amount_reused_card";
-                    $validator = \Validator::make($inputData, [
-                        'amount_reused_card'=> 'required|numeric'
-                    ],[
-                        'amount_reused_card.required'=>'Please enter amount to donate',
-                        'amount_reused_card.numeric'=>'Amount must be numeric',
-                    ]);
-                }else{
-                    $inputData['cc-number'] = str_replace(" ","",$inputData['cc-number']);
-                    $validator = \Validator::make($inputData, [
-                        'cc-amount'=> 'required|numeric',
-                        'cc-card-type'=>'required',
-                        'exp_month'=>'required',
-                        'exp_year'=>'required',
-                        'cc-number'=>'required|numeric'
-                    ],[
-                        'cc-amount.required'=>'Please enter amount to donate',
-                        'cc-amount.numeric'=>'Amount must be numeric',
-                        'cc-card-type.required'=>'Please select card type',
-                        'exp_month.required'=>'Please select expire month',
-                        'exp_year.required'=>'Please select expire year',
-                        'cc-number.required'=>'Please enter card number',
-                        'cc-number.numeric'=>'Card number must be numeric'
-                    ]);
+
+                if ($validator->fails()){
+                    return redirect()->back()->withErrors($validator)->withInput();
                 }
 
-                if ($validator->fails())
-                    return \Response::json(['success'=>false,'errors'=>$validator->errors()]);
-
                 if(empty($obj) || count($obj) == 0)
-                    return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again.']]);
+                    return redirect()->back()->withErrors(['error'=>'Something goes wrong. Please try again.'])->withInput();
 
-                $amount = $request->input($field);
+                $amount = $request->input('donate_amount');
                 $paypalFees = (($amount * 2.9)/100) + 0.3;
                 $amount = $amount - $paypalFees ;
                 $message = Auth::user()->first_name.' '.Auth::user()->last_name. " donate $".$amount.' to'.$donateTo.$obj->name;
 
                 $inputData['message']=$message;
 
+                $transactionID = null;
+                $fundID = null;
+                $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
+                if($type == "user"){
+                    $transactionData['created_by'] =Auth::user()->id;
+                    $transactionData['user_id'] =$obj->id;
+                    $transactionData['amount'] =$amount;
+                    $transactionData['comments']='$'.$amount.' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name;
+
+                    if(!empty($obj->paypal_email))
+                        $transactionData['trans_type'] ='paypal';
+                    else
+                        $transactionData['trans_type'] ='credit';
+
+                    $transactionID = Transaction::create($transactionData)->id;
+
+                    $inputData['returnURL'] = url('funds/success?type='.$type.'&orderID='.$orderIDHashID->encode($transactionID));
+                    $inputData['cancelURL'] = url('funds/cancel?type='.$type.'&orderID='.$orderIDHashID->encode($transactionID));
+                }
+                else{
+                    $addFunds['user_id']=Auth::user()->id;
+                    $addFunds['amount']=$amount;
+                    $addFunds['transaction_type']='donated';
+                    $addFunds['fund_type']=$donateTo;
+
+                    $fundID = Fund::create($addFunds)->id;
+
+                    $inputData['returnURL'] = url('funds/success?type='.$type.'&orderID='.$orderIDHashID->encode($fundID) );
+                    $inputData['cancelURL'] = url('funds/cancel?type='.$type.'&orderID='.$orderIDHashID->encode($fundID));
+                }
+
+                if($type == "user" && !empty($obj->paypal_email)){
+                    $inputData['cc-amount'] = $request->input('donate_amount');
+                    $inputData['paypal_email'] = $obj->paypal_email;
+                    $response = Paypal::transferAmountToUser($inputData);
+                    if($response['success'])
+                        $response['url'] =env('ADAPTIVE_PAYMENT_URL').$response['paykey'];
+                }
+                else
+                    $response = User::donateAmount($inputData);
+
                 // Donate amount to Unit/Objective/Task/User
-                $response = User::donateAmount($inputData);
+                //dd($response);
                 if($response['success'])
                 {
+                    // update payment id field to respective tables.
+                    if($type == "user"){
+                        $transactionObj = Transaction::find($transactionID);
+                        if(count($transactionObj) > 0 && !empty($transactionObj)){
+                            if(!empty($obj->paypal_email))
+                                $transactionObj->update(['pay_key'=>$response['paykey'],'status'=>strtolower($response['status'])]);
+                            else
+                                $transactionObj->update(['pay_key'=>$response['payment_id'],'status'=>strtolower($response['status'])]);
+                        }
+                    }
+                    else{
+                        $fundObj = Fund::find($fundID);
+                        if(count($fundObj ) > 0 && !empty($fundObj)){
+                            $fundObj->update(['payment_id'=>$response['payment_id'],'status'=>strtolower($response['status'])]);
+                        }
+                    }
+                    return redirect()->away($response['url']);
+                }
+                else
+                    return redirect()->back()->withErrors(['error'=>'Something goes wrong. Please try again later.'])->withInput();
+            }
+        }
+    }
+
+    public function success(Request $request)
+    {
+        $paymentID = $request->input('paymentId');
+        $payerID =$request->input('PayerID');
+        $type = $request->input('type');
+        $orderID = $request->input('orderID');
+
+        $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
+        $orderID = $orderIDHashID->decode($orderID);
+
+        $message="Something goes wrong. Please try again later.";
+        $messageType = false;
+        $obj = [];
+        $payment_id = '';
+        if(!empty($orderID)){
+            $orderID  = $orderID[0];
+
+            if($type == "user")
+                $obj = Transaction::find($orderID);
+            else{
+                $obj = Fund::find($orderID);
+            }
+
+            // if user refresh the page then redirect to unit home page.
+            if($obj->status == "approved")
+                return redirect('units');
+
+
+            if(!empty($obj) && $obj->status != "approved"){
+                $db_payment_id = $obj->payment_id;
+                $flag = false;
+                if($type == "user")
+                {
+                    $obj->update(['status'=>'approved']);
+
+                    $donateToObj = User::find($obj->user_id);
+                    if(!empty($donateToObj))
+                    {
+                        $db_payment_id = $obj->pay_key;
+                        if(empty($donateToObj->paypal_email))
+                            $payment = Paypal::executePayment($db_payment_id ,$payerID);
+                        else
+                            $payment['success']= true;
+                        $flag = true;
+                    }
+                }
+                else{
+                    $payment = Paypal::executePayment($db_payment_id ,$payerID);
+                    if(!empty($payment['payment']))
+                        $flag = true;
+
+                }
+
+                if($payment['success'] && $flag ){
+                    $controller = '';
+                    $hashID='';
+                    $donateTo ='';
+                    $dataObj = '';
+                    if($type == "user"){
+                        $payment_id = $obj->pay_key;
+                        $data['pay_key'] = $obj->pay_key;
+                        $data['transaction_id'] = $orderID;
+                        $donateTo = ' user ';
+                        $controller = 'userprofiles';
+                        $dataObj = User::find($obj->user_id);
+                        $dataObj->name=$dataObj->first_name.' '.$dataObj->last_name;
+                        $dataObj->slug=strtolower($dataObj->first_name.'_'.$dataObj->last_name);
+                        $hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    }
+                    else{
+                        $payment_id = $obj->payment_id;
+                        $data['donate_paypal_id'] = $paymentID;
+                        $data['fund_id'] = $orderID;
+                        $obj->update(['status'=>$payment['payment']->getState()]);
+
+                        if(!empty($obj->unit_id)){
+                            $controller = "units";
+                            $donateTo = ' unit ';
+                            $dataObj = Unit::find($obj->unit_id);
+                            $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                        }
+                        if(!empty($obj->task_id)){
+                            $controller = "tasks";
+                            $donateTo = ' task ';
+                            $dataObj = Task::find($obj->task_id);
+                            $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                        }
+                        if(!empty($obj->objective_id)){
+                            $controller = "objectives";
+                            $donateTo = ' objective ';
+                            $dataObj = Objective::find($obj->objective_id);
+                            $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                        }
+                    }
+
                     //insert into site activity table for log.
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
@@ -303,67 +442,64 @@ class FundsController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                                    donate $'.$amount.' to'.$donateTo.' <a href="'.url($controller.'/'
-                                .$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>'
+                                        donate $'.$obj->amount.' to'.$donateTo.' <a href="'.url($controller.'/'
+                                .$hashID->encode($dataObj->id).'/'.$dataObj->slug).'">'.$dataObj->name.'</a>'
                     ]);
-                    $transaction_id = null;
-                    $fund_id = null;
-                    if($type == "user"){
-                        $transaction_id = Transaction::create([
-                            'created_by'=>Auth::user()->id,
-                            'user_id'=>$obj->id,
-                            'amount'=>$amount,
-                            'trans_type'=>'credit',
-                            'comments'=>'$'.$amount.' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name
-                        ])->id;
-                    }
-                    else{
-                        $addFunds['user_id']=Auth::user()->id;
-                        $addFunds['amount']=$amount;
-                        $addFunds['transaction_type']='donated';
-                        $addFunds['fund_type']=$donateTo;
-                        // insert record into funds table to maintain fund availability for unit/objective/task
-                        $fund_id = Fund::create($addFunds)->id;
-                    }
+
                     // store actual paypal transaction details.
-                    PaypalTransaction::create([
-                        'transaction_id'=>$transaction_id,
-                        'fund_id'=>$fund_id,
-                        'donate_paypal_id'=>$response['payment']->id,
-                        'pay_key'=>null
-                    ]);
-
-                    return \Response::json(['success'=>true]);
+                    PaypalTransaction::create($data);
+                    $message="Thank you for your payment.";
+                    $messageType =true;
                 }
-                return \Response::json(['success'=>false,'errors'=>['error'=>$response['error_msg']]]);
-
             }
         }
+        view()->share('payment_id',$payment_id);
+        view()->share('obj',$obj);
+        view()->share('messageType',$messageType);
+        view()->share('message',$message);
+        return view('funds.success');
     }
-    public function get_card_name(Request $request){
-        $allCards = User::getAllCreditCards();
-        $last4= $request->input('last4');
-        $brand='';
-        if(isset($allCards->data) && count($allCards->data) > 0){
-            foreach($allCards->data as $card)
-            {
-                if($card->last4 == $last4)
-                    $brand =  $card->brand;
+
+    public function cancel(Request $request){
+        $paymentID = $request->input('paymentId');
+        $payerID =$request->input('PayerID');
+        $type = $request->input('type');
+        $orderID = $request->input('orderID');
+
+        $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
+        $orderID = $orderIDHashID->decode($orderID);
+
+        $message="Payment cancelled successfully.";
+        $messageType = false;
+        $obj = [];
+        $payment_id = '';
+        if(!empty($orderID)){
+            $orderID  = $orderID[0];
+
+            if($type == "user")
+                $obj = Transaction::find($orderID);
+            else{
+                $obj = Fund::find($orderID);
+            }
+
+            // if user refresh the page then redirect to unit home page.
+            if($obj->status == "approved" || $obj->status == "cancelled" )
+                return redirect('units');
+
+
+            if(!empty($obj) && $obj->status != "approved"){
+                $obj->update(['status'=>'cancelled']);
+                if($type == "user")
+                    $payment_id = $obj->pay_key;
+                else
+                    $payment_id = $obj->payment_id;
             }
         }
-        if($brand =="American Express")
-            return 'amex.png';
-        if($brand == "Discover")
-            return 'discover.png';
-        if($brand == "MasterCard")
-            return 'mastercard.png';
-        if($brand == "Visa")
-            return 'visa.png';
-        if($brand == "Diners Club")
-            return 'dinersclub.png';
-        if($brand == "JCB")
-            return 'jcb.png';
-
+        view()->share('payment_id',$payment_id);
+        view()->share('obj',$obj);
+        view()->share('messageType',$messageType);
+        view()->share('message',$message);
+        return view('funds.cancel');
     }
     public function show()
     {
