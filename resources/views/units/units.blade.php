@@ -1,12 +1,15 @@
 @extends('layout.default')
 @section('content')
     <div class="container">
-        <div class="row form-group">
+        <div class="row form-group" style="margin-bottom:15px;">
             @include('elements.user-menu',['page'=>'units'])
         </div>
         <div class="row form-group">
-            <div class="col-sm-8">
-                <div class="panel panel-default panel-dark-grey">
+            <div class="col-md-4">
+                @include('elements.site_activities')
+            </div>
+            <div class="col-md-8">
+                <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
                         <h4>{!! trans('messages.units') !!}</h4>
                     </div>
@@ -17,7 +20,9 @@
                                     <th>{!! trans('messages.unit_name') !!}</th>
                                     <th>{!! trans('messages.unit_category') !!}</th>
                                     <th>{!! trans('messages.description') !!}</th>
+                                    @if(\Auth::check())
                                     <th></th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,13 +48,12 @@
                                             <td><div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
                                             ($unit->description)!!}"><span
                                                         class="ellipsis_text">{!!trim($unit->description)!!}</span></div></td>
+                                            @if(\Auth::check())
                                             <td width="11%">
-                                                @if(\Auth::check())
-                                                    <a class="btn btn-xs btn-primary"
-                                                       href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/edit') !!}" title="edit">
-                                                        <span class="glyphicon glyphicon-edit"></span>
-                                                    </a>
-                                                @endif
+                                                <a class="btn btn-xs btn-primary"
+                                                   href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/edit') !!}" title="edit">
+                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                </a>
 
                                                 @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unit->user_id ==
                                                 $authUserObj->id))
@@ -59,8 +63,21 @@
                                                 </a>
                                                 @endif
                                             </td>
+                                            @endif
                                         </tr>
                                     @endforeach
+                                    <tr style="background-color: #fff;text-align: right;">
+                                        <td colspan="4">
+                                            <a href="{!! url('units/add')!!}"class="btn black-btn form-group" id="add_unit_btn"
+                                               type="button">
+                                                <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_unit') !!}
+                                            </a>
+                                            <a href="{!! url('units/add')!!}"class="btn more-black-btn form-group" id="add_unit_btn"
+                                               type="button">
+                                                <span class="more_dots">...</span> MORE UNITS
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @else
                                     <tr>
                                         <td colspan="4">No record(s) found.</td>
@@ -70,12 +87,6 @@
                         </table>
                     </div>
                 </div>
-                <a href="{!! url('units/add')!!}"class="btn orange-bg form-group" id="add_unit_btn" type="button">
-                    <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_unit') !!}
-                </a>
-            </div>
-            <div class="col-sm-4">
-                @include('elements.site_activities')
             </div>
         </div>
     </div>

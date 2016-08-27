@@ -121,14 +121,14 @@ class Helpers {
             $day_diff = floor($diff / 86400);
             if($day_diff == 0) {
                 if($diff < 60) return 'just now';
-                if($diff < 120) return '1 minute ago';
-                if($diff < 3600) return floor($diff / 60) . ' minutes ago';
-                if($diff < 7200) return '1 hour ago';
-                if($diff < 86400) return floor($diff / 3600) . ' hours ago';
+                if($diff < 120) return '<div class="time_digit">1</div> <div class="time_text">minute ago</div>';
+                if($diff < 3600) return '<div class="time_digit">'.floor($diff / 60) .'</div> <div class="time_text">minutes ago</div>';
+                if($diff < 7200) return '<div class="time_digit">1</div> <div class="time_text">hour ago</div>';
+                if($diff < 86400) return '<div class="time_digit">'.floor($diff / 3600) . '</div> <div class="time_text">hours ago</div>';
             }
             if($day_diff == 1) { return 'Yesterday'; }
-            if($day_diff < 7) { return $day_diff . ' days ago'; }
-            if($day_diff < 31) { return ceil($day_diff / 7) . ' weeks ago'; }
+            if($day_diff < 7) { return '<div class="time_digit">'.$day_diff .'</div>  <div class="time_text">days ago</div>'; }
+            if($day_diff < 31) { return '<div class="time_digit">'.ceil($day_diff / 7) . '</div>  <div class="time_text">weeks ago</div>'; }
             if($day_diff < 60) { return 'last month'; }
             return date('F Y', $ts);
         }
@@ -137,14 +137,14 @@ class Helpers {
             $day_diff = floor($diff / 86400);
             if($day_diff == 0) {
                 if($diff < 120) { return 'in a minute'; }
-                if($diff < 3600) { return 'in ' . floor($diff / 60) . ' minutes'; }
+                if($diff < 3600) { return '<div class="time_digit">'. floor($diff / 60) . '</div> <div class="time_text">minutes ago</div>'; }
                 if($diff < 7200) { return 'in an hour'; }
-                if($diff < 86400) { return 'in ' . floor($diff / 3600) . ' hours'; }
+                if($diff < 86400) { return '<div class="time_digit">'. floor($diff / 3600) . '</div> <div class="time_text"> hours ago</div>'; }
             }
             if($day_diff == 1) { return 'Tomorrow'; }
             if($day_diff < 4) { return date('l', $ts); }
             if($day_diff < 7 + (7 - date('w'))) { return 'next week'; }
-            if(ceil($day_diff / 7) < 4) { return 'in ' . ceil($day_diff / 7) . ' weeks'; }
+            if(ceil($day_diff / 7) < 4) { return '<div class="time_digit"> ' . ceil($day_diff / 7) . '</div> <div class="time_text">weeks ago</div>'; }
             if(date('n', $ts) == date('n') + 1) { return 'next month'; }
             return date('F Y', $ts);
         }

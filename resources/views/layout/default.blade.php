@@ -96,6 +96,15 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{!! url('assets/plugins/bootbox/bootbox.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/function.js') !!}" type="text/javascript"></script>
+        <script>
+            $(function(){
+                $('.left-button').each(function(index, item) {
+                    $(item).find('.btn').css(
+                        'width', 100 / $(item).find('.btn').length + '%'
+                    )
+                });
+            })
+        </script>
         <!-- END PAGE LEVEL PLUGINS -->
         @yield('page-scripts')
     </body>

@@ -7,161 +7,217 @@
 </style>
 @endsection
 @section('content')
-
 <div class="container">
-    <div class="row">
+    <div class="row form-group" style="margin-bottom:15px">
         @include('elements.user-menu',['page'=>'tasks'])
     </div>
     <div class="row form-group">
-        <div class="col-sm-12">
-            <div class="col-sm-12 grey-bg unit_description">
-                <h2 class="unit-heading"><span class="glyphicon glyphicon-edit"></span> &nbsp; <strong>{{$taskObj->name}}</strong></h2>
-                @if($taskObj->status == "editable")
-                    <div class="form-group">
-                        <a class="btn orange-bg" id="edit_task" href="{!! url('tasks/'.$taskIDHashID->encode($taskObj->id).'/edit')!!}"><span
-                                class="glyphicon glyphicon-pencil"></span> &nbsp;
-                            {!! trans('messages.edit_task') !!}</a>
-                    </div>
-                @endif
-                <div class="panel">
-                    <div class="panel-body">
+        <div class="col-md-4">
+            <div class="panel panel-grey panel-default">
+                <div class="panel-heading">
+                    <h4>UNIT INFORMATION</h4>
+                </div>
+                <div class="panel-body unit-info-panel list-group">
+                    <div class="list-group-item">
                         <div class="row">
                             <div class="col-xs-12">
-                                <strong>Task Information<span class="caret"></span> </strong>
+                                <label class="control-label upper">UNIT NAME</label>
+                                <label class="control-label colorLightGreen form-control label-value">
+                                    {{$taskObj->unit->name}}
+                                </label>
                             </div>
-                            <div class="col-xs-5">Task Name</div>
-                            <div class="col-xs-7 text-right">{{$taskObj->name}}</div>
-                            <div class="col-xs-5">{!! trans('messages.funds') !!}</div>
-                            <div class="col-xs-7 text-right">{!! trans('messages.available') !!}: {{number_format($availableFunds,0)}}$</div>
-                            <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
-                            <div class="col-xs-7 text-right">{{number_format($awardedFunds,0)}}$</div>
-                            @if($taskObj->status != "completed")
-                            <div class="col-xs-12 text-right">
-                                <a class="btn orange-bg btn-sm" id="add_funds_btn" href="{!! url('funds/donate/task/'
-                                            .$taskIDHashID->encode($taskObj->id)) !!}">
-                                    {!! trans('messages.add_funds')!!}
-                                </a>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 unit-info-main-div">
+                                <label class="control-label upper">UNIT LINKS</label>
                             </div>
-                            @endif
+                            <div class="col-xs-8" style="padding-top: 7px;">
+                                <div class="row unit_info_row_1">
+                                    <div class="col-xs-12">
+                                        <ul class="unit_info_link_1" style="">
+                                            <li><a href="#" class="colorLightBlue upper">OBJECTIVES</a></li>
+                                            <li class="mrgrtlt5">|</li>
+                                            <li><a href="#" class="colorLightBlue upper">TASKS</a></li>
+                                            <li class="mrgrtlt5">|</li>
+                                            <li><a href="#" class="colorLightBlue upper">ISSUES</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <ul class="unit_info_link_2">
+                                            <i class="fa fa-quote-right colorLightBlue"></i>
+                                            <li><a href="#" class="colorLightBlue upper">FORUM</a></li>
+                                            <i class="fa fa-comments colorLightBlue"></i>
+                                            <li><a href="#" class="colorLightBlue upper">CHAT</a></li>
+                                            <i class="fa fa-wikipedia-w colorLightBlue"></i>
+                                            <li><a href="#" class="colorLightBlue upper">WIKI</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 borderRT paddingTB7">
+                                <label class="control-label upper">OTHER LINKS</label>
+                            </div>
+                            <div class="col-xs-8 paddingTB7">
+                                <label class="control-label colorLightBlue">LINK1, LINK2</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 borderRT paddingTB7">
+                                <label class="control-label upper">UNIT CATEGORIES</label>
+                            </div>
+                            <div class="col-xs-8 paddingTB7">
+                                <label class="control-label colorLightBlue upper">SOFTWARE</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 borderRT paddingTB7">
+                                <label class="control-label upper">UNIT LOCATION</label>
+                            </div>
+                            <div class="col-xs-8 paddingTB7">
+                                <label class="control-label colorLightBlue upper">{{\App\City::getName($taskObj->unit->city_id)}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 borderRT paddingTB7">
+                                <label class="control-label upper" style="width: 100%;">
+                                    FUND
+                                    <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
+                                </label>
+                            </div>
+                            <div class="col-xs-8 paddingTB7">
+                                <div class="row">
+                                    <div class="col-xs-6">Available</div>
+                                    <div class="col-xs-6 text-right">12456$</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">Awarded</div>
+                                    <div class="col-xs-6 text-right">6563131$</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="left">
+                @include('elements.site_activities')
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                <li class="active"><a href="#task_details" data-toggle="tab">Task Details</a></li>
-                <li><a href="#task_actions" data-toggle="tab">Task Actions</a></li>
-                <li><a href="#objective_details" data-toggle="tab">Objective Details</a></li>
-                <li><a href="#unit_details" data-toggle="tab">Unit Details</a></li>
-                @if(!empty($taskBidders) && ($taskObj->status != "editable" && $taskObj->status != "awaiting_approval"))
-                <li><a href="#task_bidders" data-toggle="tab">Task Bidders</a></li>
-                @endif
-            </ul>
-            <div id="my-tab-content" class="tab-content">
-                <div class="list-group tab-pane active" id="task_details">
-
-                    <div class="list-group-item">
-                        <h4 class="text-orange">{!! strtoupper(trans('messages.task_status')) !!}</h4>
-                        @if(empty($taskObj->assign_to))
-                            <div>Unassigned</div>
-                        @elseif($taskObj->status == "completed" && !empty($taskObj->assign_to))
-                            <div>Completed</div>
-                            <div>Completed On: date 23/05/2016</div>
-                        @else
-                            <div>assigned to
-                                <a href="{!! url('userprofiles/'.$userIDHashID->encode($taskObj->assign_to).'/'
-                                .str_replace(' ','_',strtolower(\App\User::getUserName($taskObj->assign_to))))!!}">
-                                {{\App\User::getUserName($taskObj->assign_to)}}
-                                </a>
+        <div class="col-md-8">
+            <div class="panel panel-grey panel-default">
+                <div class="panel-heading current_task_heading featured_unit_heading">
+                    <div class="featured_unit current_task">
+                        <i class="fa fa-pencil-square-o"></i>
+                    </div>
+                    <h4>TASK INFORMATION</h4>
+                </div>
+                <div style="padding: 0px;" class="panel-body current_unit_body list-group form-group">
+                    <div class="list-group-item" style="padding-top:0px;padding-bottom:0px;">
+                        <div class="row" style="border-bottom:1px solid #ddd;">
+                            <div class="col-sm-7 featured_heading">
+                                <h4 class="colorLightGreen">{{$taskObj->name}}</h4>
                             </div>
-                        @endif
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="text-orange">{!! strtoupper(trans('messages.task_award')) !!}</h4>
-                        <div>xx $</div>
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="text-orange">{!! strtoupper(trans('messages.task_summary')) !!}</h4>
-                        <div>{!! $taskObj->summary !!}</div>
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="text-orange">{!! strtoupper(trans('messages.long_description')) !!}</h4>
-                        <div>{!! $taskObj->description !!}</div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <h4 class="text-orange">Task Documents</h4>
-                                @if(!empty($taskObj->task_documents))
-                                @foreach($taskObj->task_documents as $document)
-                                <?php $extension = pathinfo($document->file_path, PATHINFO_EXTENSION); ?>
-                                @if($extension == "pdf") <?php $extension="pdf"; ?>
-                                @elseif($extension == "doc" || $extension == "docx") <?php $extension="docx"; ?>
-                                @elseif($extension == "jpg" || $extension == "jpeg") <?php $extension="jpeg"; ?>
-                                @elseif($extension == "ppt" || $extension == "pptx") <?php $extension="pptx"; ?>
-                                @else <?php $extension="file"; ?> @endif
-                                <div class="file_documents">
-                                <a class="files_image" href="{!! url($document->file_path) !!}" target="_blank">
-                                    <img src="{!! url('assets/images/file_types/'.$extension.'.png') !!}" style="height:50px;">
-                                    <span style="display:block">
-                                        @if(empty($document->file_name))
-                                            &nbsp;
-                                        @else
-                                            {{$document->file_name}}
-                                        @endif
-                                    </span>
-                                </a>
+                            <div class="col-sm-5 featured_heading text-right colorLightBlue">
+                                <div class="row">
+                                    <div class="col-xs-3 text-center">
+                                        <i class="fa fa-eye" style="margin-right:2px"></i><i class="fa fa-plus"></i>
+                                    </div>
+                                    <div class="col-xs-2 text-center">
+                                        <i class="fa fa-pencil"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center">
+                                        <i class="fa fa-history"></i> REVISION HISTORY
+                                    </div>
                                 </div>
-                                @endforeach
-                                @endif
                             </div>
                         </div>
 
-                    </div>
-                </div>
-                <div class="list-group tab-pane" id="task_actions">
-                    <div class="list-group-item">
                         <div class="row">
-                            <div class="col-sm-12">
-                                <h4 class="text-orange">TASK ACTIONS</h4>
-                                <div>{!! $taskObj->task_action !!}</div>
+                            <div class="col-xs-7 featured_heading" style="min-height: 170px">
+                                {!! $taskObj->description !!}
+                            </div>
+                            <div class="col-xs-5 featured_heading text-right colorLightBlue" style="margin-top:0px;padding-top:0px;">
+                                <div class="row borderBTM lnht30">
+                                    <div class="col-xs-4 text-left">
+                                        <label class="control-label upper">Status</label>
+                                    </div>
+                                    <div class="col-xs-8 borderLFT text-left">
+                                        <label class="control-label colorLightGreen">{{\App\SiteConfigs::task_status($taskObj->status)}}</label>
+                                    </div>
+                                </div>
+                                <div class="row borderBTM lnht30">
+                                    <div class="col-xs-4 text-left">
+                                        <label class="control-label upper">skills</label>
+                                    </div>
+                                    <div class="col-xs-8 borderLFT text-left">
+                                        <label class="control-label form-control text-label-value">SKILL1</label>
+                                        <label class="control-label form-control text-label-value">SKILL2</label>
+                                    </div>
+                                </div>
+                                <div class="row borderBTM lnht30">
+                                    <div class="col-xs-4 text-left">
+                                        <label class="control-label upper">Award</label>
+                                    </div>
+                                    <div class="col-xs-8 borderLFT text-left">
+                                        <label class="control-label">$60</label>
+                                    </div>
+                                </div>
+                                <div class="row borderBTM lnht30">
+                                    <div class="col-xs-4 text-left">
+                                        <label class="control-label upper">Completion</label>
+                                    </div>
+                                    <div class="col-xs-8 borderLFT text-left">
+                                        <label class="control-label">30 days</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="list-group tab-pane" id="objective_details">
-                    <div class="list-group-item">
-                        <h4 class="text-orange">{!! strtoupper(trans('messages.objective')) !!}</h4>
-                        <div>{{$taskObj->objective->name}}</div>
+                <!--<div class="row">
+                    <div class="col-sm-6">
+                        <div class="panel panel-grey panel-default">
+                            <div class="panel-heading current_task_heading featured_unit_heading">
+                                <div class="featured_unit current_task">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </div>
+                                <h4>ACTION ITEMS</h4>
+                            </div>
+                            <div class="panel-body list-group">
+                            </div>
+                        </div>
                     </div>
-                    <div class="list-group-item">
-                        <h4 class="text-orange">OBJECTIVE DESCRIPTION</h4>
-                        {!! $taskObj->objective->description !!}
+                    <div class="col-sm-6">
+                        <div class="panel panel-grey panel-default">
+                            <div class="panel-heading current_task_heading featured_unit_heading">
+                                <div class="featured_unit current_task">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </div>
+                                <h4>FILE ATTACHMENTS</h4>
+                            </div>
+                            <div class="panel-body list-group">
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="list-group tab-pane" id="unit_details">
-                    <div class="list-group-item">
-                        <h4 class="text-orange">UNIT</h4>
-                        <div>{{$taskObj->unit->name}}</div>
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="text-orange">CATEGORY</h4>
-                        {!! $taskObj->unit->category_name !!}
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="text-orange">DESCRIPTION</h4>
-                        {!! $taskObj->unit->description !!}
-                    </div>
-                </div>
-                @include('tasks.partials.task_bidders_list',['taskBidders'=>$taskBidders,'taskObj'=>$taskObj])
+                </div>-->
+
             </div>
         </div>
     </div>
 </div>
-
 @include('elements.footer')
 @endsection
 @section('page-scripts')

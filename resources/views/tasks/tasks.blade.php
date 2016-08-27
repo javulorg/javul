@@ -1,12 +1,15 @@
 @extends('layout.default')
 @section('content')
 <div class="container">
-    <div class="row form-group">
+    <div class="row form-group" style="margin-bottom: 15px;">
         @include('elements.user-menu',['page'=>'tasks'])
     </div>
     <div class="row form-group">
+        <div class="col-sm-4">
+            @include('elements.site_activities')
+        </div>
         <div class="col-sm-8">
-            <div class="panel panel-default panel-dark-grey">
+            <div class="panel panel-default panel-grey">
                 <div class="panel-heading">
                     <h4>Tasks</h4>
                 </div>
@@ -33,16 +36,23 @@
                             <td colspan="7">No record(s) found.</td>
                         </tr>
                         @endif
+                        <tr style="background-color: #fff;text-align: right;">
+                            <td colspan="7" >
+                                <a href="{!! url('tasks/add')!!}"class="btn black-btn form-group" id="add_task_btn" type="button">
+                                    <span class="glyphicon glyphicon-plus"></span> Add Task
+                                </a>
+
+                                <a href="{!! url('tasks/add')!!}"class="btn more-black-btn form-group" id="add_unit_btn"
+                                   type="button">
+                                    <span class="more_dots">...</span> MORE TASKS
+                                </a>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <a href="{!! url('tasks/add')!!}"class="btn orange-bg form-group" id="add_task_btn" type="button">            
-                <span class="glyphicon glyphicon-plus"></span> Add Task
-            </a>
-        </div>
-        <div class="col-sm-4">
-            @include('elements.site_activities')
+
         </div>
     </div>
 </div>

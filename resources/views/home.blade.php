@@ -1,37 +1,85 @@
 @extends('layout.default')
 @section('content')
-
     <div class="container">
-        <div class="row form-group">
+        <div class="row form-group" style="margin-bottom:15px">
             @include('elements.user-menu',array('page'=>'home'))
         </div>
-        <!--<div class="row form-group">
-            <div class="col-sm-12">
-                <h2><strong>Objective: Change the World</strong></h2>
-                <div>Explore projects, everywhere</div>
-            </div>
-        </div>-->
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-md-4 left">
+                @include('elements.site_activities')
+            </div>
+            <div class="col-md-8 right">
                 <div class="row form-group">
                     <div class="col-sm-12">
-                        <div class="panel panel-dark-grey panel-default">
+                        <div class="panel panel-grey panel-default">
+                            <div class="panel-heading featured_unit_heading">
+                                <div class="featured_unit">
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <h4>FEATURED UNIT</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-8 featured_heading">
+                                        <h4 class="colorLightGreen">Information Technology</h4>
+                                    </div>
+                                    <div class="col-sm-4 featured_heading text-right colorLightBlue">
+                                        <i class="fa fa-home"></i> UNIT HOME PAGE
+                                    </div>
+                                </div>
+                                <hr style="margin-top: 0px;">
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                            </div>
+                        </div>
+                        @if(count($recentUnits) > 5)
+                        <!--<a class="btn orange-bg" href="{!! url('') !!}">{!! Lang::get('messages.all_units') !!}</a>-->
+                        @endif
+                        <!--<a class="btn orange-bg" href="{!! url('units/create') !!}">{!! Lang::get('messages.create_units') !!}</a>-->
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-12">
+                        <div class="panel panel-grey panel-default">
                             <div class="panel-heading">
-                                <h4>{!! Lang::get('messages.recent_units') !!}</h4>
+                                <h4>MOST ACTIVE UNITS</h4>
                             </div>
                             <div class="panel-body list-group">
-                                @if(count($recentUnits) > 0)
-                                    @foreach($recentUnits as $unit)
-                                        <a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}" class="list-group-item"><span
-                                                class="glyphicon glyphicon-dot"></span>
-                                            {{$unit->name}}
-                                        </a>
-                                    @endforeach
-                                @else
-                                <div class="list-group-item">
-                                    No Unit found.
-                                </div>
-                                @endif
+                                <table class="table table-striped">
+                                    <thead>
+                                        <th>Name</th>
+                                        <th>Categories</th>
+                                        <th>Location</th>
+                                    </thead>
+                                    <tbody>
+                                    @if(count($recentUnits) > 0)
+                                        @foreach($recentUnits as $unit)
+                                            <?php $categories = \App\Unit::getCategoryNames($unit->category_id); ?>
+                                            <tr>
+                                                <td width="70%">
+                                                    <a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}"
+                                                       class="colorLightBlue" >
+                                                        {{$unit->name}}
+                                                    </a>
+                                                </td>
+                                                <td width="15%">
+                                                    <a href="#">{{$categories}}</a>
+                                                </td>
+                                                <td>
+                                                    @if(empty($unit->city_id) && $unit->country_id == 247)
+                                                    GLOBAL
+                                                    @else
+                                                    {{\App\City::getName($unit->city_id)}}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="3">No unit found.</td>
+                                        </tr>
+                                    @endif
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                         @if(count($recentUnits) > 5)
@@ -42,82 +90,78 @@
                 </div>
                 <div class="row form-group">
                     <div class="col-sm-12">
-                        <div class="panel panel-dark-grey panel-default">
+                        <div class="panel panel-grey panel-default">
                             <div class="panel-heading">
-                                <h4>{!! Lang::get('messages.recent_objective') !!}</h4>
+                                <h4>RECENTLY CREATED UNITS</h4>
                             </div>
                             <div class="panel-body list-group">
-                                @if(count($recentObjectives) > 0)
-                                    @foreach($recentObjectives as $objective)
-                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/'.$objective->slug) !!}"
-                                           class="list-group-item"><span class="glyphicon glyphicon-dot"></span>
-                                            {{$objective->name}}
-                                        </a>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <th>Name</th>
+                                    <th>Categories</th>
+                                    <th>Location</th>
+                                    </thead>
+                                    <tbody>
+                                    @if(count($recentUnits) > 0)
+                                    @foreach($recentUnits as $unit)
+                                    <?php $categories = \App\Unit::getCategoryNames($unit->category_id); ?>
+                                    <tr>
+                                        <td width="70%">
+                                            <a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}"
+                                               class="colorLightBlue" >
+                                                {{$unit->name}}
+                                            </a>
+                                        </td>
+                                        <td width="15%">
+                                            <a href="#">{{$categories}}</a>
+                                        </td>
+                                        <td>
+                                            @if(empty($unit->city_id) && $unit->country_id == 247)
+                                                GLOBAL
+                                            @else
+                                                {{\App\City::getName($unit->city_id)}}
+                                            @endif
+                                        </td>
+                                    </tr>
                                     @endforeach
-                                @else
-                                    <div class="list-group-item">
-                                        No objective found.
-                                    </div>
-                                @endif
+                                    @else
+                                    <tr>
+                                        <td colspan="3">No unit found.</td>
+                                    </tr>
+                                    @endif
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        @if(count($recentObjectives) > 5)
-                            <!--<button class="btn orange-bg">{!! Lang::get('messages.all_objectives') !!}</button>-->
+                        @if(count($recentUnits) > 5)
+                        <!--<a class="btn orange-bg" href="{!! url('') !!}">{!! Lang::get('messages.all_units') !!}</a>-->
                         @endif
-                        <!--<button class="btn orange-bg">{!! Lang::get('messages.create_objectives') !!}</button>-->
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-sm-12">
-                        <div class="panel panel-dark-grey panel-default">
-                            <div class="panel-heading">
-                                <h4>{!! Lang::get('messages.recent_tasks') !!}</h4>
-                            </div>
-                            <div class="panel-body list-group">
-                                @if(count($recentTasks) > 0)
-                                    @foreach($recentTasks as $task)
-                                        <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/'.$task->slug) !!}" class="list-group-item">
-                                            <span class="glyphicon glyphicon-dot"></span>
-                                            {{$task->name}}
-                                        </a>
-                                    @endforeach
-                                @else
-                                    <div class="list-group-item">
-                                        No task found.
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                        @if(count($recentTasks) > 5)
-                            <!--<button class="btn orange-bg">{!! Lang::get('messages.all_tasks') !!}</button>-->
-                        @endif
-                        <!--<button class="btn orange-bg">{!! Lang::get('messages.create_tasks') !!}</button>-->
+                        <!--<a class="btn orange-bg" href="{!! url('units/create') !!}">{!! Lang::get('messages.create_units') !!}</a>-->
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="panel panel-dark-grey panel-default">
-                    <div class="panel-heading">
-                        <h4>{!! Lang::get('messages.most_recent_users') !!}</h4>
-                    </div>
-                    <div class="panel-body list-group">
-                        @if(count($recentUsers) > 0 )
-                            @foreach($recentUsers as $user)
-                                <a href="{!! url('userprofiles/'.$userIDHashID->encode($user->id)) !!}" class="list-group-item">
-                                    <span class="glyphicon glyphicon-user"></span>
-                                    {{$user->first_name.' '.$user->last_name}}
-                                </a>
-                            @endforeach
-                        @else
-                            <div class="list-group-item">
-                                No user found.
-                            </div>
-                        @endif
-                    </div>
-                </div>
-                @include('elements.site_activities')
-            </div>
+
         </div>
     </div>
     @include('elements.footer')
+@endsection
+@section('page-scripts')
+<script type="text/javascript">
+    window.onresize = function(event) {
+        var $iW = $(window).innerWidth();
+        if ($iW < 992){
+            $('.right').insertBefore('.left');
+        }else{
+            $('.right').insertAfter('.left');
+        }
+    }
+    $(function(){
+        var $iW = $(window).innerWidth();
+        if ($iW < 992){
+            $('.right').insertBefore('.left');
+        }else{
+            $('.right').insertAfter('.left');
+        }
+    })
+</script>
 @endsection

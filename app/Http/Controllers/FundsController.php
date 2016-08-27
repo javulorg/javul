@@ -190,8 +190,8 @@ class FundsController extends Controller
 
             $url = URL::previous();
             $url =explode("/",$url );
-            $type = $url[6]; // for local 6. for live 5
-            $id = $url[7]; // for localhost 7. for live 6
+            $type = $url[5]; // for local 6. for live 5
+            $id = $url[6]; // for localhost 7. for live 6
             $exists = false;
             $obj = [];
             $donateTo = '';
@@ -355,12 +355,10 @@ class FundsController extends Controller
         $payment_id = '';
         if(!empty($orderID)){
             $orderID  = $orderID[0];
-
             if($type == "user")
                 $obj = Transaction::find($orderID);
-            else{
+            else
                 $obj = Fund::find($orderID);
-            }
 
             // if user refresh the page then redirect to unit home page.
             if($obj->status == "approved")
@@ -451,6 +449,8 @@ class FundsController extends Controller
                     $message="Thank you for your payment.";
                     $messageType =true;
                 }
+                else
+                    $obj->update(['status'=>'cancelled']);
             }
         }
         view()->share('payment_id',$payment_id);

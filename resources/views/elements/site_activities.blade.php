@@ -1,14 +1,24 @@
-<div class="panel panel-dark-grey panel-default">
+<div class="panel panel-grey panel-default">
     <div class="panel-heading">
         <h4>{!! Lang::get('messages.activity_log') !!}</h4>
     </div>
     <div class="panel-body list-group">
         @if(count($site_activity) > 0)
             @foreach($site_activity as $activity)
-                <div class="list-group-item">
-                    <span class="glyphicon glyphicon-ok"></span>
-                    {!! $activity->comment !!}
-                    <span class="smallText">&nbsp;({{\App\Library\Helpers::timetostr($activity->created_at)}})</span>
+                <div class="list-group-item" style="padding: 0px;">
+                    <div class="row" style="padding: 7px 15px">
+                        <div class="col-xs-3">
+                            {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
+                        </div>
+                        <div class="col-xs-2 text-center round_ line">
+                            <div class="circle activity-refresh" style="width: 30px;">
+                                <i class="fa fa-refresh"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-7">
+                            {!! $activity->comment !!}
+                        </div>
+                    </div>
                 </div>
             @endforeach
         @else
@@ -16,45 +26,5 @@
                 No activity found.
             </div>
         @endif
-        <!--<a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Objective 1 Created by User 3
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Objective 3 edited by User 4
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Task 1 edited(Objective 1)
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Task 2 created(Objective 1)
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Task 3 assigned to User 1 (Objective 1)
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Objective 1 Created by User 3
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Objective 3 edited by User 4
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Task 1 edited(Objective 1)
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Task 2 created(Objective 1)
-        </a>
-        <a href="#" class="list-group-item">
-            <span class="glyphicon glyphicon-ok"></span>
-            Objective 3 edited by User 4
-        </a>-->
     </div>
 </div>

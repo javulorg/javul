@@ -21,7 +21,8 @@ class Fund extends Model
      */
     public static function getUnitDonatedFund($unit_id=''){
         if(!empty($unit_id)){
-            return self::where('unit_id','=',$unit_id)->where('transaction_type','=','donated')->sum('amount');
+            return self::where('unit_id','=',$unit_id)->where('transaction_type','=','donated')->where('status',
+                'approved')->sum('amount');
         }
         return 0;
     }
@@ -33,7 +34,8 @@ class Fund extends Model
      */
     public static function getObjectiveDonatedFund($objective_id=''){
         if(!empty($objective_id)){
-            return self::where('objective_id','=',$objective_id)->where('transaction_type','=','donated')->sum('amount');
+            return self::where('objective_id','=',$objective_id)->where('transaction_type','=','donated')->where('status',
+                'approved')->sum('amount');
         }
         return 0;
     }
@@ -46,7 +48,8 @@ class Fund extends Model
 
     public static function getTaskDonatedFund($task_id=''){
         if(!empty($task_id)){
-            return self::where('task_id','=',$task_id)->where('transaction_type','=','donated')->sum('amount');
+            return self::where('task_id','=',$task_id)->where('transaction_type','=','donated')->where('status',
+                'approved')->sum('amount');
         }
         return 0;
     }
@@ -58,7 +61,8 @@ class Fund extends Model
      */
     public static function getUnitAwardedFund($unit_id=''){
         if(!empty($unit_id)){
-            return self::where('unit_id','=',$unit_id)->where('transaction_type','=','awarded')->sum('amount');
+            return self::where('unit_id','=',$unit_id)->where('transaction_type','=','awarded')->where('status',
+                'approved')->sum('amount');
         }
         return 0;
     }
@@ -70,7 +74,8 @@ class Fund extends Model
      */
     public static function getObjectiveAwardedFund($objective_id=''){
         if(!empty($objective_id)){
-            return self::where('objective_id','=',$objective_id)->where('transaction_type','=','awarded')->sum('amount');
+            return self::where('objective_id','=',$objective_id)->where('transaction_type','=','awarded')->where('status',
+                'approved')->sum('amount');
         }
         return 0;
     }
@@ -83,7 +88,8 @@ class Fund extends Model
 
     public static function getTaskAwardedFund($task_id=''){
         if(!empty($task_id)){
-            return self::where('task_id','=',$task_id)->where('transaction_type','=','awarded')->sum('amount');
+            return self::where('task_id','=',$task_id)->where('transaction_type','=','awarded')->where('status',
+                'approved')->sum('amount');
         }
         return 0;
     }

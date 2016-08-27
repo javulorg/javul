@@ -5,84 +5,185 @@
 @section('content')
 
 <div class="container">
-    <div class="row">
+    <div class="row form-group" style="margin-bottom:15px">
         @include('elements.user-menu',['page'=>'objectives'])
     </div>
     <div class="row form-group">
-        <div class="col-sm-12">
-            <div class="grey-bg both-div" style="min-height: 250px;">
-                <div class="col-md-6 unit_description objective-desc">
-                    <h1 class="unit-heading"><span class="glyphicon glyphicon-list-alt"></span> {{$objectiveObj->name}}</h1>
-                    <div class="form-group">
-                        {!! $objectiveObj->description !!}
-                    </div>
-                    <div>
-                        <a class="btn orange-bg" id="edit_object" href="{!! url('objectives/'.$objectiveIDHashID->encode
-                        ($objectiveObj->id).'/edit')!!}">
-                            <span class="glyphicon glyphicon-pencil"></span> &nbsp;
-                            {!! trans('messages.edit_objective') !!}
-                        </a>
-                        <div class="pull-right">
-                            <div class="importance-div">
-                                @include('objectives.partials.importance_level',['objective_id'=>$objectiveObj->id])
+        <div class="col-md-4">
+            <div class="panel panel-grey panel-default">
+                <div class="panel-heading">
+                    <h4>UNIT INFORMATION</h4>
+                </div>
+                <div class="panel-body unit-info-panel list-group">
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <label class="control-label upper">UNIT NAME</label>
+                                <label class="control-label colorLightGreen form-control label-value">
+                                    {{$objectiveObj->unit->name}}
+                                </label>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 unit_description">
-                    <div class="row">
-                        <div class="col-sm-5">
-                            <div class="panel form-group marginTop10">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <strong>Objective's Funds</strong>
-                                        </div>
-                                        <div class="col-xs-6">{!! trans('messages.available') !!}</div>
-                                        <div class="col-xs-6 text-right">{{number_format($availableObjFunds,0)}}$</div>
-                                        <div class="col-xs-6">{!! trans('messages.awarded') !!}</div>
-                                        <div class="col-xs-6 text-right">{{number_format($awardedObjFunds,0)}}$</div>
-                                        <div class="col-xs-12 text-right">
-                                            <a class="btn orange-bg btn-sm" id="add_funds_btn" href="{!! url('funds/donate/objective/'
-                                            .$objectiveIDHashID->encode($objectiveObj->id)) !!}">
-                                                {!! trans('messages.add_funds')!!}
-                                            </a>
-                                        </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 unit-info-main-div">
+                                <label class="control-label upper">UNIT LINKS</label>
+                            </div>
+                            <div class="col-xs-8" style="padding-top: 7px;">
+                                <div class="row unit_info_row_1">
+                                    <div class="col-xs-12">
+                                        <ul class="unit_info_link_1" style="">
+                                            <li><a href="#" class="colorLightBlue upper">OBJECTIVES</a></li>
+                                            <li class="mrgrtlt5">|</li>
+                                            <li><a href="#" class="colorLightBlue upper">TASKS</a></li>
+                                            <li class="mrgrtlt5">|</li>
+                                            <li><a href="#" class="colorLightBlue upper">ISSUES</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <ul class="unit_info_link_2">
+                                            <i class="fa fa-quote-right colorLightBlue"></i>
+                                            <li><a href="#" class="colorLightBlue upper">FORUM</a></li>
+                                            <i class="fa fa-comments colorLightBlue"></i>
+                                            <li><a href="#" class="colorLightBlue upper">CHAT</a></li>
+                                            <i class="fa fa-wikipedia-w colorLightBlue"></i>
+                                            <li><a href="#" class="colorLightBlue upper">WIKI</a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-7">
-                            <div class="panel form-group marginTop10">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <strong>{!! trans('messages.unit_information') !!}</strong>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 borderRT paddingTB7">
+                                <label class="control-label upper">OTHER LINKS</label>
+                            </div>
+                            <div class="col-xs-8 paddingTB7">
+                                <label class="control-label colorLightBlue">LINK1, LINK2</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 borderRT paddingTB7">
+                                <label class="control-label upper">UNIT CATEGORIES</label>
+                            </div>
+                            <div class="col-xs-8 paddingTB7">
+                                <label class="control-label colorLightBlue upper">SOFTWARE</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 borderRT paddingTB7">
+                                <label class="control-label upper">UNIT LOCATION</label>
+                            </div>
+                            <div class="col-xs-8 paddingTB7">
+                                <label class="control-label colorLightBlue upper">{{\App\City::getName($taskObj->unit->city_id)}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-4 borderRT paddingTB7">
+                                <label class="control-label upper" style="width: 100%;">
+                                    FUND
+                                    <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
+                                </label>
+                            </div>
+                            <div class="col-xs-8 paddingTB7">
+                                <div class="row">
+                                    <div class="col-xs-6">Available</div>
+                                    <div class="col-xs-6 text-right">12456$</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">Awarded</div>
+                                    <div class="col-xs-6 text-right">6563131$</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="left">
+                @include('elements.site_activities')
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-grey panel-default">
+                <div class="panel-heading current_objective_heading featured_unit_heading">
+                    <div class="featured_unit current_objective">
+                        <i class="fa fa-bullseye"></i>
+                    </div>
+                    <h4>OBJECTIVE INFORMATION</h4>
+                </div>
+                <div style="padding: 0px;" class="panel-body current_unit_body list-group">
+                    <div class="list-group-item" style="padding-top:0px;padding-bottom:0px;">
+                        <div class="row" style="border-bottom:1px solid #ddd;">
+                            <div class="col-sm-7 featured_heading">
+                                <h4 class="colorLightGreen">{{$objectiveObj->name}}</h4>
+                            </div>
+                            <div class="col-sm-5 featured_heading text-right colorLightBlue">
+                                <div class="row">
+                                    <div class="col-xs-3 text-center">
+                                        <i class="fa fa-eye" style="margin-right:2px"></i><i class="fa fa-plus"></i>
+                                    </div>
+                                    <div class="col-xs-2 text-center">
+                                        <i class="fa fa-pencil"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center">
+                                        <i class="fa fa-history"></i> REVISION HISTORY
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-7 featured_heading" style="min-height: 150px">
+                                {!! $objectiveObj->description !!}
+                            </div>
+                            <div class="col-xs-5 featured_heading text-right colorLightBlue obj_info_div">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label class="control-label upper" style="width: 100%;">
+                                            <span class="fund_icon">FUND</span>
+                                            <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-8 text-left borderLFT pdngtop10">
+                                        <div>
+                                            <label class="control-label">
+                                                Available
+                                            </label>
+                                            <label class="control-label colorLightBlue label-value pull-right">12331 $</label>
                                         </div>
-                                        <div class="col-xs-5">{!! trans('messages.unit_name') !!}</div>
-                                        <div class="col-xs-7 text-right">
-                                            <?php $unitSlug = \App\Unit::getSlug($objectiveObj->unit_id); ?>
-                                            <a href="{!! url('units/'.$unitIDHashID->encode($objectiveObj->unit_id).'/'.$unitSlug) !!}">
-                                                {{\App\Unit::getUnitName($objectiveObj->unit_id)}}
-                                            </a>
+                                        <div>
+                                            <label class="control-label">
+                                                Available
+                                            </label>
+                                            <label class="control-label colorLightBlue label-value pull-right">12331 $</label>
                                         </div>
-                                        <div class="col-xs-5">{!! trans('messages.type') !!}</div>
-                                        <div class="col-xs-7 text-right">
-                                            @if(!empty($objectiveObj->unit))
-                                                {{\App\Unit::getCategoryNames($objectiveObj->unit->category_id)}}
-                                            @else
-                                                -
-                                            @endif
-                                        </div>
-                                        <div class="col-xs-5">{!! trans('messages.funds') !!}</div>
-                                        <div class="col-xs-7 text-right">Available {{number_format($availableUnitFunds,0)}}$</div>
-                                        <div class="col-xs-5">{!! trans('messages.awarded') !!}</div>
-                                        <div class="col-xs-7 text-right">{{number_format($awardedUnitFunds,0)}}$</div>
-                                        <div class="col-xs-12 text-right">
-                                            <a class="btn orange-bg btn-sm" id="add_funds_btn" href="{!! url('funds/donate/unit/'
-                                            .$unitIDHashID->encode($objectiveObj->unit_id)) !!}">
-                                                {!! trans('messages.add_funds')!!}
-                                            </a>
+                                    </div>
+                                </div>
+                                <div class="row borderBTM lnht30">
+                                    <div class="col-xs-4 text-left">
+                                        <label class="control-label upper">Status</label>
+                                    </div>
+                                    <div class="col-xs-8 borderLFT text-left">
+                                        <label class="control-label">In Progress</label>
+                                    </div>
+                                </div>
+                                <div class="row borderBTM lnht30">
+                                    <div class="col-xs-4 text-left">
+                                        <label class="control-label upper">SUPPORT</label>
+                                    </div>
+                                    <div class="col-xs-8 borderLFT">
+                                        <div class="importance-div">
+                                            @include('objectives.partials.importance_level',['objective_id'=>$objectiveObj->id])
                                         </div>
                                     </div>
                                 </div>
@@ -91,115 +192,90 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    @if( !empty($objectiveObj->parent_id))
-    <div class="row form-group">
-        <div class="col-sm-12">
-            <div class="panel panel-default panel-dark-grey">
+
+            <div class="panel panel-grey panel-default">
                 <div class="panel-heading">
-                    <h4>Relations to Other Objective</h4>
+                    <h4>TASKS</h4>
                 </div>
-                <div class="panel-body relationULPanel">
-                    <ul class="relationUL">
-                        <li>Parent:
-                            <?php $objSlug = \App\Objective::getSlug($objectiveObj->parent_id); ?>
-                            <a class="no-decoration" href="{!! url('objectives/'.$objectiveIDHashID->encode($objectiveObj->parent_id).'/'.$objSlug ) !!}">
-                                <span class="label label-default">{{\App\Objective::getObjectiveName($objectiveObj->parent_id)}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-    <div class="row form-group">
-        <div class="col-sm-12">
-            <div class="panel panel-default panel-dark-grey">
-                <div class="panel-heading">
-                    <h4>Tasks</h4>
-                </div>
-                <div class="panel-body table-inner table-responsive">
+                <div class="panel-body list-group">
                     <table class="table table-striped">
                         <thead>
                         <tr>
                             <th>Task Name</th>
-                            <!--<th>Objective Name</th>-->
-                            <th>Unit Name</th>
-                            <th>Skills</th>
-                            <th>Assigned to</th>
                             <th>Status</th>
+                            <th><i class="fa fa-trophy"></i></th>
+                            <th><i class="fa fa-clock-o"></i></th>
+                            @if(\Auth::check())
                             <th></th>
+                            @endif
                         </tr>
                         </thead>
                         <tbody>
-                        @if(count($objectiveObj->tasks) > 0 )
-                            @foreach($objectiveObj->tasks as $task)
-                                <tr>
-                                    <td><a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/'.$task->slug) !!}">
-                                            {{$task->name}}
-                                        </a>
-                                    </td>
-                                   <!-- <td>
-                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id)) !!}">
-                                            {{\App\Objective::getObjectiveName($task->objective_id)}}
-                                        </a>
-                                    </td>-->
-                                    <td>
-                                        <?php $unitSlug = \App\Unit::getSlug($task->unit_id);?>
-                                        <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id).'/'.$unitSlug) !!}">
-                                            {{\App\Unit::getUnitName($task->unit_id)}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {!! \App\JobSkill::getSkillNameLink($task->skills) !!}
-                                    </td>
-                                    <td>
-                                        @if($task->status == "assigned" || $task->status == "in_progress" || $task->status == "completion_evaluation")
-                                        <?php $username = \App\User::getUserName($task->assign_to);
-                                                $slug = str_replace(" ","_",strtolower($username));?>
-                                        <a title="bid now" href="{!! url('userprofiles/'.$userIDHashID->encode($task->assign_to).'/'.$slug) !!}">
-                                            {{$username}}
-                                        </a>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                    <td>{{\App\SiteConfigs::task_status($task->status)}}</td>
-                                    <td>
-                                        @if($task->status=="editable")
-                                            <a class="btn btn-xs btn-primary"
-                                               href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}" title="edit">
-                                                <span class="glyphicon glyphicon-edit"></span>
-                                            </a>
-                                        @elseif($task->status =="approval")
-                                            <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)) !!}" class="btn btn-xs
-                                             btn-primary">Bid now
-                                            </a>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
+                        @if(count($objectiveObj->tasks) > 0)
+                        @foreach($objectiveObj->tasks as $obj)
+                        <tr>
+                            <td>
+                                <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
+                                   title="edit">
+                                    {{$obj->name}}
+                                </a>
+                            </td>
+                            <td>{{\App\Task::getTaskCount('available',$obj->id)}}</td>
+                            <td>{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
+                            <td>{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
+                            @if(\Auth::check())
+                            <td>
+                                <a class="btn btn-xs btn-primary"
+                                   href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/edit') !!}" title="edit">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                            </td>
+                            @endif
+                        </tr>
+                        @endforeach
                         @else
-                            <tr>
-                                <td colspan="7">No record(s) found.</td>
-                            </tr>
+                        <tr>
+                            <td colspan="5">No record(s) found.</td>
+                        </tr>
                         @endif
                         </tbody>
                     </table>
                 </div>
             </div>
-            <a href="{!! url('tasks/'.$unitIDHashID->encode($objectiveObj->unit_id).'/'.$objectiveIDHashID->encode($objectiveObj->id).'/add')!!}"
-               class="btn orange-bg" id="add_task_btn"
-               type="button">
-                <span class="glyphicon glyphicon-plus"></span> Add Task
-            </a>
-        </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-sm-6 col-xs-12">
-            @include('elements.site_activities')
+
+
+            <div class="panel panel-grey panel-default">
+                <div class="panel-heading">
+                    <h4>RELATION TO OTHER OBJECTIVES</h4>
+                </div>
+                <div class="panel-body list-group">
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="control-label">
+                                    Parent Objective
+                                </label>
+                                <label class="control-label colorLightBlue form-control label-value">
+                                    <?php $objSlug = \App\Objective::getSlug($objectiveObj->parent_id); ?>
+                                    <a style="font-weight: normal;" class="no-decoration" href="{!! url('objectives/'
+                                    .$objectiveIDHashID->encode
+                                    ($objectiveObj->parent_id).'/'.$objSlug ) !!}">
+                                        {{\App\Objective::getObjectiveName($objectiveObj->parent_id)}}
+                                    </a>
+                                </label>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="control-label">
+                                    Child Objective
+                                </label>
+                                <label class="control-label colorLightGreen form-control label-value">
+                                    -
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

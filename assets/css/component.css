@@ -5806,7 +5806,7 @@ body[ng-controller] .modal {
 .dashboard-stat, .portlet {
 }
 .panel {
-    box-shadow: none !important;
+    *box-shadow: none !important;
 }
 .panel-group .panel {
     overflow: visible;
