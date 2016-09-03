@@ -37,6 +37,9 @@ class Unit extends Model
         return $this->belongsTo('App\UnitCategory');
     }
 
+    public function watchlist(){
+        return $this->belongsTo('App\Watchlist');
+    }
     /**
      * Get Objectives of Unit..
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

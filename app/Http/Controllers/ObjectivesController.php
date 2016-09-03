@@ -19,6 +19,7 @@ class ObjectivesController extends Controller
 {
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view']]);
+        view()->share('site_activity_text','Unit Site Activity');
     }
 
     /**
@@ -49,6 +50,10 @@ class ObjectivesController extends Controller
                                 ->select(['objectives.*','units.name as unit_name','users.first_name','users.last_name',
                 'users.id as user_id'])->get();
         view()->share('objectives',$objectives );
+
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','Site Activity');
         return view('objectives.objectives');
     }
 
@@ -153,6 +158,8 @@ class ObjectivesController extends Controller
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
+                'unit_id'=>$unitID,
+                'objective_id'=>$objectiveId,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                     .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         created objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name').'</a>'
@@ -254,6 +261,8 @@ class ObjectivesController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$unitID,
+                        'objective_id'=>$objective_id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a>
@@ -304,7 +313,8 @@ class ObjectivesController extends Controller
                 $objective_id = $objective_id[0];
                 $obj = Objective::checkObjectiveExist($objective_id,false);
                 if($obj){
-                    $objectiveObj = Objective::with(['unit','tasks'])->where('id',$objective_id)->first();
+                    $objectiveObj = Objective::with(['tasks'])->where('id',$objective_id)->first();
+                    $objectiveObj->unit = Unit::getUnitWithCategories($objectiveObj->unit_id);
                     $upvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','+1')->count();
                     $downvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','-1')->count();
 
@@ -330,6 +340,17 @@ class ObjectivesController extends Controller
 
                         view()->share('availableUnitFunds',$availableUnitFunds );
                         view()->share('awardedUnitFunds',$awardedUnitFunds );
+
+                        /*$site_activity = SiteActivity::where(function($query) use($objectiveObj){
+                            return $query->where('unit_id',$objectiveObj->unit_id)
+                                ->orWhere('objective_id',$objectiveObj->id)
+                                ->orWhere('task_id',$taskObj->id);
+                        })->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));*/
+
+                        $site_activity = SiteActivity::where('unit_id',$objectiveObj->unit->id)->orderBy('id',
+                            'desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                        view()->share('site_activity',$site_activity);
+                        view()->share('unit_activity_id',$objectiveObj->unit->id);
 
                         return view('objectives.view');
                     }
@@ -443,6 +464,8 @@ class ObjectivesController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$objectiveTemp->unit_id,
+                        'objective_id'=>$objectiveID,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name))
                             .'">'.Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a>
@@ -472,5 +495,28 @@ class ObjectivesController extends Controller
 
         }
         return \Response::json(['success'=>false]);
+    }
+
+    public function lists(Request $request)
+    {
+        $unit_id = $request->segment(2);
+        if(!empty($unit_id)){
+            $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id= $unit_id[0];
+                $objectiveObj = Objective::where('unit_id',$unit_id)->get();
+                view()->share('objectiveObj',$objectiveObj);
+                $objectiveObj->unit = Unit::getUnitWithCategories($unit_id);
+
+
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $taskObj = Task::where('unit_id',$unit_id)->get();
+                view()->share('site_activity',$site_activity);
+                view()->share('unit_activity_id',$unit_id);
+                return view('objectives.partials.list');
+            }
+        }
+        return view('errors.404');
     }
 }

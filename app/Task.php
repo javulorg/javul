@@ -36,6 +36,10 @@ class Task extends Model
         return  $this->belongsTo('App\Objective');
     }
 
+    public function watchlist(){
+        return $this->belongsTo('App\Watchlist');
+    }
+
     /**
      * Get Issues of Task..
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

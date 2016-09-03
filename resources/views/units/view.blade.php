@@ -11,111 +11,20 @@
     </div>
     <div class="row form-group">
         <div class="col-md-4">
-            <div class="panel panel-grey panel-default">
-                <div class="panel-heading">
-                    <h4>UNIT INFORMATION</h4>
+            @include('units.partials.unit_information_left_table')
+            <div class="left" style="position: relative;margin-top: 30px;">
+                <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
-                <div class="panel-body unit-info-panel list-group">
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <label class="control-label upper">UNIT NAME</label>
-                                <label class="control-label colorLightGreen form-control label-value">
-                                    {{$unitObj->name}}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 unit-info-main-div">
-                                <label class="control-label upper">UNIT LINKS</label>
-                            </div>
-                            <div class="col-xs-8" style="padding-top: 7px;">
-                                <div class="row unit_info_row_1">
-                                    <div class="col-xs-12">
-                                        <ul class="unit_info_link_1" style="">
-                                            <li><a href="#" class="colorLightBlue upper">OBJECTIVES</a></li>
-                                            <li class="mrgrtlt5">|</li>
-                                            <li><a href="#" class="colorLightBlue upper">TASKS</a></li>
-                                            <li class="mrgrtlt5">|</li>
-                                            <li><a href="#" class="colorLightBlue upper">ISSUES</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <ul class="unit_info_link_2">
-                                            <i class="fa fa-quote-right colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">FORUM</a></li>
-                                            <i class="fa fa-comments colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">CHAT</a></li>
-                                            <i class="fa fa-wikipedia-w colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">WIKI</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">OTHER LINKS</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue">LINK1, LINK2</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">UNIT CATEGORIES</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue upper">{{$unitObj->category_name}}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">UNIT LOCATION</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue upper">{{$cityName}}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper" style="width: 100%;">
-                                    FUND
-                                    <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
-                                </label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <div class="row">
-                                    <div class="col-xs-6">Available</div>
-                                    <div class="col-xs-6">{{number_format($availableFunds,0)}}$</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6">Awarded</div>
-                                    <div class="col-xs-6">{{number_format($awardedFunds,0)}}$</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="site_activity_list">
+                    @include('elements.site_activities')
                 </div>
-            </div>
-            <div class="left">
-                @include('elements.site_activities')
             </div>
         </div>
         <div class="col-md-8">
-            <div class="panel panel-grey panel-default">
+            <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                 <div class="panel-heading current_unit_heading featured_unit_heading">
                     <div class="featured_unit current_unit">
                         <i class="fa fa-stack-overflow"></i>
@@ -130,10 +39,15 @@
                         <div class="col-sm-5 featured_heading text-right colorLightBlue">
                             <div class="row">
                                 <div class="col-xs-3 text-center">
-                                    <i class="fa fa-eye" style="margin-right:2px"></i><i class="fa fa-plus"></i>
+                                    <a class="add_to_my_watchlist" data-type="unit" data-id="{{$unitIDHashID->encode($unitObj->id)}}">
+                                        <i class="fa fa-eye" style="margin-right:2px"></i>
+                                        <i class="fa fa-plus"></i>
+                                    </a>
                                 </div>
                                 <div class="col-xs-2 text-center">
-                                    <i class="fa fa-pencil"></i>
+                                    <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->id).'/edit') !!}" title="Edit Unit">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
                                 </div>
                                 <div class="col-xs-7 text-center">
                                     <i class="fa fa-history"></i> REVISION HISTORY
@@ -146,7 +60,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-grey panel-default">
+            <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                 <div class="panel-heading">
                     <h4>OBJECTIVES</h4>
                 </div>
@@ -155,62 +69,9 @@
                         <thead>
                         <tr>
                             <th>Objective Name</th>
-                            <th>Support</th>
-                            <th>In progress</th>
-                            <th>Available</th>
-                            @if(\Auth::check())
-                            <th></th>
-                            @endif
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @if(count($objectivesObj) > 0)
-                        @foreach($objectivesObj as $obj)
-                        <tr>
-                            <td>
-                                <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
-                                   title="edit">
-                                    {{$obj->name}}
-                                </a>
-                            </td>
-                            <td>{{\App\Task::getTaskCount('available',$obj->id)}}</td>
-                            <td>{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
-                            <td>{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
-                            @if(\Auth::check())
-                            <td>
-                                <a class="btn btn-xs btn-primary"
-                                   href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/edit') !!}" title="edit">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                </a>
-                            </td>
-                            @endif
-                        </tr>
-                        @endforeach
-                        @else
-                        <tr>
-                            <td colspan="5">No record(s) found.</td>
-                        </tr>
-                        @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="panel panel-grey panel-default">
-                <div class="panel-heading">
-                    <h4>TASKS</h4>
-                </div>
-                <div class="panel-body list-group">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Task Name</th>
-                            <th>Status</th>
-                            <th><i class="fa fa-trophy"></i></th>
-                            <th><i class="fa fa-clock-o"></i></th>
-                            @if(\Auth::check())
-                            <th></th>
-                            @endif
+                            <th class="text-center">Support</th>
+                            <th class="text-center">In progress</th>
+                            <th class="text-center">Available</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -223,17 +84,9 @@
                                             {{$obj->name}}
                                         </a>
                                     </td>
-                                    <td>{{\App\Task::getTaskCount('available',$obj->id)}}</td>
-                                    <td>{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
-                                    <td>{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
-                                    @if(\Auth::check())
-                                    <td>
-                                        <a class="btn btn-xs btn-primary"
-                                           href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/edit') !!}" title="edit">
-                                            <span class="glyphicon glyphicon-edit"></span>
-                                        </a>
-                                    </td>
-                                    @endif
+                                    <td  class="text-center">{{\App\Task::getTaskCount('available',$obj->id)}}</td>
+                                    <td  class="text-center">{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
+                                    <td  class="text-center">{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
                                 </tr>
                             @endforeach
                         @else
@@ -241,6 +94,77 @@
                             <td colspan="5">No record(s) found.</td>
                         </tr>
                         @endif
+
+                        <tr style="background-color: #fff;text-align: right;">
+                            <td colspan="5">
+                                <a class="btn black-btn" id="add_objective_btn" href="{!! url('objectives/'.$unitIDHashID->encode
+                                ($unitObj->id).'/add') !!}">
+                                    <i class="fa fa-plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
+                                </a>
+
+                                <a href="{!! url('units/add')!!}"class="btn more-black-btn" id="add_unit_btn"
+                                   type="button">
+                                    <span class="more_dots">...</span> MORE OBJECTIVE
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
+                <div class="panel-heading">
+                    <h4>TASKS</h4>
+                </div>
+                <div class="panel-body list-group">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Task Name</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center"><i class="fa fa-trophy"></i></th>
+                            <th class="text-center"><i class="fa fa-clock-o"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if(count($taskObj) > 0)
+                            @foreach($taskObj as $obj)
+                                <tr>
+                                    <td width="60%">
+                                        <a href="{!! url('tasks/'.$taskIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
+                                           title="edit">
+                                            {{$obj->name}}
+                                        </a>
+                                    </td>
+                                    <td width="20%" class="text-center">
+                                        @if($obj->status == "editable")
+                                            <span class="colorLightGreen">{{\App\SiteConfigs::task_status($obj->status)}}</span>
+                                        @else
+                                            <span class="colorLightGreen">{{\App\SiteConfigs::task_status($obj->status)}}</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
+                                    <td class="text-center">{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                        <tr>
+                            <td colspan="5">No record(s) found.</td>
+                        </tr>
+                        @endif
+                        <tr style="background-color: #fff;text-align: right;">
+                            <td colspan="5">
+                                <a class="btn black-btn" id="add_task_btn" href="{!! url('tasks/add') !!}">
+                                    <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_task') !!}</span>
+                                </a>
+
+                                <a href="{!! url('tasks/add')!!}"class="btn more-black-btn" id="more_task_btn"
+                                   type="button">
+                                    <span class="more_dots">...</span> MORE TASKS
+                                </a>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -254,15 +178,27 @@
                         <thead>
                         <tr>
                             <th>Issue Name</th>
-                            <th>Status</th>
-                            <th>Support</th>
-                            <th><i class="fa fa-clock-o"></i> </th>
+                            <th  class="text-center">Status</th>
+                            <th  class="text-center">Support</th>
+                            <th  class="text-center"><i class="fa fa-clock-o"></i> </th>
                         </tr>
                         </thead>
                         <tbody>
 
                         <tr>
                             <td colspan="5">No record(s) found.</td>
+                        </tr>
+                        <tr style="background-color: #fff;text-align: right;">
+                            <td colspan="4">
+                                <a class="btn black-btn" id="add_issue_btn" href="{!! url('issues/add') !!}">
+                                    <i class="fa fa-plus plus"></i> ADD ISSUE
+                                </a>
+
+                                <a href="{!! url('issues/add')!!}"class="btn more-black-btn" id="more_issue_btn"
+                                   type="button">
+                                    <span class="more_dots">...</span> MORE ISSUE
+                                </a>
+                            </td>
                         </tr>
 
                         </tbody>

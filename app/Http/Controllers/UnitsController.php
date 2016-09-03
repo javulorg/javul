@@ -26,6 +26,7 @@ class UnitsController extends Controller
 {
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view']]);
+        view()->share('site_activity_text','Unit Site Activity');
     }
 
     public function index(Request $request){
@@ -45,6 +46,9 @@ class UnitsController extends Controller
         // get all units for listing
         $units = Unit::getUnitWithCategories();
         view()->share('units',$units );
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','Site Activity');
         return view('units.units');
     }
 
@@ -124,7 +128,7 @@ class UnitsController extends Controller
                 'country_id'=>$request->input('country'),
                 'state_id'=>$request->input('state'),
                 'city_id'=>$request->input('city'),
-                'status'=>$status,
+                'status'=>'active',
                 'parent_id'=>$request->input('parent_unit')
             ])->id;
 
@@ -170,6 +174,7 @@ class UnitsController extends Controller
             $unit_id = $unitIDHashID->encode($unitID);
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
+                'unit_id'=>$unitID,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                     .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                 created
@@ -218,6 +223,9 @@ class UnitsController extends Controller
                     if(empty($status))
                         $status="disabled";
                     else
+                        $status="active";
+
+                    if(Auth::user()->role != "superadmin")
                         $status="active";
 
                     $slug=substr(str_replace(" ","_",strtolower($request->input('unit_name'))),0,20);
@@ -272,9 +280,11 @@ class UnitsController extends Controller
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
                     $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                    $tempUnitID= $unit_id;
                     $unit_id = $unitIDHashID->encode($unit_id);
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$tempUnitID,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name))
                             .'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name
@@ -386,6 +396,12 @@ class UnitsController extends Controller
 
                     view()->share('availableFunds',$availableFunds );
                     view()->share('awardedFunds',$awardedFunds );
+
+                    $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                    $taskObj = Task::where('unit_id',$unit_id)->get();
+                    view()->share('taskObj',$taskObj);
+                    view()->share('site_activity',$site_activity);
+                    view()->share('unit_activity_id',$unit_id);
                     return view('units.view');
                 }
             }
@@ -434,6 +450,7 @@ class UnitsController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$unitID,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a>
                         deleted unit '.$unitTemp->name

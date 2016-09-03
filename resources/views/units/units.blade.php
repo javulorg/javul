@@ -20,9 +20,6 @@
                                     <th>{!! trans('messages.unit_name') !!}</th>
                                     <th>{!! trans('messages.unit_category') !!}</th>
                                     <th>{!! trans('messages.description') !!}</th>
-                                    @if(\Auth::check())
-                                    <th></th>
-                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,41 +45,26 @@
                                             <td><div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
                                             ($unit->description)!!}"><span
                                                         class="ellipsis_text">{!!trim($unit->description)!!}</span></div></td>
-                                            @if(\Auth::check())
-                                            <td width="11%">
-                                                <a class="btn btn-xs btn-primary"
-                                                   href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/edit') !!}" title="edit">
-                                                    <span class="glyphicon glyphicon-edit"></span>
-                                                </a>
-
-                                                @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unit->user_id ==
-                                                $authUserObj->id))
-                                                <a title="delete" href="#" class="btn btn-xs btn-danger delete-unit"
-                                                   data-id="{{$unitIDHashID->encode($unit->id)}}">
-                                                    <span class="glyphicon glyphicon-trash"></span>
-                                                </a>
-                                                @endif
-                                            </td>
-                                            @endif
                                         </tr>
                                     @endforeach
-                                    <tr style="background-color: #fff;text-align: right;">
-                                        <td colspan="4">
-                                            <a href="{!! url('units/add')!!}"class="btn black-btn form-group" id="add_unit_btn"
-                                               type="button">
-                                                <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_unit') !!}
-                                            </a>
-                                            <a href="{!! url('units/add')!!}"class="btn more-black-btn form-group" id="add_unit_btn"
-                                               type="button">
-                                                <span class="more_dots">...</span> MORE UNITS
-                                            </a>
-                                        </td>
-                                    </tr>
                                 @else
                                     <tr>
                                         <td colspan="4">No record(s) found.</td>
                                     </tr>
                                 @endif
+                                <tr style="background-color: #fff;text-align: right;">
+                                    <td colspan="4">
+                                        <a href="{!! url('units/add')!!}"class="btn black-btn" id="add_unit_btn"
+                                           type="button">
+                                            <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_unit')
+                                                !!}</span>
+                                        </a>
+                                        <a href="{!! url('units/add')!!}"class="btn more-black-btn" id="add_unit_btn"
+                                           type="button">
+                                            <span class="more_dots">...</span> MORE UNITS
+                                        </a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

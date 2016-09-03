@@ -13,107 +13,16 @@
     </div>
     <div class="row form-group">
         <div class="col-md-4">
-            <div class="panel panel-grey panel-default">
-                <div class="panel-heading">
-                    <h4>UNIT INFORMATION</h4>
+            @include('units.partials.unit_information_left_table',['unitObj'=>$taskObj->unit,'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
+            <div class="left" style="position: relative">
+                <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
-                <div class="panel-body unit-info-panel list-group">
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <label class="control-label upper">UNIT NAME</label>
-                                <label class="control-label colorLightGreen form-control label-value">
-                                    {{$taskObj->unit->name}}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 unit-info-main-div">
-                                <label class="control-label upper">UNIT LINKS</label>
-                            </div>
-                            <div class="col-xs-8" style="padding-top: 7px;">
-                                <div class="row unit_info_row_1">
-                                    <div class="col-xs-12">
-                                        <ul class="unit_info_link_1" style="">
-                                            <li><a href="#" class="colorLightBlue upper">OBJECTIVES</a></li>
-                                            <li class="mrgrtlt5">|</li>
-                                            <li><a href="#" class="colorLightBlue upper">TASKS</a></li>
-                                            <li class="mrgrtlt5">|</li>
-                                            <li><a href="#" class="colorLightBlue upper">ISSUES</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <ul class="unit_info_link_2">
-                                            <i class="fa fa-quote-right colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">FORUM</a></li>
-                                            <i class="fa fa-comments colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">CHAT</a></li>
-                                            <i class="fa fa-wikipedia-w colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">WIKI</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">OTHER LINKS</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue">LINK1, LINK2</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">UNIT CATEGORIES</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue upper">SOFTWARE</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">UNIT LOCATION</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue upper">{{\App\City::getName($taskObj->unit->city_id)}}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper" style="width: 100%;">
-                                    FUND
-                                    <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
-                                </label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <div class="row">
-                                    <div class="col-xs-6">Available</div>
-                                    <div class="col-xs-6 text-right">12456$</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6">Awarded</div>
-                                    <div class="col-xs-6 text-right">6563131$</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="site_activity_list">
+                    @include('elements.site_activities')
                 </div>
-            </div>
-            <div class="left">
-                @include('elements.site_activities')
             </div>
         </div>
         <div class="col-md-8">
@@ -133,10 +42,17 @@
                             <div class="col-sm-5 featured_heading text-right colorLightBlue">
                                 <div class="row">
                                     <div class="col-xs-3 text-center">
-                                        <i class="fa fa-eye" style="margin-right:2px"></i><i class="fa fa-plus"></i>
+                                        <a class="add_to_my_watchlist" data-type="task" data-id="{{$taskIDHashID->encode($taskObj->id)}}">
+                                            <i class="fa fa-eye" style="margin-right:2px"></i>
+                                            <i class="fa fa-plus plus"></i>
+                                        </a>
                                     </div>
                                     <div class="col-xs-2 text-center">
-                                        <i class="fa fa-pencil"></i>
+                                        @if($taskObj->status == "editable")
+                                        <a title="Edit Task" href="{!! url('tasks/'.$taskIDHashID->encode($taskObj->id).'/edit')!!}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        @endif
                                     </div>
                                     <div class="col-xs-7 text-center">
                                         <i class="fa fa-history"></i> REVISION HISTORY
@@ -146,10 +62,11 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-7 featured_heading" style="min-height: 170px">
+                            <div class="col-xs-7 featured_heading" style="min-height: 156px">
                                 {!! $taskObj->description !!}
                             </div>
-                            <div class="col-xs-5 featured_heading text-right colorLightBlue" style="margin-top:0px;padding-top:0px;">
+                            <div class="col-xs-5 featured_heading text-right colorLightBlue" style="margin-top:0px;padding-top:0px;
+                            padding-bottom: 0px;">
                                 <div class="row borderBTM lnht30">
                                     <div class="col-xs-4 text-left">
                                         <label class="control-label upper">Status</label>
@@ -175,7 +92,7 @@
                                         <label class="control-label">$60</label>
                                     </div>
                                 </div>
-                                <div class="row borderBTM lnht30">
+                                <div class="row lnht30">
                                     <div class="col-xs-4 text-left">
                                         <label class="control-label upper">Completion</label>
                                     </div>
@@ -187,34 +104,56 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class="row">
-                    <div class="col-sm-6">
-                        <div class="panel panel-grey panel-default">
-                            <div class="panel-heading current_task_heading featured_unit_heading">
-                                <div class="featured_unit current_task">
-                                    <i class="fa fa-pencil-square-o"></i>
-                                </div>
-                                <h4>ACTION ITEMS</h4>
-                            </div>
-                            <div class="panel-body list-group">
-                            </div>
+                <div class="row">
+                    <div class="col-sm-6 action_list" style="padding-right: 0px;">
+                        <h4 style="padding:10px 15px;background-color: #f9f9f9;margin-top:0px;font-weight: 500;">Action Items</h4>
+                        <div class="list_item_div">
+                            {!! $taskObj->task_action !!}
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="panel panel-grey panel-default">
-                            <div class="panel-heading current_task_heading featured_unit_heading">
-                                <div class="featured_unit current_task">
-                                    <i class="fa fa-pencil-square-o"></i>
-                                </div>
-                                <h4>FILE ATTACHMENTS</h4>
-                            </div>
-                            <div class="panel-body list-group">
-                            </div>
-                        </div>
+                    <div class="col-sm-6 file_list" style="padding-left: 0px;">
+                        <h4 style="padding:10px 15px;background-color: #f9f9f9;margin-top:0px;font-weight: 500;">File Attachments</h4>
+                        @if(!empty($taskObj->task_documents))
+                            <ul style="list-style-type: decimal; padding-left:30px;">
+                                @foreach($taskObj->task_documents as $index=>$document)
+                                    <?php $extension = pathinfo($document->file_path, PATHINFO_EXTENSION); ?>
+                                    @if($extension == "pdf") <?php $extension="pdf"; ?>
+                                    @elseif($extension == "doc" || $extension == "docx") <?php $extension="docx"; ?>
+                                    @elseif($extension == "jpg" || $extension == "jpeg") <?php $extension="jpeg"; ?>
+                                    @elseif($extension == "ppt" || $extension == "pptx") <?php $extension="pptx"; ?>
+                                    @else <?php $extension="file"; ?> @endif
+                                    <li>
+                                        <a class="files_image" href="{!! url($document->file_path) !!}" target="_blank">
+                                            <span style="display:block">
+                                                @if(empty($document->file_name))
+                                                    &nbsp;
+                                                @else
+                                                    {{$document->file_name}}
+                                                @endif
+                                            </span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
-                </div>-->
+                </div>
 
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div style="padding:5px 15px;background-color: #f9f9f9;margin-top:0px">
+                            <h4 style="font-weight: 500;">Objective: <span class="colorOrange">{{$taskObj->objective->name}}</span></h4>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="padding:20px 20px 10px 30px;">
+                        {!! $taskObj->objective->description!!}
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -240,6 +179,13 @@
 <script type="text/javascript">
     $(function(){
         $('#tabs').tab();
+
+        if($(".action_list").height() >= $(".file_list").height()){
+            $(".action_list").css('border-right','1px solid #ddd')
+        }
+        if($(".action_list").height() <= $(".file_list").height()){
+            $(".file_list").css('border-left','1px solid #ddd');
+        }
 
         $(".assign_now").on('click',function(){
             var uid = $(this).attr('data-uid');

@@ -25,7 +25,10 @@ Route::any('/notification/success','NotificationController@success_payment');
 Route::any('/notification/error','NotificationController@error_payment');
 Route::any('/notification/ipn_payment','NotificationController@ipn_payment');
 Route::any('/notification/ipn_donation','NotificationController@ipn_donation');
-
+Route::get('/activities','HomeController@global_activities');
+Route::get('/get_unit_site_activity_paginate','HomeController@get_unit_paginate');
+Route::get('/add_to_watchlist','HomeController@add_to_watchlist');
+Route::get('/my_watchlist','HomeController@my_watchlist');
 Route::auth();
 
 
@@ -59,6 +62,7 @@ Route::any('objectives/{unitid}/add', 'ObjectivesController@create');
 Route::any('objectives/{objectiveid}/edit', 'ObjectivesController@edit');
 Route::post('objectives/importance', 'ObjectivesController@add_importance');
 Route::get('objectives/delete_objective', 'ObjectivesController@delete_objective');
+Route::get('objectives/{unitid}/lists', 'ObjectivesController@lists');
 Route::any('objectives/{objectiveid}/{slug}', 'ObjectivesController@view');
 
 // tasks controller route
@@ -79,7 +83,7 @@ Route::any('tasks/re_assign/{task_id}','TasksController@re_assign');
 Route::post('tasks/mark_task_complete/{task_id}','TasksController@mark_as_complete');
 Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
-
+Route::get('tasks/{unitid}/lists', 'TasksController@lists');
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 
 Route::get('funds/donate/unit/{unit_id}','FundsController@donate_to_unit_objective_task');

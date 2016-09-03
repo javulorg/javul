@@ -18,5 +18,5 @@ class SiteActivity extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','comment'];
+    protected $fillable = ['user_id','unit_id','objective_id','task_id','comment'];
 }

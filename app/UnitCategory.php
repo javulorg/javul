@@ -28,4 +28,10 @@ class UnitCategory extends Model
         return $this->hasMany('App\Unit','category_id');
     }
 
+    public static function getName($id){
+        $obj = self::find($id);
+        if(count($obj) > 0)
+            return $obj->name;
+        return '-';
+    }
 }

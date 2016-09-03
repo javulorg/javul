@@ -17,6 +17,7 @@ return [
     'encode_chars'=>'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
     'support_email'=>'aadhyatechnologies34@gmail.com',
     'site_name'=>'Javul.org',
+    'site_activity_page_limit'=>5,
 
     /*
     |--------------------------------------------------------------------------

@@ -10,114 +10,23 @@
     </div>
     <div class="row form-group">
         <div class="col-md-4">
-            <div class="panel panel-grey panel-default">
-                <div class="panel-heading">
-                    <h4>UNIT INFORMATION</h4>
+            @include('units.partials.unit_information_left_table',['unitObj'=>$objectiveObj->unit,'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
+            <div class="left" style="position: relative;margin-top: 30px;">
+                <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
-                <div class="panel-body unit-info-panel list-group">
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <label class="control-label upper">UNIT NAME</label>
-                                <label class="control-label colorLightGreen form-control label-value">
-                                    {{$objectiveObj->unit->name}}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 unit-info-main-div">
-                                <label class="control-label upper">UNIT LINKS</label>
-                            </div>
-                            <div class="col-xs-8" style="padding-top: 7px;">
-                                <div class="row unit_info_row_1">
-                                    <div class="col-xs-12">
-                                        <ul class="unit_info_link_1" style="">
-                                            <li><a href="#" class="colorLightBlue upper">OBJECTIVES</a></li>
-                                            <li class="mrgrtlt5">|</li>
-                                            <li><a href="#" class="colorLightBlue upper">TASKS</a></li>
-                                            <li class="mrgrtlt5">|</li>
-                                            <li><a href="#" class="colorLightBlue upper">ISSUES</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <ul class="unit_info_link_2">
-                                            <i class="fa fa-quote-right colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">FORUM</a></li>
-                                            <i class="fa fa-comments colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">CHAT</a></li>
-                                            <i class="fa fa-wikipedia-w colorLightBlue"></i>
-                                            <li><a href="#" class="colorLightBlue upper">WIKI</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">OTHER LINKS</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue">LINK1, LINK2</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">UNIT CATEGORIES</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue upper">SOFTWARE</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper">UNIT LOCATION</label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <label class="control-label colorLightBlue upper">{{\App\City::getName($taskObj->unit->city_id)}}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-xs-4 borderRT paddingTB7">
-                                <label class="control-label upper" style="width: 100%;">
-                                    FUND
-                                    <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
-                                </label>
-                            </div>
-                            <div class="col-xs-8 paddingTB7">
-                                <div class="row">
-                                    <div class="col-xs-6">Available</div>
-                                    <div class="col-xs-6 text-right">12456$</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6">Awarded</div>
-                                    <div class="col-xs-6 text-right">6563131$</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="site_activity_list">
+                    @include('elements.site_activities')
                 </div>
-            </div>
-            <div class="left">
-                @include('elements.site_activities')
             </div>
         </div>
         <div class="col-md-8">
-            <div class="panel panel-grey panel-default">
+            <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                 <div class="panel-heading current_objective_heading featured_unit_heading">
                     <div class="featured_unit current_objective">
-                        <i class="fa fa-bullseye"></i>
+                        <i class="fa fa-bullseye" style="font-size:18px"></i>
                     </div>
                     <h4>OBJECTIVE INFORMATION</h4>
                 </div>
@@ -125,15 +34,20 @@
                     <div class="list-group-item" style="padding-top:0px;padding-bottom:0px;">
                         <div class="row" style="border-bottom:1px solid #ddd;">
                             <div class="col-sm-7 featured_heading">
-                                <h4 class="colorLightGreen">{{$objectiveObj->name}}</h4>
+                                <h4 class="colorOrange">{{$objectiveObj->name}}</h4>
                             </div>
                             <div class="col-sm-5 featured_heading text-right colorLightBlue">
                                 <div class="row">
                                     <div class="col-xs-3 text-center">
-                                        <i class="fa fa-eye" style="margin-right:2px"></i><i class="fa fa-plus"></i>
+                                        <a class="add_to_my_watchlist" data-type="objective" data-id="{{$objectiveIDHashID->encode($objectiveObj->id)}}">
+                                            <i class="fa fa-eye" style="margin-right:2px"></i>
+                                            <i class="fa fa-plus plus"></i>
+                                        </a>
                                     </div>
                                     <div class="col-xs-2 text-center">
-                                        <i class="fa fa-pencil"></i>
+                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objectiveObj->id).'/edit')!!}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
                                     </div>
                                     <div class="col-xs-7 text-center">
                                         <i class="fa fa-history"></i> REVISION HISTORY
@@ -146,26 +60,29 @@
                             <div class="col-xs-7 featured_heading" style="min-height: 150px">
                                 {!! $objectiveObj->description !!}
                             </div>
-                            <div class="col-xs-5 featured_heading text-right colorLightBlue obj_info_div">
+                            <div class="col-xs-5 featured_heading text-right obj_info_div">
                                 <div class="row">
                                     <div class="col-xs-4">
                                         <label class="control-label upper" style="width: 100%;">
-                                            <span class="fund_icon">FUND</span>
-                                            <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
+                                            <span class="fund_icon">FUNDS</span>
+                                            <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus plus
+                                            "></i></div></span>
                                         </label>
                                     </div>
-                                    <div class="col-xs-8 text-left borderLFT pdngtop10">
+                                    <div class="col-xs-8 text-left borderLFT" style="padding-top:3px; ">
                                         <div>
                                             <label class="control-label">
                                                 Available
                                             </label>
-                                            <label class="control-label colorLightBlue label-value pull-right">12331 $</label>
+                                            <label class="control-label label-value pull-right">{{number_format
+                                                ($availableObjFunds,2)}} $</label>
                                         </div>
                                         <div>
                                             <label class="control-label">
                                                 Available
                                             </label>
-                                            <label class="control-label colorLightBlue label-value pull-right">12331 $</label>
+                                            <label class="control-label label-value
+                                            pull-right">{{number_format($awardedObjFunds,2)}} $</label>
                                         </div>
                                     </div>
                                 </div>
@@ -193,7 +110,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-grey panel-default">
+            <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                 <div class="panel-heading">
                     <h4>TASKS</h4>
                 </div>
@@ -202,12 +119,9 @@
                         <thead>
                         <tr>
                             <th>Task Name</th>
-                            <th>Status</th>
-                            <th><i class="fa fa-trophy"></i></th>
-                            <th><i class="fa fa-clock-o"></i></th>
-                            @if(\Auth::check())
-                            <th></th>
-                            @endif
+                            <th class="text-center">Status</th>
+                            <th class="text-center"><i class="fa fa-trophy"></i></th>
+                            <th class="text-center"><i class="fa fa-clock-o"></i></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -215,22 +129,14 @@
                         @foreach($objectiveObj->tasks as $obj)
                         <tr>
                             <td>
-                                <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
+                                <a href="{!! url('tasks/'.$taskIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
                                    title="edit">
                                     {{$obj->name}}
                                 </a>
                             </td>
-                            <td>{{\App\Task::getTaskCount('available',$obj->id)}}</td>
-                            <td>{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
-                            <td>{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
-                            @if(\Auth::check())
-                            <td>
-                                <a class="btn btn-xs btn-primary"
-                                   href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/edit') !!}" title="edit">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                </a>
-                            </td>
-                            @endif
+                            <td class="text-center">{{\App\Task::getTaskCount('available',$obj->id)}}</td>
+                            <td class="text-center">{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
+                            <td class="text-center">{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
                         </tr>
                         @endforeach
                         @else
@@ -238,6 +144,19 @@
                             <td colspan="5">No record(s) found.</td>
                         </tr>
                         @endif
+                        <tr style="background-color: #fff;text-align: right;">
+                            <td colspan="5">
+                                <a class="btn black-btn" id="add_task_btn" href="{!! url('tasks/'.$unitIDHashID->encode($objectiveObj->unit_id)
+                                .'/'.$objectiveIDHashID->encode($objectiveObj->id).'/add') !!}">
+                                    <i class="fa fa-plus plus"></i> <span class="plus_text">ADD TASK</span>
+                                </a>
+
+                                <a href="{!! url('issues/add')!!}"class="btn more-black-btn" id="more_task_btn"
+                                   type="button">
+                                    <span class="more_dots">...</span> MORE TASK
+                                </a>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -287,15 +206,15 @@
         $(".both-div").css("min-height",($(".objective-desc").height())+10+'px');
 
         $(document).off('click','.vote').on('click',".vote",function(){
-            var type = $(this).attr('data-type');
 
+            var type = $(this).attr('data-type');
+            $parentDiv = $(this).parent('div');
             if(type == "up")
-                var flag =!$(this).hasClass('success-upvote');
+                var flag =!$parentDiv.hasClass('success-upvote');
             else if(type=="down")
-                var flag =!$(this).hasClass('success-downvote');
+                var flag =!$parentDiv.hasClass('success-downvote');
             else
                 return false;
-
             if(flag){
                 var that = $(this);
                 var id=$(this).attr('data-id');
@@ -310,14 +229,14 @@
                                 $(".importance-div").html(resp.html);
                                 if(type == "up")
                                 {
-                                    that.removeClass('text-success').addClass('success-upvote');
-                                    $(".downvote[data-id='" + id + "']").removeClass('success-downvote').addClass
-                                        ('text-danger');
+                                    that.removeClass('text-success');
+                                    $parentDiv.addClass('success-upvote');
+                                    $(".downvote[data-id='" + id + "']").removeClass('success-downvote');
                                 }
                                 else{
-                                    that.removeClass('text-danger').addClass('success-downvote');
-                                    $(".upvote[data-id='" + id + "']").removeClass('success-upvote').addClass
-                                        ('text-success');
+                                    that.removeClass('text-danger');
+                                    $parentDiv.addClass('success-downvote');
+                                    $(".upvote[data-id='" + id + "']").removeClass('success-upvote');
                                 }
                             }
 

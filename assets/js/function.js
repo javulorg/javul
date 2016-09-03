@@ -21,6 +21,42 @@ $(function(){
                 accept_reject_offer(tid,'/tasks/reject_offer');
         })
     }
+
+    //add item to watchlist
+    $(".add_to_my_watchlist").on('click',function(){
+        var type=$(this).data('type');
+        var id = $(this).data('id');
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        if($.trim(type) != "" && $.trim(id) != ''){
+            $.ajax({
+                type:'get',
+                url:siteURL+'/add_to_watchlist',
+                data:{type:type,id:id},
+                dataType:'json',
+                success:function(resp){
+                    if(!resp.success)
+                        toastr['error'](resp.msg, '');
+                    else
+                        toastr['success'](resp.msg, '');
+                }
+            })
+        }
+    })
 })
 
 function check_assigned_task(){
@@ -74,6 +110,21 @@ function accept_reject_offer(task_id,url){
             setTimeout(function(){
                 check_assigned_task();
             },15000)
+        }
+    });
+}
+
+function getUnitActivity(page,unit_id){
+
+    $(".loading_content_hide").css('opacity','0.5');
+    $.ajax({
+        type:'get',
+        url:siteURL+'/get_unit_site_activity_paginate',
+        data:{page:page,unit_id:unit_id},
+        success:function(resp){
+            $(".site_activity_list").html(resp.html);
+            $(".loading_dots").hide();
+            $(".loading_content_hide").css('opacity','1');
         }
     });
 }

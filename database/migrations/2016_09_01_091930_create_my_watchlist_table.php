@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSiteActivityTable extends Migration
+class CreateMyWatchlistTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,15 @@ class CreateSiteActivityTable extends Migration
      */
     public function up()
     {
-        Schema::create('site_activity', function (Blueprint $table) {
+        Schema::create('my_watchlist', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->integer('unit_id');
-            $table->integer('objective_id');
-            $table->integer('task_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->text('comment');
+            $table->integer('unit_id')->nullable();
+            $table->integer('objective_id')->nullable();
+            $table->integer('task_id')->nullable();
+            $table->integer('issue_id')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -32,6 +31,6 @@ class CreateSiteActivityTable extends Migration
      */
     public function down()
     {
-        Schema::drop('site_activity');
+        Schema::drop('my_watchlist');
     }
 }

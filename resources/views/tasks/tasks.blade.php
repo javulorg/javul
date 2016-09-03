@@ -39,7 +39,7 @@
                         <tr style="background-color: #fff;text-align: right;">
                             <td colspan="7" >
                                 <a href="{!! url('tasks/add')!!}"class="btn black-btn form-group" id="add_task_btn" type="button">
-                                    <span class="glyphicon glyphicon-plus"></span> Add Task
+                                    <i class="fa fa-plus plus"></i> <span class="plus_text">Add Task</span>
                                 </a>
 
                                 <a href="{!! url('tasks/add')!!}"class="btn more-black-btn form-group" id="add_unit_btn"

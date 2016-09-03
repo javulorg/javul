@@ -49,9 +49,9 @@ class ViewComposerServiceProvider extends ServiceProvider
 
         });
 
-        view()->composer('elements.site_activities',function($view){
+        /*view()->composer('elements.site_activities',function($view){
             $view->with('site_activity',SiteActivity::take(10)->orderBy('created_at','desc')->get());
-        });
+        });*/
     }
 
     /**

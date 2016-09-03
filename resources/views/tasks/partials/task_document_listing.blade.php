@@ -23,7 +23,7 @@
         <span class="{{$addMoreUnitClass}}">
             &nbsp;&nbsp;&nbsp;&nbsp;
             <a href="#" class="addMoreUnit">
-                <i class="fa fa-plus"></i>
+                <i class="fa fa-plus plus"></i>
             </a>
         </span>
         @endif

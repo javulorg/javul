@@ -27,6 +27,9 @@ class Objective extends Model
         return $this->belongsTo('App\Unit');
     }
 
+    public function watchlist(){
+        return $this->belongsTo('App\Watchlist');
+    }
     /**
      * Get Tasks of Objective..
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -68,12 +71,13 @@ class Objective extends Model
                 return false;
             $objective_id = $objective_id[0];
 
-            if(self::find($objective_id)->count() == 0)
+            if(self::where('id',$objective_id)->count() == 0)
                 return false;
             return true;
         }
         else{
-            if(self::find($objective_id)->count() == 0)
+            $cnt = self::where('id',$objective_id)->count();
+            if($cnt == 0)
                 return false;
             return true;
         }
@@ -81,10 +85,12 @@ class Objective extends Model
     }
 
     public static function getObjectiveName($obj_id){
-        return self::find($obj_id)->name;
+        if(self::where('id',$obj_id)->count())
+            return self::find($obj_id)->name;
     }
     public static function getSlug($obj_id){
-        return self::find($obj_id)->slug;
+        if(self::where('id',$obj_id)->count())
+            return self::find($obj_id)->slug;
     }
 
     public static function getObj($objective_id){
@@ -105,7 +111,8 @@ class Objective extends Model
         return [
             'in-progress'=>'In-Progress',
             'completed'=>'Completed',
-            'archived'=>'Archived'
+            'archived'=>'Archived',
+            'created'=>'Created'
         ];
     }
 }

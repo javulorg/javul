@@ -21,7 +21,6 @@
                             <th>Unit Name</th>
                             <th>Created By</th>
                             <th>Status</th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -36,23 +35,7 @@
                                     {{$objective->first_name.' '.$objective->last_name}}
                                 </a></td>
                             <td>{{$objective->status}}</td>
-                            <td width="11%">
-                                @if(\Auth::check())
-                                <a class="btn btn-xs btn-primary"
-                                   href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/edit') !!}" title="edit">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                </a>
-                                @endif
-                                <?php $unitAdminID = \App\Task::checkUnitAdmin($objective->unit_id); ?>
 
-                                @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unitAdminID ==
-                                $authUserObj->id))
-                                <a title="delete" href="#" class="btn btn-xs btn-danger delete-objective"
-                                   data-id="{{$objectiveIDHashID->encode($objective->id)}}">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </a>
-                                @endif
-                            </td>
                         </tr>
                         @endforeach
                         @else
@@ -62,11 +45,11 @@
                         @endif
                         <tr style="background-color: #fff;text-align: right;">
                             <td colspan="5" >
-                                <a href="{!! url('objectives/add')!!}"class="btn black-btn form-group" id="add_objective_btn" type="button">
-                                    <span class="glyphicon glyphicon-plus"></span> {!! trans('messages.add_objective') !!}
+                                <a href="{!! url('objectives/add')!!}"class="btn black-btn" id="add_objective_btn" type="button">
+                                    <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
                                 </a>
 
-                                <a href="{!! url('units/add')!!}"class="btn more-black-btn form-group" id="add_unit_btn"
+                                <a href="{!! url('objectives/add')!!}"class="btn more-black-btn" id="more_objective_btn"
                                    type="button">
                                     <span class="more_dots">...</span> MORE OBJECTIVES
                                 </a>

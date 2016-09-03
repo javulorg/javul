@@ -23,11 +23,11 @@
 </div>
 <div class="col-sm-8 right-menu">
     <div class="light_grey_bg">
-        <a href="{!! url('units') !!}" class="btn user-menu-right mrgnrt30 widthMenu">
-            <i class="fa fa-plus"></i>
+        <a href="{!! url('units/add') !!}" class="btn user-menu-right mrgnrt30 widthMenu">
+            <i class="fa fa-plus" style="margin-right: 0px;"></i>
             <span class="hidden-x s">UNIT</span>
         </a>
-        <a href="{!! url('units') !!}" class="btn user-menu-right mrgnrt30 widthMenu">
+        <a href="{!! url('activities') !!}" class="btn user-menu-right mrgnrt30 widthMenu">
             <i class="fa fa-globe"></i>
             <span class="hidden-x s">GLOBAL ACTIVITY LOG</span>
         </a>
@@ -37,7 +37,7 @@
         </a>
 
         <div class="btn-group pull-right" role="group">
-            <a href="{!! url('units') !!}" class="btn user-menu-right user-menu-right-icons">
+            <a href="{!! url('my_watchlist') !!}" class="btn user-menu-right user-menu-right-icons">
                 <i class="fa fa-eye font16pt pinkClr"></i>
             </a>
             <a href="{!! url('objectives') !!}" class="btn user-menu-right user-menu-right-icons">

@@ -30,6 +30,7 @@ class TasksController extends Controller
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view']]);
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
+        view()->share('site_activity_text','Unit Site Activity');
     }
 
     /**
@@ -54,7 +55,7 @@ class TasksController extends Controller
         view()->share('msg_flag',$msg_flag);
         view()->share('msg_val',$msg_val);
         view()->share('msg_type',$msg_type);
-
+        view()->share('site_activity_text','Site Activity');
 
         //\DB::enableQueryLog();
         $tasks = \DB::table('tasks')
@@ -68,6 +69,11 @@ class TasksController extends Controller
         //dd(\DB::getQueryLog());
 
 
+        $site_activity = SiteActivity::orderBy('id',
+            'desc')->paginate(\Config::get('app.site_activity_page_limit'));
+
+
+        view()->share('site_activity',$site_activity);
         view()->share('tasks',$tasks);
         return view('tasks.tasks');
     }
@@ -280,6 +286,9 @@ class TasksController extends Controller
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
+                'unit_id'=>$unit_id[0],
+                'objective_id'=>$objective_id[0],
+                'task_id'=>$task_id,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                     .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         created task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
@@ -458,7 +467,7 @@ class TasksController extends Controller
                         ->first();
                     if(!empty($taskHistoryObj)){
                         $oldUpdatedFields= json_decode($taskHistoryObj->updatedFields);
-                        if(!empty($oldUpdatedFields))
+                        if(!empty($oldUpdatedFields) && !empty($updatedFields))
                             $updatedFields = array_merge($updatedFields,$oldUpdatedFields );
 
                     }
@@ -512,6 +521,9 @@ class TasksController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$unit_id[0],
+                        'objective_id'=>$objective_id[0],
+                        'task_id'=>$task_id_decoded,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a>
@@ -694,7 +706,7 @@ class TasksController extends Controller
 
                 $taskObj->unit=[];
                 if(!empty($taskObj->objective))
-                    $taskObj->unit = Unit::getUnitWithCategories($taskObj->objective->unit_id);
+                    $taskObj->unit = Unit::getUnitWithCategories($taskObj->unit_id);
                 if(!empty($taskObj)){
                     view()->share('taskObj',$taskObj );
 
@@ -720,6 +732,24 @@ class TasksController extends Controller
 
                     view()->share('availableFunds',$availableFunds );
                     view()->share('awardedFunds',$awardedFunds );
+
+                    $availableUnitFunds =Fund::getUnitDonatedFund($taskObj->unit_id);
+                    $awardedUnitFunds =Fund::getUnitAwardedFund($taskObj->unit_id);
+
+                    view()->share('availableUnitFunds',$availableUnitFunds );
+                    view()->share('awardedUnitFunds',$awardedUnitFunds );
+
+                    /*$site_activity = SiteActivity::where(function($query) use($taskObj){
+                            return $query->where('unit_id',$taskObj->unit_id)
+                                    ->orWhere('objective_id',$taskObj->objective_id)
+                                    ->orWhere('task_id',$taskObj->id);
+                    })->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));*/
+
+                    $site_activity = SiteActivity::where('unit_id',$taskObj->unit_id)->orderBy('id',
+                        'desc')->paginate(\Config::get('app.site_activity_page_limit'));
+
+                    view()->share('site_activity',$site_activity);
+                    view()->share('unit_activity_id',$taskObj->unit_id);
 
                     return view('tasks.view');
                 }
@@ -764,6 +794,9 @@ class TasksController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$tasktempObj->unit_id,
+                        'objective_id'=>$tasktempObj->objective_id,
+                        'task_id'=>$task_id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a>
@@ -821,7 +854,7 @@ class TasksController extends Controller
 
                     $taskEditorObj =  TaskEditor::where('task_id',$task_id)->where('submit_for_approval','not_submitted')->count();
                     if($taskEditorObj == 0){
-                        $taskObj = Task::find($task_id);
+                        //$taskObj = Task::find($task_id);
                         if(!empty($taskObj)){
                             //$taskObj->update(['status'=>'awaiting_approval']);
                             $taskObj->update(['status'=>'approval']);
@@ -842,6 +875,9 @@ class TasksController extends Controller
 
                             SiteActivity::create([
                                 'user_id'=>Auth::user()->id,
+                                'unit_id'=>$taskObj->unit_id,
+                                'objective_id'=>$taskObj->objective_id,
+                                'task_id'=>$task_id,
                                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                     .Auth::user()->first_name.' '.Auth::user()->last_name
                                     .'</a> submitted task approval <a href="'.url('tasks/'.$task_id_encoded.'/'.$taskObj->slug).'">'
@@ -931,6 +967,9 @@ class TasksController extends Controller
 
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
+                            'unit_id'=>$taskObj->unit_id,
+                            'objective_id'=>$taskObj->objective_id,
+                            'task_id'=>$task_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name
                                 .'</a> bid <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
@@ -1024,6 +1063,9 @@ class TasksController extends Controller
 
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
+                            'unit_id'=>$taskObj->unit_id,
+                            'objective_id'=>$taskObj->objective_id,
+                            'task_id'=>$task_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$loggedin_user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name
                                 .'</a> assigned <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
@@ -1107,6 +1149,9 @@ class TasksController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$taskObj->unit_id,
+                        'objective_id'=>$taskObj->objective_id,
+                        'task_id'=>$task_id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a> accept offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
@@ -1161,6 +1206,9 @@ class TasksController extends Controller
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$taskObj->unit_id,
+                        'objective_id'=>$taskObj->objective_id,
+                        'task_id'=>$task_id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a> reject offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
@@ -1331,6 +1379,9 @@ class TasksController extends Controller
 
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
+                            'unit_id'=>$taskObj->unit_id,
+                            'objective_id'=>$taskObj->objective_id,
+                            'task_id'=>$task_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name
                                 .'</a> complete task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
@@ -1401,6 +1452,9 @@ class TasksController extends Controller
                     $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$taskObj->unit_id,
+                        'objective_id'=>$taskObj->objective_id,
+                        'task_id'=>$taskObj->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a> re-assigned task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
@@ -1515,6 +1569,9 @@ class TasksController extends Controller
                     }
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
+                        'unit_id'=>$taskObj->unit_id,
+                        'objective_id'=>$taskObj->objective_id,
+                        'task_id'=>$taskObj->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .Auth::user()->first_name.' '.Auth::user()->last_name
                             .'</a> approved completed task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
@@ -1598,6 +1655,9 @@ class TasksController extends Controller
 
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
+                            'unit_id'=>$taskObj->unit_id,
+                            'objective_id'=>$taskObj->objective_id,
+                            'task_id'=>$task_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name
                                 .'</a> cancelled task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
@@ -1631,5 +1691,28 @@ class TasksController extends Controller
                 }
             }
         }
+    }
+
+    public function lists(Request $request)
+    {
+        $unit_id = $request->segment(2);
+        if(!empty($unit_id)){
+            $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id= $unit_id[0];
+                $taskObj = Task::where('unit_id',$unit_id)->get();
+                view()->share('taskObj',$taskObj);
+                $taskObj->unit = Unit::getUnitWithCategories($unit_id);
+
+
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $taskObj = Task::where('unit_id',$unit_id)->get();
+                view()->share('site_activity',$site_activity);
+                view()->share('unit_activity_id',$unit_id);
+                return view('tasks.partials.list');
+            }
+        }
+        return view('errors.404');
     }
 }

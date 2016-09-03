@@ -103,6 +103,26 @@ License: You must have a valid license purchased only from themeforest(the above
                         'width', 100 / $(item).find('.btn').length + '%'
                     )
                 });
+
+                $(".more_unit_site_activity_btn").on('click',function(e){
+                    e.preventDefault();
+                    $(".loading_dots").show();
+                    var page = $(this).data('url').split('page=')[1];
+                    var unit_id = $(this).data('unit_id');
+                    getUnitActivity(page,unit_id);
+                    return false;
+                });
+
+                window.onresize = function(event) {
+                    $(".time_text").each(function(){
+                        if($(this).height() > 19){
+                            $(this).prev('.time_digit').css({'top':'-10px','position':'relative'});
+                        }
+                        else
+                            $(this).prev('.time_digit').css('top','0px');
+                    });
+                }
+
             })
         </script>
         <!-- END PAGE LEVEL PLUGINS -->
