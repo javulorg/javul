@@ -118,6 +118,11 @@
                     <h4>TASKS</h4>
                 </div>
                 <div class="panel-body list-group">
+                    <div class="loading_dots task_loading" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                     <table class="table table-striped tasks-table">
                         <thead>
                         <tr>

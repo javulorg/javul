@@ -68,7 +68,7 @@ $(function(){
     //load more units
     $(document).off("click",".more-tasks").on('click','.more-tasks',function(e){
         e.preventDefault();
-        $(".loading_dots").show();
+        $(".task_loading").show();
         var page = $(this).data('url').split('page=')[1];
         $(this).parents(".loading_content_hide").css('opacity','0.5');
         getTasks(page);
@@ -248,7 +248,7 @@ function getTasks(page){
         success:function(resp){
             $(".tasks-table tbody tr:last-child").remove();
             $(".tasks-table tbody").append(resp.html);
-            $(".loading_dots").hide();
+            $(".task_loading").hide();
             $(".loading_content_hide").css('opacity','1');
         }
     });
