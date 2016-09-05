@@ -65,7 +65,7 @@ class TasksController extends Controller
             ->select(['tasks.*','units.name as unit_name','users.first_name','users.last_name',
                 'users.id as user_id','objectives.name as objective_name'])
             ->whereNull('tasks.deleted_at')
-            ->get();
+            ->paginate(\Config::get('app.page_limit'));
         //dd(\DB::getQueryLog());
 
 

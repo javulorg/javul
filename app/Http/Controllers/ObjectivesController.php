@@ -48,7 +48,7 @@ class ObjectivesController extends Controller
         $objectives = Objective::join('units','objectives.unit_id','=','units.id')
                                 ->join('users','objectives.user_id','=','users.id')
                                 ->select(['objectives.*','units.name as unit_name','users.first_name','users.last_name',
-                'users.id as user_id'])->get();
+                'users.id as user_id'])->paginate(\Config::get('app.page_limit'));
         view()->share('objectives',$objectives );
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));

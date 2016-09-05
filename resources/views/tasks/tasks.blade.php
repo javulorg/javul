@@ -23,6 +23,11 @@
                     <h4>Tasks</h4>
                 </div>
                 <div class="panel-body table-inner table-responsive">
+                    <div class="loading_dots task_loading" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -32,7 +37,6 @@
                             <th>Skills</th>
                             <th>Assigned to</th>
                             <th>Status</th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -51,10 +55,13 @@
                                     <i class="fa fa-plus plus"></i> <span class="plus_text">Add Task</span>
                                 </a>
 
-                                <a href="{!! url('tasks/add')!!}"class="btn more-black-btn form-group" id="add_unit_btn"
-                                   type="button">
-                                    <span class="more_dots">...</span> MORE TASKS
-                                </a>
+                                @if($tasks->lastPage() > 1 && $tasks->lastPage() != $tasks->currentPage())
+                                    <a href="#" data-url="{{$tasks->url($tasks->currentPage()+1) }}" class="btn more-black-btn form-group more-tasks"
+                                       id="add_unit_btn"
+                                       type="button">
+                                        <span class="more_dots">...</span> MORE TASKS
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         </tbody>

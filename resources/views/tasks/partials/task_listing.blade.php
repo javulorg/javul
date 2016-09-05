@@ -26,21 +26,7 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
     </td>
     <td>{{\App\SiteConfigs::task_status($task->status)}}</td>
     <td width="11%">
-        @if($task->status == "editable")
-            @if(\Auth::check())
-            <a class="btn btn-xs btn-primary"
-               href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}" title="edit">
-                <span class="glyphicon glyphicon-edit"></span>
-            </a>
-            @endif
-            <?php $unitAdminID = \App\Task::checkUnitAdmin($task->unit_id); ?>
-            @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unitAdminID ==$authUserObj->id))
-            <a title="delete" href="#" class="btn btn-xs btn-danger delete-task"
-               data-id="{{$taskIDHashID->encode($task->id)}}">
-                <span class="glyphicon glyphicon-trash"></span>
-            </a>
-            @endif
-        @elseif($task->status == "approval")
+        @if($task->status == "approval")
             @if(\App\TaskBidder::checkBid($task->id))
                 <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)) !!}" class="btn btn-xs btn-primary">
                     <!--<span><img src="{!! url('assets/images/bid_small.png') !!}"/></span>-->

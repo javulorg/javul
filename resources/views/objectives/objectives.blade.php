@@ -58,10 +58,12 @@
                                     <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
                                 </a>
 
-                                <a href="{!! url('objectives/add')!!}"class="btn more-black-btn" id="more_objective_btn"
-                                   type="button">
-                                    <span class="more_dots">...</span> MORE OBJECTIVES
-                                </a>
+                                @if($objectives->lastPage() > 1 && $objectives->lastPage() != $objectives->currentPage())
+                                    <a href="#" data-url="{{$objectives->url($objectives->currentPage()+1) }}" class="btn
+                                    more-black-btn more-objectives" type="button">
+                                        <span class="more_dots">...</span> MORE OBJECTIVES
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         </tbody>
