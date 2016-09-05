@@ -9,15 +9,28 @@
 @section('content')
 
 <div class="container">
-    <div class="row">
+    <div class="row form-group" style="margin-bottom:15px;">
         @include('elements.user-menu',array('page'=>'home'))
     </div>
     @include('users.user-profile')
     <div class="row">
+        <div class="col-sm-4">
+            <div class="left" style="position: relative;margin-top: 30px;">
+                <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="site_activity_list">
+                    @include('elements.site_activities_user',['site_activity'=>$site_activities])
+                </div>
+            </div>
+        </div>
         <div class="col-sm-8">
             <h3 style="display: inline-block;width: 70%;">Total Activity Points : {{$activityPoints}}</h3>
-            <a class="btn orange-bg btn-sm" id="add_funds_btn" href="{!! url('funds/donate/user/'.$userIDHashID->encode($userObj->id)) !!}"
+            <a class="btn black-btn btn-sm" id="add_funds_btn" href="{!! url('funds/donate/user/'.$userIDHashID->encode($userObj->id)) !!}"
                style="display: inline-block;float:right;margin-top:10px">
+                <i class="fa fa-plus plus"></i>
                 {!! trans('messages.add_funds')!!}
             </a>
             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
@@ -27,33 +40,25 @@
             </ul>
             <div id="my-tab-content" class="tab-content">
                 <div class="list-group tab-pane active table-responsive" id="unit_details">
-                    <div class="list-group-item">
-                        <table class="table table-stripped">
+                    <div style="border:1px solid #ddd; ">
+                        <table class="table table-striped" style="margin-bottom: 0px;">
                             <thead>
                             <tr>
                                 <th>Unit Name</th>
                                 <th>Status</th>
-                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
                                 @if(!empty($unitsObj))
                                     @foreach($unitsObj as $unit)
                                         <tr>
-                                            <td>{{$unit->name}}</td>
-                                            <td>{{$unit->status}}</td>
-                                            <td width="11%">
-                                                <a class="btn btn-xs"
-                                                   href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/edit') !!}" title="edit">
-                                                    <span class="glyphicon glyphicon-edit"></span>
+                                            <td>
+                                                <a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/edit') !!}">
+                                                    {{$unit->name}}
                                                 </a>
-                                                @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $unit->user_id ==
-                                                $authUserObj->id))
-                                                    <a title="delete" href="#" class="btn btn-xs text-danger delete-unit"
-                                                       data-id="{{$unitIDHashID->encode($unit->id)}}">
-                                                        <span class="glyphicon glyphicon-trash"></span>
-                                                    </a>
-                                                @endif
+                                            </td>
+                                            <td>
+                                                <span class="colorLightGreen">{{$unit->status}}</span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -67,34 +72,27 @@
                     </div>
                 </div>
                 <div class="list-group tab-pane table-responsive" id="objectives_details">
-                    <div class="list-group-item">
-                        <table class="table table-stripped">
+                    <div style="border:1px solid #ddd;">
+                        <table class="table table-striped" style="margin-bottom: 0px;">
                             <thead>
                             <tr>
                                 <th>Objective Name</th>
                                 <th>Unit Name</th>
-                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                                @if(!empty($objectivesObj))
+                                @if(!empty($objectivesObj) && count($objectivesObj) > 0)
                                     @foreach($objectivesObj as $objective)
                                         <tr>
-                                            <td>{{$objective->name}}</td>
-                                            <td>{{\App\Unit::getUnitName($objective->unit_id)}}</td>
-                                            <td width="11%">
-                                                <a class="btn btn-xs"
-                                                   href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/edit') !!}"
-                                                   title="edit">
-                                                    <span class="glyphicon glyphicon-edit"></span>
+                                            <td>
+                                                <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/edit') !!}">
+                                                    {{$objective->name}}
                                                 </a>
-                                                @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $objective->user_id ==
-                                                $authUserObj->id))
-                                                <a title="delete" href="#" class="btn btn-xs text-danger delete-unit"
-                                                   data-id="{{$objectiveIDHashID->encode($objective->id)}}">
-                                                    <span class="glyphicon glyphicon-trash"></span>
+                                            </td>
+                                            <td>
+                                                <a href="{!! url('units/'.$unitIDHashID->encode($objective->unit_id).'/edit') !!}">
+                                                    {{\App\Unit::getUnitName($objective->unit_id)}}
                                                 </a>
-                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -108,36 +106,33 @@
                     </div>
                 </div>
                 <div class="list-group tab-pane table-responsive" id="tasks_details">
-                    <div class="list-group-item">
-                        <table class="table table-stripped">
+                    <div style="border:1px solid #ddd;">
+                        <table class="table table-striped" style="margin-bottom: 0px;">
                             <thead>
                             <tr>
                                 <th>Task Name</th>
                                 <th>Objective Name</th>
                                 <th>Unit Name</th>
-                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             @if(!empty($taskObj))
                                 @foreach($taskObj as $task)
                                     <tr>
-                                        <td>{{$task->name}}</td>
-                                        <td>{{\App\Unit::getUnitName($task->unit_id)}}</td>
-                                        <td>{{\App\Objective::getUnitName($task->objective_id)}}</td>
-                                        <td width="11%">
-                                            <a class="btn btn-xs"
-                                               href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}"
-                                               title="edit">
-                                                <span class="glyphicon glyphicon-edit"></span>
+                                        <td>
+                                            <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}">
+                                                {{$task->name}}
                                             </a>
-                                            @if(!empty($authUserObj) && ($authUserObj->role == "superadmin" || $objective->user_id ==
-                                            $authUserObj->id))
-                                            <a title="delete" href="#" class="btn btn-xs text-danger  delete-unit"
-                                               data-id="{{$taskIDHashID->encode($task->id)}}">
-                                                <span class="glyphicon glyphicon-trash"></span>
+                                        </td>
+                                        <td>
+                                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id).'/edit') !!}">
+                                                {{\App\Objective::getObjectiveName($task->objective_id)}}
                                             </a>
-                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id).'/edit') !!}">
+                                                {{\App\Unit::getUnitName($task->unit_id)}}
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -151,9 +146,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-4">
-            @include('elements.site_activities_user',['site_activity'=>$site_activities])
         </div>
     </div>
 

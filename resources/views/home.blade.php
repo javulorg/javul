@@ -6,7 +6,14 @@
         </div>
         <div class="row">
             <div class="col-md-4 left">
-                @include('elements.site_activities')
+                <div class="site_activity_list">
+                    <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    @include('elements.site_activities',['ajax'=>false])
+                </div>
             </div>
             <div class="col-md-8 right">
                 <div class="row form-group">

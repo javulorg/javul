@@ -18,7 +18,7 @@
                     <span></span>
                 </div>
                 <div class="site_activity_list">
-                    @include('elements.site_activities')
+                    @include('elements.site_activities',['ajax'=>false])
                 </div>
             </div>
         </div>

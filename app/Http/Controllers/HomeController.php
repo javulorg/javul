@@ -30,7 +30,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth',['except'=>['index','add_to_watchlist']]);
+        $this->middleware('auth',['except'=>['index','add_to_watchlist','get_unit_site_activity_paginate','get_site_activity_paginate']]);
     }
 
     /**
@@ -58,12 +58,12 @@ class HomeController extends Controller
     }
 
     public function global_activities(){
-        $activities = SiteActivity::orderBy('id','desc')->paginate(20);
+        $activities = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.global_site_activity_page'));
         view()->share('site_activity',$activities);
         return view('global_activities');
     }
 
-    public function get_unit_paginate(Request $request){
+    public function get_unit_site_activity_paginate(Request $request){
         $unit_id = $request->input('unit_id');
 
         if(!empty($unit_id)){
@@ -75,12 +75,28 @@ class HomeController extends Controller
                 view()->share('site_activity',$site_activity);
                 view()->share('site_activity_text','Unit Site Activity');
                 view()->share('unit_activity_id',$unit_id);
+                view()->share('ajax',true);
                 $html = view('elements.site_activities')->render();
                 return \Response::json(['success'=>true,'html'=>$html]);
 
             }
         }
         return \Response::json(['success'=>false]);
+    }
+
+    public function get_site_activity_paginate(Request $request){
+        $page_limit = \Config::get('app.site_activity_page_limit');
+        if($request->has('from_page')){
+            $page = $request->input('from_page');
+            if($page == "global_activity")
+                $page_limit = \Config::get('app.global_site_activity_page');
+        }
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate($page_limit);
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','Site Activity');
+        view()->share('ajax',true);
+        $html = view('elements.site_activities')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
     }
 
     public function add_to_watchlist(Request $request){

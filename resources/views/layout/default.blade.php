@@ -104,14 +104,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     )
                 });
 
-                $(".more_unit_site_activity_btn").on('click',function(e){
-                    e.preventDefault();
-                    $(".loading_dots").show();
-                    var page = $(this).data('url').split('page=')[1];
-                    var unit_id = $(this).data('unit_id');
-                    getUnitActivity(page,unit_id);
-                    return false;
-                });
+
 
                 window.onresize = function(event) {
                     $(".time_text").each(function(){

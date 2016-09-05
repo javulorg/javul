@@ -519,4 +519,12 @@ class ObjectivesController extends Controller
         }
         return view('errors.404');
     }
+
+    public function get_objectives_paginate(Request $request){
+        $page_limit = \Config::get('app.page_limit');
+        $objectives = Objective::orderBy('id','desc')->paginate($page_limit);
+        view()->share('objectives',$objectives);
+        $html = view('objectives.partials.more_objectives')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
+    }
 }

@@ -6,15 +6,29 @@
         </div>
         <div class="row form-group">
             <div class="col-md-4">
-                @include('elements.site_activities')
+                <div class="left">
+                    <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="site_activity_list">
+                        @include('elements.site_activities',['ajax'=>false])
+                    </div>
+                </div>
             </div>
             <div class="col-md-8">
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
                         <h4>{!! trans('messages.units') !!}</h4>
                     </div>
-                    <div class="panel-body table-inner table-responsive">
-                        <table class="table table-striped">
+                    <div class="panel-body table-inner table-responsive loading_content_hide">
+                        <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <table class="table table-striped unit-table">
                             <thead>
                                 <tr>
                                     <th>{!! trans('messages.unit_name') !!}</th>
@@ -26,7 +40,8 @@
                                 @if(count($units) > 0 )
                                     @foreach($units as $unit)
                                         <?php $category_ids = $unit->category_id;
-                                        $category_names = $unit->category_name;
+
+                                        $category_names = \App\UnitCategory::getName($category_ids);
                                         $category_ids = explode(",",$category_ids);
                                         $category_names  = explode(",",$category_names );
                                         ?>
@@ -59,10 +74,12 @@
                                             <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_unit')
                                                 !!}</span>
                                         </a>
-                                        <a href="{!! url('units/add')!!}"class="btn more-black-btn" id="add_unit_btn"
-                                           type="button">
-                                            <span class="more_dots">...</span> MORE UNITS
-                                        </a>
+                                        @if($units->lastPage() > 1 && $units->lastPage() != $units->currentPage())
+                                            <a href="#" data-url="{{$units->url($units->currentPage()+1) }}" class="btn more-black-btn more-units" id="add_unit_btn"
+                                               type="button">
+                                                <span class="more_dots">...</span> MORE UNITS
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             </tbody>

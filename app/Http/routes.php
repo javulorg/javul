@@ -26,7 +26,8 @@ Route::any('/notification/error','NotificationController@error_payment');
 Route::any('/notification/ipn_payment','NotificationController@ipn_payment');
 Route::any('/notification/ipn_donation','NotificationController@ipn_donation');
 Route::get('/activities','HomeController@global_activities');
-Route::get('/get_unit_site_activity_paginate','HomeController@get_unit_paginate');
+Route::get('/get_unit_site_activity_paginate','HomeController@get_unit_site_activity_paginate');
+Route::get('/get_site_activity_paginate','HomeController@get_site_activity_paginate');
 Route::get('/add_to_watchlist','HomeController@add_to_watchlist');
 Route::get('/my_watchlist','HomeController@my_watchlist');
 Route::auth();
@@ -54,6 +55,7 @@ Route::post('units/get_city', 'UnitsController@get_city');
 Route::get('units/delete_unit', 'UnitsController@delete_unit');
 Route::get('units/available_bid/{unit_id}','UnitsController@available_bids');
 Route::any('units/{unitid}/{slug}', 'UnitsController@view');
+Route::get('units/get_units_paginate', 'UnitsController@get_units_paginate');
 
 
 // objective controller route
@@ -64,6 +66,7 @@ Route::post('objectives/importance', 'ObjectivesController@add_importance');
 Route::get('objectives/delete_objective', 'ObjectivesController@delete_objective');
 Route::get('objectives/{unitid}/lists', 'ObjectivesController@lists');
 Route::any('objectives/{objectiveid}/{slug}', 'ObjectivesController@view');
+Route::get('objectives/get_objectives_paginate', 'ObjectivesController@get_objectives_paginate');
 
 // tasks controller route
 Route::any('tasks/add', 'TasksController@create');
@@ -85,6 +88,8 @@ Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
 Route::get('tasks/{unitid}/lists', 'TasksController@lists');
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
+Route::get('tasks/get_tasks_paginate', 'TasksController@get_tasks_paginate');
+
 
 Route::get('funds/donate/unit/{unit_id}','FundsController@donate_to_unit_objective_task');
 Route::get('funds/donate/objective/{objective_id}','FundsController@donate_to_unit_objective_task');

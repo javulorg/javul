@@ -18,6 +18,8 @@ return [
     'support_email'=>'aadhyatechnologies34@gmail.com',
     'site_name'=>'Javul.org',
     'site_activity_page_limit'=>5,
+    'global_site_activity_page'=>20,
+    'page_limit'=>5,
 
     /*
     |--------------------------------------------------------------------------

@@ -70,7 +70,7 @@ footer .container{padding-top:15px;padding-bottom:15px;}
 .table thead{background-color: #fff;}
 .table thead th,.table tbody td{border-right:1px solid #ddd; }
 .table-striped > tbody > tr:nth-of-type(2n){}
-.table-striped > tbody > tr:nth-of-type(2n+1){background-color: #f1efef;}
+.table-striped > tbody > tr:nth-of-type(2n+1){background-color: #f1efef !important;}
 .black-btn{background-color: #5a5858;color:#fff !important;line-height: 1 !important;text-transform: uppercase;padding:5px 20px 8px;border-radius:2px;}
 .more-black-btn{background-color: #979797;color:#fff;line-height: 1 !important;text-transform: uppercase;padding:7px 20px 8px;border-radius:2px;}
 .more_dots{position: relative;top:-3px;}
@@ -302,7 +302,7 @@ hr, p {margin: 10px 0;}
 .note-editable p{margin:0 0 10px !important;}
 .img-rounded-circle{border:2px solid #000;border-radius:50%;margin: 0 auto;}
 .user-header{margin-bottom: 8px;}
-.nav-tabs > li.active a{background-color: #E1672C !important;color:#fff !important;}
+.nav-tabs > li.active a{background-color: #ebe9e9 !important;color:#3f3f3f !important;}
 
 
 .radio {

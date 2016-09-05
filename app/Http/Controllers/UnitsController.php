@@ -25,7 +25,7 @@ use Hashids\Hashids;
 class UnitsController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view']]);
+        $this->middleware('auth',['except'=>['index','view','get_units_paginate']]);
         view()->share('site_activity_text','Unit Site Activity');
     }
 
@@ -44,7 +44,7 @@ class UnitsController extends Controller
         view()->share('msg_type',$msg_type);
 
         // get all units for listing
-        $units = Unit::getUnitWithCategories();
+        $units = Unit::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
         view()->share('units',$units );
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
@@ -366,8 +366,7 @@ class UnitsController extends Controller
                 $unit_id = $unit_id[0];
                 $unit = Unit::getUnitWithCategories($unit_id);
                 if(!empty($unit)){
-                    $objectives = Objective::where('unit_id',$unit_id)->get();
-                    $tasks = Task::where('objective_id',1)->get();
+                    $objectives = Objective::where('unit_id',$unit_id)->paginate(\Config::get('app.page_limit'));
                     $related_units = RelatedUnit::getRelatedUnitName($unit_id);
                     $taskForBidding = Task::where('unit_id', '=', $unit_id)->where('status', '=', "approval")->count();
                     $userAuth = Auth::user();
@@ -389,7 +388,6 @@ class UnitsController extends Controller
                     view()->share('related_units',$related_units);
                     view()->share('unitObj',$unit );
                     view()->share('objectivesObj',$objectives );
-                    view()->share('taskObj',$tasks );
 
                     $availableFunds =Fund::getUnitDonatedFund($unit_id);
                     $awardedFunds =Fund::getUnitAwardedFund($unit_id);
@@ -398,7 +396,7 @@ class UnitsController extends Controller
                     view()->share('awardedFunds',$awardedFunds );
 
                     $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    $taskObj = Task::where('unit_id',$unit_id)->get();
+                    $taskObj = Task::where('unit_id',$unit_id)->paginate(\Config::get('app.page_limit'));
                     view()->share('taskObj',$taskObj);
                     view()->share('site_activity',$site_activity);
                     view()->share('unit_activity_id',$unit_id);
@@ -496,6 +494,15 @@ class UnitsController extends Controller
             }
         }
         return view('errors.404');
+    }
+
+    public function get_units_paginate(Request $request){
+        $page_limit = \Config::get('app.page_limit');
+        $units = Unit::orderBy('id','desc')->paginate($page_limit);
+        view()->share('units',$units);
+        $html = view('units.partials.more_units')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
+
     }
     public function show()
     {

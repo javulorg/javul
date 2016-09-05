@@ -1715,4 +1715,13 @@ class TasksController extends Controller
         }
         return view('errors.404');
     }
+
+    public function get_tasks_paginate(Request $request){
+        $page_limit = \Config::get('app.page_limit');
+        $tasks = Task::orderBy('id','desc')->paginate($page_limit);
+        view()->share('tasks',$tasks);
+        $html = view('tasks.partials.more_tasks')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
+
+    }
 }

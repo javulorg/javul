@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="col-sm-4">
-            @include('elements.site_activities')
+            @include('elements.site_activities',['ajax'=>false])
         </div>
     </div>
 </form>

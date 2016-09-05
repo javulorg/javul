@@ -19,7 +19,7 @@
                     <span></span>
                 </div>
                 <div class="site_activity_list">
-                    @include('elements.site_activities')
+                    @include('elements.site_activities',['ajax'=>false])
                 </div>
             </div>
         </div>
@@ -79,8 +79,7 @@
                             @foreach($objectivesObj as $obj)
                                 <tr>
                                     <td>
-                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
-                                           title="edit">
+                                        <a href="{!! url('objectives/'.$objectiveIDHashID->encode($obj->id).'/'.$obj->slug) !!}" title="edit">
                                             {{$obj->name}}
                                         </a>
                                     </td>
@@ -101,11 +100,12 @@
                                 ($unitObj->id).'/add') !!}">
                                     <i class="fa fa-plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
                                 </a>
-
-                                <a href="{!! url('units/add')!!}"class="btn more-black-btn" id="add_unit_btn"
-                                   type="button">
-                                    <span class="more_dots">...</span> MORE OBJECTIVE
-                                </a>
+                                @if($objectivesObj->lastPage() > 1 && $objectivesObj->lastPage() != $objectivesObj->currentPage())
+                                    <a href="#" data-url="{{$objectivesObj->url($objectivesObj->currentPage()+1) }}" class="btn
+                                    more-black-btn more-objectives" type="button">
+                                        <span class="more_dots">...</span> MORE OBJECTIVES
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         </tbody>
@@ -118,7 +118,7 @@
                     <h4>TASKS</h4>
                 </div>
                 <div class="panel-body list-group">
-                    <table class="table table-striped">
+                    <table class="table table-striped tasks-table">
                         <thead>
                         <tr>
                             <th>Task Name</th>
@@ -159,10 +159,12 @@
                                     <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_task') !!}</span>
                                 </a>
 
-                                <a href="{!! url('tasks/add')!!}"class="btn more-black-btn" id="more_task_btn"
-                                   type="button">
-                                    <span class="more_dots">...</span> MORE TASKS
-                                </a>
+                                @if($taskObj->lastPage() > 1 && $taskObj->lastPage() != $taskObj->currentPage())
+                                    <a href="#" data-url="{{$taskObj->url($taskObj->currentPage()+1) }}" class="btn
+                                    more-black-btn more-tasks" type="button">
+                                        <span class="more_dots">...</span> MORE TASKS
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         </tbody>

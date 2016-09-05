@@ -22,6 +22,60 @@ $(function(){
         })
     }
 
+    $(document).off("click",".more_unit_site_activity_btn").on('click','.more_unit_site_activity_btn',function(e){
+        e.preventDefault();
+        $(".loading_dots").show();
+        var page = $(this).data('url').split('page=')[1];
+        var unit_id = $(this).data('unit_id');
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        getUnitActivity(page,unit_id);
+        return false;
+    });
+
+    $(document).off("click",".more_site_activity_btn").on('click','.more_site_activity_btn',function(e){
+        e.preventDefault();
+        $(".loading_dots").show();
+        var from_page = $(this).data('from_page');
+        var page = $(this).data('url').split('page=')[1];
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        if($.trim(from_page) != "" && from_page == "global")
+            getGlobalSiteActivity(page);
+        else
+            getSiteActivity(page);
+        return false;
+    });
+
+    //load more units
+    $(document).off("click",".more-units").on('click','.more-units',function(e){
+        e.preventDefault();
+        $(".loading_dots").show();
+        var page = $(this).data('url').split('page=')[1];
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        getUnits(page);
+        return false;
+    });
+
+    //load more units
+    $(document).off("click",".more-objectives").on('click','.more-objectives',function(e){
+        e.preventDefault();
+        $(".loading_dots").show();
+        var page = $(this).data('url').split('page=')[1];
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        getObjectives(page);
+        return false;
+    });
+
+    //load more units
+    $(document).off("click",".more-tasks").on('click','.more-tasks',function(e){
+        e.preventDefault();
+        $(".loading_dots").show();
+        var page = $(this).data('url').split('page=')[1];
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        getTasks(page);
+        return false;
+    });
+
+
     //add item to watchlist
     $(".add_to_my_watchlist").on('click',function(){
         var type=$(this).data('type');
@@ -116,13 +170,84 @@ function accept_reject_offer(task_id,url){
 
 function getUnitActivity(page,unit_id){
 
-    $(".loading_content_hide").css('opacity','0.5');
+
     $.ajax({
         type:'get',
         url:siteURL+'/get_unit_site_activity_paginate',
         data:{page:page,unit_id:unit_id},
         success:function(resp){
-            $(".site_activity_list").html(resp.html);
+            $(".site_activity_list .panel-body").find(".more-btn").remove();
+            $(".site_activity_list .panel-body").append(resp.html);
+            $(".loading_dots").hide();
+            $(".loading_content_hide").css('opacity','1');
+        }
+    });
+}
+
+function getSiteActivity(page){
+    $.ajax({
+        type:'get',
+        url:siteURL+'/get_site_activity_paginate',
+        data:{page:page},
+        success:function(resp){
+            $(".site_activity_list .panel-body").find(".more-btn").remove();
+            $(".site_activity_list .panel-body").append(resp.html);
+            $(".loading_dots").hide();
+            $(".loading_content_hide").css('opacity','1');
+        }
+    });
+}
+
+function getGlobalSiteActivity(page){
+    $.ajax({
+        type:'get',
+        url:siteURL+'/get_site_activity_paginate',
+        data:{page:page,from_page:'global_activity'},
+        success:function(resp){
+            $(".site_activity_list .panel-body").find(".more-btn").remove();
+            $(".site_activity_list .panel-body").append(resp.html);
+            $(".loading_dots").hide();
+            $(".loading_content_hide").css('opacity','1');
+        }
+    });
+}
+
+function getUnits(page){
+    $.ajax({
+        type:'get',
+        url:siteURL+'/units/get_units_paginate',
+        data:{page:page},
+        success:function(resp){
+            $(".unit-table tbody tr:last-child").remove();
+            $(".unit-table tbody").append(resp.html);
+            $(".loading_dots").hide();
+            $(".loading_content_hide").css('opacity','1');
+        }
+    });
+}
+
+function getObjectives(page){
+    $.ajax({
+        type:'get',
+        url:siteURL+'/objectives/get_objectives_paginate',
+        data:{page:page},
+        success:function(resp){
+            $(".objective-table tbody tr:last-child").remove();
+            $(".objective-table tbody").append(resp.html);
+            $(".loading_dots").hide();
+            $(".loading_content_hide").css('opacity','1');
+        }
+    });
+}
+
+function getTasks(page){
+    $.ajax({
+        type:'get',
+        url:siteURL+'/tasks/get_tasks_paginate',
+        data:{page:page},
+        success:function(resp){
+            $(".tasks-table tbody tr:last-child").remove();
+            $(".tasks-table tbody").append(resp.html);
             $(".loading_dots").hide();
             $(".loading_content_hide").css('opacity','1');
         }

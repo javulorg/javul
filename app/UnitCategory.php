@@ -29,9 +29,19 @@ class UnitCategory extends Model
     }
 
     public static function getName($id){
-        $obj = self::find($id);
-        if(count($obj) > 0)
-            return $obj->name;
-        return '-';
+        if(!empty($id)){
+            $tempid = explode(",",$id);
+            if(count($tempid) > 1){
+                $obj = self::whereIn('id',$tempid)->pluck('name')->all();
+                return implode(",",$obj);
+            }
+            else{
+                $obj = self::find($id);
+                if(count($obj) > 0)
+                    return $obj->name;
+                return '-';
+            }
+        }
+
     }
 }
