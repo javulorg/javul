@@ -4,21 +4,30 @@
     </div>
     <div class="panel-body list-group loading_content_hide">
         @if(count($site_activity) > 0)
-            @foreach($site_activity as $activity)
-                <div class="list-group-item" style="padding: 0px;">
+            @foreach($site_activity as $index=>$activity)
+                <div class="list-group-item" style="padding: 0px;padding-bottom:4px">
                     <div class="row" style="padding: 7px 15px">
-                        <div class="col-xs-3">
-                            {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
-                        </div>
-                        <div class="col-xs-2 text-center round_ line">
-                            <div class="circle activity-refresh" style="width: 30px;">
-                                <i class="fa fa-refresh"></i>
+                        <div class="col-xs-12" style="display: table">
+                            <div style="display:table-row">
+                                <div class="div-table-first-cell">
+                                    {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
+                                </div>
+                                <div class="div-table-second-cell">
+                                    <div class="circle activity-refresh">
+                                        <i class="fa fa-refresh"></i>
+                                    </div>
+                                </div>
+                                <div class="div-table-third-cell">
+                                    {!! $activity->comment !!}
+
+                                </div>
+                                <div class="border-main child_{{$index}}">
+                                    <div></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-7">
-                            {!! $activity->comment !!}
-                        </div>
                     </div>
+                    <div class="list-item-main child_{{$index}}"></div>
                 </div>
             @endforeach
             @if($site_activity->lastPage() > 1 && $site_activity->lastPage() != $site_activity->currentPage())
