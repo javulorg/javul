@@ -13,7 +13,7 @@
         <div class="col-md-4">
             @include('units.partials.unit_information_left_table')
             <div class="left" style="position: relative;margin-top: 30px;">
-                <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -64,8 +64,13 @@
                 <div class="panel-heading">
                     <h4>OBJECTIVES</h4>
                 </div>
-                <div class="panel-body list-group">
-                    <table class="table table-striped">
+                <div class="panel-body list-group loading_content_hide" style="position:relative;">
+                    <div class="loading_dots objective_loading" style="position: absolute;top:0;left:43%;z-index: 9999;display:none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <table class="table table-striped objective-table">
                         <thead>
                         <tr>
                             <th>Objective Name</th>
@@ -101,8 +106,8 @@
                                     <i class="fa fa-plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
                                 </a>
                                 @if($objectivesObj->lastPage() > 1 && $objectivesObj->lastPage() != $objectivesObj->currentPage())
-                                    <a href="#" data-url="{{$objectivesObj->url($objectivesObj->currentPage()+1) }}" class="btn
-                                    more-black-btn more-objectives" type="button">
+                                    <a href="#" data-url="{{$objectivesObj->url($objectivesObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unitObj->id)}}" class="btn
+                                    more-black-btn more-objectives" data-from_page="unit_view" type="button">
                                         <span class="more_dots">...</span> MORE OBJECTIVES
                                     </a>
                                 @endif
@@ -117,8 +122,8 @@
                 <div class="panel-heading">
                     <h4>TASKS</h4>
                 </div>
-                <div class="panel-body list-group">
-                    <div class="loading_dots task_loading" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                <div class="panel-body list-group loading_content_hide" style="position: relative;">
+                    <div class="loading_dots task_loading" style="position: absolute;top:0%;left:43%;z-index: 9999;display: none;">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -165,8 +170,9 @@
                                 </a>
 
                                 @if($taskObj->lastPage() > 1 && $taskObj->lastPage() != $taskObj->currentPage())
-                                    <a href="#" data-url="{{$taskObj->url($taskObj->currentPage()+1) }}" class="btn
-                                    more-black-btn more-tasks" type="button">
+                                    <a href="#" data-url="{{$taskObj->url($taskObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unitObj->id)}}"
+                                       class="btn
+                                    more-black-btn more-tasks" data-from_page="unit_view" type="button">
                                         <span class="more_dots">...</span> MORE TASKS
                                     </a>
                                 @endif
@@ -197,11 +203,11 @@
                         </tr>
                         <tr style="background-color: #fff;text-align: right;">
                             <td colspan="4">
-                                <a class="btn black-btn" id="add_issue_btn" href="{!! url('issues/add') !!}">
+                                <a class="btn black-btn" id="add_issue_btn" href="#">
                                     <i class="fa fa-plus plus"></i> ADD ISSUE
                                 </a>
 
-                                <a href="{!! url('issues/add')!!}"class="btn more-black-btn" id="more_issue_btn"
+                                <a href="#"class="btn more-black-btn" id="more_issue_btn" data-from_page="unit_view"
                                    type="button">
                                     <span class="more_dots">...</span> MORE ISSUE
                                 </a>

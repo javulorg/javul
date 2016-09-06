@@ -12,7 +12,7 @@
         <div class="col-md-4">
             @include('units.partials.unit_information_left_table',['unitObj'=>$objectiveObj->unit,'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
             <div class="left" style="position: relative;margin-top: 30px;">
-                <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -114,8 +114,13 @@
                 <div class="panel-heading">
                     <h4>TASKS</h4>
                 </div>
-                <div class="panel-body list-group">
-                    <table class="table table-striped">
+                <div class="panel-body list-group loading_content_hide" style="position: relative;">
+                    <div class="loading_dots task_loading" style="position: absolute;top:0%;left:43%;z-index: 9999;display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <table class="table table-striped tasks-table">
                         <thead>
                         <tr>
                             <th>Task Name</th>
@@ -134,7 +139,13 @@
                                     {{$obj->name}}
                                 </a>
                             </td>
-                            <td class="text-center">{{\App\Task::getTaskCount('available',$obj->id)}}</td>
+                            <td class="text-center">
+                                @if($obj->status == "editable")
+                                    <span class="colorLightGreen">{{\App\SiteConfigs::task_status($obj->status)}}</span>
+                                @else
+                                    <span class="colorLightGreen">{{\App\SiteConfigs::task_status($obj->status)}}</span>
+                                @endif
+                            </td>
                             <td class="text-center">{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
                             <td class="text-center">{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
                         </tr>
@@ -151,10 +162,13 @@
                                     <i class="fa fa-plus plus"></i> <span class="plus_text">ADD TASK</span>
                                 </a>
 
-                                <a href="{!! url('issues/add')!!}"class="btn more-black-btn" id="more_task_btn"
-                                   type="button">
-                                    <span class="more_dots">...</span> MORE TASK
-                                </a>
+                                @if($objectiveObj->tasks->lastPage() > 1 && $objectiveObj->tasks->lastPage() != $objectiveObj->tasks->currentPage())
+                                    <a href="#" data-url="{{$objectiveObj->tasks->url($objectiveObj->tasks->currentPage()+1) }}"
+                                       data-objective_id="{{$objectiveIDHashID->encode($objectiveObj->id)}}" class="btn
+                                    more-black-btn more-tasks" data-from_page="unit_view" type="button">
+                                        <span class="more_dots">...</span> MORE TASKS
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                         </tbody>

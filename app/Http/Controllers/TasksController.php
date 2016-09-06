@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Input;
 class TasksController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view']]);
+        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate']]);
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
         view()->share('site_activity_text','Unit Site Activity');
     }
@@ -65,6 +65,7 @@ class TasksController extends Controller
             ->select(['tasks.*','units.name as unit_name','users.first_name','users.last_name',
                 'users.id as user_id','objectives.name as objective_name'])
             ->whereNull('tasks.deleted_at')
+            ->orderBy('tasks.id','desc')
             ->paginate(\Config::get('app.page_limit'));
         //dd(\DB::getQueryLog());
 
@@ -93,6 +94,10 @@ class TasksController extends Controller
 
         $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
         $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+        $taskUnitObj= [];
+        $availableUnitFunds='';
+        $awardedUnitFunds='';
+
         if(count($segments) == 4){
 
             $task_unit_id = $request->segment(2);
@@ -119,11 +124,15 @@ class TasksController extends Controller
             if(empty($taskUnitObj) || empty($taskObjectiveObj))
                 return view('errors.404');
 
+            $availableUnitFunds =Fund::getUnitDonatedFund($task_unit_id);
+            $awardedUnitFunds =Fund::getUnitAwardedFund($task_unit_id);
+
             $taskObjectiveObj = Objective::where('unit_id',$task_unit_id)->get();
         }
         // ********************* make selected unitid and objectiveid from url in "add" mode **************************
-
-
+        view()->share('unitInfo',$taskUnitObj);
+        view()->share('availableUnitFunds',$availableUnitFunds);
+        view()->share('awardedUnitFunds',$awardedUnitFunds);
         view()->share('task_unit_id',$task_unit_id);
         view()->share('task_objective_id',$task_objective_id);
 
@@ -1701,13 +1710,10 @@ class TasksController extends Controller
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id= $unit_id[0];
-                $taskObj = Task::where('unit_id',$unit_id)->get();
-                view()->share('taskObj',$taskObj);
+                $taskObj = Task::where('unit_id',$unit_id)->orderBy('tasks.id','desc')->paginate(\Config::get('app.page_limit'));
                 $taskObj->unit = Unit::getUnitWithCategories($unit_id);
-
-
                 $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                $taskObj = Task::where('unit_id',$unit_id)->get();
+                view()->share('taskObj',$taskObj);
                 view()->share('site_activity',$site_activity);
                 view()->share('unit_activity_id',$unit_id);
                 return view('tasks.partials.list');
@@ -1717,9 +1723,32 @@ class TasksController extends Controller
     }
 
     public function get_tasks_paginate(Request $request){
+        $from_page = $request->input('from_page');
+        $objective_id = $request->input('objective_id');
+        $unit_id = $request->input('unit_id');
         $page_limit = \Config::get('app.page_limit');
-        $tasks = Task::orderBy('id','desc')->paginate($page_limit);
-        view()->share('tasks',$tasks);
+        $taskObj = Task::orderBy('id', 'desc');
+        if(!empty($unit_id )) {
+            $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)) {
+                $unit_id = $unit_id[0];
+                $taskObj = $taskObj->where('unit_id', $unit_id);
+            }
+        }
+        if(!empty($objective_id)) {
+            $objectiveIDHashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+            $objective_id = $objectiveIDHashID->decode($objective_id);
+            if(!empty($objective_id)) {
+                $objective_id = $objective_id[0];
+                $taskObj = $taskObj->where('objective_id', $objective_id);
+            }
+        }
+        $taskObj = $taskObj->paginate($page_limit);
+        view()->share('tasks',$taskObj);
+        view()->share('from_page',$from_page);
+        view()->share('unit_id',$unit_id);
+        view()->share('objective_id',$objective_id);
         $html = view('tasks.partials.more_tasks')->render();
         return \Response::json(['success'=>true,'html'=>$html]);
 

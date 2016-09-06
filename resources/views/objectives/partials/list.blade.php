@@ -13,7 +13,7 @@
             <div class="col-md-4">
                 @include('units.partials.unit_information_left_table',['unitObj'=>$objectiveObj->unit,'availableFunds'=>0,'awardedFunds'=>0])
                 <div class="left" style="position: relative;">
-                    <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                    <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -28,8 +28,13 @@
                     <div class="panel-heading">
                         <h4>OBJECTIVES</h4>
                     </div>
-                    <div class="panel-body list-group">
-                        <table class="table table-striped">
+                    <div class="panel-body list-group loading_content_hide">
+                        <div class="loading_dots objective_loading" style="position: absolute;top:0;left:43%;z-index: 9999;display:none;">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <table class="table table-striped objective-table">
                             <thead>
                             <tr>
                                 <th>Objective Name</th>
@@ -65,10 +70,12 @@
                                         <i class="fa fa-plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
                                     </a>
 
-                                    <a href="{!! url('units/add')!!}"class="btn more-black-btn" id="add_unit_btn"
-                                       type="button">
-                                        <span class="more_dots">...</span> MORE OBJECTIVE
-                                    </a>
+                                    @if($objectiveObj->lastPage() > 1 && $objectiveObj->lastPage() != $objectiveObj->currentPage())
+                                        <a href="#" data-url="{{$objectiveObj->url($objectiveObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" class="btn
+                                    more-black-btn more-objectives" data-from_page="unit_view" type="button">
+                                            <span class="more_dots">...</span> MORE OBJECTIVES
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                             </tbody>

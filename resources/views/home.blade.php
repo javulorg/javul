@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-4 left">
                 <div class="site_activity_list">
-                    <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                    <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                         <span></span>
                         <span></span>
                         <span></span>

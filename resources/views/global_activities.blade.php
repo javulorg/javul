@@ -20,7 +20,7 @@
     <div class="row form-group">
         <div class="col-md-12">
             <div class="left">
-                <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                     <span></span>
                     <span></span>
                     <span></span>

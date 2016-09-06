@@ -24,7 +24,7 @@ $(function(){
 
     $(document).off("click",".more_unit_site_activity_btn").on('click','.more_unit_site_activity_btn',function(e){
         e.preventDefault();
-        $(".loading_dots").show();
+        $(".site_activity_loading").show();
         var page = $(this).data('url').split('page=')[1];
         var unit_id = $(this).data('unit_id');
         $(this).parents(".loading_content_hide").css('opacity','0.5');
@@ -34,7 +34,7 @@ $(function(){
 
     $(document).off("click",".more_site_activity_btn").on('click','.more_site_activity_btn',function(e){
         e.preventDefault();
-        $(".loading_dots").show();
+        $(".site_activity_loading").show();
         var from_page = $(this).data('from_page');
         var page = $(this).data('url').split('page=')[1];
         $(this).parents(".loading_content_hide").css('opacity','0.5');
@@ -48,7 +48,7 @@ $(function(){
     //load more units
     $(document).off("click",".more-units").on('click','.more-units',function(e){
         e.preventDefault();
-        $(".loading_dots").show();
+        $(".unit_loading").show();
         var page = $(this).data('url').split('page=')[1];
         $(this).parents(".loading_content_hide").css('opacity','0.5');
         getUnits(page);
@@ -58,10 +58,16 @@ $(function(){
     //load more units
     $(document).off("click",".more-objectives").on('click','.more-objectives',function(e){
         e.preventDefault();
-        $(".loading_dots").show();
+        $(".objective_loading").show();
         var page = $(this).data('url').split('page=')[1];
+        var from_page = $(this).data('from_page');
+        var unit_id = $(this).data('unit_id');
+        if($.trim(unit_id) == "")
+            unit_id = 'none';
+        if($.trim(from_page) == "" || from_page != "unit_view")
+            from_page = "main_page";
         $(this).parents(".loading_content_hide").css('opacity','0.5');
-        getObjectives(page);
+        getObjectives(page,unit_id,from_page);
         return false;
     });
 
@@ -70,8 +76,17 @@ $(function(){
         e.preventDefault();
         $(".task_loading").show();
         var page = $(this).data('url').split('page=')[1];
+        var from_page = $(this).data('from_page');
+        var unit_id = $(this).data('unit_id');
+        var objective_id =$(this).data('objective_id');
+        if($.trim(unit_id) == "")
+            unit_id = 'none';
+        if($.trim(objective_id) == "")
+            objective_id = 'none';
+        if($.trim(from_page) == "" || from_page != "unit_view")
+            from_page = "main_page";
         $(this).parents(".loading_content_hide").css('opacity','0.5');
-        getTasks(page);
+        getTasks(page,unit_id,objective_id,from_page);
         return false;
     });
 
@@ -178,7 +193,7 @@ function getUnitActivity(page,unit_id){
         success:function(resp){
             $(".site_activity_list .panel-body").find(".more-btn").remove();
             $(".site_activity_list .panel-body").append(resp.html);
-            $(".loading_dots").hide();
+            $(".site_activity_loading").hide();
             $(".loading_content_hide").css('opacity','1');
         }
     });
@@ -192,7 +207,7 @@ function getSiteActivity(page){
         success:function(resp){
             $(".site_activity_list .panel-body").find(".more-btn").remove();
             $(".site_activity_list .panel-body").append(resp.html);
-            $(".loading_dots").hide();
+            $(".site_activity_loading").hide();
             $(".loading_content_hide").css('opacity','1');
         }
     });
@@ -206,7 +221,7 @@ function getGlobalSiteActivity(page){
         success:function(resp){
             $(".site_activity_list .panel-body").find(".more-btn").remove();
             $(".site_activity_list .panel-body").append(resp.html);
-            $(".loading_dots").hide();
+            $(".site_activity_loading").hide();
             $(".loading_content_hide").css('opacity','1');
         }
     });
@@ -220,31 +235,31 @@ function getUnits(page){
         success:function(resp){
             $(".unit-table tbody tr:last-child").remove();
             $(".unit-table tbody").append(resp.html);
-            $(".loading_dots").hide();
+            $(".unit_loading").hide();
             $(".loading_content_hide").css('opacity','1');
         }
     });
 }
 
-function getObjectives(page){
+function getObjectives(page,unit_id,from_page){
     $.ajax({
         type:'get',
         url:siteURL+'/objectives/get_objectives_paginate',
-        data:{page:page},
+        data:{page:page,from_page:from_page,unit_id:unit_id},
         success:function(resp){
             $(".objective-table tbody tr:last-child").remove();
             $(".objective-table tbody").append(resp.html);
-            $(".loading_dots").hide();
+            $(".objective_loading").hide();
             $(".loading_content_hide").css('opacity','1');
         }
     });
 }
 
-function getTasks(page){
+function getTasks(page,unit_id,objective_id,from_page){
     $.ajax({
         type:'get',
         url:siteURL+'/tasks/get_tasks_paginate',
-        data:{page:page},
+        data:{page:page,from_page:from_page,unit_id:unit_id,objective_id:objective_id},
         success:function(resp){
             $(".tasks-table tbody tr:last-child").remove();
             $(".tasks-table tbody").append(resp.html);

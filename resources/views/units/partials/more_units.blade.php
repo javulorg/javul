@@ -22,10 +22,17 @@
                             class="ellipsis_text">{!!trim($unit->description)!!}</span></div></td>
         </tr>
     @endforeach
-    @if($units->lastPage() > 1 && $units->lastPage() != $units->currentPage())
-        <a href="#" data-url="{{$units->url($units->currentPage()+1) }}" class="btn
+    <tr style="background-color: #fff;text-align: right">
+        <td colspan="4">
+            <a href="{!! url('units/add')!!}"class="btn black-btn" id="add_unit_btn" type="button">
+                <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_unit')!!}</span>
+            </a>
+            @if($units->lastPage() > 1 && $units->lastPage() != $units->currentPage())
+                <a href="#" data-url="{{$units->url($units->currentPage()+1) }}" class="btn
                                     more-black-btn more-units" type="button">
-            <span class="more_dots">...</span> MORE OBJECTIVES
-        </a>
-    @endif
+                    <span class="more_dots">...</span> MORE OBJECTIVES
+                </a>
+            @endif
+        </td>
+    </tr>
 @endif

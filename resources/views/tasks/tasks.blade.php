@@ -7,7 +7,7 @@
     <div class="row form-group">
         <div class="col-sm-4">
             <div class="left">
-                <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -22,13 +22,13 @@
                 <div class="panel-heading">
                     <h4>Tasks</h4>
                 </div>
-                <div class="panel-body table-inner table-responsive">
+                <div class="panel-body table-inner table-responsive loading_content_hide">
                     <div class="loading_dots task_loading" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
-                    <table class="table table-striped">
+                    <table class="table table-striped tasks-table">
                         <thead>
                         <tr>
                             <th>Task Name</th>
@@ -37,6 +37,7 @@
                             <th>Skills</th>
                             <th>Assigned to</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -51,12 +52,12 @@
                         @endif
                         <tr style="background-color: #fff;text-align: right;">
                             <td colspan="7" >
-                                <a href="{!! url('tasks/add')!!}"class="btn black-btn form-group" id="add_task_btn" type="button">
+                                <a href="{!! url('tasks/add')!!}"class="btn black-btn" id="add_task_btn" type="button">
                                     <i class="fa fa-plus plus"></i> <span class="plus_text">Add Task</span>
                                 </a>
 
                                 @if($tasks->lastPage() > 1 && $tasks->lastPage() != $tasks->currentPage())
-                                    <a href="#" data-url="{{$tasks->url($tasks->currentPage()+1) }}" class="btn more-black-btn form-group more-tasks"
+                                    <a href="#" data-url="{{$tasks->url($tasks->currentPage()+1) }}" class="btn more-black-btn more-tasks"
                                        id="add_unit_btn"
                                        type="button">
                                         <span class="more_dots">...</span> MORE TASKS

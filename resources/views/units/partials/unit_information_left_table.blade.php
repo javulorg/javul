@@ -61,7 +61,18 @@
                     <label class="control-label upper">UNIT CATEGORIES</label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
-                    <label class="control-label colorLightBlue upper">{{$unitObj->category_name}}</label>
+                    <?php $category_names = \App\UnitCategory::getName($unitObj->category_id);
+                    $category_ids = explode(",",$unitObj->category_id);
+                    $category_names  = explode(",",$category_names ); ?>
+                        @if(count($category_ids) > 0 )
+                            @foreach($category_ids as $index=>$category)
+                                <a class="upper colorLightBlue" href="{!! url('units/category/'.$unitCategoryIDHashID->encode($category))
+                                !!}">{{$category_names[$index]}}</a>
+                                @if(count($category_ids) > 1 && $index != count($category_ids) -1)
+                                    <span>&#44;</span>
+                                @endif
+                            @endforeach
+                        @endif
                 </div>
             </div>
         </div>

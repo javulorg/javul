@@ -4,15 +4,15 @@
             <div class="col-sm-4" style="position:relative;top:14px">
                 <div class="units square">
                     <div class="label_footer">Units</div>
-                    <div class="value">123</div>
+                    <div class="value">{{$totalUnits}}</div>
                 </div>
                 <div class="objectives square">
                     <div class="label_footer">Objectives</div>
-                    <div class="value">123</div>
+                    <div class="value">{{$totalObjectives}}</div>
                 </div>
                 <div class="tasks square">
                     <div class="label_footer">Tasks</div>
-                    <div class="value">123</div>
+                    <div class="value">{{$totalTasks}}</div>
                 </div>
                 <div class="issues square">
                     <div class="label_footer">Issues</div>

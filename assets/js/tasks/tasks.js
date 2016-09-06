@@ -215,9 +215,14 @@ $(document).ready(function() {
         });
 
         $("#objective").select2({
-            allowClear:true,
-            placeholder:"Select Objective"
+            allowClear: true,
+            placeholder: "Select Objective"
         });
+
+        if(from_unit) {
+            $("#objective").select2('enable',false);
+        }
+
 
         $("#task_skills").select2({
             allowClear:true,

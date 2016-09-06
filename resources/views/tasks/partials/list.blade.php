@@ -13,7 +13,7 @@
             <div class="col-md-4">
                 @include('units.partials.unit_information_left_table',['unitObj'=>$taskObj->unit,'availableFunds'=>0,'awardedFunds'=>0])
                 <div class="left" style="position: relative;">
-                    <div class="loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                    <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -26,31 +26,42 @@
             <div class="col-md-8">
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
-                        <h4>OBJECTIVES</h4>
+                        <h4>TASKS</h4>
                     </div>
-                    <div class="panel-body list-group">
-                        <table class="table table-striped">
+                    <div class="panel-body list-group loading_content_hide" style="position: relative;">
+                        <div class="loading_dots task_loading" style="position: absolute;top:0%;left:43%;z-index: 9999;display: none;">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <table class="table table-striped tasks-table">
                             <thead>
                             <tr>
-                                <th>Objective Name</th>
-                                <th>Support</th>
-                                <th>In progress</th>
-                                <th>Available</th>
+                                <th>Task Name</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center"><i class="fa fa-trophy"></i></th>
+                                <th class="text-center"><i class="fa fa-clock-o"></i></th>
                             </tr>
                             </thead>
                             <tbody>
                             @if(count($taskObj) > 0)
                                 @foreach($taskObj as $obj)
                                     <tr>
-                                        <td>
-                                            <a href="{!! url('objectives/'.$taskIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
+                                        <td width="60%">
+                                            <a href="{!! url('tasks/'.$taskIDHashID->encode($obj->id).'/'.$obj->slug) !!}"
                                                title="edit">
                                                 {{$obj->name}}
                                             </a>
                                         </td>
-                                        <td>{{\App\Task::getTaskCount('available',$obj->id)}}</td>
-                                        <td>{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
-                                        <td>{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
+                                        <td width="20%" class="text-center">
+                                            @if($obj->status == "editable")
+                                                <span class="colorLightGreen">{{\App\SiteConfigs::task_status($obj->status)}}</span>
+                                            @else
+                                                <span class="colorLightGreen">{{\App\SiteConfigs::task_status($obj->status)}}</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
+                                        <td class="text-center">{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
                                     </tr>
                                 @endforeach
                             @else
@@ -61,14 +72,16 @@
 
                             <tr style="background-color: #fff;text-align: right;">
                                 <td colspan="5">
-                                    <a class="btn black-btn" id="add_objective_btn" href="{!! url('objectives/'.$unitIDHashID->encode($unit_activity_id).'/add') !!}">
-                                        <i class="fa fa-plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
+                                    <a class="btn black-btn" id="add_objective_btn" href="{!! url('tasks//add') !!}">
+                                        <i class="fa fa-plus"></i> <span class="plus_text">{!! trans('messages.add_task') !!}</span>
                                     </a>
 
-                                    <a href="{!! url('units/add')!!}"class="btn more-black-btn" id="add_unit_btn"
-                                       type="button">
-                                        <span class="more_dots">...</span> MORE OBJECTIVE
-                                    </a>
+                                    @if($taskObj->lastPage() > 1 && $taskObj->lastPage() != $taskObj->currentPage())
+                                        <a href="#" data-url="{{$taskObj->url($taskObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}"
+                                           class="btn more-black-btn more-tasks" data-from_page="unit_view" type="button">
+                                            <span class="more_dots">...</span> MORE TASKS
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                             </tbody>

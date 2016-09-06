@@ -18,7 +18,7 @@ use Hashids\Hashids;
 class ObjectivesController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view']]);
+        $this->middleware('auth',['except'=>['index','view','get_objectives_paginate']]);
         view()->share('site_activity_text','Unit Site Activity');
     }
 
@@ -48,7 +48,7 @@ class ObjectivesController extends Controller
         $objectives = Objective::join('units','objectives.unit_id','=','units.id')
                                 ->join('users','objectives.user_id','=','users.id')
                                 ->select(['objectives.*','units.name as unit_name','users.first_name','users.last_name',
-                'users.id as user_id'])->paginate(\Config::get('app.page_limit'));
+                'users.id as user_id'])->orderBy('objectives.id','desc')->paginate(\Config::get('app.page_limit'));
         view()->share('objectives',$objectives );
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
@@ -67,6 +67,9 @@ class ObjectivesController extends Controller
         $segments =$request->segments();
 
         $unit_id=null;
+        $unitInfo = [];
+        $availableUnitFunds = '';
+        $awardedUnitFunds  = '';
         if(count($segments) == 3){
             $unit_id=$request->segment(2);
             if(empty($unit_id) && count($segments) == 3)
@@ -78,7 +81,14 @@ class ObjectivesController extends Controller
                 return view('errors.404');
 
             $unit_id = $unit_id[0];
+            $unitInfo = Unit::find($unit_id);
+            $availableUnitFunds =Fund::getUnitDonatedFund($unit_id);
+            $awardedUnitFunds =Fund::getUnitAwardedFund($unit_id);
+
         }
+
+        view()->share('availableUnitFunds',$availableUnitFunds);
+        view()->share('awardedUnitFunds',$awardedUnitFunds);
 
         $unitsObj = Unit::where('status','active')->lists('name','id');
         $parentObjectivesObj = Objective::lists('name','id');
@@ -87,6 +97,7 @@ class ObjectivesController extends Controller
         view()->share('unitsObj',$unitsObj);
         view()->share('objectiveObj',[]);
         view()->share('objectives_unit_id',$unit_id );
+        view()->share('unitInfo',$unitInfo);
 
         if($request->isMethod('post'))
         {
@@ -313,7 +324,8 @@ class ObjectivesController extends Controller
                 $objective_id = $objective_id[0];
                 $obj = Objective::checkObjectiveExist($objective_id,false);
                 if($obj){
-                    $objectiveObj = Objective::with(['tasks'])->where('id',$objective_id)->first();
+                    $objectiveObj = Objective::where('id',$objective_id)->first();
+                    $objectiveObj->tasks = Task::where('objective_id',$objective_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
                     $objectiveObj->unit = Unit::getUnitWithCategories($objectiveObj->unit_id);
                     $upvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','+1')->count();
                     $downvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','-1')->count();
@@ -505,7 +517,7 @@ class ObjectivesController extends Controller
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id= $unit_id[0];
-                $objectiveObj = Objective::where('unit_id',$unit_id)->get();
+                $objectiveObj = Objective::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
                 view()->share('objectiveObj',$objectiveObj);
                 $objectiveObj->unit = Unit::getUnitWithCategories($unit_id);
 
@@ -521,9 +533,23 @@ class ObjectivesController extends Controller
     }
 
     public function get_objectives_paginate(Request $request){
+        $from_page = $request->input('from_page');
         $page_limit = \Config::get('app.page_limit');
-        $objectives = Objective::orderBy('id','desc')->paginate($page_limit);
+        $unit_id = $request->input('unit_id');
+        $objectives = Objective::orderBy('id','desc');
+        if(!empty($unit_id )) {
+            $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)) {
+                $unit_id = $unit_id[0];
+                $objectives =$objectives->where('unit_id',$unit_id);
+            }
+        }
+        $objectives = $objectives->paginate($page_limit);
+
         view()->share('objectives',$objectives);
+        view()->share('from_page',$from_page);
+        view()->share('unit_id',$unit_id);
         $html = view('objectives.partials.more_objectives')->render();
         return \Response::json(['success'=>true,'html'=>$html]);
     }

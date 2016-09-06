@@ -37,6 +37,8 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
                     Applied Bid
                 </a>
             @endif
+        @else
+            -
         @endif
     </td>
 </tr>

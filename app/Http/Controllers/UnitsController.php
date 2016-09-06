@@ -366,7 +366,7 @@ class UnitsController extends Controller
                 $unit_id = $unit_id[0];
                 $unit = Unit::getUnitWithCategories($unit_id);
                 if(!empty($unit)){
-                    $objectives = Objective::where('unit_id',$unit_id)->paginate(\Config::get('app.page_limit'));
+                    $objectives = Objective::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
                     $related_units = RelatedUnit::getRelatedUnitName($unit_id);
                     $taskForBidding = Task::where('unit_id', '=', $unit_id)->where('status', '=', "approval")->count();
                     $userAuth = Auth::user();
@@ -396,7 +396,7 @@ class UnitsController extends Controller
                     view()->share('awardedFunds',$awardedFunds );
 
                     $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    $taskObj = Task::where('unit_id',$unit_id)->paginate(\Config::get('app.page_limit'));
+                    $taskObj = Task::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
                     view()->share('taskObj',$taskObj);
                     view()->share('site_activity',$site_activity);
                     view()->share('unit_activity_id',$unit_id);
