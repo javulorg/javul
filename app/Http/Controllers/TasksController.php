@@ -30,7 +30,7 @@ class TasksController extends Controller
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view','get_tasks_paginate']]);
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
-        view()->share('site_activity_text','Unit Site Activity');
+        view()->share('site_activity_text','Unit Activity Log');
     }
 
     /**
@@ -55,7 +55,7 @@ class TasksController extends Controller
         view()->share('msg_flag',$msg_flag);
         view()->share('msg_val',$msg_val);
         view()->share('msg_type',$msg_type);
-        view()->share('site_activity_text','Site Activity');
+        view()->share('site_activity_text','Global Activity Log');
 
         //\DB::enableQueryLog();
         $tasks = \DB::table('tasks')
@@ -128,6 +128,27 @@ class TasksController extends Controller
             $awardedUnitFunds =Fund::getUnitAwardedFund($task_unit_id);
 
             $taskObjectiveObj = Objective::where('unit_id',$task_unit_id)->get();
+        }
+        else
+        {
+            //if add taks from unit view page then show unit info table as we implement in add objective on unit view page.
+            $unit_id = $request->get('unit');
+            if(!empty($unit_id)){
+                $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                $unit_id = $unitIDHashID->decode($unit_id);
+                if(!empty($unit_id))
+                {
+                    $unit_id = $unit_id[0];
+                    $taskUnitObj = Unit::find($unit_id);
+                    if(!empty($taskUnitObj))
+                    {
+                        $availableUnitFunds =Fund::getUnitDonatedFund($unit_id);
+                        $awardedUnitFunds =Fund::getUnitAwardedFund($unit_id);
+
+                        $taskObjectiveObj = Objective::where('unit_id',$unit_id)->get();
+                    }
+                }
+            }
         }
         // ********************* make selected unitid and objectiveid from url in "add" mode **************************
         view()->share('unitInfo',$taskUnitObj);

@@ -41,7 +41,7 @@
                                 <div class="col-xs-3 text-center">
                                     <a class="add_to_my_watchlist" data-type="unit" data-id="{{$unitIDHashID->encode($unitObj->id)}}">
                                         <i class="fa fa-eye" style="margin-right:2px"></i>
-                                        <i class="fa fa-plus"></i>
+                                        <i class="fa fa-plus plus"></i>
                                     </a>
                                 </div>
                                 <div class="col-xs-2 text-center">
@@ -103,7 +103,7 @@
                             <td colspan="5">
                                 <a class="btn black-btn" id="add_objective_btn" href="{!! url('objectives/'.$unitIDHashID->encode
                                 ($unitObj->id).'/add') !!}">
-                                    <i class="fa fa-plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
+                                    <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
                                 </a>
                                 @if($objectivesObj->lastPage() > 1 && $objectivesObj->lastPage() != $objectivesObj->currentPage())
                                     <a href="#" data-url="{{$objectivesObj->url($objectivesObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unitObj->id)}}" class="btn
@@ -165,7 +165,7 @@
                         @endif
                         <tr style="background-color: #fff;text-align: right;">
                             <td colspan="5">
-                                <a class="btn black-btn" id="add_task_btn" href="{!! url('tasks/add') !!}">
+                                <a class="btn black-btn" id="add_task_btn" href="{!! url('tasks/add?unit='.$unitIDHashID->encode($unitObj->id)) !!}">
                                     <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_task') !!}</span>
                                 </a>
 

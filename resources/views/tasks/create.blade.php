@@ -54,19 +54,23 @@
                                     <label class="control-label">Select Unit</label>
                                     <div class="input-icon right">
                                         <i class="fa select-error"></i>
-                                        <select name="unit" id="unit" class="form-control">
-                                            <option value="">Select</option>
-                                            @if(count($unitsObj) > 0)
-                                                @foreach($unitsObj as $unit_id=>$unit)
-                                                    <option value="{{$unitIDHashID->encode($unit_id)}}"
-                                                            @if(!empty($taskObj) && $taskObj->unit_id == $unit_id)
-                                                            selected=selected
-                                                            @elseif(empty($taskObj) && $unit_id == $task_unit_id)
-                                                            selected=selected
-                                                            @endif>{{$unit}}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>
+                                        @if(!empty($unitInfo) && empty($task_objective_id))
+                                            <input type="hidden" name="unit" value="{{$unitIDHashID->encode($unitInfo->id)}}"/>
+                                        @else
+                                            <select name="unit" id="unit" class="form-control">
+                                                <option value="">Select</option>
+                                                @if(count($unitsObj) > 0)
+                                                    @foreach($unitsObj as $unit_id=>$unit)
+                                                        <option value="{{$unitIDHashID->encode($unit_id)}}"
+                                                                @if(!empty($taskObj) && $taskObj->unit_id == $unit_id)
+                                                                selected=selected
+                                                                @elseif(empty($taskObj) && $unit_id == $task_unit_id)
+                                                                selected=selected
+                                                                @endif>{{$unit}}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        @endif
                                         @if ($errors->has('unit'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('unit') }}</strong>
@@ -78,7 +82,7 @@
                                     <label class="control-label">Select Objective</label>
                                     <div class="input-icon right">
                                         <i class="fa select-error"></i>
-                                        <select @if(!empty($unitInfo)) name="objective_disabled" @else name="objective" @endif id="objective"
+                                        <select @if(!empty($unitInfo) && !empty($task_objective_id)) name="objective_disabled" @else name="objective" @endif id="objective"
                                                 class="form-control">
                                             <option value="">Select</option>
                                             @if(count($objectiveObj) > 0)
@@ -92,7 +96,7 @@
                                                 @endforeach
                                             @endif
                                         </select>
-                                        @if(!empty($unitInfo))
+                                        @if(!empty($unitInfo) && !empty($task_objective_id))
                                             <input type="hidden" name="objective" value="{{$objectiveIDHashID->encode($task_objective_id)}}"/>
                                         @endif
                                         <span class="objective_loader location_loader" style="display: none">
@@ -313,7 +317,7 @@
 <script>
     var editTask = '{{$editFlag}}';
     var actionListFlag = "<?=$actionListFlag?>";
-    var from_unit = '{{(!empty($unitInfo)?true:false)}}';
+    var from_unit = '{{(!empty($unitInfo) && !empty($task_objective_id) ?true:false)}}';
     toastr.options = {
         "closeButton": true,
         "debug": false,

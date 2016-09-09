@@ -33,9 +33,9 @@
                 @endforeach
                 @if($site_activity->lastPage() > 1 && $site_activity->lastPage() != $site_activity->currentPage())
                     <div class="list-group-item text-right more-btn">
-                        <a href="#"class="btn black-btn @if($site_activity_text == 'Site Activity') more_site_activity_btn
+                        <a href="#"class="btn black-btn @if($site_activity_text == 'Global Activity Log') more_site_activity_btn
                     @else more_unit_site_activity_btn @endif"
-                           data-url="{{$site_activity->url($site_activity->currentPage()+1) }}" @if($site_activity_text == 'Unit Site Activity')
+                           data-url="{{$site_activity->url($site_activity->currentPage()+1) }}" @if($site_activity_text == 'Unit Activity Log')
                            data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" @endif
                            type="button"><span class="more_dots">...</span>MORE ACTIVITY
                         </a>
@@ -81,9 +81,9 @@
         @endforeach
         @if($site_activity->lastPage() > 1 && $site_activity->lastPage() != $site_activity->currentPage())
             <div class="list-group-item text-right more-btn">
-                <a href="#"class="btn black-btn @if($site_activity_text == 'Site Activity') more_site_activity_btn
+                <a href="#"class="btn black-btn @if($site_activity_text == 'Global Activity Log') more_site_activity_btn
                     @else more_unit_site_activity_btn @endif"
-                   data-url="{{$site_activity->url($site_activity->currentPage()+1) }}" @if($site_activity_text == 'Unit Site Activity')
+                   data-url="{{$site_activity->url($site_activity->currentPage()+1) }}" @if($site_activity_text == 'Unit Activity Log')
                    data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" @else data-from_page="global" @endif
                    type="button"><span class="more_dots">...</span>MORE ACTIVITY
                 </a>

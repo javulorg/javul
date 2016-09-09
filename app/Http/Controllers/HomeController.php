@@ -49,7 +49,7 @@ class HomeController extends Controller
         view()->share('recentObjectives',$recentObjectives);
         view()->share('recentTasks',$recentTasks);
         view()->share('recentUsers',$recentUsers);
-        view()->share('site_activity_text','Site Activity');
+        view()->share('site_activity_text','Global Activity Log');
 
         $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
@@ -60,6 +60,7 @@ class HomeController extends Controller
     public function global_activities(){
         $activities = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.global_site_activity_page'));
         view()->share('site_activity',$activities);
+        view()->share('site_activity_text','Global Activity Log');
         return view('global_activities');
     }
 
@@ -73,7 +74,7 @@ class HomeController extends Controller
                 $unit_id = $unit_id[0];
                 $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                 view()->share('site_activity',$site_activity);
-                view()->share('site_activity_text','Unit Site Activity');
+                view()->share('site_activity_text','Unit Activity Log');
                 view()->share('unit_activity_id',$unit_id);
                 view()->share('ajax',true);
                 $html = view('elements.site_activities')->render();
@@ -93,7 +94,7 @@ class HomeController extends Controller
         }
         $site_activity = SiteActivity::orderBy('id','desc')->paginate($page_limit);
         view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','Site Activity');
+        view()->share('site_activity_text','Global Activity Log');
         view()->share('ajax',true);
         $html = view('elements.site_activities')->render();
         return \Response::json(['success'=>true,'html'=>$html]);

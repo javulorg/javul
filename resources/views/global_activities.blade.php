@@ -28,7 +28,7 @@
                 <div class="site_activity_list">
                     <div class="panel panel-grey panel-default">
                         <div class="panel-heading">
-                            <h4>{!! Lang::get('messages.activity_log') !!}</h4>
+                            <h4>{{$site_activity_text}}</h4>
                         </div>
                         <div class="panel-body list-group">
                             @if(count($site_activity) > 0)

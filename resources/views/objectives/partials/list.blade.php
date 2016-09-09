@@ -12,7 +12,7 @@
         <div class="row form-group">
             <div class="col-md-4">
                 @include('units.partials.unit_information_left_table',['unitObj'=>$objectiveObj->unit,'availableFunds'=>0,'awardedFunds'=>0])
-                <div class="left" style="position: relative;">
+                <div class="left" style="position: relative;margin-top: 30px;">
                     <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
                         <span></span>
                         <span></span>
@@ -67,7 +67,7 @@
                             <tr style="background-color: #fff;text-align: right;">
                                 <td colspan="5">
                                     <a class="btn black-btn" id="add_objective_btn" href="{!! url('objectives/'.$unitIDHashID->encode($unit_activity_id).'/add') !!}">
-                                        <i class="fa fa-plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
+                                        <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_objective') !!}</span>
                                     </a>
 
                                     @if($objectiveObj->lastPage() > 1 && $objectiveObj->lastPage() != $objectiveObj->currentPage())

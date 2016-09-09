@@ -19,7 +19,7 @@ class ObjectivesController extends Controller
 {
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view','get_objectives_paginate']]);
-        view()->share('site_activity_text','Unit Site Activity');
+        view()->share('site_activity_text','Unit Activity Log');
     }
 
     /**
@@ -53,7 +53,7 @@ class ObjectivesController extends Controller
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','Site Activity');
+        view()->share('site_activity_text','Global Activity Log');
         return view('objectives.objectives');
     }
 

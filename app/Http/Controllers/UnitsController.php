@@ -26,7 +26,7 @@ class UnitsController extends Controller
 {
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view','get_units_paginate']]);
-        view()->share('site_activity_text','Unit Site Activity');
+        view()->share('site_activity_text','Unit Activity Log');
     }
 
     public function index(Request $request){
@@ -48,7 +48,7 @@ class UnitsController extends Controller
         view()->share('units',$units );
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','Site Activity');
+        view()->share('site_activity_text','Global Activity Log');
         return view('units.units');
     }
 

@@ -79,7 +79,7 @@
                                         </div>
                                         <div>
                                             <label class="control-label">
-                                                Available
+                                                Awarded
                                             </label>
                                             <label class="control-label label-value
                                             pull-right">{{number_format($awardedObjFunds,2)}} $</label>
