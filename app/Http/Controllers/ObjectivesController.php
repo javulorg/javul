@@ -523,7 +523,7 @@ class ObjectivesController extends Controller
 
 
                 $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                $taskObj = Task::where('unit_id',$unit_id)->get();
+                //$taskObj = Task::where('unit_id',$unit_id)->get();
                 view()->share('site_activity',$site_activity);
                 view()->share('unit_activity_id',$unit_id);
                 return view('objectives.partials.list');

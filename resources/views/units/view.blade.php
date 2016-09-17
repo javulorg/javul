@@ -187,33 +187,55 @@
                     <h4>ISSUES</h4>
                 </div>
                 <div class="panel-body list-group">
-                    <table class="table table-striped">
+                    <table class="table table-striped issue-table">
                         <thead>
                         <tr>
                             <th>Issue Name</th>
-                            <th  class="text-center">Status</th>
-                            <th  class="text-center">Support</th>
-                            <th  class="text-center"><i class="fa fa-clock-o"></i> </th>
+                            <th>Unit</th>
+                            <th>Status</th>
+                            <th>Description</th>
                         </tr>
                         </thead>
                         <tbody>
+                        @if(count($issuesObj) > 0)
+                            @foreach($issuesObj as $obj)
+                                <tr>
+                                    <td>
+                                        <a href="{!! url('issues/'.$issueIDHashID->encode($obj->id).'/view') !!}"
+                                           title="edit">
+                                            {{$obj->title}}
+                                        </a>
+                                    </td>
+                                    <td><a href="{!! url('units/'.$unitIDHashID->encode($obj->unit_id).'/'.\App\Unit::getSlug($obj->unit_id)) !!}"
+                                           title="edit">{{\App\Unit::getUnitName($obj->unit_id)}}</a></td>
+                                    <td>{{$obj->status}}</td>
+                                    <td>
+                                        <div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
+                                            ($obj->description)!!}"><span
+                                                    class="ellipsis_text">{!!trim($obj->description)!!}</span></div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="5">No record(s) found.</td>
+                            </tr>
+                        @endif
 
-                        <tr>
-                            <td colspan="5">No record(s) found.</td>
-                        </tr>
                         <tr style="background-color: #fff;text-align: right;">
-                            <td colspan="4">
-                                <a class="btn black-btn" id="add_issue_btn" href="#">
-                                    <i class="fa fa-plus plus"></i> ADD ISSUE
+                            <td colspan="5">
+                                <a class="btn black-btn" id="add_objective_btn" href="{!! url('issues/'.$unitIDHashID->encode($unit_activity_id).'/add') !!}">
+                                    <i class="fa fa-plus plus"></i> <span class="plus_text">Add Issue</span>
                                 </a>
 
-                                <a href="#"class="btn more-black-btn" id="more_issue_btn" data-from_page="unit_view"
-                                   type="button">
-                                    <span class="more_dots">...</span> MORE ISSUE
-                                </a>
+                                @if($issuesObj->lastPage() > 1 && $issuesObj->lastPage() != $issuesObj->currentPage())
+                                    <a href="#" data-url="{{$issuesObj->url($issuesObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" class="btn
+                                    more-black-btn more-objectives" data-from_page="unit_view" type="button">
+                                        <span class="more_dots">...</span> MORE OBJECTIVES
+                                    </a>
+                                @endif
                             </td>
                         </tr>
-
                         </tbody>
                     </table>
                 </div>

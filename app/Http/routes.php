@@ -72,6 +72,7 @@ Route::get('objectives/get_objectives_paginate', 'ObjectivesController@get_objec
 Route::any('tasks/add', 'TasksController@create');
 Route::any('tasks/{unitid}/{objectiveid}/add', 'TasksController@create');
 Route::post('tasks/get_objective', 'TasksController@get_objective');
+Route::post('tasks/get_tasks', 'TasksController@get_tasks');
 Route::get('tasks/get_biding_details','TasksController@get_biding_details');
 Route::get('tasks/check_assigned_task', 'TasksController@check_assigned_task');
 Route::get('tasks/accept_offer', 'TasksController@accept_offer');
@@ -99,6 +100,12 @@ Route::get('funds/get-card-name','FundsController@get_card_name');
 Route::post('funds/donate-amount','FundsController@donate_amount');
 Route::get('funds/success','FundsController@success');
 Route::get('funds/cancel','FundsController@cancel');
+
+Route::any('issues/{unit_id}/add','IssuesController@create');
+Route::any('issues/{unit_id}/lists','IssuesController@lists');
+Route::any('issues/{unit_id}/{objective_id}/add','IssuesController@create');
+Route::any('issues/{unit_id}/{objective_id}/{task_id}/add','IssuesController@create');
+
 
 Route::resource('/issues','IssuesController');
 Route::resource('/objectives','ObjectivesController');

@@ -6,6 +6,7 @@ use App\Objective;
 use App\SiteActivity;
 use App\Task;
 use App\Unit;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
 use Hashids\Hashids;
 
@@ -32,6 +33,8 @@ class ViewComposerServiceProvider extends ServiceProvider
         $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
         $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
         $taskDocumentIDHashID = new Hashids('task document id hash',10,\Config::get('app.encode_chars'));
+        $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+        $issueDocumentIDHashID = new Hashids('issue document id hash',10,\Config::get('app.encode_chars'));
 
         $loggedInUser = \App\User::where('loggedin',1)->count();
         view()->share('totalLoggedinUsers',$loggedInUser);
@@ -44,6 +47,8 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('objectiveIDHashID',$objectiveIDHashID );
         view()->share('taskIDHashID',$taskIDHashID );
         view()->share('taskDocumentIDHashID',$taskDocumentIDHashID);
+        view()->share('issueIDHashID',$issueIDHashID);
+        view()->share('issueDocumentIDHashID',$issueDocumentIDHashID);
 
         view()->composer('elements.footer',function($view){
 

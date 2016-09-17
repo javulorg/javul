@@ -6,6 +6,7 @@ use App\ActivityPoint;
 use App\City;
 use App\Country;
 use App\Fund;
+use App\Issue;
 use App\Objective;
 use App\RelatedUnit;
 use App\SiteActivity;
@@ -400,10 +401,13 @@ class UnitsController extends Controller
                     view()->share('taskObj',$taskObj);
                     view()->share('site_activity',$site_activity);
                     view()->share('unit_activity_id',$unit_id);
+
+                    $issuesObj = Issue::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+                    view()->share('issuesObj',$issuesObj);
+
                     return view('units.view');
                 }
             }
-
         }
         return view('errors.404');
     }

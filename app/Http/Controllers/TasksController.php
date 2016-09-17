@@ -719,6 +719,29 @@ class TasksController extends Controller
         return \Response::json(['success'=>false]);
     }
 
+    public function get_tasks(Request $request){
+        $obj_id = $request->input('obj_id');
+        if(!empty($obj_id)){
+            $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+            $obj_id = $objectiveIDHashID->decode($obj_id);
+            if(!empty($obj_id)){
+                $obj_id = $obj_id[0];
+                $objectiveObj = Objective::where('id',$obj_id)->get();
+                if(count($objectiveObj) > 0){
+                    $taskObj = Task::where('objective_id',$obj_id)->lists('name','id');
+                    $return_arr = [];
+                    $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                    if(count($taskObj) > 0){
+                        foreach($taskObj as $id=>$val)
+                            $return_arr[$taskIDHashID->encode($id)] = $val;
+                    }
+                    return \Response::json(['success'=>true,'tasks'=>$return_arr]);
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
+    }
+
     /**
      * function is used to display task details.
      * @param $task_id
