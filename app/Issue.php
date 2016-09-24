@@ -12,7 +12,7 @@ class Issue extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','unit_id','objective_id','task_id','title','description','file_attachments','status','resolution'];
+    protected $fillable = ['user_id','unit_id','objective_id','task_id','title','description','file_attachments','status','resolution','verified_by','resolved_by'];
 
     /**
      * Get Parent Task of Issue..

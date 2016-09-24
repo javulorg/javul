@@ -103,6 +103,7 @@ Route::get('funds/cancel','FundsController@cancel');
 
 Route::get('issues/remove_issue_document','IssuesController@remove_document');
 Route::post('issues/importance','IssuesController@add_importance');
+Route::post('issues/sort_issue','IssuesController@sort_issues');
 Route::any('issues/{unit_id}/add','IssuesController@create');
 Route::any('issues/{unit_id}/lists','IssuesController@lists');
 Route::any('issues/{issue_id}/view','IssuesController@view');

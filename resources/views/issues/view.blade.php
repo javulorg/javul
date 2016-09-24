@@ -38,12 +38,15 @@
                                 </div>
                                 <div class="col-sm-5 featured_heading text-right colorLightBlue">
                                     <div class="row">
+                                        @if($issueObj->status != "resolved")
                                         <div class="col-xs-3 text-center">
                                             <a href="{!! url('issues/'.$issueIDHashID->encode($issueObj->id).'/edit')!!}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                         </div>
-                                        <div class="col-xs-9 text-center">
+                                        @endif
+                                        <div class="@if($issueObj->status == "resolved") col-xs-12 text-left @else col-xs-9 text-center
+                                        @endif">
                                             <i class="fa fa-history"></i> REVISION HISTORY
                                         </div>
                                     </div>
@@ -88,7 +91,13 @@
                                             <label class="control-label upper">Status</label>
                                         </div>
                                         <div class="col-xs-8 borderLFT text-left">
-                                            <label class="control-label {{$status_class}}">{{ucfirst($issueObj->status)}}</label>
+                                            <label class="control-label {{$status_class}}">
+                                                <?php $verified_by ='';?>
+                                                @if($issueObj->status == "verified")
+                                                    <?php $verified_by = " (by ".App\User::getUserName($issueObj->verified_by).')';?>
+                                                @endif
+                                                {{ucfirst($issueObj->status. $verified_by )}}
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="row borderBTM lnht30">
@@ -143,6 +152,22 @@
                         </div>
                     </div>
                 </div>
+                @if($issueObj->status == "resolved")
+                    <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
+                        <div class="panel-heading">
+                            Resolution
+                        </div>
+                        <div class="panel-body list-group">
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        {!! $issueObj->resolution !!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
                         <h4>RELATION to Objective and Task</h4>

@@ -167,14 +167,18 @@ class IssuesController extends Controller
 
     public function edit(Request $request,$issue_id){
         $unit_id = $request->segment(2);
-
         if(!empty($issue_id)){
             $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+            $issue_id_encoded = $issue_id;
             $issue_id = $issueIDHashID->decode($issue_id);
             if(!empty($issue_id)){
                 $issue_id = $issue_id[0];
                 $issueObj = Issue::find($issue_id);
                 if(!empty($issueObj)){
+
+                    // check if issue resolved then redirect to view not edit mode
+                    if($issueObj->status == "resolved")
+                        return redirect('issues/'.$issue_id_encoded.'/view');
                     //display update page to user
 
                     if($request->isMethod('post')) {
@@ -193,13 +197,25 @@ class IssuesController extends Controller
                         //get all selected task_id
                         $selected_task_id_arr= Issue::getSelectedTask($request);
                         $status = $request->input('status');
-                        $issueObj->update([
+
+                        if(empty($status))
+                            $status = $issueObj->status;
+                        $updateArr = [
                             'title'=>$request->input('title'),
                             'description'=>$request->input('description'),
-                            'status'=>$request->input('status'),
+                            'status'=>$status,
                             'objective_id'=>$selected_objective_id,
                             'task_id'=>$selected_task_id_arr
-                        ]);
+                        ];
+
+                        if($status == "verified" && empty($issueObj->verified_by))
+                            $updateArr['verified_by']=Auth::user()->id;
+                        else if($status == "resolved") {
+                            $updateArr['resolved_by'] = Auth::user()->id;
+                            $updateArr['resolution']=$request->input('resolution');
+                        }
+
+                        $issueObj->update($updateArr);
 
                         // upload issue documents
                         IssueDocuments::uploadDocuments($issueObj->id,$request);
@@ -489,5 +505,34 @@ class IssuesController extends Controller
         }
         return \Response::json(['success'=>false]);
 
+    }
+
+    public function sort_issues(Request $request){
+        $unit_id = $request->input('unit_id');
+        $order_by = $request->input('order_by');
+        if(!empty($unit_id))
+        {
+            $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id = $unit_id[0];
+                $unitObj = Unit::find($unit_id);
+                if(!empty($unitObj)){
+                    view()->share('unitObj',$unitObj);
+                    if($order_by == "older")
+                        $order_by = "asc";
+                    else
+                        $order_by = "desc";
+
+                    $issuesObj = Issue::where('unit_id',$unit_id)->orderBy('id',$order_by)->paginate(\Config::get('app.page_limit'));
+                    view()->share('issuesObj',$issuesObj);
+                    view()->share('unit_activity_id',$unit_id);
+                    $html = view('issues.partials.issue_listing')->render();
+                    return \Response::json(['success'=>true,'html'=>$html ]);
+                }
+
+            }
+        }
+        return \Response::json(['success'=>false]);
     }
 }
