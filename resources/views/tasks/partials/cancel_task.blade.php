@@ -97,6 +97,6 @@
         "hideMethod": "fadeOut"
     }
 </script>
-<script src="{!! url('assets/plugins/bootstrap-summernote/summernote.min.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/tasks/cancel_task.js') !!}"></script>
 @endsection

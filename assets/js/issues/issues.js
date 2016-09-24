@@ -41,7 +41,11 @@ var FormValidation = function () {
             },
 
             highlight: function (element) { // hightlight error inputs
-                $(element).closest('.col-sm-12').removeClass("has-success").addClass('has-error'); // set error class to the control group
+                var field_name = $(element).attr('name');
+                if(field_name == "description")
+                    $(element).closest('.col-sm-12').removeClass("has-success").addClass('has-error'); // set error class to the control group
+                else
+                    $(element).closest('.col-sm-4').removeClass("has-success").addClass('has-error'); // set error class to the control group
 
             },
 
@@ -52,7 +56,11 @@ var FormValidation = function () {
             success: function (label, element) {
                 var field_name = $(element).attr('name');
                 var icon = $(element).parent('.input-icon').children('i');
-                $(element).closest('.col-sm-12').removeClass('has-error').addClass('has-success'); // set success class to the control group
+
+                if(field_name == "description")
+                    $(element).closest('.col-sm-12').removeClass('has-error').addClass('has-success'); // set success class to the control group
+                else
+                    $(element).closest('.col-sm-4').removeClass('has-error').addClass('has-success'); // set success class to the control group
                 icon.removeClass("fa-warning").addClass("fa-check");
 
                 if(field_name == "description")
@@ -81,7 +89,17 @@ var FormValidation = function () {
 $(document).ready(function() {
     FormValidation.init();
 
-    $('.summernote').summernote({
+    $("#objective_id").select2({
+        allowClear:true,
+        placeholder:"Select Objective"
+    });
+
+    $("#task_id").select2({
+        allowClear: true,
+        placeholder: "Select Task"
+    });
+
+    $('.summernote,.summernote_resolution').summernote({
         toolbar: [
             // [groupName, [list of button]]
             ['style', ['bold', 'italic', 'underline']],
@@ -95,6 +113,17 @@ $(document).ready(function() {
         ],
         height:100
     });
+    $('.summernote_resolution').summernote('disable');
+    $("[name='status']").on('change',function(){
+        if($(this).val() == "resolved"){
+            if($.trim(can_res) == 1 && issue_status == "verified")
+                $('.summernote_resolution').summernote('enable');
+        }
+        else
+            $('.summernote_resolution').summernote('disable');
+    })
+    /**/
+
 
     $(document).off('click','.addMoreDocument').on('click',".addMoreDocument",function(){
         cloneTR();
@@ -126,7 +155,7 @@ $(document).ready(function() {
                         $.each(resp.tasks,function(index,val){
                             html+='<option value="'+index+'">'+val+'</option>'
                         });
-                        $("#task_id").html(html).select2({allowClear:true,placeholder:"Select Objective"});
+                        $("#task_id").html(html).select2({allowClear:true,placeholder:"Select Task"});
                     }
                 }
             })
@@ -137,14 +166,14 @@ $(document).ready(function() {
     $(document).on("click","table.documents tbody .remove-row", function(){
         var index_tr = $(".documents").find("tbody").find("tr").index($(this));
         var id = $(this).attr('data-id');
-        var task_id = $(this).attr('data-task_id');
+        var issue_id = $(this).attr('data-issue_id');
         var fromEdit = $(this).attr('data-from_edit');
         $that = $(this);
-        if($.trim(id) != "" && $.trim(task_id) != ""){
+        if($.trim(id) != "" && $.trim(issue_id) != ""){
             $.ajax({
                 type:'get',
-                url:siteURL+'/tasks/remove_task_document',
-                data:{id:id,task_id:task_id,fromEdit:fromEdit },
+                url:siteURL+'/issue/remove_issue_document',
+                data:{id:id,issue_id:issue_id,fromEdit:fromEdit },
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){

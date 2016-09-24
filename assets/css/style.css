@@ -138,6 +138,7 @@ a .fa-plus{margin-right: 10px;}
 .div-table-third-cell{display: table-cell;vertical-align:middle}
 .documents thead tr th{font-size: 13px !important;padding-left:0px; }
 .issue-table tbody tr td p,.unit-table tbody tr td p{margin:0px;}
+.featured_heading p:first-child{margin: 0px;}
 @media (max-width: 1200px) {
     .user-menu-right.mrgnrt30{margin-right: 0px;}
     .user-menu-left,.user-menu-right{font-size: 12px;}

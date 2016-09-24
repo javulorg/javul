@@ -3,95 +3,114 @@
 @section('content')
 
 <div class="container">
-<div class="row form-group">
+<div class="row form-group" style="margin-bottom: 15px;">
     @include('elements.user-menu',array('page'=>'home'))
 </div>
 <div class="row form-group" >
-    <div class="col-sm-6">
-        <div class="panel panel-default panel-dark-grey">
-            <div class="panel-heading">
-                <h4>My Bids</h4>
+    <div class="col-md-4">
+        <div class="left">
+            <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-            <div class="panel-body table-inner table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Task Name</th>
-                        <th>Bid Details</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @if(count($myBids) > 0 && !empty($myBids))
-                            @foreach($myBids as $bid)
-                                <tr>
-                                    <td>
-                                        <a href="{!! url('tasks/'.$taskIDHashID->encode($bid->task_id).'/'.$bid->slug)!!}">
-                                            {{$bid->name}}
-                                        </a>
-                                    </td>
-                                    <td><a class="show_bid_details" data-id="{{$bid->id}}">Show Details</a></td>
-                                </tr>
-                            @endforeach
-                        @else
+            <div class="site_activity_list">
+                @include('elements.site_activities',['ajax'=>false])
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default panel-dark-grey">
+                    <div class="panel-heading">
+                        <h4>My Bids</h4>
+                    </div>
+                    <div class="panel-body table-inner table-responsive">
+                        <table class="table table-striped">
+                            <thead>
                             <tr>
-                                <td colspan="2">
-                                    No record found.
-                                </td>
+                                <th>Task Name</th>
+                                <th>Bid Details</th>
                             </tr>
-                        @endif
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                            @if(count($myBids) > 0 && !empty($myBids))
+                                @foreach($myBids as $bid)
+                                    <tr>
+                                        <td>
+                                            <a href="{!! url('tasks/'.$taskIDHashID->encode($bid->task_id).'/'.$bid->slug)!!}">
+                                                {{$bid->name}}
+                                            </a>
+                                        </td>
+                                        <td><a class="show_bid_details" data-id="{{$bid->id}}">Show Details</a></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="2">
+                                        No record found.
+                                    </td>
+                                </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col-sm-6">
-        <div class="panel panel-default panel-dark-grey">
-            <div class="panel-heading">
-                <h4>My Assigned Task</h4>
-            </div>
-            <div class="panel-body table-inner table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Task Name</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @if(count($myAssignedTask) > 0)
-                        @foreach($myAssignedTask as $assigned_task)
+            <div class="col-sm-6">
+                <div class="panel panel-default panel-dark-grey">
+                    <div class="panel-heading">
+                        <h4>My Assigned Task</h4>
+                    </div>
+                    <div class="panel-body table-inner table-responsive">
+                        <table class="table table-striped">
+                            <thead>
                             <tr>
-                                <td>
-                                    <a href="{!! url('tasks/'.$taskIDHashID->encode($assigned_task->task_id).'/'.$assigned_task->slug)!!}">
-                                        {{$assigned_task->name}}
-                                    </a>
-                                </td>
-                                <td>{{\App\SiteConfigs::task_status($assigned_task->status)}}</td>
-                                <td>
-                                    <a href="{!! url('tasks/complete_task/'.$taskIDHashID->encode($assigned_task->id)) !!}"
-                                       class="btn btn-xs btn-success" >
-                                        Complete Task
-                                    </a>
-                                    <a href="{!! url('tasks/cancel_task/'.$taskIDHashID->encode($assigned_task->id)) !!}"
-                                       class="btn btn-xs btn-danger" >
-                                        Cancel Task
-                                    </a>
-                                </td>
-                        </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="3">
-                                No record found.
-                            </td>
-                        </tr>
-                    @endif
-                    </tbody>
-                </table>
+                                <th>Task Name</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @if(count($myAssignedTask) > 0)
+                                @foreach($myAssignedTask as $assigned_task)
+                                    <tr>
+                                        <td>
+                                            <a href="{!! url('tasks/'.$taskIDHashID->encode($assigned_task->task_id).'/'.$assigned_task->slug)!!}">
+                                                {{$assigned_task->name}}
+                                            </a>
+                                        </td>
+                                        <td>{{\App\SiteConfigs::task_status($assigned_task->status)}}</td>
+                                        <td>
+                                            <a href="{!! url('tasks/complete_task/'.$taskIDHashID->encode($assigned_task->id)) !!}"
+                                               class="btn btn-xs btn-success" >
+                                                Complete Task
+                                            </a>
+                                            <a href="{!! url('tasks/cancel_task/'.$taskIDHashID->encode($assigned_task->id)) !!}"
+                                               class="btn btn-xs btn-danger" >
+                                                Cancel Task
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="3">
+                                        No record found.
+                                    </td>
+                                </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+
         </div>
+
     </div>
+
 </div>
 <!-- only super admin can evaluate the completed task -->
 @if($authUserObj->role == "superadmin")

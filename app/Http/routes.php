@@ -101,8 +101,11 @@ Route::post('funds/donate-amount','FundsController@donate_amount');
 Route::get('funds/success','FundsController@success');
 Route::get('funds/cancel','FundsController@cancel');
 
+Route::get('issues/remove_issue_document','IssuesController@remove_document');
 Route::any('issues/{unit_id}/add','IssuesController@create');
 Route::any('issues/{unit_id}/lists','IssuesController@lists');
+Route::any('issues/{issue_id}/view','IssuesController@view');
+Route::any('issues/{issue_id}/edit','IssuesController@edit');
 Route::any('issues/{unit_id}/{objective_id}/add','IssuesController@create');
 Route::any('issues/{unit_id}/{objective_id}/{task_id}/add','IssuesController@create');
 

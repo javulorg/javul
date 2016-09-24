@@ -11,6 +11,7 @@ class StatesTableSeeder extends Seeder
      */
     public function run()
     {
+		DB::disableQueryLog();
         DB::table('states')->insert([
             ['id'=>1,'name'=>'Andaman and Nicobar Islands', 'country_id'=>101],
             ['id'=>2,'name'=>'Andhra Pradesh','country_id'=>101],
@@ -511,8 +512,10 @@ class StatesTableSeeder extends Seeder
             ['id'=>497,'name'=>'Jwaneng','country_id'=>28],
             ['id'=>498,'name'=>'Kgalagadi North','country_id'=>28],
             ['id'=>499,'name'=>'Kgalagadi South','country_id'=>28],
-            ['id'=>500,'name'=>'Kgatleng','country_id'=>28],
-
+            ['id'=>500,'name'=>'Kgatleng','country_id'=>28]]);
+			
+		DB::disableQueryLog();
+        DB::table('states')->insert([
             ['id'=>501,'name'=>'Kweneng', 'country_id'=>28],
             ['id'=>502,'name'=>'Lobatse', 'country_id'=>28],
             ['id'=>503,'name'=>'Ngamiland', 'country_id'=>28],
@@ -1012,8 +1015,9 @@ class StatesTableSeeder extends Seeder
             ['id'=>997,'name'=>'Pedernales', 'country_id'=>61],
             ['id'=>998,'name'=>'Peravia', 'country_id'=>61],
             ['id'=>999,'name'=>'Puerto Plata', 'country_id'=>61],
-            ['id'=>1000,'name'=>'Salcedo', 'country_id'=>61],
-
+            ['id'=>1000,'name'=>'Salcedo', 'country_id'=>61]]);
+		DB::disableQueryLog();
+        DB::table('states')->insert([
             ['id'=>1001,'name'=>'Samana','country_id'=>61],
             ['id'=>1002,'name'=>'San Cristobal','country_id'=>61],
             ['id'=>1003,'name'=>'San Juan','country_id'=>61],
@@ -1513,7 +1517,9 @@ class StatesTableSeeder extends Seeder
             ['id'=>1497,'name'=>'Saint John','country_id'=>87],
             ['id'=>1498,'name'=>'Saint Mark','country_id'=>87],
             ['id'=>1499,'name'=>'Saint Patrick','country_id'=>87],
-            ['id'=>1500,'name'=>'Basse-Terre','country_id'=>88],
+            ['id'=>1500,'name'=>'Basse-Terre','country_id'=>88]]);
+			DB::disableQueryLog();
+			DB::table('states')->insert([
             ['id'=>1501,'name'=>'Grande-Terre','country_id'=>88],
             ['id'=>1502,'name'=>'Iles des Saintes','country_id'=>88],
             ['id'=>1503,'name'=>'La Desirade','country_id'=>88],
@@ -2013,7 +2019,9 @@ class StatesTableSeeder extends Seeder
             ['id'=>1997,'name'=>'Kostanay','country_id'=>112],
             ['id'=>1998,'name'=>'Mankistau','country_id'=>112],
             ['id'=>1999,'name'=>'Ontustik Kazakstan','country_id'=>112],
-            ['id'=>2000,'name'=>'Pavlodar','country_id'=>112],
+            ['id'=>2000,'name'=>'Pavlodar','country_id'=>112]]);
+			DB::disableQueryLog();
+        DB::table('states')->insert([
             ['id'=>2001,'name'=>'Sigis Kazakstan', 'country_id'=>112],
             ['id'=>2002,'name'=>'Soltustik Kazakstan', 'country_id'=>112],
             ['id'=>2003,'name'=>'Taraz', 'country_id'=>112],
@@ -2327,7 +2335,9 @@ class StatesTableSeeder extends Seeder
             ['id'=>2312,'name'=>'Melaka', 'country_id'=>132],
             ['id'=>2313,'name'=>'Negeri Johor', 'country_id'=>132],
             ['id'=>2314,'name'=>'Negeri Sembilan', 'country_id'=>132],
-            ['id'=>2315,'name'=>'Pahang', 'country_id'=>132],
+            ['id'=>2315,'name'=>'Pahang', 'country_id'=>132]]);
+			DB::disableQueryLog();
+			DB::table('states')->insert([
             ['id'=>2316,'name'=>'Penang', 'country_id'=>132],
             ['id'=>2317,'name'=>'Perak', 'country_id'=>132],
             ['id'=>2318,'name'=>'Perlis', 'country_id'=>132],
@@ -2512,7 +2522,9 @@ class StatesTableSeeder extends Seeder
             ['id'=>2497,'name'=>'Selenge', 'country_id'=>146],
             ['id'=>2498,'name'=>'Suhbaatar', 'country_id'=>146],
             ['id'=>2499,'name'=>'Tov', 'country_id'=>146],
-            ['id'=>2500,'name'=>'Ulaanbaatar', 'country_id'=>146],
+            ['id'=>2500,'name'=>'Ulaanbaatar', 'country_id'=>146]]);
+			DB::disableQueryLog();
+        DB::table('states')->insert([
             ['id'=>2501,'name'=>'Uvs', 'country_id'=>146],
             ['id'=>2502,'name'=>'Zavhan', 'country_id'=>146],
             ['id'=>2503,'name'=>'Montserrat', 'country_id'=>147],
@@ -3012,7 +3024,9 @@ class StatesTableSeeder extends Seeder
             ['id'=>2997,'name'=>'Hakasija', 'country_id'=>181],
             ['id'=>2998,'name'=>'Hanty-Mansija', 'country_id'=>181],
             ['id'=>2999,'name'=>'Ingusetija', 'country_id'=>181],
-            ['id'=>3000,'name'=>'Irkutsk', 'country_id'=>181],
+            ['id'=>3000,'name'=>'Irkutsk', 'country_id'=>181]]);
+			DB::disableQueryLog();
+        DB::table('states')->insert([
             ['id'=>3001,'name'=>'Ivanovo', 'country_id'=>181],
             ['id'=>3002,'name'=>'Jamalo-Nenets', 'country_id'=>181],
             ['id'=>3003,'name'=>'Jaroslavl', 'country_id'=>181],
@@ -3512,7 +3526,9 @@ class StatesTableSeeder extends Seeder
             ['id'=>3497,'name'=>'Yilan', 'country_id'=>214],
             ['id'=>3498,'name'=>'Yun-Lin Hsien', 'country_id'=>214],
             ['id'=>3499,'name'=>'Yunlin', 'country_id'=>214],
-            ['id'=>3500,'name'=>'Dushanbe', 'country_id'=>215],
+            ['id'=>3500,'name'=>'Dushanbe', 'country_id'=>215]]);
+			DB::disableQueryLog();
+        DB::table('states')->insert([
             ['id'=>3501,'name'=>'Gorno-Badakhshan', 'country_id'=>215],
             ['id'=>3502,'name'=>'Karotegin', 'country_id'=>215],
             ['id'=>3503,'name'=>'Khatlon', 'country_id'=>215],
@@ -4012,7 +4028,9 @@ class StatesTableSeeder extends Seeder
             ['id'=>3997,'name'=>'Tacuarembo', 'country_id'=>233],
             ['id'=>3998,'name'=>'Treinta y Tres', 'country_id'=>233],
             ['id'=>3999,'name'=>'Andijon', 'country_id'=>234],
-            ['id'=>4000,'name'=>'Buhoro', 'country_id'=>234],
+            ['id'=>4000,'name'=>'Buhoro', 'country_id'=>234]]);
+			DB::disableQueryLog();
+        DB::table('states')->insert([
             ['id'=>4001,'name'=>'Buxoro Viloyati', 'country_id'=>234],
             ['id'=>4002,'name'=>'Cizah', 'country_id'=>234],
             ['id'=>4003,'name'=>'Fargona', 'country_id'=>234],

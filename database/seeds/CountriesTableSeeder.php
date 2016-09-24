@@ -11,6 +11,7 @@ class CountriesTableSeeder extends Seeder
      */
     public function run()
     {
+		DB::disableQueryLog();
         DB::table('countries')->insert([
             ['id'=>1,'shortname' => "AF",'name'=>'Afghanistan'],
             ['id'=>2,'shortname' => "AL",'name'=>'Albania'],

@@ -172,9 +172,21 @@ $(document).ready(function() {
             });
         }
 
-        if(actionListFlag)
-            $('#action_items').code(actionListFlag);
-        else
+        $("#action_items").summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline']],
+                ['font', []],
+                ['fontsize', []],
+                ['color', []],
+                ['para', []],
+                ['height', []],
+                ['fullscreen',['fullscreen']],
+                ['codeview',['codeview']]
+            ]
+        });
+
+        if(!actionListFlag)
             $('#action_items').summernote('insertUnorderedList');
 
         $('.summernote').summernote({
@@ -192,19 +204,7 @@ $(document).ready(function() {
             height:100
         });
 
-        $("#action_items").summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', []],
-                ['height', []],
-                ['fullscreen',['fullscreen']],
-                ['codeview',['codeview']]
-            ]
-        });
+
 
 
 

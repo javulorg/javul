@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Issue;
 use App\Objective;
 use App\SiteActivity;
 use App\Task;
@@ -24,6 +25,7 @@ class ViewComposerServiceProvider extends ServiceProvider
             $view->with('totalUnits',Unit::count());
             $view->with('totalObjectives',Objective::count());
             $view->with('totalTasks',Task::count());
+            $view->with('totalIssues',Issue::count());
         });
 
         //----------------- for footer ---------------------------

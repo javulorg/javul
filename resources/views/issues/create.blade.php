@@ -47,11 +47,16 @@
             <div class="col-sm-8">
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
-                        <h4>Create Issue</h4>
+                        @if(empty($issueObj))
+                            <h4>Create Issue</h4>
+                        @else
+                            <h4>Update Issue</h4>
+                        @endif
                     </div>
                     <div class="panel-body list-group">
                         <div class="list-group-item">
-                            <form role="form" method="post" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data">
+                            <form role="form" method="post" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data"
+                                  action="{!! url('issues/'.\Request::segment(2).'/'.$action_method) !!}">
                                 {!! csrf_field() !!}
                                 <div class="row">
 
@@ -60,7 +65,7 @@
                                         <label class="control-label">Issue Title</label>
                                         <div class="input-icon right">
                                             <i class="fa"></i>
-                                            <input type="text" name="title" value="{{ (!empty($taskObj))? $taskObj->name : old('title') }}"
+                                            <input type="text" name="title" value="{{ (!empty($issueObj))? $issueObj->title : old('title') }}"
                                                    class="form-control"
                                                    placeholder="Issue Name"/>
                                             @if ($errors->has('title'))
@@ -70,6 +75,7 @@
                                             @endif
                                         </div>
                                     </div>
+
                                     <div class="col-sm-4 form-group">
                                         <label class="control-label">Select Objective</label>
                                         <div class="input-icon right">
@@ -79,7 +85,7 @@
                                                 @if(count($objectiveObj) > 0)
                                                     @foreach($objectiveObj as $objective)
                                                         <option value="{{$objectiveIDHashID->encode($objective->id)}}"
-                                                                @if(!empty($taskObj) && $objective->id == $taskObj->objective_id)
+                                                                @if(!empty($issueObj) && $objective->id == $issueObj->objective_id)
                                                                 selected=selected
                                                                 @endif>{{$objective->name}}</option>
                                                     @endforeach
@@ -87,17 +93,47 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4 form-group">
+
+                                    @if(!empty($issueObj) && $user_can_change_status)
+                                        <div class="col-sm-4 form-group">
+                                            <label class="control-label">Select Status</label>
+                                            <div class="input-icon right">
+                                                <i class="fa select-error"></i>
+                                                <select name="status" id="status" class="form-control">
+                                                    @if($issueObj->status!="verified" ) <option value="unverified" @if(!empty($issueObj) &&
+                                                $issueObj->status=="unverified") selected="selected" @endif>Unverified</option>@endif
+                                                    <option value="verified" @if(!empty($issueObj) &&
+                                                $issueObj->status=="verified") selected="selected" @endif>Verified</option>
+                                                    @if($issueObj->status =="verified" || $issueObj->resolved)
+                                                        <option value="resolved" @if(!empty($issueObj) &&
+                                                $issueObj->status=="resolved") selected="selected" @endif>Resolved</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 form-group">
                                         <label class="control-label">Select Task</label>
                                         <div class="input-icon right">
                                             <i class="fa select-error"></i>
-                                            <select name="task_id" id="task_id" class="form-control">
+                                            <select name="task_id[]" id="task_id" class="form-control" multiple>
                                                 <option value="">Select</option>
+                                                @if(!empty($taskObj))
+                                                    <?php $task_ids = explode(",",$issueObj->task_id); ?>
+                                                    @foreach($taskObj as $task)
+                                                        <option value="{{$taskIDHashID->encode($task->id)}}" @if(in_array($task->id,
+                                                        $task_ids)) selected @endif>{{$task->name}}</option>
+                                                    @endforeach
+                                                @endif
                                             </select>
 
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-sm-12 form-group">
                                         <div class="document_listing_div">
@@ -111,18 +147,16 @@
                                                     </thead>
                                                     <tbody>
 
-                                                    @if(!empty($taskDocumentsObj))
+                                                    @if(!empty($issueDocumentsObj))
                                                         <?php $i=1; ?>
-                                                        @foreach($taskDocumentsObj as $document)
-                                                            @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'no'])
+                                                        @foreach($issueDocumentsObj as $document)
+                                                            @include('issues.partials.issue_document_listing',['document'=>$document,'issueObj'=>$issueObj,'fromEdit'=>'no'])
                                                         @endforeach
-                                                        @if(empty($taskObj) || ($taskObj->status == "editable"))
+                                                        @if($issueObj->status != "resolved")
                                                             @include('tasks.partials.document_upload')
                                                         @endif
                                                     @else
-                                                        @if(empty($taskObj) || ($taskObj->status == "editable"))
-                                                            @include('tasks.partials.document_upload')
-                                                        @endif
+                                                        @include('tasks.partials.document_upload')
                                                     @endif
                                                     </tbody>
                                                 </table>
@@ -133,15 +167,21 @@
                                 <div class="row">
                                     <div class="col-sm-12 form-group">
                                         <label class="control-label">Description</label>
-                                        <textarea class="form-control summernote" name="description">@if(!empty($taskObj)) {{$taskObj->description}} @endif</textarea>
+                                        <textarea class="form-control summernote" name="description">@if(!empty($issueObj)) {{$issueObj->description}} @endif</textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 form-group">
+                                        <label class="control-label">Resolution</label>
+                                        <textarea class="form-control summernote_resolution" name="resolution">@if(!empty($issueObj))
+                                                {{$issueObj->resolution}} @endif</textarea>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-sm-12 ">
-
-                                        <button id="create_objective" type="submit"  @if(!empty($taskObj) && ($taskObj->status !="editable"))
+                                        <button id="create_objective" type="submit"  @if(!empty($issueObj) && ($issueObj->status =="resolved"))
                                         class="btn" disabled="disabled" style="background-color:#e1672c;"@else class="btn black-btn" @endif>
-                                            @if(!empty($taskObj))
+                                            @if(!empty($issueObj))
                                                 <span class="glyphicon glyphicon-edit"></span> Update Issue
                                             @else
                                                 <i class="fa fa-plus plus"></i> <span class="plus_text">Create Issue</span>
@@ -161,8 +201,11 @@
 @stop
 @section('page-scripts')
     <script>
-        var editTask = false;
 
+        var editTask = '{{(!empty($issueObj)?true:false)}}';
+        var can_res = '{{$user_can_resolve_issue}}';
+        var can_chnge_status = '{{$user_can_change_status}}';
+        var issue_status = '{{(!empty($issueObj)?$issueObj->status:false)}}';
         toastr.options = {
             "closeButton": true,
             "debug": false,
@@ -180,6 +223,6 @@
     </script>
     <script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
     <script src="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.js') !!}" type="text/javascript"></script>
-    <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.min.js') !!}" type="text/javascript"></script>
+    <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
     <script src="{!! url('assets/js/issues/issues.js') !!}"></script>
 @endsection

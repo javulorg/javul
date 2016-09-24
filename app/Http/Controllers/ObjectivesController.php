@@ -330,9 +330,12 @@ class ObjectivesController extends Controller
                     $upvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','+1')->count();
                     $downvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','-1')->count();
 
-                    if($upvotedCnt ==0)
-                        $upvotedCnt= 1;
-                    $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
+                    if($upvotedCnt == 0 && $downvotedCnt == 0)
+                        $importancePercentage = 0;
+                    else{
+
+                        $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
+                    }
 
                     if(is_float($importancePercentage))
                         $importancePercentage = ceil($importancePercentage);

@@ -16,7 +16,7 @@
                 </div>
                 <div class="issues square">
                     <div class="label_footer">Issues</div>
-                    <div class="value">123</div>
+                    <div class="value">{{$totalIssues}}</div>
                 </div>
             </div>
             <div class="col-sm-8">

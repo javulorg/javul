@@ -15,9 +15,9 @@ class CreateSiteActivityTable extends Migration
         Schema::create('site_activity', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->integer('unit_id');
-            $table->integer('objective_id');
-            $table->integer('task_id');
+            $table->integer('unit_id')->nullable();
+            $table->integer('objective_id')->nullable();
+            $table->integer('task_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->text('comment');
             $table->timestamps();

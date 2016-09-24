@@ -208,10 +208,19 @@
                                     </td>
                                     <td><a href="{!! url('units/'.$unitIDHashID->encode($obj->unit_id).'/'.\App\Unit::getSlug($obj->unit_id)) !!}"
                                            title="edit">{{\App\Unit::getUnitName($obj->unit_id)}}</a></td>
-                                    <td>{{$obj->status}}</td>
                                     <td>
-                                        <div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
-                                            ($obj->description)!!}"><span
+                                        <?php $status_class='';
+                                        if($obj->status=="unverified")
+                                            $status_class="text-danger";
+                                        elseif($obj->status=="verified")
+                                            $status_class="text-info";
+                                        elseif($obj->status == "resolved")
+                                            $status_class = "text-success";
+                                        ?>
+                                        <span class="{{$status_class}}">{{ucfirst($obj->status)}}</span>
+                                    </td>
+                                    <td>
+                                        <div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim($obj->description)!!}"><span
                                                     class="ellipsis_text">{!!trim($obj->description)!!}</span></div>
                                     </td>
                                 </tr>
@@ -230,8 +239,8 @@
 
                                 @if($issuesObj->lastPage() > 1 && $issuesObj->lastPage() != $issuesObj->currentPage())
                                     <a href="#" data-url="{{$issuesObj->url($issuesObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" class="btn
-                                    more-black-btn more-objectives" data-from_page="unit_view" type="button">
-                                        <span class="more_dots">...</span> MORE OBJECTIVES
+                                    more-black-btn more-issues" data-from_page="unit_view" type="button">
+                                        <span class="more_dots">...</span> MORE ISSUES
                                     </a>
                                 @endif
                             </td>
@@ -246,9 +255,12 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
-@section('page-scripts')
+<script src="{!! url('assets/plugins/jquery.ThreeDots.min.js') !!}" type="text/javascript"></script>
 <script>
     $(function(){
+        var the_obj = $('.text_wraps').ThreeDots({
+            max_rows: 1
+        });
         $(".unit_description").css("min-height",($(".both-div").height())+10+'px');
     })
 </script>

@@ -20,11 +20,11 @@ class ImportanceLevel extends Model
      */
     protected $fillable = ['user_id','objective_id','issue_id','importance_level','importance_upvote','importance_downvote','type'];
 
-    public static function checkImportanceLevel($objid)
+    public static function checkImportanceLevel($id,$whereField)
     {
-        if(!empty($objid))
+        if(!empty($id))
         {
-            $obj = self::where('objective_id',$objid)->where('user_id',\Auth::user()->id)->first();
+            $obj = self::where($whereField,$id)->where('user_id',\Auth::user()->id)->first();
             if(!empty($obj)){
                 if(empty($obj->importance_level))
                     return null;

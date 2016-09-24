@@ -11,6 +11,7 @@ class CitiesTableSeeder extends Seeder
      */
     public function run()
     {
+		DB::disableQueryLog();
         DB::table('cities')->insert([
             ['id'=>1,'name'=>"Bombuflat",'state_id'=>1],
 			['id'=>2,'name'=>"Garacharma",'state_id'=>1],
@@ -511,7 +512,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>497,'name'=>"Fatwa",'state_id'=>5],
 			['id'=>498,'name'=>"Forbesganj",'state_id'=>5],
 			['id'=>499,'name'=>"Gaya",'state_id'=>5],
-			['id'=>500,'name'=>"Gazipur",'state_id'=>5],
+			['id'=>500,'name'=>"Gazipur",'state_id'=>5]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>501,'name'=>"Ghoghardiha",'state_id'=>5],
 			['id'=>502,'name'=>"Gogri Jamalpur",'state_id'=>5],
 			['id'=>503,'name'=>"Gopalganj",'state_id'=>5],
@@ -1011,7 +1014,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>997,'name'=>"Paliyad",'state_id'=>12],
 			['id'=>998,'name'=>"Pandesara",'state_id'=>12],
 			['id'=>999,'name'=>"Panoli",'state_id'=>12],
-			['id'=>1000,'name'=>"Pardi",'state_id'=>12],
+			['id'=>1000,'name'=>"Pardi",'state_id'=>12]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>1001,'name'=>"Parnera",'state_id'=>12],
 			['id'=>1002,'name'=>"Parvat",'state_id'=>12],
 			['id'=>1003,'name'=>"Patan",'state_id'=>12],
@@ -1511,7 +1516,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>1497,'name'=>"Sahibganj",'state_id'=>16],
 			['id'=>1498,'name'=>"Sahnidih",'state_id'=>16],
 			['id'=>1499,'name'=>"Saraidhela",'state_id'=>16],
-			['id'=>1500,'name'=>"Saraikela",'state_id'=>16],
+			['id'=>1500,'name'=>"Saraikela",'state_id'=>16]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>1501,'name'=>"Sarjamda",'state_id'=>16],
 			['id'=>1502,'name'=>"Saunda",'state_id'=>16],
 			['id'=>1503,'name'=>"Sewai",'state_id'=>16],
@@ -2011,7 +2018,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>1997,'name'=>"Palakkad",'state_id'=>19],
 			['id'=>1998,'name'=>"Palayad",'state_id'=>19],
 			['id'=>1999,'name'=>"Palissery",'state_id'=>19],
-			['id'=>2000,'name'=>"Pallikkunnu",'state_id'=>19],
+			['id'=>2000,'name'=>"Pallikkunnu",'state_id'=>19]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>2001,'name'=>"Paluvai",'state_id'=>19],
 			['id'=>2002,'name'=>"Panniyannur",'state_id'=>19],
 			['id'=>2003,'name'=>"Pantalam",'state_id'=>19],
@@ -2511,7 +2520,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>2497,'name'=>"Ashta",'state_id'=>22],
 			['id'=>2498,'name'=>"Ashti",'state_id'=>22],
 			['id'=>2499,'name'=>"Aurangabad",'state_id'=>22],
-			['id'=>2500,'name'=>"Aurangabad Cantonment",'state_id'=>22],
+			['id'=>2500,'name'=>"Aurangabad Cantonment",'state_id'=>22]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>2501,'name'=>"Ausa",'state_id'=>22],
 			['id'=>2502,'name'=>"Babhulgaon",'state_id'=>22],
 			['id'=>2503,'name'=>"Badlapur",'state_id'=>22],
@@ -3011,7 +3022,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>2997,'name'=>"Birmitrapur",'state_id'=>29],
 			['id'=>2998,'name'=>"Bishama Katek",'state_id'=>29],
 			['id'=>2999,'name'=>"Bolangir",'state_id'=>29],
-			['id'=>3000,'name'=>"Brahmapur",'state_id'=>29],
+			['id'=>3000,'name'=>"Brahmapur",'state_id'=>29]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>3001,'name'=>"Brajrajnagar",'state_id'=>29],
 			['id'=>3002,'name'=>"Buguda",'state_id'=>29],
 			['id'=>3003,'name'=>"Burla",'state_id'=>29],
@@ -3511,7 +3524,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>3497,'name'=>"Sambhar",'state_id'=>33],
 			['id'=>3498,'name'=>"Samdari",'state_id'=>33],
 			['id'=>3499,'name'=>"Sanchor",'state_id'=>33],
-			['id'=>3500,'name'=>"Sangariya",'state_id'=>33],
+			['id'=>3500,'name'=>"Sangariya",'state_id'=>33]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>3501,'name'=>"Sangod",'state_id'=>33],
 			['id'=>3502,'name'=>"Sardarshahr",'state_id'=>33],
 			['id'=>3503,'name'=>"Sarwar",'state_id'=>33],
@@ -4011,7 +4026,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>3997,'name'=>"Nagojanahalli",'state_id'=>35],
 			['id'=>3998,'name'=>"Nallampatti",'state_id'=>35],
 			['id'=>3999,'name'=>"Nallur",'state_id'=>35],
-			['id'=>4000,'name'=>"Namagiripettai",'state_id'=>35],
+			['id'=>4000,'name'=>"Namagiripettai",'state_id'=>35]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>4001,'name'=>"Namakkal",'state_id'=>35],
 			['id'=>4002,'name'=>"Nambiyur",'state_id'=>35],
 			['id'=>4003,'name'=>"Nambutalai",'state_id'=>35],
@@ -4511,7 +4528,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>4497,'name'=>"Siddipet",'state_id'=>36],
 			['id'=>4498,'name'=>"Singapur",'state_id'=>36],
 			['id'=>4499,'name'=>"Sircilla",'state_id'=>36],
-			['id'=>4500,'name'=>"Suryapet",'state_id'=>36],
+			['id'=>4500,'name'=>"Suryapet",'state_id'=>36]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>4501,'name'=>"Tandur",'state_id'=>36],
 			['id'=>4502,'name'=>"Vemulawada",'state_id'=>36],
 			['id'=>4503,'name'=>"Vikarabad",'state_id'=>36],
@@ -5011,7 +5030,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>4997,'name'=>"Mursan",'state_id'=>38],
 			['id'=>4998,'name'=>"Musafirkhana",'state_id'=>38],
 			['id'=>4999,'name'=>"Muzaffarnagar",'state_id'=>38],
-			['id'=>5000,'name'=>"Nadigaon",'state_id'=>38],
+			['id'=>5000,'name'=>"Nadigaon",'state_id'=>38]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>5001,'name'=>"Nagina",'state_id'=>38],
 			['id'=>5002,'name'=>"Nagram",'state_id'=>38],
 			['id'=>5003,'name'=>"Nai Bazar",'state_id'=>38],
@@ -5511,7 +5532,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>5497,'name'=>"Habra",'state_id'=>41],
 			['id'=>5498,'name'=>"Haldia",'state_id'=>41],
 			['id'=>5499,'name'=>"Haldibari",'state_id'=>41],
-			['id'=>5500,'name'=>"Halisahar",'state_id'=>41],
+			['id'=>5500,'name'=>"Halisahar",'state_id'=>41]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>5501,'name'=>"Haora",'state_id'=>41],
 			['id'=>5502,'name'=>"Harharia Chak",'state_id'=>41],
 			['id'=>5503,'name'=>"Harindanga",'state_id'=>41],
@@ -6011,7 +6034,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>5997,'name'=>"Dasht-e Archa",'state_id'=>67],
 			['id'=>5998,'name'=>"Emam Saheb",'state_id'=>67],
 			['id'=>5999,'name'=>"Hazart Imam",'state_id'=>67],
-			['id'=>6000,'name'=>"Khanabad",'state_id'=>67],
+			['id'=>6000,'name'=>"Khanabad",'state_id'=>67]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>6001,'name'=>"Qal''eh-ye Zal",'state_id'=>67],
 			['id'=>6002,'name'=>"Qunduz",'state_id'=>67],
 			['id'=>6003,'name'=>"Aybak",'state_id'=>68],
@@ -6511,7 +6536,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>6497,'name'=>"Villa Carlos Paz",'state_id'=>212],
 			['id'=>6498,'name'=>"Villa Maria",'state_id'=>212],
 			['id'=>6499,'name'=>"Corrientes",'state_id'=>213],
-			['id'=>6500,'name'=>"Goya",'state_id'=>213],
+			['id'=>6500,'name'=>"Goya",'state_id'=>213]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>6501,'name'=>"Mercedes",'state_id'=>213],
 			['id'=>6502,'name'=>"San Lorenzo",'state_id'=>213],
 			['id'=>6503,'name'=>"Formosa",'state_id'=>216],
@@ -7011,7 +7038,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>6997,'name'=>"Pettenbach",'state_id'=>286],
 			['id'=>6998,'name'=>"Pram",'state_id'=>286],
 			['id'=>6999,'name'=>"Pregarten",'state_id'=>286],
-			['id'=>7000,'name'=>"Puchenau",'state_id'=>286],
+			['id'=>7000,'name'=>"Puchenau",'state_id'=>286]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>7001,'name'=>"Regau",'state_id'=>286],
 			['id'=>7002,'name'=>"Ried",'state_id'=>286],
 			['id'=>7003,'name'=>"Rohrbach in Oberosterreich",'state_id'=>286],
@@ -7511,7 +7540,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>7497,'name'=>"Berlaar",'state_id'=>422],
 			['id'=>7498,'name'=>"Boechout",'state_id'=>422],
 			['id'=>7499,'name'=>"Bonheiden",'state_id'=>422],
-			['id'=>7500,'name'=>"Boom",'state_id'=>422],
+			['id'=>7500,'name'=>"Boom",'state_id'=>422]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>7501,'name'=>"Bornem",'state_id'=>422],
 			['id'=>7502,'name'=>"Borsbeek",'state_id'=>422],
 			['id'=>7503,'name'=>"Brasschaat",'state_id'=>422],
@@ -8011,7 +8042,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>7997,'name'=>"Tielt-Winge",'state_id'=>436],
 			['id'=>7998,'name'=>"Tienen",'state_id'=>436],
 			['id'=>7999,'name'=>"Tremelo",'state_id'=>436],
-			['id'=>8000,'name'=>"Vilvoorde",'state_id'=>436],
+			['id'=>8000,'name'=>"Vilvoorde",'state_id'=>436]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>8001,'name'=>"Wemmel",'state_id'=>436],
 			['id'=>8002,'name'=>"Wezembeek-Oppem",'state_id'=>436],
 			['id'=>8003,'name'=>"Zaventem",'state_id'=>436],
@@ -8511,7 +8544,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>8497,'name'=>"Seronga",'state_id'=>506],
 			['id'=>8498,'name'=>"Shaowe",'state_id'=>506],
 			['id'=>8499,'name'=>"Tobere Lands",'state_id'=>506],
-			['id'=>8500,'name'=>"Tubu",'state_id'=>506],
+			['id'=>8500,'name'=>"Tubu",'state_id'=>506]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>8501,'name'=>"Tubu Lands",'state_id'=>506],
 			['id'=>8502,'name'=>"Xadau",'state_id'=>506],
 			['id'=>8503,'name'=>"Xakao",'state_id'=>506],
@@ -9011,7 +9046,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>8997,'name'=>"Indiara",'state_id'=>521],
 			['id'=>8998,'name'=>"Inhumas",'state_id'=>521],
 			['id'=>8999,'name'=>"Ipameri",'state_id'=>521],
-			['id'=>9000,'name'=>"Ipora",'state_id'=>521],
+			['id'=>9000,'name'=>"Ipora",'state_id'=>521]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>9001,'name'=>"Itaberai",'state_id'=>521],
 			['id'=>9002,'name'=>"Itapaci",'state_id'=>521],
 			['id'=>9003,'name'=>"Itapirapua",'state_id'=>521],
@@ -9511,7 +9548,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>9497,'name'=>"Cha Grande",'state_id'=>529],
 			['id'=>9498,'name'=>"Condado",'state_id'=>529],
 			['id'=>9499,'name'=>"Cumaru",'state_id'=>529],
-			['id'=>9500,'name'=>"Cupira",'state_id'=>529],
+			['id'=>9500,'name'=>"Cupira",'state_id'=>529]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>9501,'name'=>"Custodia",'state_id'=>529],
 			['id'=>9502,'name'=>"Escada",'state_id'=>529],
 			['id'=>9503,'name'=>"Exu",'state_id'=>529],
@@ -10011,7 +10050,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>9997,'name'=>"Cibitoke",'state_id'=>618],
 			['id'=>9998,'name'=>"Gitega",'state_id'=>619],
 			['id'=>9999,'name'=>"Karuzi",'state_id'=>620],
-			['id'=>10000,'name'=>"Kayanza",'state_id'=>621],
+			['id'=>10000,'name'=>"Kayanza",'state_id'=>621]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>10001,'name'=>"Kirundo",'state_id'=>622],
 			['id'=>10002,'name'=>"Makamba",'state_id'=>623],
 			['id'=>10003,'name'=>"Muramvya",'state_id'=>624],
@@ -10511,7 +10552,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>10497,'name'=>"Southampton",'state_id'=>671],
 			['id'=>10498,'name'=>"Stayner",'state_id'=>671],
 			['id'=>10499,'name'=>"Stirling",'state_id'=>671],
-			['id'=>10500,'name'=>"Stoney Creek",'state_id'=>671],
+			['id'=>10500,'name'=>"Stoney Creek",'state_id'=>671]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>10501,'name'=>"Stoney Point",'state_id'=>671],
 			['id'=>10502,'name'=>"Stouffville",'state_id'=>671],
 			['id'=>10503,'name'=>"Stratford",'state_id'=>671],
@@ -11011,7 +11054,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>10997,'name'=>"Renaico",'state_id'=>719],
 			['id'=>10998,'name'=>"Saavedra",'state_id'=>719],
 			['id'=>10999,'name'=>"Temuco",'state_id'=>719],
-			['id'=>11000,'name'=>"Teodoro Schmidt",'state_id'=>719],
+			['id'=>11000,'name'=>"Teodoro Schmidt",'state_id'=>719]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>11001,'name'=>"Tolten",'state_id'=>719],
 			['id'=>11002,'name'=>"Traiguen",'state_id'=>719],
 			['id'=>11003,'name'=>"Victoria",'state_id'=>719],
@@ -11511,7 +11556,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>11497,'name'=>"Luoyang",'state_id'=>744],
 			['id'=>11498,'name'=>"Pingzhai",'state_id'=>744],
 			['id'=>11499,'name'=>"Tongren",'state_id'=>744],
-			['id'=>11500,'name'=>"Tongzi",'state_id'=>744],
+			['id'=>11500,'name'=>"Tongzi",'state_id'=>744]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>11501,'name'=>"Xiaoweizhai",'state_id'=>744],
 			['id'=>11502,'name'=>"Xingyi",'state_id'=>744],
 			['id'=>11503,'name'=>"Zunyi",'state_id'=>744],
@@ -12011,7 +12058,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>11997,'name'=>"Fushun",'state_id'=>755],
 			['id'=>11998,'name'=>"Fuxin",'state_id'=>755],
 			['id'=>11999,'name'=>"Haicheng",'state_id'=>755],
-			['id'=>12000,'name'=>"Heishan",'state_id'=>755],
+			['id'=>12000,'name'=>"Heishan",'state_id'=>755]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>12001,'name'=>"Huanren",'state_id'=>755],
 			['id'=>12002,'name'=>"Huludao",'state_id'=>755],
 			['id'=>12003,'name'=>"Hushitai",'state_id'=>755],
@@ -12511,7 +12560,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>12497,'name'=>"Linan City",'state_id'=>772],
 			['id'=>12498,'name'=>"Linhai",'state_id'=>772],
 			['id'=>12499,'name'=>"Linping",'state_id'=>772],
-			['id'=>12500,'name'=>"Lishui",'state_id'=>772],
+			['id'=>12500,'name'=>"Lishui",'state_id'=>772]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>12501,'name'=>"Liushi",'state_id'=>772],
 			['id'=>12502,'name'=>"Ningbo",'state_id'=>772],
 			['id'=>12503,'name'=>"Ninghai",'state_id'=>772],
@@ -13011,7 +13062,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>12997,'name'=>"Istmina",'state_id'=>787],
 			['id'=>12998,'name'=>"Jurado",'state_id'=>787],
 			['id'=>12999,'name'=>"Litoral del San Juan",'state_id'=>787],
-			['id'=>13000,'name'=>"Lloro",'state_id'=>787],
+			['id'=>13000,'name'=>"Lloro",'state_id'=>787]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>13001,'name'=>"Medio Atrato",'state_id'=>787],
 			['id'=>13002,'name'=>"Medio Baudo",'state_id'=>787],
 			['id'=>13003,'name'=>"Medio San Juan",'state_id'=>787],
@@ -13511,7 +13564,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>13497,'name'=>"Icononzo",'state_id'=>804],
 			['id'=>13498,'name'=>"Lerida",'state_id'=>804],
 			['id'=>13499,'name'=>"Libano",'state_id'=>804],
-			['id'=>13500,'name'=>"Mariquita",'state_id'=>804],
+			['id'=>13500,'name'=>"Mariquita",'state_id'=>804]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>13501,'name'=>"Melgar",'state_id'=>804],
 			['id'=>13502,'name'=>"Murillo",'state_id'=>804],
 			['id'=>13503,'name'=>"Natagaima",'state_id'=>804],
@@ -14011,7 +14066,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>13997,'name'=>"Oshtarije",'state_id'=>874],
 			['id'=>13998,'name'=>"Ozalj",'state_id'=>874],
 			['id'=>13999,'name'=>"Plashki",'state_id'=>874],
-			['id'=>14000,'name'=>"Slunj",'state_id'=>874],
+			['id'=>14000,'name'=>"Slunj",'state_id'=>874]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>14001,'name'=>"Vojnic",'state_id'=>874],
 			['id'=>14002,'name'=>"Dhelekovec",'state_id'=>875],
 			['id'=>14003,'name'=>"Dhurdhevac",'state_id'=>875],
@@ -14511,7 +14568,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>14497,'name'=>"Dubrava",'state_id'=>892],
 			['id'=>14498,'name'=>"Dugo Selo",'state_id'=>892],
 			['id'=>14499,'name'=>"Gornja Bistra",'state_id'=>892],
-			['id'=>14500,'name'=>"Gornji Laduch",'state_id'=>892],
+			['id'=>14500,'name'=>"Gornji Laduch",'state_id'=>892]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>14501,'name'=>"Gornji Stupnik",'state_id'=>892],
 			['id'=>14502,'name'=>"Grachec",'state_id'=>892],
 			['id'=>14503,'name'=>"Gradici",'state_id'=>892],
@@ -15011,7 +15070,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>14997,'name'=>"Brenderup",'state_id'=>944],
 			['id'=>14998,'name'=>"Broby",'state_id'=>944],
 			['id'=>14999,'name'=>"Bullerup",'state_id'=>944],
-			['id'=>15000,'name'=>"Ejby",'state_id'=>944],
+			['id'=>15000,'name'=>"Ejby",'state_id'=>944]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>15001,'name'=>"Faaborg",'state_id'=>944],
 			['id'=>15002,'name'=>"Glamsbjerg",'state_id'=>944],
 			['id'=>15003,'name'=>"Haarby",'state_id'=>944],
@@ -15511,7 +15572,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>15497,'name'=>"al-Ghardaqah",'state_id'=>1062],
 			['id'=>15498,'name'=>"al-Qusayr",'state_id'=>1062],
 			['id'=>15499,'name'=>"Abu Hummus",'state_id'=>1063],
-			['id'=>15500,'name'=>"Abu al-Matamir",'state_id'=>1063],
+			['id'=>15500,'name'=>"Abu al-Matamir",'state_id'=>1063]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>15501,'name'=>"Buturis",'state_id'=>1063],
 			['id'=>15502,'name'=>"Damanhur",'state_id'=>1063],
 			['id'=>15503,'name'=>"Edfina",'state_id'=>1063],
@@ -16011,7 +16074,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>15997,'name'=>"Sadala",'state_id'=>1108],
 			['id'=>15998,'name'=>"Sadukula",'state_id'=>1108],
 			['id'=>15999,'name'=>"Siimusti",'state_id'=>1108],
-			['id'=>16000,'name'=>"Tabivere",'state_id'=>1108],
+			['id'=>16000,'name'=>"Tabivere",'state_id'=>1108]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>16001,'name'=>"Tahkvere",'state_id'=>1108],
 			['id'=>16002,'name'=>"Tiheda",'state_id'=>1108],
 			['id'=>16003,'name'=>"Toikvere",'state_id'=>1108],
@@ -16511,7 +16576,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>16497,'name'=>"Voika",'state_id'=>1115],
 			['id'=>16498,'name'=>"Vonnu",'state_id'=>1115],
 			['id'=>16499,'name'=>"Voopste",'state_id'=>1115],
-			['id'=>16500,'name'=>"Vorbuse",'state_id'=>1115],
+			['id'=>16500,'name'=>"Vorbuse",'state_id'=>1115]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>16501,'name'=>"Aakre",'state_id'=>1116],
 			['id'=>16502,'name'=>"Ala",'state_id'=>1116],
 			['id'=>16503,'name'=>"Hargla",'state_id'=>1116],
@@ -17011,7 +17078,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>16997,'name'=>"Chauny",'state_id'=>1182],
 			['id'=>16998,'name'=>"Hirson",'state_id'=>1182],
 			['id'=>16999,'name'=>"Laon",'state_id'=>1182],
-			['id'=>17000,'name'=>"Saint-Quentin",'state_id'=>1182],
+			['id'=>17000,'name'=>"Saint-Quentin",'state_id'=>1182]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>17001,'name'=>"Soissons",'state_id'=>1182],
 			['id'=>17002,'name'=>"Strassbourg",'state_id'=>1182],
 			['id'=>17003,'name'=>"Tergnier",'state_id'=>1182],
@@ -17511,7 +17580,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>17497,'name'=>"Hagetmau",'state_id'=>1249],
 			['id'=>17498,'name'=>"Landes",'state_id'=>1249],
 			['id'=>17499,'name'=>"Mont-de-Marsan",'state_id'=>1249],
-			['id'=>17500,'name'=>"Saint-Paul-les-Dax",'state_id'=>1249],
+			['id'=>17500,'name'=>"Saint-Paul-les-Dax",'state_id'=>1249]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>17501,'name'=>"Tarnos",'state_id'=>1249],
 			['id'=>17502,'name'=>"Codolet",'state_id'=>1250],
 			['id'=>17503,'name'=>"Cuxac-d''Aude",'state_id'=>1250],
@@ -18011,7 +18082,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>17997,'name'=>"Osny",'state_id'=>1305],
 			['id'=>17998,'name'=>"Persan",'state_id'=>1305],
 			['id'=>17999,'name'=>"Pontoise",'state_id'=>1305],
-			['id'=>18000,'name'=>"Saint-Brice-sous-Foret",'state_id'=>1305],
+			['id'=>18000,'name'=>"Saint-Brice-sous-Foret",'state_id'=>1305]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>18001,'name'=>"Saint-Gratien",'state_id'=>1305],
 			['id'=>18002,'name'=>"Saint-Leu-la-Foret",'state_id'=>1305],
 			['id'=>18003,'name'=>"Saint-Ouen-l''Aumone",'state_id'=>1305],
@@ -18511,7 +18584,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>18497,'name'=>"Lenningen",'state_id'=>1355],
 			['id'=>18498,'name'=>"Lenzkirch",'state_id'=>1355],
 			['id'=>18499,'name'=>"Leonberg",'state_id'=>1355],
-			['id'=>18500,'name'=>"Leutenbach",'state_id'=>1355],
+			['id'=>18500,'name'=>"Leutenbach",'state_id'=>1355]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>18501,'name'=>"Leutkirch",'state_id'=>1355],
 			['id'=>18502,'name'=>"Lichtenstein",'state_id'=>1355],
 			['id'=>18503,'name'=>"Linkenheim-Hochstetten",'state_id'=>1355],
@@ -19011,7 +19086,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>18997,'name'=>"Waldkraiburg",'state_id'=>1357],
 			['id'=>18998,'name'=>"Walkertshofen",'state_id'=>1357],
 			['id'=>18999,'name'=>"Wasserburg",'state_id'=>1357],
-			['id'=>19000,'name'=>"WeiBenburg",'state_id'=>1357],
+			['id'=>19000,'name'=>"WeiBenburg",'state_id'=>1357]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>19001,'name'=>"WeiBenhorn",'state_id'=>1357],
 			['id'=>19002,'name'=>"Weiden",'state_id'=>1357],
 			['id'=>19003,'name'=>"Weidenberg",'state_id'=>1357],
@@ -19511,7 +19588,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>19497,'name'=>"Neu Wulmstorf",'state_id'=>1385],
 			['id'=>19498,'name'=>"Neustadt",'state_id'=>1385],
 			['id'=>19499,'name'=>"Nienburg",'state_id'=>1385],
-			['id'=>19500,'name'=>"Norden",'state_id'=>1385],
+			['id'=>19500,'name'=>"Norden",'state_id'=>1385]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>19501,'name'=>"Nordenham",'state_id'=>1385],
 			['id'=>19502,'name'=>"Nordhorn",'state_id'=>1385],
 			['id'=>19503,'name'=>"Nordstemmen",'state_id'=>1385],
@@ -20010,7 +20089,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>19996,'name'=>"Neuwied",'state_id'=>1390],
 			['id'=>19997,'name'=>"Niederzissen",'state_id'=>1390],
 			['id'=>19998,'name'=>"Pirmasens",'state_id'=>1390],
-			['id'=>19999,'name'=>"Plaidt",'state_id'=>1390],
+			['id'=>19999,'name'=>"Plaidt",'state_id'=>1390]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>20000,'name'=>"Remagen",'state_id'=>1390],
 			['id'=>20001,'name'=>"Schifferstadt",'state_id'=>1390],
 			['id'=>20002,'name'=>"Schoenenberg Kuebelberg",'state_id'=>1390],
@@ -20511,7 +20592,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>20497,'name'=>"Viron",'state_id'=>1419],
 			['id'=>20498,'name'=>"Voula",'state_id'=>1419],
 			['id'=>20499,'name'=>"Vrilission",'state_id'=>1419],
-			['id'=>20500,'name'=>"Zografos",'state_id'=>1419],
+			['id'=>20500,'name'=>"Zografos",'state_id'=>1419]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>20501,'name'=>"Heraklion",'state_id'=>1421],
 			['id'=>20502,'name'=>"Arhangelos",'state_id'=>1422],
 			['id'=>20503,'name'=>"Ialysos",'state_id'=>1422],
@@ -21011,7 +21094,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>20997,'name'=>"Veszto",'state_id'=>1639],
 			['id'=>20998,'name'=>"Abaujszanto",'state_id'=>1640],
 			['id'=>20999,'name'=>"Arlo",'state_id'=>1640],
-			['id'=>21000,'name'=>"Bogacs",'state_id'=>1640],
+			['id'=>21000,'name'=>"Bogacs",'state_id'=>1640]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>21001,'name'=>"Cigand",'state_id'=>1640],
 			['id'=>21002,'name'=>"Edeleny",'state_id'=>1640],
 			['id'=>21003,'name'=>"Emod",'state_id'=>1640],
@@ -21511,7 +21596,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>21497,'name'=>"Jakarta",'state_id'=>1673],
 			['id'=>21498,'name'=>"Jambi",'state_id'=>1674],
 			['id'=>21499,'name'=>"Kualatungka",'state_id'=>1674],
-			['id'=>21500,'name'=>"Simpang",'state_id'=>1674],
+			['id'=>21500,'name'=>"Simpang",'state_id'=>1674]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>21501,'name'=>"Sungaipenuh",'state_id'=>1674],
 			['id'=>21502,'name'=>"Kendal",'state_id'=>1682],
 			['id'=>21503,'name'=>"Bandar Lampung",'state_id'=>1683],
@@ -22011,7 +22098,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>21997,'name'=>"Boyle",'state_id'=>1771],
 			['id'=>21998,'name'=>"Castlerea",'state_id'=>1771],
 			['id'=>21999,'name'=>"Roscommon",'state_id'=>1771],
-			['id'=>22000,'name'=>"Sligo",'state_id'=>1772],
+			['id'=>22000,'name'=>"Sligo",'state_id'=>1772]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>22001,'name'=>"Co Tyrone",'state_id'=>1775],
 			['id'=>22002,'name'=>"Downpatrick",'state_id'=>1775],
 			['id'=>22003,'name'=>"Dungarvan",'state_id'=>1776],
@@ -22511,7 +22600,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>22497,'name'=>"San Valentino Torio",'state_id'=>1822],
 			['id'=>22498,'name'=>"Sant Antimo",'state_id'=>1822],
 			['id'=>22499,'name'=>"Sant''Agata de'' Goti",'state_id'=>1822],
-			['id'=>22500,'name'=>"Sant''Agnello",'state_id'=>1822],
+			['id'=>22500,'name'=>"Sant''Agnello",'state_id'=>1822]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>22501,'name'=>"Sant''Anastasia",'state_id'=>1822],
 			['id'=>22502,'name'=>"Sant''Antonio Abate",'state_id'=>1822],
 			['id'=>22503,'name'=>"Sant''Arpino",'state_id'=>1822],
@@ -23011,7 +23102,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>22997,'name'=>"Cologno al Serio",'state_id'=>1847],
 			['id'=>22998,'name'=>"Como",'state_id'=>1847],
 			['id'=>22999,'name'=>"Concesio",'state_id'=>1847],
-			['id'=>23000,'name'=>"Concorezzo",'state_id'=>1847],
+			['id'=>23000,'name'=>"Concorezzo",'state_id'=>1847]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>23001,'name'=>"Corbetta",'state_id'=>1847],
 			['id'=>23002,'name'=>"Cormano",'state_id'=>1847],
 			['id'=>23003,'name'=>"Cornaredo",'state_id'=>1847],
@@ -23511,7 +23604,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>23497,'name'=>"Ostuni",'state_id'=>1872],
 			['id'=>23498,'name'=>"Palagiano",'state_id'=>1872],
 			['id'=>23499,'name'=>"Palo del Colle",'state_id'=>1872],
-			['id'=>23500,'name'=>"Parabita",'state_id'=>1872],
+			['id'=>23500,'name'=>"Parabita",'state_id'=>1872]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>23501,'name'=>"Polignano a Mare",'state_id'=>1872],
 			['id'=>23502,'name'=>"Pulsano",'state_id'=>1872],
 			['id'=>23503,'name'=>"Putignano",'state_id'=>1872],
@@ -24011,7 +24106,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>23997,'name'=>"Pievebelvicino",'state_id'=>1896],
 			['id'=>23998,'name'=>"Piombino Dese",'state_id'=>1896],
 			['id'=>23999,'name'=>"Piove di Sacco",'state_id'=>1896],
-			['id'=>24000,'name'=>"Ponte San Nicolo",'state_id'=>1896],
+			['id'=>24000,'name'=>"Ponte San Nicolo",'state_id'=>1896]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>24001,'name'=>"Ponzano Veneto",'state_id'=>1896],
 			['id'=>24002,'name'=>"Porto Tolle",'state_id'=>1896],
 			['id'=>24003,'name'=>"Porto Viro",'state_id'=>1896],
@@ -24511,7 +24608,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>24497,'name'=>"Minori",'state_id'=>1931],
 			['id'=>24498,'name'=>"Mito",'state_id'=>1931],
 			['id'=>24499,'name'=>"Mitsukaido",'state_id'=>1931],
-			['id'=>24500,'name'=>"Moriya",'state_id'=>1931],
+			['id'=>24500,'name'=>"Moriya",'state_id'=>1931]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>24501,'name'=>"Naka",'state_id'=>1931],
 			['id'=>24502,'name'=>"Oarai",'state_id'=>1931],
 			['id'=>24503,'name'=>"Omiya",'state_id'=>1931],
@@ -25011,7 +25110,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>24997,'name'=>"Iwata",'state_id'=>1956],
 			['id'=>24998,'name'=>"Kakegawa",'state_id'=>1956],
 			['id'=>24999,'name'=>"Kanaya",'state_id'=>1956],
-			['id'=>25000,'name'=>"Kannami",'state_id'=>1956],
+			['id'=>25000,'name'=>"Kannami",'state_id'=>1956]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>25001,'name'=>"Kikugawa",'state_id'=>1956],
 			['id'=>25002,'name'=>"Kosai",'state_id'=>1956],
 			['id'=>25003,'name'=>"Mishima",'state_id'=>1956],
@@ -25511,7 +25612,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>25497,'name'=>"Embu",'state_id'=>2006],
 			['id'=>25498,'name'=>"Isiolo",'state_id'=>2006],
 			['id'=>25499,'name'=>"Kangonde",'state_id'=>2006],
-			['id'=>25500,'name'=>"Kitui",'state_id'=>2006],
+			['id'=>25500,'name'=>"Kitui",'state_id'=>2006]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>25501,'name'=>"Machakos",'state_id'=>2006],
 			['id'=>25502,'name'=>"Mado Gashi",'state_id'=>2006],
 			['id'=>25503,'name'=>"Marsabit",'state_id'=>2006],
@@ -26011,7 +26114,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>25997,'name'=>"Preili",'state_id'=>2138],
 			['id'=>25998,'name'=>"Rezekne",'state_id'=>2139],
 			['id'=>25999,'name'=>"Vilani",'state_id'=>2140],
-			['id'=>26000,'name'=>"Riga",'state_id'=>2141],
+			['id'=>26000,'name'=>"Riga",'state_id'=>2141]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>26001,'name'=>"Baldone",'state_id'=>2142],
 			['id'=>26002,'name'=>"Balozhi",'state_id'=>2142],
 			['id'=>26003,'name'=>"Olaine",'state_id'=>2142],
@@ -26509,7 +26614,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>26497,'name'=>"Luxembourg",'state_id'=>2237],
 			['id'=>26498,'name'=>"Medingen",'state_id'=>2237],
 			['id'=>26499,'name'=>"Moutfort",'state_id'=>2237],
-			['id'=>26500,'name'=>"Mullendorf",'state_id'=>2237],
+			['id'=>26500,'name'=>"Mullendorf",'state_id'=>2237]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>26501,'name'=>"Munsbach",'state_id'=>2237],
 			['id'=>26502,'name'=>"Neuhaeusgen",'state_id'=>2237],
 			['id'=>26503,'name'=>"Niederanven",'state_id'=>2237],
@@ -27009,7 +27116,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>26997,'name'=>"Jelapang",'state_id'=>2317],
 			['id'=>26998,'name'=>"Kampar",'state_id'=>2317],
 			['id'=>26999,'name'=>"Kampong Koh",'state_id'=>2317],
-			['id'=>27000,'name'=>"Kuala Kangsar",'state_id'=>2317],
+			['id'=>27000,'name'=>"Kuala Kangsar",'state_id'=>2317]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>27001,'name'=>"Lawan Kuda Baharu",'state_id'=>2317],
 			['id'=>27002,'name'=>"Lumut",'state_id'=>2317],
 			['id'=>27003,'name'=>"Pantai Remis",'state_id'=>2317],
@@ -27509,7 +27618,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>27497,'name'=>"Montagne Blanche",'state_id'=>2417],
 			['id'=>27498,'name'=>"Pailles",'state_id'=>2417],
 			['id'=>27499,'name'=>"Providence",'state_id'=>2417],
-			['id'=>27500,'name'=>"Quartier Militaire",'state_id'=>2417],
+			['id'=>27500,'name'=>"Quartier Militaire",'state_id'=>2417]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>27501,'name'=>"Ripailles",'state_id'=>2417],
 			['id'=>27502,'name'=>"Saint Pierre",'state_id'=>2417],
 			['id'=>27503,'name'=>"Verdun",'state_id'=>2417],
@@ -28009,7 +28120,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>27997,'name'=>"Huejutla",'state_id'=>2440],
 			['id'=>27998,'name'=>"Hueytlalpan",'state_id'=>2440],
 			['id'=>27999,'name'=>"Huichapan",'state_id'=>2440],
-			['id'=>28000,'name'=>"Ixmiquilpan",'state_id'=>2440],
+			['id'=>28000,'name'=>"Ixmiquilpan",'state_id'=>2440]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>28001,'name'=>"Jacala",'state_id'=>2440],
 			['id'=>28002,'name'=>"Jaltocan",'state_id'=>2440],
 			['id'=>28003,'name'=>"Los Reyes",'state_id'=>2440],
@@ -28509,7 +28622,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>28497,'name'=>"Periban",'state_id'=>2443],
 			['id'=>28498,'name'=>"Pichataro",'state_id'=>2443],
 			['id'=>28499,'name'=>"Purepero",'state_id'=>2443],
-			['id'=>28500,'name'=>"Puruandiro",'state_id'=>2443],
+			['id'=>28500,'name'=>"Puruandiro",'state_id'=>2443]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>28501,'name'=>"Puruaran",'state_id'=>2443],
 			['id'=>28502,'name'=>"Querendaro",'state_id'=>2443],
 			['id'=>28503,'name'=>"Quiroga",'state_id'=>2443],
@@ -29009,7 +29124,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>28997,'name'=>"Pericos",'state_id'=>2452],
 			['id'=>28998,'name'=>"Pueblos Unidos",'state_id'=>2452],
 			['id'=>28999,'name'=>"Quila",'state_id'=>2452],
-			['id'=>29000,'name'=>"San Blas",'state_id'=>2452],
+			['id'=>29000,'name'=>"San Blas",'state_id'=>2452]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>29001,'name'=>"San Ignacio",'state_id'=>2452],
 			['id'=>29002,'name'=>"Sinaloa",'state_id'=>2452],
 			['id'=>29003,'name'=>"Teacapan",'state_id'=>2452],
@@ -29509,7 +29626,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>29497,'name'=>"Tlaltenango",'state_id'=>2459],
 			['id'=>29498,'name'=>"Toribio",'state_id'=>2459],
 			['id'=>29499,'name'=>"Trancoso",'state_id'=>2459],
-			['id'=>29500,'name'=>"Valparaiso",'state_id'=>2459],
+			['id'=>29500,'name'=>"Valparaiso",'state_id'=>2459]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>29501,'name'=>"Victor Rosales",'state_id'=>2459],
 			['id'=>29502,'name'=>"Villa Gonzalez Ortega",'state_id'=>2459],
 			['id'=>29503,'name'=>"Villanueva",'state_id'=>2459],
@@ -30009,7 +30128,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>29997,'name'=>"Westervoort",'state_id'=>2590],
 			['id'=>29998,'name'=>"Wijchen",'state_id'=>2590],
 			['id'=>29999,'name'=>"Winterswijk",'state_id'=>2590],
-			['id'=>30000,'name'=>"Wisch",'state_id'=>2590],
+			['id'=>30000,'name'=>"Wisch",'state_id'=>2590]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>30001,'name'=>"Zaltbommel",'state_id'=>2590],
 			['id'=>30002,'name'=>"Zelhem",'state_id'=>2590],
 			['id'=>30003,'name'=>"Zevenaar",'state_id'=>2590],
@@ -30509,7 +30630,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>30497,'name'=>"Papakura",'state_id'=>2604],
 			['id'=>30498,'name'=>"Papatoetoe",'state_id'=>2604],
 			['id'=>30499,'name'=>"Ponsonby",'state_id'=>2604],
-			['id'=>30500,'name'=>"Royal Oak",'state_id'=>2604],
+			['id'=>30500,'name'=>"Royal Oak",'state_id'=>2604]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>30501,'name'=>"Sandringham",'state_id'=>2604],
 			['id'=>30502,'name'=>"Snells Beach",'state_id'=>2604],
 			['id'=>30503,'name'=>"Takanini",'state_id'=>2604],
@@ -31009,7 +31132,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>30997,'name'=>"Wamba",'state_id'=>2672],
 			['id'=>30998,'name'=>"Agale",'state_id'=>2673],
 			['id'=>30999,'name'=>"Babana",'state_id'=>2673],
-			['id'=>31000,'name'=>"Bida",'state_id'=>2673],
+			['id'=>31000,'name'=>"Bida",'state_id'=>2673]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>31001,'name'=>"Bosso",'state_id'=>2673],
 			['id'=>31002,'name'=>"Chanchaga",'state_id'=>2673],
 			['id'=>31003,'name'=>"Gbako",'state_id'=>2673],
@@ -31509,7 +31634,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>31497,'name'=>"Renala Khurd",'state_id'=>2728],
 			['id'=>31498,'name'=>"Rojhan",'state_id'=>2728],
 			['id'=>31499,'name'=>"Saddar Gogera",'state_id'=>2728],
-			['id'=>31500,'name'=>"Sadiqabad",'state_id'=>2728],
+			['id'=>31500,'name'=>"Sadiqabad",'state_id'=>2728]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>31501,'name'=>"Safdarabad",'state_id'=>2728],
 			['id'=>31502,'name'=>"Sahiwal",'state_id'=>2728],
 			['id'=>31503,'name'=>"Samasatta",'state_id'=>2728],
@@ -32009,7 +32136,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>31997,'name'=>"Huallanca",'state_id'=>2813],
 			['id'=>31998,'name'=>"Huaraz",'state_id'=>2813],
 			['id'=>31999,'name'=>"Huari",'state_id'=>2813],
-			['id'=>32000,'name'=>"Huarmey",'state_id'=>2813],
+			['id'=>32000,'name'=>"Huarmey",'state_id'=>2813]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>32001,'name'=>"Pomabamba",'state_id'=>2813],
 			['id'=>32002,'name'=>"Santa",'state_id'=>2813],
 			['id'=>32003,'name'=>"Yungay",'state_id'=>2813],
@@ -32509,7 +32638,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>32497,'name'=>"Jaslo",'state_id'=>2878],
 			['id'=>32498,'name'=>"Krosno",'state_id'=>2878],
 			['id'=>32499,'name'=>"Lancut",'state_id'=>2878],
-			['id'=>32500,'name'=>"Lezajsk",'state_id'=>2878],
+			['id'=>32500,'name'=>"Lezajsk",'state_id'=>2878]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>32501,'name'=>"Lubaczow",'state_id'=>2878],
 			['id'=>32502,'name'=>"Mielec",'state_id'=>2878],
 			['id'=>32503,'name'=>"Nisko",'state_id'=>2878],
@@ -33009,7 +33140,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>32997,'name'=>"Ronfe",'state_id'=>2908],
 			['id'=>32998,'name'=>"Sande",'state_id'=>2908],
 			['id'=>32999,'name'=>"Sandim",'state_id'=>2908],
-			['id'=>33000,'name'=>"Santa Cruz do Bispo",'state_id'=>2908],
+			['id'=>33000,'name'=>"Santa Cruz do Bispo",'state_id'=>2908]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>33001,'name'=>"Santa Maria de Lamas",'state_id'=>2908],
 			['id'=>33002,'name'=>"Santiago da Riba-Ul",'state_id'=>2908],
 			['id'=>33003,'name'=>"Santo Tirso",'state_id'=>2908],
@@ -33509,7 +33642,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>33497,'name'=>"Cristioru de Jos",'state_id'=>2938],
 			['id'=>33498,'name'=>"Curatele",'state_id'=>2938],
 			['id'=>33499,'name'=>"Curtuiseni",'state_id'=>2938],
-			['id'=>33500,'name'=>"Derna",'state_id'=>2938],
+			['id'=>33500,'name'=>"Derna",'state_id'=>2938]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>33501,'name'=>"Diosig",'state_id'=>2938],
 			['id'=>33502,'name'=>"Dobresti",'state_id'=>2938],
 			['id'=>33503,'name'=>"Draganesti",'state_id'=>2938],
@@ -34009,7 +34144,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>33997,'name'=>"Vermes",'state_id'=>2946],
 			['id'=>33998,'name'=>"Vrani",'state_id'=>2946],
 			['id'=>33999,'name'=>"Zavoi",'state_id'=>2946],
-			['id'=>34000,'name'=>"Zorlentu Mare",'state_id'=>2946],
+			['id'=>34000,'name'=>"Zorlentu Mare",'state_id'=>2946]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>34001,'name'=>"Aghiresu",'state_id'=>2947],
 			['id'=>34002,'name'=>"Aiton",'state_id'=>2947],
 			['id'=>34003,'name'=>"Alunis",'state_id'=>2947],
@@ -34509,7 +34646,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>34497,'name'=>"Crusetu",'state_id'=>2954],
 			['id'=>34498,'name'=>"Danciulesti",'state_id'=>2954],
 			['id'=>34499,'name'=>"Danesti",'state_id'=>2954],
-			['id'=>34500,'name'=>"Dragotesti",'state_id'=>2954],
+			['id'=>34500,'name'=>"Dragotesti",'state_id'=>2954]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>34501,'name'=>"Dragutesti",'state_id'=>2954],
 			['id'=>34502,'name'=>"Farcasesti",'state_id'=>2954],
 			['id'=>34503,'name'=>"Glogova",'state_id'=>2954],
@@ -35009,7 +35148,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>34997,'name'=>"Band",'state_id'=>2962],
 			['id'=>34998,'name'=>"Batos",'state_id'=>2962],
 			['id'=>34999,'name'=>"Beica de Jos",'state_id'=>2962],
-			['id'=>35000,'name'=>"Bichis",'state_id'=>2962],
+			['id'=>35000,'name'=>"Bichis",'state_id'=>2962]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>35001,'name'=>"Bogata",'state_id'=>2962],
 			['id'=>35002,'name'=>"Brancovenesti",'state_id'=>2962],
 			['id'=>35003,'name'=>"Breaza",'state_id'=>2962],
@@ -35509,7 +35650,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>35497,'name'=>"Campulung Moldovenesc",'state_id'=>2970],
 			['id'=>35498,'name'=>"Carlibaba",'state_id'=>2970],
 			['id'=>35499,'name'=>"Ciprian Porumbescu",'state_id'=>2970],
-			['id'=>35500,'name'=>"Cornu Luncii",'state_id'=>2970],
+			['id'=>35500,'name'=>"Cornu Luncii",'state_id'=>2970]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>35501,'name'=>"Crucea",'state_id'=>2970],
 			['id'=>35502,'name'=>"Darmanesti",'state_id'=>2970],
 			['id'=>35503,'name'=>"Dolhasca",'state_id'=>2970],
@@ -36009,7 +36152,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>35997,'name'=>"Racoasa",'state_id'=>2976],
 			['id'=>35998,'name'=>"Reghiu",'state_id'=>2976],
 			['id'=>35999,'name'=>"Ruginesti",'state_id'=>2976],
-			['id'=>36000,'name'=>"Sihlea",'state_id'=>2976],
+			['id'=>36000,'name'=>"Sihlea",'state_id'=>2976]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>36001,'name'=>"Slobozia Bradului",'state_id'=>2976],
 			['id'=>36002,'name'=>"Slobozia-Ciorasti",'state_id'=>2976],
 			['id'=>36003,'name'=>"Soveja",'state_id'=>2976],
@@ -36509,7 +36654,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>36497,'name'=>"Tashtagol",'state_id'=>3012],
 			['id'=>36498,'name'=>"Temirtau",'state_id'=>3012],
 			['id'=>36499,'name'=>"Tisul",'state_id'=>3012],
-			['id'=>36500,'name'=>"Tjazhinskij",'state_id'=>3012],
+			['id'=>36500,'name'=>"Tjazhinskij",'state_id'=>3012]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>36501,'name'=>"Topki",'state_id'=>3012],
 			['id'=>36502,'name'=>"Belaja Holunica",'state_id'=>3014],
 			['id'=>36503,'name'=>"Jaransk",'state_id'=>3014],
@@ -37009,7 +37156,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>36997,'name'=>"Samara",'state_id'=>3051],
 			['id'=>36998,'name'=>"Smyshljaevka",'state_id'=>3051],
 			['id'=>36999,'name'=>"Suhodol",'state_id'=>3051],
-			['id'=>37000,'name'=>"Syzran",'state_id'=>3051],
+			['id'=>37000,'name'=>"Syzran",'state_id'=>3051]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>37001,'name'=>"Timashjovo",'state_id'=>3051],
 			['id'=>37002,'name'=>"Toljatti",'state_id'=>3051],
 			['id'=>37003,'name'=>"Zhigulevsk",'state_id'=>3051],
@@ -37509,7 +37658,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>37497,'name'=>"Mbour",'state_id'=>3172],
 			['id'=>37498,'name'=>"Meckhe",'state_id'=>3172],
 			['id'=>37499,'name'=>"Nguekhokh",'state_id'=>3172],
-			['id'=>37500,'name'=>"Pout",'state_id'=>3172],
+			['id'=>37500,'name'=>"Pout",'state_id'=>3172]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>37501,'name'=>"Thiadiaye",'state_id'=>3172],
 			['id'=>37502,'name'=>"Thies",'state_id'=>3172],
 			['id'=>37503,'name'=>"Tivaouane",'state_id'=>3172],
@@ -38009,7 +38160,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>37997,'name'=>"Qandala",'state_id'=>3224],
 			['id'=>37998,'name'=>"Qardho",'state_id'=>3224],
 			['id'=>37999,'name'=>"Xafun",'state_id'=>3224],
-			['id'=>38000,'name'=>"Baydhabo",'state_id'=>3225],
+			['id'=>38000,'name'=>"Baydhabo",'state_id'=>3225]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>38001,'name'=>"Bur Hakkaba",'state_id'=>3225],
 			['id'=>38002,'name'=>"Dinsor",'state_id'=>3225],
 			['id'=>38003,'name'=>"''Elbur",'state_id'=>3226],
@@ -38509,7 +38662,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>38497,'name'=>"Valverde del Camino",'state_id'=>3288],
 			['id'=>38498,'name'=>"Barbastro",'state_id'=>3289],
 			['id'=>38499,'name'=>"Binefar",'state_id'=>3289],
-			['id'=>38500,'name'=>"Fraga",'state_id'=>3289],
+			['id'=>38500,'name'=>"Fraga",'state_id'=>3289]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>38501,'name'=>"Huesca",'state_id'=>3289],
 			['id'=>38502,'name'=>"Jaca",'state_id'=>3289],
 			['id'=>38503,'name'=>"Monzon",'state_id'=>3289],
@@ -39009,7 +39164,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>38997,'name'=>"al-Khartum Bahri",'state_id'=>3375],
 			['id'=>38998,'name'=>"Doka",'state_id'=>3376],
 			['id'=>38999,'name'=>"Qala''-an-Nahl",'state_id'=>3376],
-			['id'=>39000,'name'=>"Shuwak",'state_id'=>3376],
+			['id'=>39000,'name'=>"Shuwak",'state_id'=>3376]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>39001,'name'=>"al-Faw",'state_id'=>3376],
 			['id'=>39002,'name'=>"al-Hawatah",'state_id'=>3376],
 			['id'=>39003,'name'=>"al-Qadarif",'state_id'=>3376],
@@ -39509,7 +39666,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>39497,'name'=>"Epalinges",'state_id'=>3452],
 			['id'=>39498,'name'=>"Gland",'state_id'=>3452],
 			['id'=>39499,'name'=>"La Tour-de-Peilz",'state_id'=>3452],
-			['id'=>39500,'name'=>"Lausanne",'state_id'=>3452],
+			['id'=>39500,'name'=>"Lausanne",'state_id'=>3452]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>39501,'name'=>"Le Mont-sur-Lausanne",'state_id'=>3452],
 			['id'=>39502,'name'=>"Lucerne",'state_id'=>3452],
 			['id'=>39503,'name'=>"Lutry",'state_id'=>3452],
@@ -40009,7 +40168,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>39997,'name'=>"Arima",'state_id'=>3617],
 			['id'=>39998,'name'=>"Arouca",'state_id'=>3617],
 			['id'=>39999,'name'=>"Tacarigua",'state_id'=>3617],
-			['id'=>40000,'name'=>"Tunapuna",'state_id'=>3617],
+			['id'=>40000,'name'=>"Tunapuna",'state_id'=>3617]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>40001,'name'=>"Carapichaima",'state_id'=>3618],
 			['id'=>40002,'name'=>"Claxton Bay",'state_id'=>3618],
 			['id'=>40003,'name'=>"Chaguanas",'state_id'=>3619],
@@ -40509,7 +40670,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>40497,'name'=>"Mecitozu",'state_id'=>3686],
 			['id'=>40498,'name'=>"Oguzlar",'state_id'=>3686],
 			['id'=>40499,'name'=>"Ortakoy",'state_id'=>3686],
-			['id'=>40500,'name'=>"Osmancik",'state_id'=>3686],
+			['id'=>40500,'name'=>"Osmancik",'state_id'=>3686]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>40501,'name'=>"Sungurlu",'state_id'=>3686],
 			['id'=>40502,'name'=>"Ugurludag",'state_id'=>3686],
 			['id'=>40503,'name'=>"Acipayam",'state_id'=>3687],
@@ -41009,7 +41172,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>40997,'name'=>"Sirvan",'state_id'=>3733],
 			['id'=>40998,'name'=>"Ayancik",'state_id'=>3734],
 			['id'=>40999,'name'=>"Boyabat",'state_id'=>3734],
-			['id'=>41000,'name'=>"Dikmen",'state_id'=>3734],
+			['id'=>41000,'name'=>"Dikmen",'state_id'=>3734]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>41001,'name'=>"Duragan",'state_id'=>3734],
 			['id'=>41002,'name'=>"Erfelek",'state_id'=>3734],
 			['id'=>41003,'name'=>"Gerze",'state_id'=>3734],
@@ -41509,7 +41674,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>41497,'name'=>"Hayle",'state_id'=>3824],
 			['id'=>41498,'name'=>"Helston",'state_id'=>3824],
 			['id'=>41499,'name'=>"Launceston",'state_id'=>3824],
-			['id'=>41500,'name'=>"Liskeard",'state_id'=>3824],
+			['id'=>41500,'name'=>"Liskeard",'state_id'=>3824]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>41501,'name'=>"Looe",'state_id'=>3824],
 			['id'=>41502,'name'=>"Mevegissey",'state_id'=>3824],
 			['id'=>41503,'name'=>"Newquay",'state_id'=>3824],
@@ -42009,7 +42176,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>41997,'name'=>"Whitley Bay",'state_id'=>3842],
 			['id'=>41998,'name'=>"Wickford",'state_id'=>3842],
 			['id'=>41999,'name'=>"Widnes",'state_id'=>3842],
-			['id'=>42000,'name'=>"Wigan",'state_id'=>3842],
+			['id'=>42000,'name'=>"Wigan",'state_id'=>3842]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>42001,'name'=>"Wigston",'state_id'=>3842],
 			['id'=>42002,'name'=>"Wilmslow",'state_id'=>3842],
 			['id'=>42003,'name'=>"Wimbourne Minster",'state_id'=>3842],
@@ -42509,7 +42678,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>42497,'name'=>"Surbiton",'state_id'=>3900],
 			['id'=>42498,'name'=>"Surrey",'state_id'=>3900],
 			['id'=>42499,'name'=>"Tadworth",'state_id'=>3900],
-			['id'=>42500,'name'=>"Walton on Thames",'state_id'=>3900],
+			['id'=>42500,'name'=>"Walton on Thames",'state_id'=>3900]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>42501,'name'=>"West Molesey",'state_id'=>3900],
 			['id'=>42502,'name'=>"Wisley",'state_id'=>3900],
 			['id'=>42503,'name'=>"Woking",'state_id'=>3900],
@@ -43009,7 +43180,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>42997,'name'=>"Grover Beach",'state_id'=>3924],
 			['id'=>42998,'name'=>"Gualala",'state_id'=>3924],
 			['id'=>42999,'name'=>"Guerneville",'state_id'=>3924],
-			['id'=>43000,'name'=>"Hacienda Heights",'state_id'=>3924],
+			['id'=>43000,'name'=>"Hacienda Heights",'state_id'=>3924]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>43001,'name'=>"Half Moon Bay",'state_id'=>3924],
 			['id'=>43002,'name'=>"Hanford",'state_id'=>3924],
 			['id'=>43003,'name'=>"Harbor City",'state_id'=>3924],
@@ -43509,7 +43682,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>43497,'name'=>"Guilford",'state_id'=>3927],
 			['id'=>43498,'name'=>"Haddam",'state_id'=>3927],
 			['id'=>43499,'name'=>"Hamden",'state_id'=>3927],
-			['id'=>43500,'name'=>"Hartford",'state_id'=>3927],
+			['id'=>43500,'name'=>"Hartford",'state_id'=>3927]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>43501,'name'=>"Harwinton",'state_id'=>3927],
 			['id'=>43502,'name'=>"Lakeville",'state_id'=>3927],
 			['id'=>43503,'name'=>"Lyme",'state_id'=>3927],
@@ -44009,7 +44184,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>43997,'name'=>"Jackson",'state_id'=>3931],
 			['id'=>43998,'name'=>"Jonesboro",'state_id'=>3931],
 			['id'=>43999,'name'=>"Kennesaw",'state_id'=>3931],
-			['id'=>44000,'name'=>"Kingsland",'state_id'=>3931],
+			['id'=>44000,'name'=>"Kingsland",'state_id'=>3931]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>44001,'name'=>"LaGrange",'state_id'=>3931],
 			['id'=>44002,'name'=>"Lawrenceville",'state_id'=>3931],
 			['id'=>44003,'name'=>"Lilburn",'state_id'=>3931],
@@ -44509,7 +44686,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>44497,'name'=>"Clive",'state_id'=>3936],
 			['id'=>44498,'name'=>"Coralville",'state_id'=>3936],
 			['id'=>44499,'name'=>"Council Bluffs",'state_id'=>3936],
-			['id'=>44500,'name'=>"Davenport",'state_id'=>3936],
+			['id'=>44500,'name'=>"Davenport",'state_id'=>3936]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>44501,'name'=>"Des Moines",'state_id'=>3936],
 			['id'=>44502,'name'=>"Dubuque",'state_id'=>3936],
 			['id'=>44503,'name'=>"Eldridge",'state_id'=>3936],
@@ -45009,7 +45188,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>44997,'name'=>"Newburyport",'state_id'=>3943],
 			['id'=>44998,'name'=>"Newton",'state_id'=>3943],
 			['id'=>44999,'name'=>"North Adams",'state_id'=>3943],
-			['id'=>45000,'name'=>"North Andover",'state_id'=>3943],
+			['id'=>45000,'name'=>"North Andover",'state_id'=>3943]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>45001,'name'=>"North Attleborough Center",'state_id'=>3943],
 			['id'=>45002,'name'=>"North Easton",'state_id'=>3943],
 			['id'=>45003,'name'=>"Northampton",'state_id'=>3943],
@@ -45509,7 +45690,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>45497,'name'=>"Saint Peters",'state_id'=>3948],
 			['id'=>45498,'name'=>"Sappington",'state_id'=>3948],
 			['id'=>45499,'name'=>"Sedalia",'state_id'=>3948],
-			['id'=>45500,'name'=>"Sikeston",'state_id'=>3948],
+			['id'=>45500,'name'=>"Sikeston",'state_id'=>3948]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>45501,'name'=>"Spanish Lake",'state_id'=>3948],
 			['id'=>45502,'name'=>"Springfield",'state_id'=>3948],
 			['id'=>45503,'name'=>"St. Louis",'state_id'=>3948],
@@ -46009,7 +46192,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>45997,'name'=>"East Norriton",'state_id'=>3963],
 			['id'=>45998,'name'=>"East Stroudsburg",'state_id'=>3963],
 			['id'=>45999,'name'=>"Easton",'state_id'=>3963],
-			['id'=>46000,'name'=>"Economy",'state_id'=>3963],
+			['id'=>46000,'name'=>"Economy",'state_id'=>3963]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>46001,'name'=>"Edinboro",'state_id'=>3963],
 			['id'=>46002,'name'=>"Elizabethtown",'state_id'=>3963],
 			['id'=>46003,'name'=>"Elkins Park",'state_id'=>3963],
@@ -46509,7 +46694,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>46497,'name'=>"Sherman",'state_id'=>3970],
 			['id'=>46498,'name'=>"Slaton",'state_id'=>3970],
 			['id'=>46499,'name'=>"Smithville",'state_id'=>3970],
-			['id'=>46500,'name'=>"Snyder",'state_id'=>3970],
+			['id'=>46500,'name'=>"Snyder",'state_id'=>3970]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>46501,'name'=>"Socorro",'state_id'=>3970],
 			['id'=>46502,'name'=>"South Houston",'state_id'=>3970],
 			['id'=>46503,'name'=>"South Padre Island",'state_id'=>3970],
@@ -47009,7 +47196,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>46997,'name'=>"Strum",'state_id'=>3977],
 			['id'=>46998,'name'=>"Sturtevant",'state_id'=>3977],
 			['id'=>46999,'name'=>"Sun Prairie",'state_id'=>3977],
-			['id'=>47000,'name'=>"Superior",'state_id'=>3977],
+			['id'=>47000,'name'=>"Superior",'state_id'=>3977]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>47001,'name'=>"Three Lakes",'state_id'=>3977],
 			['id'=>47002,'name'=>"Tomah",'state_id'=>3977],
 			['id'=>47003,'name'=>"Two Rivers",'state_id'=>3977],
@@ -47509,7 +47698,9 @@ class CitiesTableSeeder extends Seeder
 			['id'=>47497,'name'=>"Sremska Mitrovica",'state_id'=>4101],
 			['id'=>47498,'name'=>"Sremski Karlovci",'state_id'=>4101],
 			['id'=>47499,'name'=>"Stara Pazova",'state_id'=>4101],
-			['id'=>47500,'name'=>"Subotica",'state_id'=>4101],
+			['id'=>47500,'name'=>"Subotica",'state_id'=>4101]]);
+			DB::disableQueryLog();
+        DB::table('cities')->insert([
 			['id'=>47501,'name'=>"Temerin",'state_id'=>4101],
 			['id'=>47502,'name'=>"Veternik",'state_id'=>4101],
 			['id'=>47503,'name'=>"Vrbas",'state_id'=>4101],

@@ -1,6 +1,6 @@
 @extends('layout.default')
 @section('content')
-<div class="container">
+<div class="container" style="min-height: calc(63vh - 60px);margin-top: 100px;">
     <div class="row">
         <div class="col-sm-offset-3 col-sm-6">
             <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
@@ -49,7 +49,7 @@
                 </div>
                 <div class="row form-group">
                     <div class="col-sm-12">
-                        <button class="btn btn-lg orange-bg btn-block" type="submit">
+                        <button class="btn btn-lg black-btn btn-block" type="submit">
                             <i class="fa fa-sign-in" aria-hidden="true"></i>
                             {!! Lang::get('messages.sign_in') !!}
                         </button>

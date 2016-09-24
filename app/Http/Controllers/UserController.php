@@ -89,6 +89,11 @@ class UserController extends Controller
                     ->where('status','completion_evaluation')
                     ->get();*/
         }
+
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','global activity log');
+
         view()->share('myCancelledTask',$myCancelledTask);
         view()->share('myEvaluationTask',$myEvaluationTask);
         view()->share('myBids',$myBids);

@@ -22,7 +22,7 @@ class CreateTaskBiddersTable extends Migration
             $table->text('comment');
             $table->string('first_to_bid')->default('no');
             $table->string('status')->nullable();
-            $table->string('charge_type');
+            $table->string('charge_type')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

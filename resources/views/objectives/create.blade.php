@@ -167,6 +167,6 @@
 @stop
 @section('page-scripts')
     <script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
-    <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.min.js') !!}" type="text/javascript"></script>
+    <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
     <script src="{!! url('assets/js/objectives/objectives.js') !!}"></script>
 @endsection

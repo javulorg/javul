@@ -27,7 +27,7 @@ class CreateTaskHistoryTable extends Migration
             $table->dateTime('estimated_completion_time_start');
             $table->dateTime('estimated_completion_time_end');
             $table->decimal('compensation',10,2);
-            $table->text('updatedFields');
+            $table->text('updatedFields')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
