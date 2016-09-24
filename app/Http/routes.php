@@ -102,6 +102,7 @@ Route::get('funds/success','FundsController@success');
 Route::get('funds/cancel','FundsController@cancel');
 
 Route::get('issues/remove_issue_document','IssuesController@remove_document');
+Route::post('issues/importance','IssuesController@add_importance');
 Route::any('issues/{unit_id}/add','IssuesController@create');
 Route::any('issues/{unit_id}/lists','IssuesController@lists');
 Route::any('issues/{issue_id}/view','IssuesController@view');

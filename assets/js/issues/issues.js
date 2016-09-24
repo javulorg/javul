@@ -172,7 +172,7 @@ $(document).ready(function() {
         if($.trim(id) != "" && $.trim(issue_id) != ""){
             $.ajax({
                 type:'get',
-                url:siteURL+'/issue/remove_issue_document',
+                url:siteURL+'/issues/remove_issue_document',
                 data:{id:id,issue_id:issue_id,fromEdit:fromEdit },
                 dataType:'json',
                 success:function(resp){

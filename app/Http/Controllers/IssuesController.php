@@ -401,8 +401,93 @@ class IssuesController extends Controller
         return view('errors.404');
     }
 
+    /**
+     * soft deleting the document of given issue_id
+     * @param Request $request
+     * @return mixed
+     */
     public function remove_document(Request $request){
         $issue_id = $request->input('issue_id');
+        $id = $request->input('id');
+
+        $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+        $issueDocumentIDHashID = new Hashids('issue document id hash',10,\Config::get('app.encode_chars'));
+
+        $issue_id = $issueIDHashID->decode($issue_id);
+
+        if(empty($issue_id))
+            return \Response::json(['success'=>false]);
+
+        $issue_id = $issue_id[0];
+        $issueObj = Issue::find($issue_id);
+        if(empty($issueObj))
+            return \Response::json(['success'=>false]);
+
+        $id = $issueDocumentIDHashID->decode($id);
+        if(empty($id))
+            return \Response::json(['success'=>false]);
+
+        $id= $id[0];
+        $issueDocumentObj = IssueDocuments::where('issue_id',$issue_id)->where('id',$id)->get();
+
+        if(count($issueDocumentObj ) > 0){
+            IssueDocuments::where('issue_id',$issue_id)->where('id',$id)->delete();
+            return \Response::json(['success'=>true]);
+        }
+
+        return \Response::json(['success'=>false]);
+    }
+
+    public function add_importance(Request $request){
+        $issue_id = $request->input('id');
+        $issue_idEncoded = $issue_id;
+        $type = $request->input('type');
+        if(!empty($issue_id)){
+            $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+            $issue_id = $issueIDHashID->decode($issue_id);
+            if(!empty($issue_id)){
+                $issue_id = $issue_id[0];
+                $issueObj = Issue::find($issue_id);
+                if(!empty($issueObj)){
+                    $importanceLevelObj = ImportanceLevel::where('issue_id',$issue_id)->where('user_id',Auth::user()->id)->first();
+                    $site_activity_text = '';
+                    if($type == "up"){
+                        $levelValue = "+1";
+                        $site_activity_text =" upvote objective ";
+                    }
+                    else{
+                        $levelValue = "-1";
+                        $site_activity_text =" downvote objective ";
+                    }
+                    if(count($importanceLevelObj) > 0)
+                        $importanceLevelObj->update(['importance_level'=>$levelValue]);
+                    else{
+                        ImportanceLevel::create([
+                            'user_id'=>Auth::user()->id,
+                            'issue_id'=>$issue_id,
+                            'importance_level'=>$levelValue,
+                            'type'=>'Objective'
+                        ]);
+                    }
+
+                    $upvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('importance_level','+1')->count();
+                    $downvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('importance_level','-1')->count();
+
+                    $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
+
+                    if(is_float($importancePercentage))
+                        $importancePercentage = ceil($importancePercentage);
+                    view()->share('upvotedCnt',$upvotedCnt);
+                    view()->share('downvotedCnt',$downvotedCnt);
+                    view()->share('importancePercentage',$importancePercentage);
+
+                    $importance_level_html = view('issues.partials.importance_level',['issue_id'=>$issue_id])->render();
+
+                    return \Response::json(['success'=>true,'html'=>$importance_level_html]);
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
 
     }
 }
