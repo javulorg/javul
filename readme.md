@@ -1,4 +1,4 @@
-# Installation of projects
+# Installation of project
 step 1) download project from https://github.com/javulorg/javul
 step 2) rename .evn.example to .env file and add database information
 step 3) cd project_name
