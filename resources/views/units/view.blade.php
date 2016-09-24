@@ -213,10 +213,12 @@
                         if(order_by == "older") {
                             $(".issueListing").find("th a.sort_by").attr('data-order_by', 'new');
                             $(".issueListing").find("th a span").removeClass('fa-sort-desc').addClass('fa-sort-asc');
+                            $(".issueListing").find("th a span").css('vertical-align','middle');
                         }
                         else {
                             $(".issueListing").find("th a.sort_by").attr('data-order_by', 'older');
                             $(".issueListing").find("th a span").removeClass('fa-sort-asc').addClass('fa-sort-desc');
+                            $(".issueListing").find("th a span").css('vertical-align','top');
                         }
                         var the_obj = $('.text_wraps').ThreeDots({
                             max_rows: 1

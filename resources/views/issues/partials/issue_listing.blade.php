@@ -16,7 +16,7 @@
                 <th>Status</th>
                 <th>Description</th>
                 <th><a href="#" style="text-decoration:none;color:#333" class="sort_by" data-order_by="older">
-                        Created Date <span class="fa fa-sort-desc"style="vertical-align:top"></span>
+                        Created Date <span class="fa fa-sort-desc" style="vertical-align:top"></span>
                     </a>
                 </th>
             </tr>

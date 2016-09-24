@@ -377,7 +377,13 @@ class IssuesController extends Controller
                 $unitObj = Unit::find($unit_id);
                 if(!empty($unitObj)){
                     view()->share('unitObj',$unitObj);
-                    $issuesObj = Issue::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+                    $issuesObj = Issue::leftJoin('importance_level','issues.id','=','importance_level.issue_id')->where('unit_id',
+                        $unit_id)
+                    ->orderBy('id','desc')
+                    ->select(['issues.*'])
+                    ->paginate(\Config::get
+                    ('app
+                    .page_limit'));
                     view()->share('issuesObj',$issuesObj);
                     $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app
                     .site_activity_page_limit'));
