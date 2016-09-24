@@ -1,6 +1,6 @@
 # Installation of project
 step 1) download project from https://github.com/javulorg/javul
-step 2) rename .evn.example to .env file and add database information
+step 2) create database and add database information into .env file
 step 3) cd project_name
 step 4) composer install
 step 5) go to project_name/app/Providers/. open file "ViewComposerServiceProvider.php" comment all code of public function boot()
