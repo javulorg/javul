@@ -96,6 +96,7 @@ class IssuesController extends Controller
                             'unit_id'=>$unit_id[0],
                             'objective_id'=>$objective_id[0],
                             'task_id'=>$task_id,
+                            'issue_id'=>$issue_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         created issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
@@ -177,8 +178,8 @@ class IssuesController extends Controller
                 if(!empty($issueObj)){
 
                     // check if issue resolved then redirect to view not edit mode
-                    if($issueObj->status == "resolved")
-                        return redirect('issues/'.$issue_id_encoded.'/view');
+                    //if($issueObj->status == "resolved")
+                      //  return redirect('issues/'.$issue_id_encoded.'/view');
                     //display update page to user
 
                     if($request->isMethod('post')) {
@@ -250,6 +251,7 @@ class IssuesController extends Controller
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$issueObj->unit_id,
+                            'issue_id'=>$issueObj->id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                                 .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
                         updated issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
@@ -262,8 +264,8 @@ class IssuesController extends Controller
                     $user_can_change_status = true;
                     $user_can_resolve_issue = true;
                     if($issueObj->user_id == Auth::user()->id) {
-                        $user_can_change_status = false;
-                        $user_can_resolve_issue = false;
+                        $user_can_change_status = true;
+                        $user_can_resolve_issue = true;
                     }else {
                         $unitAdmin = \App\Task::checkUnitAdmin($issueObj->unit_id);
                         if (Auth::user()->role == "superadmin" || Auth::user()->id == $unitAdmin) {
@@ -320,8 +322,8 @@ class IssuesController extends Controller
                     $unitObj = Unit::find($issueObj->unit_id);
                     view()->share('unitObj',$unitObj);
                     view()->share('issueObj',$issueObj);
-                    $site_activity = SiteActivity::where('unit_id',$issueObj->unit_id)->orderBy('id','desc')->paginate(\Config::get('app
-                    .site_activity_page_limit'));
+                    $site_activity = SiteActivity::where('unit_id',$issueObj->unit_id)->whereNull('issue_id')->orderBy('id','desc')
+                                    ->paginate(\Config::get('app.site_activity_page_limit'));
 
                     $availableUnitFunds =Fund::getUnitDonatedFund($issueObj->unit_id);
                     $awardedUnitFunds =Fund::getUnitAwardedFund($issueObj->unit_id);
@@ -385,8 +387,8 @@ class IssuesController extends Controller
                     ('app
                     .page_limit'));
                     view()->share('issuesObj',$issuesObj);
-                    $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app
-                    .site_activity_page_limit'));
+                    $site_activity = SiteActivity::where('unit_id',$unit_id)->whereNull('issue_id')->orderBy('id','desc')
+                        ->paginate(\Config::get('app.site_activity_page_limit'));
 
                     $availableUnitFunds =Fund::getUnitDonatedFund($unit_id);
                     $awardedUnitFunds =Fund::getUnitAwardedFund($unit_id);

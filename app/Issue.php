@@ -30,7 +30,7 @@ class Issue extends Model
         if(!empty($selected_objective_id) && count($selected_objective_id) > 0)
             $selected_objective_id = $selected_objective_id[0];
         else
-            $selected_objective_id= '';
+            $selected_objective_id= null;
 
         return $selected_objective_id;
     }
@@ -48,6 +48,9 @@ class Issue extends Model
             }
             $selected_task_id_arr = implode(",",$selected_task_id_arr);
         }
-        return $selected_task_id_arr;
+        if(!empty($selected_task_id_arr))
+            return $selected_task_id_arr;
+        else
+            return null;
     }
 }
