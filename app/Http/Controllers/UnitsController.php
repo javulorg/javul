@@ -396,7 +396,8 @@ class UnitsController extends Controller
                     view()->share('availableFunds',$availableFunds );
                     view()->share('awardedFunds',$awardedFunds );
 
-                    $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                    $site_activity = SiteActivity::where('unit_id',$unit_id)->whereNull('issue_id')
+                                    ->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                     $taskObj = Task::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
                     view()->share('taskObj',$taskObj);
                     view()->share('site_activity',$site_activity);

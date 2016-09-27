@@ -25,6 +25,7 @@ body, h1, h2, h3, h4, h5, h6{
 .grey-bg{background-color:#EEEEEE;}
 .marginTop10{margin-top:10px;}
 .marginTop20{margin-top:20px;}
+.colorIssue{color:#58a0e0 !important;}
 
 .panel-heading{border-top-left-radius:0px;border-top-right-radius:0px;}
 .panel{border-radius: 0px; }
@@ -112,6 +113,9 @@ a .fa-plus{margin-right: 10px;}
 
 .current_objective{background-color: #d97d43;}
 .current_objective_heading{border-bottom-color:#d97d43 !important}
+
+.current_issue{background-color: #58a0e0;}
+.current_issue_heading{border-bottom-color:#58a0e0 !important}
 
 .current_task{background-color: #e4ad45}
 .current_task_heading{border-bottom-color: #e4ad45 !important}

@@ -18,6 +18,7 @@ class CreateSiteActivityTable extends Migration
             $table->integer('unit_id')->nullable();
             $table->integer('objective_id')->nullable();
             $table->integer('task_id')->nullable();
+            $table->integer('issue_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->text('comment');
             $table->timestamps();

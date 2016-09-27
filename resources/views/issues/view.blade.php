@@ -24,9 +24,9 @@
             </div>
             <div class="col-md-8">
                 <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
-                    <div class="panel-heading current_objective_heading featured_unit_heading">
-                        <div class="featured_unit current_objective">
-                            <i class="fa fa-bullseye" style="font-size:18px"></i>
+                    <div class="panel-heading current_issue_heading featured_unit_heading">
+                        <div class="featured_unit current_issue">
+                            <i class="fa fa-bug" style="font-size:18px"></i>
                         </div>
                         <h4>ISSUE INFORMATION</h4>
                     </div>
@@ -34,19 +34,16 @@
                         <div class="list-group-item" style="padding-top:0px;padding-bottom:0px;">
                             <div class="row" style="border-bottom:1px solid #ddd;">
                                 <div class="col-sm-7 featured_heading">
-                                    <h4 class="colorOrange">{{$issueObj->title}}</h4>
+                                    <h4 class="colorIssue">{{$issueObj->title}}</h4>
                                 </div>
                                 <div class="col-sm-5 featured_heading text-right colorLightBlue">
                                     <div class="row">
-                                        @if($issueObj->status != "resolved")
                                         <div class="col-xs-3 text-center">
                                             <a href="{!! url('issues/'.$issueIDHashID->encode($issueObj->id).'/edit')!!}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                         </div>
-                                        @endif
-                                        <div class="@if($issueObj->status == "resolved") col-xs-12 text-left @else col-xs-9 text-center
-                                        @endif">
+                                        <div class=" col-xs-9 text-center">
                                             <i class="fa fa-history"></i> REVISION HISTORY
                                         </div>
                                     </div>

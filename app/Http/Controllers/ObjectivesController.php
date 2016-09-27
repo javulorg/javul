@@ -362,8 +362,8 @@ class ObjectivesController extends Controller
                                 ->orWhere('task_id',$taskObj->id);
                         })->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));*/
 
-                        $site_activity = SiteActivity::where('unit_id',$objectiveObj->unit->id)->orderBy('id',
-                            'desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                        $site_activity = SiteActivity::where('unit_id',$objectiveObj->unit->id)->whereNull('issue_id')
+                            ->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                         view()->share('site_activity',$site_activity);
                         view()->share('unit_activity_id',$objectiveObj->unit->id);
 
@@ -525,7 +525,8 @@ class ObjectivesController extends Controller
                 $objectiveObj->unit = Unit::getUnitWithCategories($unit_id);
 
 
-                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $site_activity = SiteActivity::where('unit_id',$unit_id)
+                    ->whereNull('issue_id')->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                 //$taskObj = Task::where('unit_id',$unit_id)->get();
                 view()->share('site_activity',$site_activity);
                 view()->share('unit_activity_id',$unit_id);

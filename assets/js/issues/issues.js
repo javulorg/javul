@@ -113,10 +113,11 @@ $(document).ready(function() {
         ],
         height:100
     });
-    $('.summernote_resolution').summernote('disable');
+    if(issue_status != "resolved")
+        $('.summernote_resolution').summernote('disable');
     $("[name='status']").on('change',function(){
         if($(this).val() == "resolved"){
-            if($.trim(can_res) == 1 && issue_status == "verified")
+
                 $('.summernote_resolution').summernote('enable');
         }
         else

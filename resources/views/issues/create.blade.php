@@ -100,14 +100,13 @@
                                             <div class="input-icon right">
                                                 <i class="fa select-error"></i>
                                                 <select name="status" id="status" class="form-control">
-                                                    @if($issueObj->status!="verified" ) <option value="unverified" @if(!empty($issueObj) &&
-                                                $issueObj->status=="unverified") selected="selected" @endif>Unverified</option>@endif
+                                                    <option value="unverified" @if(!empty($issueObj) &&
+                                                $issueObj->status=="unverified") selected="selected" @endif>Unverified</option>
                                                     <option value="verified" @if(!empty($issueObj) &&
                                                 $issueObj->status=="verified") selected="selected" @endif>Verified</option>
-                                                    @if($issueObj->status =="verified" || $issueObj->resolved)
-                                                        <option value="resolved" @if(!empty($issueObj) &&
+                                                    <option value="resolved" @if(!empty($issueObj) &&
                                                 $issueObj->status=="resolved") selected="selected" @endif>Resolved</option>
-                                                    @endif
+
                                                 </select>
                                             </div>
                                         </div>
@@ -179,8 +178,7 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-sm-12 ">
-                                        <button id="create_objective" type="submit"  @if(!empty($issueObj) && ($issueObj->status =="resolved"))
-                                        class="btn" disabled="disabled" style="background-color:#e1672c;"@else class="btn black-btn" @endif>
+                                        <button id="create_objective" type="submit"  class="btn black-btn">
                                             @if(!empty($issueObj))
                                                 <span class="glyphicon glyphicon-edit"></span> Update Issue
                                             @else
