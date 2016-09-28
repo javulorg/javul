@@ -93,8 +93,8 @@ class IssuesController extends Controller
 
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
-                            'unit_id'=>$unit_id[0],
-                            'objective_id'=>$objective_id[0],
+                            'unit_id'=>$unit_id,
+                            'objective_id'=>$objective_id,
                             'task_id'=>$task_id,
                             'issue_id'=>$issue_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
@@ -322,7 +322,7 @@ class IssuesController extends Controller
                     $unitObj = Unit::find($issueObj->unit_id);
                     view()->share('unitObj',$unitObj);
                     view()->share('issueObj',$issueObj);
-                    $site_activity = SiteActivity::where('unit_id',$issueObj->unit_id)->whereNull('issue_id')->orderBy('id','desc')
+                    $site_activity = SiteActivity::where('unit_id',$issueObj->unit_id)->orderBy('id','desc')
                                     ->paginate(\Config::get('app.site_activity_page_limit'));
 
                     $availableUnitFunds =Fund::getUnitDonatedFund($issueObj->unit_id);
@@ -387,7 +387,7 @@ class IssuesController extends Controller
                     ('app
                     .page_limit'));
                     view()->share('issuesObj',$issuesObj);
-                    $site_activity = SiteActivity::where('unit_id',$unit_id)->whereNull('issue_id')->orderBy('id','desc')
+                    $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')
                         ->paginate(\Config::get('app.site_activity_page_limit'));
 
                     $availableUnitFunds =Fund::getUnitDonatedFund($unit_id);

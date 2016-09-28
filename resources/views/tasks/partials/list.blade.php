@@ -72,7 +72,7 @@
 
                             <tr style="background-color: #fff;text-align: right;">
                                 <td colspan="5">
-                                    <a class="btn black-btn" id="add_objective_btn" href="{!! url('tasks//add') !!}">
+                                    <a class="btn black-btn" id="add_objective_btn" href="{!! url('tasks/add') !!}">
                                         <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_task') !!}</span>
                                     </a>
 

@@ -72,8 +72,7 @@ class HomeController extends Controller
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
-                $site_activity = SiteActivity::where('unit_id',$unit_id)->whereNull('issue_id')->orderBy('id','desc')
-                    ->paginate(\Config::get('app.site_activity_page_limit'));
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                 view()->share('site_activity',$site_activity);
                 view()->share('site_activity_text','Unit Activity Log');
                 view()->share('unit_activity_id',$unit_id);

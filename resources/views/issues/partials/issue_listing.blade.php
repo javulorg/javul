@@ -12,9 +12,8 @@
             <thead>
             <tr>
                 <th>Issue Name</th>
-                <th>Unit</th>
                 <th>Status</th>
-                <th>Description</th>
+                <th>Created By</th>
                 <th><a href="#" style="text-decoration:none;color:#333" class="sort_by" data-order_by="older">
                         Created Date <span class="fa fa-sort-desc" style="vertical-align:top"></span>
                     </a>
@@ -31,8 +30,6 @@
                                 {{$obj->title}}
                             </a>
                         </td>
-                        <td><a href="{!! url('units/'.$unitIDHashID->encode($obj->unit_id).'/'.\App\Unit::getSlug($obj->unit_id)) !!}"
-                               title="edit">{{\App\Unit::getUnitName($obj->unit_id)}}</a></td>
                         <td>
                             <?php $status_class=''; $verified_by =''; $resolved_by ='';
                             if($obj->status=="unverified")
@@ -49,9 +46,9 @@
                             <span class="{{$status_class}}">{{ucfirst($obj->status).$verified_by. $resolved_by}}</span>
                         </td>
                         <td>
-                            <div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
-                                            ($obj->description)!!}"><span
-                                        class="ellipsis_text">{!!trim($obj->description)!!}</span></div>
+                            <a href="{!! url('userprofiles/'.$userIDHashID->encode($obj->user_id).'/'.strtolower(str_replace(" ","_",App\User::getUserName($obj->user_id)))) !!}">
+                                {{App\User::getUserName($obj->user_id)}}
+                            </a>
                         </td>
                         <td>{{$obj->created_at}}</td>
                     </tr>
@@ -71,7 +68,7 @@
                     @if($issuesObj->lastPage() > 1 && $issuesObj->lastPage() != $issuesObj->currentPage())
                         <a href="#" data-url="{{$issuesObj->url($issuesObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" class="btn
                                     more-black-btn more-objectives" data-from_page="unit_view" type="button">
-                            <span class="more_dots">...</span> MORE OBJECTIVES
+                            <span class="more_dots">...</span> MORE ISSUES
                         </a>
                     @endif
                 </td>
