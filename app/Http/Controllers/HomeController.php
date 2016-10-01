@@ -392,7 +392,7 @@ class HomeController extends Controller
                         if(Auth::user()->role == "superadmin")
                             $status=$request->input('status');
 
-                        if($categoryObj->name != $category_name || $categoryObj->parent_id != $parent_id){
+                        if($categoryObj->name != $category_name || $categoryObj->parent_id != $parent_id || Auth::user()->role == "superadmin"){
                             if(empty($parent_id))
                                 $parent_id=null;
 
