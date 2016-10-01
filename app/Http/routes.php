@@ -30,6 +30,17 @@ Route::get('/get_unit_site_activity_paginate','HomeController@get_unit_site_acti
 Route::get('/get_site_activity_paginate','HomeController@get_site_activity_paginate');
 Route::get('/add_to_watchlist','HomeController@add_to_watchlist');
 Route::get('/my_watchlist','HomeController@my_watchlist');
+Route::any('/site_admin','HomeController@site_admin');
+Route::any('/skills/get_skill_paginate','HomeController@get_skill_paginate');
+Route::any('/category/get_category_paginate','HomeController@get_category_paginate');
+
+Route::any('/category/add','HomeController@category_add');
+Route::any('/job_skills/add','HomeController@skill_add');
+Route::any('/job_skills/{skill_id}/edit','HomeController@skill_edit');
+Route::any('/category/{category_id}/edit','HomeController@category_edit');
+Route::get('/job_skills/{skill_id}','HomeController@skill_view');
+Route::get('/category/{category_id}','HomeController@category_view');
+
 Route::auth();
 
 

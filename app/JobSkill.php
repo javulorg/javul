@@ -46,4 +46,11 @@ class JobSkill extends Model
         return $html;
 
     }
+
+    public static function getName($id){
+        $obj = self::find($id);
+        if(count($obj) && !empty($obj))
+            return $obj->skill_name;
+    }
+
 }

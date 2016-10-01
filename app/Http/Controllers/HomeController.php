@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Issue;
+use App\JobSkill;
 use App\Objective;
 use App\SiteActivity;
 use App\Task;
 use App\Unit;
+use App\UnitCategory;
 use App\User;
 use App\Watchlist;
 use Illuminate\Http\Request;
@@ -184,5 +186,287 @@ class HomeController extends Controller
     }
     public function paypal(Request $request){
 
+    }
+
+    public function site_admin(Request $request){
+        if(!Auth::check())
+            return \Redirect::to(url(''));
+
+        $categoriesObj =UnitCategory::paginate(\Config::get('app.site_activity_page_limit'));
+        $jobSkillsObj = JobSkill::paginate(\Config::get('app.site_activity_page_limit'));
+
+        $msg_flag = false;
+        $msg_val = '';
+        $msg_type = '';
+        if($request->session()->has('msg_val')){
+            $msg_val =  $request->session()->get('msg_val');
+            $request->session()->forget('msg_val');
+            $msg_flag = true;
+            $msg_type = "success";
+        }
+        view()->share('msg_flag',$msg_flag);
+        view()->share('msg_val',$msg_val);
+        view()->share('msg_type',$msg_type);
+
+
+        view()->share('jobSkillsObj',$jobSkillsObj);
+        view()->share('categoriesObj',$categoriesObj);
+
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','Global Activity Log');
+
+        return view('admin.site_admin');
+    }
+
+    public function get_skill_paginate(Request $request){
+        if(!Auth::check())
+            return \Response::json(['success'=>true,'html'=>'']);
+
+        $page_limit = \Config::get('app.page_limit');
+        $jobSkillObj = JobSkill::paginate($page_limit);
+        view()->share('jobSkillObj',$jobSkillObj);
+        $html = view('admin.partials.more_skills')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
+    }
+
+    public function category_add(Request $request)
+    {
+        if(!Auth::check())
+            return \Redirect::to(url(''));
+
+        view()->share('categoryObj',[]);
+        view()->share('parent_categories',UnitCategory::lists('name','id')->all());
+        view()->share('method','category/add');
+        if($request->isMethod('post')){
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+                'status' => 'required'
+            ]);
+
+            if ($validator->fails())
+                return redirect()->back()->withErrors($validator)->withInput();
+
+            $categoryExist = UnitCategory::whereRaw('LOWER(name) = "'.strtolower($request->input('name').'"'))->count();
+
+            if($categoryExist > 0)
+                return redirect()->back()->withErrors(['name'=>'Name already exists.'])->withInput();
+
+            $parent_id = $request->input('parent_id');
+            if(empty($parent_id))
+                $parent_id=null;
+            $status = "pending";
+            if(Auth::user()->role == "superadmin")
+                $status =$request->input('status');
+
+            UnitCategory::create([
+                'name'=>$request->input('name'),
+                'status'=>$status,
+                'parent_id'=>$request->input('parent_id')
+            ]);
+            $request->session()->flash('msg_val', "Unit Category created successfully!!!");
+            return redirect('site_admin');
+        }
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','Global Activity Log');
+        return view('admin.partials.add_category');
+    }
+
+    public function skill_add(Request $request){
+        if(!Auth::check())
+            return \Redirect::to(url(''));
+
+        view()->share('skillObj',[]);
+        view()->share('parent_skills',JobSkill::lists('skill_name','id')->all());
+        view()->share('method','job_skills/add');
+        if($request->isMethod('post')){
+            $validator = \Validator::make($request->all(), [
+                'skill_name' => 'required'
+            ]);
+
+            if ($validator->fails())
+                return redirect()->back()->withErrors($validator)->withInput();
+
+            $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'"'))->count();
+
+            if($skillExist> 0)
+                return redirect()->back()->withErrors(['skill_name'=>'Skill name already exists.'])->withInput();
+
+            $parent_id = $request->input('parent_id');
+            if(empty($parent_id))
+                $parent_id=null;
+
+            JobSkill::create([
+                'skill_name'=>$request->input('skill_name'),
+                'parent_id'=>$request->input('parent_id')
+            ]);
+            $request->session()->flash('msg_val', "Job skill created successfully!!!");
+            return redirect('site_admin');
+        }
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','Global Activity Log');
+        return view('admin.partials.add_skill');
+    }
+
+    public function get_category_paginate(){
+        if(!Auth::check())
+            return \Response::json(['success'=>true,'html'=>'']);
+
+        $page_limit = \Config::get('app.page_limit');
+        $categoryObj = UnitCategory::paginate($page_limit);
+        view()->share('categoryObj',$categoryObj);
+        $html = view('admin.partials.more_categories')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
+    }
+
+    public function category_view(Request $request,$category_id){
+        if(!empty($category_id)){
+            $unitCategoryIDHashID = new Hashids('unit category id hash',10,\Config::get('app.encode_chars'));
+            $category_id = $unitCategoryIDHashID->decode($category_id);
+            if(!empty($category_id)){
+                $category_id= $category_id[0];
+                $categoryObj = UnitCategory::find($category_id);
+                if(!empty($categoryObj) && count($categoryObj) > 0){
+                    view()->share('categoryObj',$categoryObj);
+                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                    view()->share('site_activity',$site_activity);
+                    view()->share('site_activity_text','Global Activity Log');
+                    return view('admin.partials.category_view');
+                }
+            }
+        }
+        return view('errors.404');
+
+    }
+    public function skill_view(Request $request,$skill_id){
+        if(!empty($skill_id)){
+            $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
+            $skill_id = $jobSkillIDHashID->decode($skill_id);
+            if(!empty($skill_id)){
+                $skill_id= $skill_id[0];
+                $skillObj = JobSkill::find($skill_id);
+                if(!empty($skillObj) && count($skillObj) > 0){
+                    view()->share('skillObj',$skillObj);
+                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                    view()->share('site_activity',$site_activity);
+                    view()->share('site_activity_text','Global Activity Log');
+                    return view('admin.partials.skill_view');
+                }
+            }
+        }
+        return view('errors.404');
+
+    }
+
+    public function category_edit(Request $request,$category_id){
+        if(!empty($category_id)){
+            $category_id_encoded = $category_id;
+            $unitCategoryIDHashID = new Hashids('unit category id hash',10,\Config::get('app.encode_chars'));
+            $category_id = $unitCategoryIDHashID->decode($category_id);
+            if(!empty($category_id)){
+                $category_id= $category_id[0];
+                $categoryObj = UnitCategory::find($category_id);
+                if(!empty($categoryObj) && count($categoryObj) > 0){
+                    if($request->isMethod('post')){
+                        $validator = \Validator::make($request->all(), [
+                            'name' => 'required'
+                        ]);
+
+                        if ($validator->fails())
+                            return redirect()->back()->withErrors($validator)->withInput();
+
+                        
+                        $categoryExist = UnitCategory::whereRaw('LOWER(name) = "'.strtolower($request->input('name').'" and id !="'.$category_id.'"'))
+                                        ->count();
+
+
+                        if($categoryExist > 0)
+                            return redirect()->back()->withErrors(['name'=>'Name already exists.'])->withInput();
+
+                        $category_name=$request->input('name');
+                        $parent_id = $request->input('parent_id');
+
+                        $status = "pending";
+                        if(Auth::user()->role == "superadmin")
+                            $status=$request->input('status');
+
+                        if($categoryObj->name != $category_name || $categoryObj->parent_id != $parent_id){
+                            if(empty($parent_id))
+                                $parent_id=null;
+
+                            $categoryObj->update([
+                                'name'=>$request->input('name'),
+                                'status'=>$status,
+                                'parent_id'=>$request->input('parent_id')
+                            ]);
+                            $request->session()->flash('msg_val', "Unit category updated successfully!!!");
+                            return redirect('site_admin');
+                        }
+                        $request->session()->flash('msg_val', "Nothing to update!!!");
+                        return redirect('site_admin');
+
+
+
+                    }
+                    view()->share('categoryObj',$categoryObj);
+                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                    view()->share('site_activity',$site_activity);
+                    view()->share('site_activity_text','Global Activity Log');
+                    view()->share('parent_categories',UnitCategory::where('id','!=',$category_id)->lists('name','id')->all());
+                    view()->share('method','category/'.$category_id_encoded .'/edit');
+                    return view('admin.partials.add_category');
+                }
+            }
+        }
+        return view('errors.404');
+    }
+
+    public function skill_edit(Request $request,$skill_id){
+        if(!empty($skill_id)){
+            $skill_id_encoded = $skill_id;
+            $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
+            $skill_id = $jobSkillIDHashID->decode($skill_id);
+            if(!empty($skill_id)){
+                $skill_id= $skill_id[0];
+                $skillObj = JobSkill::find($skill_id);
+                if(!empty($skillObj) && count($skillObj) > 0){
+                    if($request->isMethod('post')){
+                        $validator = \Validator::make($request->all(), [
+                            'skill_name' => 'required'
+                        ]);
+
+                        if ($validator->fails())
+                            return redirect()->back()->withErrors($validator)->withInput();
+
+                        $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'" and id != "'
+                                .$skill_id.'"'))->count();
+
+                        if($skillExist> 0)
+                            return redirect()->back()->withErrors(['skill_name'=>'Skill name already exists.'])->withInput();
+
+                        $parent_id = $request->input('parent_id');
+                        if(empty($parent_id))
+                            $parent_id=null;
+
+                        $skillObj->update([
+                            'skill_name'=>$request->input('skill_name'),
+                            'parent_id'=>$request->input('parent_id')
+                        ]);
+                        $request->session()->flash('msg_val', "Job skill updated successfully!!!");
+                        return redirect('site_admin');
+                    }
+                    view()->share('skillObj',$skillObj);
+                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                    view()->share('site_activity',$site_activity);
+                    view()->share('site_activity_text','Global Activity Log');
+                    view()->share('method','job_skills/'.$skill_id_encoded .'/edit');
+                    view()->share('parent_skills',JobSkill::where('id','!=',$skill_id)->lists('skill_name','id')->all());
+                    return view('admin.partials.add_skill');
+                }
+            }
+        }
+        return view('errors.404');
     }
 }

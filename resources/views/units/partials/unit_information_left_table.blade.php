@@ -66,7 +66,7 @@
                     $category_names  = explode(",",$category_names ); ?>
                         @if(count($category_ids) > 0 )
                             @foreach($category_ids as $index=>$category)
-                                <a class="upper colorLightBlue" href="{!! url('units/category/'.$unitCategoryIDHashID->encode($category))
+                                <a class="upper colorLightBlue" href="{!! url('category/'.$unitCategoryIDHashID->encode($category))
                                 !!}">{{$category_names[$index]}}</a>
                                 @if(count($category_ids) > 1 && $index != count($category_ids) -1)
                                     <span>&#44;</span>

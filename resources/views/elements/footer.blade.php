@@ -81,6 +81,10 @@
                 <div class="col-sm-12 text-center">
                     <div id="footer-nav">
                         <ul>
+                            @if(!empty($authUserObj))
+                                <li><a href="{!! url('site_admin') !!}" class="colorLightBlue">SITE ADMINISTRATION</a></li>
+                                <li class="mrgrtlt5">|</li>
+                            @endif
                             <li><a href="#" class="colorLightBlue">TERMS OF SERVICE</a></li>
                             <li class="mrgrtlt5">|</li>
                             <li><a href="#" class="colorLightBlue">DISCLAIMER</a></li>

@@ -22,7 +22,7 @@
     <div class="col-sm-8">
         <div class="row">
             <div class="col-sm-6">
-                <div class="panel panel-default panel-dark-grey">
+                <div class="panel panel-default panel-grey">
                     <div class="panel-heading">
                         <h4>My Bids</h4>
                     </div>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="panel panel-default panel-dark-grey">
+                <div class="panel panel-default panel-grey">
                     <div class="panel-heading">
                         <h4>My Assigned Task</h4>
                     </div>

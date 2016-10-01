@@ -90,6 +90,44 @@ $(function(){
         return false;
     });
 
+    $(document).off("click",".more-skills").on('click','.more-skills',function(e){
+        e.preventDefault();
+        $(".skill_loading").show();
+        var page = $(this).data('url').split('page=')[1];
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        $.ajax({
+            type:'get',
+            url:siteURL+'/skills/get_skill_paginate',
+            data:{page:page},
+            success:function(resp){
+                $(".skill-table tbody tr:last-child").remove();
+                $(".skill-table tbody").append(resp.html);
+                $(".skill_loading").hide();
+                $(".loading_content_hide").css('opacity','1');
+            }
+        });
+        return false;
+    });
+    $(document).off("click",".more-category").on('click','.more-category',function(e){
+        e.preventDefault();
+        $(".category_loading").show();
+        var page = $(this).data('url').split('page=')[1];
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        $.ajax({
+            type:'get',
+            url:siteURL+'/category/get_category_paginate',
+            data:{page:page},
+            success:function(resp){
+                $(".category-table tbody tr:last-child").remove();
+                $(".category-table tbody").append(resp.html);
+                $(".category_loading").hide();
+                $(".loading_content_hide").css('opacity','1');
+            }
+        });
+        return false;
+    });
+
+
 
     //add item to watchlist
     $(".add_to_my_watchlist").on('click',function(){
