@@ -46,7 +46,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12" style="margin-bottom: 10px;margin-left: 10px;">
-                                        <a class="btn black-btn btn-xs add_skill" id="add_skill_btn" style="padding:5px 16px 8px">
+                                        <a class="btn black-btn btn-xs add_skill" id="add_skill_btn" style="padding:5px 10px 5px;
+                                        text-decoration:none;">
                                             <i class="fa fa-plus plus"></i> <span class="plus_text">ADD SKILL</span>
                                         </a>
                                     </div>
@@ -225,7 +226,7 @@
                 return false;
             });
             $(document).off("click","a.hierarchy").on('click',"a.hierarchy",function(event){
-                var that = $(this);
+                var that = $(this).addClass('selected');
                 getNextBox(that);
                 return false;
             });
@@ -431,7 +432,7 @@
                 else
                 {
                     var id =that.attr('data-value');
-                    var box_number = that.parent('div').attr('data-number');
+                    var box_number = that.attr('data-number');
                 }
                 $.ajax({
                     type:'get',
@@ -444,39 +445,41 @@
                             if(Object.keys(resp.data).length > 0)
                             {
                                 $(".add_edit_skills").remove();
-                                var next_level=$(".all_levels").find('select,div').length;
+                                var next_level=$(".all_levels").find('select,.new_box').length;
+                                console.log(next_level+' '+box_number);
                                 if(next_level > box_number ){
                                     for(var i=box_number;i<=next_level;i++){
-                                        if($(".all_levels").find('select,div').length != box_number)
-                                            $(".all_levels").find('div:last').remove();
+                                        if($(".all_levels").find('select,.new_box').length != box_number)
+                                            $(".all_levels").find('.new_box:last').remove();
                                     }
                                 }
-                                next_level=$(".all_levels").find('select,div').length;
+                                next_level=$(".all_levels").find('select,.new_box').length;
 
                                 var html = '<div class="hierarchy new_box" data-prev="'+id+'" data-number="'+(next_level+1)+'">';
                                 $.each(resp.data,function(index,val){
-                                    html+='<div><a  href="" class="hierarchy" data-value="'+index+'">'+val+'&nbsp;></a><a ' +
+                                    html+='<div><a  href="" class="hierarchy" data-number="'+(next_level+1)+'" data-value="'+index+'">'+val+'&nbsp;></a><a ' +
                                             'class="edit_skill" data-id="'+index+'" data-text="'+val+'">Edit</a></div>';
                                 })
-                                html+= '<a class="add_skill">Add skill</a></div>';
+                                html+= '<a class="add_skill">ADD NEW</a></div>';
                                 $(".all_levels").append(html);
                                 return false;
                             }
                             else{
                                 $(".add_edit_skills").remove();
-                                var next_level=$(".all_levels").find('select,div').length;
+                                var next_level=$(".all_levels").find('select,.new_box').length;
                                 if(next_level > box_number ){
                                     for(var i=box_number;i<=next_level;i++){
-                                        if($(".all_levels").find('select,div').length != box_number)
-                                            $(".all_levels").find('div:last').remove();
+                                        if($(".all_levels").find('select,.new_box').length != box_number)
+                                            $(".all_levels").find('.new_box:last').remove();
                                     }
                                 }
 
                                 var html = '<div class="add_edit_skills" data-prev="'+id+'" style="border: 1px solid rgb(170, 170, 170); display: ' +
-                                        'inline-block; height:auto; position: relative;top:10px;' +
+                                        'inline-block; height:94px; position: relative;top:14px;vertical-align: top;' +
                                         'margin-left: 10px;"><button  class="add_skill" style="display: block;' +
-                                        'margin:10px">Add Skill</button><button data-prev="'+id+'" class="delete_skill" style="display: block;' +
-                                        'margin:10px">Delete Skill</button></div>' ;
+                                        'margin:10px">ADD NEW</button><button data-prev="'+id+'" class="delete_skill" style="display: ' +
+                                        'block;' +
+                                        'margin:10px">DELETE SKILL</button></div>' ;
                                 $(".all_levels").append(html);
                             }
                         }
