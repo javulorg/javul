@@ -7,6 +7,8 @@
 <style>
     .hide-native-select .btn-group, .hide-native-select .btn-group .multiselect, .hide-native-select .btn-group.multiselect-container
     {width:100% !important;}
+    .select2-container--bootstrap .select2-results > .select2-results__options{max-height: 200px;overflow-y:auto}
+    .option.load-more{padding:5px;}
 </style>
 @endsection
 @section('content')

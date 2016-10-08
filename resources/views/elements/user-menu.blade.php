@@ -43,7 +43,7 @@
             <a href="{!! url('objectives') !!}" class="btn user-menu-right user-menu-right-icons">
                 <i class="fa fa-credit-card font16pt pinkClr"></i>
             </a>
-            <a href="{!! url('tasks') !!}" class="btn user-menu-right user-menu-right-icons">
+            <a href="{!! url('account') !!}" class="btn user-menu-right user-menu-right-icons">
                 <i class="fa fa-user font16pt pinkClr"></i>
             </a>
         </div>

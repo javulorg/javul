@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AreaOfInterest;
 use App\Http\Requests;
 use App\Issue;
 use App\JobSkill;
@@ -193,7 +194,19 @@ class HomeController extends Controller
             return \Redirect::to(url(''));
 
         $categoriesObj =UnitCategory::paginate(\Config::get('app.site_activity_page_limit'));
-        $jobSkillsObj = JobSkill::paginate(\Config::get('app.site_activity_page_limit'));
+        $jobSkillsObj = \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id,c.skill_name,   p.skill_name AS Parentskill_name
+                                    FROM job_skills c LEFT JOIN job_skills p ON (c.parent_id = p.id) WHERE IF(c.parent_id IS NULL, 0, c
+                                    .parent_id) = 0 AND c.id <> 0 ORDER BY  c.id');
+
+        $firstBox_skills = [];
+        if(count($jobSkillsObj) > 0 && !empty($jobSkillsObj)){
+            foreach($jobSkillsObj as $skill){
+                $firstBox_skills[$skill->id]=$skill->skill_name;
+            }
+        }
+
+        view()->share('firstBox_skills',$firstBox_skills);
+        $area_of_interestObj = AreaOfInterest::paginate(\Config::get('app.site_activity_page_limit'));
 
         $msg_flag = false;
         $msg_val = '';
@@ -211,6 +224,7 @@ class HomeController extends Controller
 
         view()->share('jobSkillsObj',$jobSkillsObj);
         view()->share('categoriesObj',$categoriesObj);
+        view()->share('area_of_interestObj',$area_of_interestObj);
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
@@ -219,6 +233,16 @@ class HomeController extends Controller
         return view('admin.site_admin');
     }
 
+    public function get_area_of_interest_paginate(Request $request){
+        if(!Auth::check())
+            return \Response::json(['success'=>true,'html'=>'']);
+
+        $page_limit = \Config::get('app.page_limit');
+        $areaOfInterestObj = AreaOfInterest::paginate($page_limit);
+        view()->share('areaOfInterestObj',$areaOfInterestObj);
+        $html = view('admin.partials.more_area_of_interest')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
+    }
     public function get_skill_paginate(Request $request){
         if(!Auth::check())
             return \Response::json(['success'=>true,'html'=>'']);
@@ -274,10 +298,32 @@ class HomeController extends Controller
     }
 
     public function skill_add(Request $request){
-        if(!Auth::check())
-            return \Redirect::to(url(''));
+        if(!Auth::check() || !$request->ajax())
+            return \Response::json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
 
-        view()->share('skillObj',[]);
+        $validator = \Validator::make($request->all(), [
+            'skill_name' => 'required'
+        ]);
+
+        if ($validator->fails())
+            return \Response::json(['success'=>false,'errors'=>$validator->messages()]);
+
+        $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'"'))->count();
+
+        if($skillExist> 0)
+            return \Response::json(['success'=>false,'errors'=>['skill_name'=>'Skill name already exists']]);
+
+        $parent_id = $request->input('parent_id');
+        if(empty($parent_id))
+            $parent_id=0;
+
+        JobSkill::create([
+            'skill_name'=>$request->input('skill_name'),
+            'parent_id'=>$parent_id
+        ]);
+
+        return \Response::json(['success'=>true]);
+        /*view()->share('skillObj',[]);
         view()->share('parent_skills',JobSkill::lists('skill_name','id')->all());
         view()->share('method','job_skills/add');
         if($request->isMethod('post')){
@@ -307,7 +353,132 @@ class HomeController extends Controller
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
         view()->share('site_activity_text','Global Activity Log');
-        return view('admin.partials.add_skill');
+        return view('admin.partials.add_skill');*/
+    }
+    public function skill_edit(Request $request){
+
+        if(!Auth::check() || !$request->ajax())
+            return \Response::json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
+
+        $validator = \Validator::make($request->all(), [
+            'skill_name' => 'required'
+        ]);
+
+        if ($validator->fails())
+            return \Response::json(['success'=>false,'errors'=>$validator->messages()]);
+
+        $selected_id = $request->input('selected_id');
+        if(empty($selected_id) || !is_numeric($selected_id))
+            return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
+
+        $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'"'))->count();
+
+        if($skillExist> 0)
+            return \Response::json(['success'=>false,'errors'=>['skill_name'=>'Skill name already exists']]);
+
+        $jobSkillObj= JobSkill::find($selected_id);
+        if(count($jobSkillObj) > 0 && !empty($jobSkillObj)){
+            $jobSkillObj->update([
+                'skill_name'=>$request->input('skill_name')
+            ]);
+            return \Response::json(['success'=>true]);
+        }
+        return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
+
+
+        /*if(!empty($skill_id)){
+            $skill_id_encoded = $skill_id;
+            $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
+            $skill_id = $jobSkillIDHashID->decode($skill_id);
+            if(!empty($skill_id)){
+                $skill_id= $skill_id[0];
+                $skillObj = JobSkill::find($skill_id);
+                if(!empty($skillObj) && count($skillObj) > 0){
+                    if($request->isMethod('post')){
+                        $validator = \Validator::make($request->all(), [
+                            'skill_name' => 'required'
+                        ]);
+
+                        if ($validator->fails())
+                            return redirect()->back()->withErrors($validator)->withInput();
+
+                        $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'" and id != "'
+                                .$skill_id.'"'))->count();
+
+                        if($skillExist> 0)
+                            return redirect()->back()->withErrors(['skill_name'=>'Skill name already exists.'])->withInput();
+
+                        $parent_id = $request->input('parent_id');
+                        if(empty($parent_id))
+                            $parent_id=null;
+
+                        $skillObj->update([
+                            'skill_name'=>$request->input('skill_name'),
+                            'parent_id'=>$request->input('parent_id')
+                        ]);
+                        $request->session()->flash('msg_val', "Job skill updated successfully!!!");
+                        return redirect('site_admin');
+                    }
+                    view()->share('skillObj',$skillObj);
+                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                    view()->share('site_activity',$site_activity);
+                    view()->share('site_activity_text','Global Activity Log');
+                    view()->share('method','job_skills/'.$skill_id_encoded .'/edit');
+                    view()->share('parent_skills',JobSkill::where('id','!=',$skill_id)->lists('skill_name','id')->all());
+                    return view('admin.partials.add_skill');
+                }
+            }
+        }
+        return view('errors.404');*/
+    }
+    public function skill_delete(Request $request){
+        if(Auth::check() && $request->ajax()){
+            $id = $request->input('id');
+            $jobSkillExist = JobSkill::whereRaw('parent_id = "'.$id.'"')->count();
+            if($jobSkillExist == 0){
+                $cnt = JobSkill::find($id)->count();
+                if($cnt > 0)
+                    JobSkill::find($id)->forceDelete();
+                return \Response::json(['success'=>true,'msg'=>'Skill deleted successfully']);
+            }
+        }
+        return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+    }
+    public function area_of_interest_add(Request $request){
+        if(!Auth::check())
+            return \Redirect::to(url(''));
+
+        view()->share('areaOfInterestObj',[]);
+        view()->share('parent_area_of_interest',AreaOfInterest::lists('title','id')->all());
+        view()->share('method','area_of_interest/add');
+        if($request->isMethod('post')){
+            $validator = \Validator::make($request->all(), [
+                'title' => 'required'
+            ]);
+
+            if ($validator->fails())
+                return redirect()->back()->withErrors($validator)->withInput();
+
+            $areaOfInterestExist = AreaOfInterest::whereRaw('LOWER(title) = "'.strtolower($request->input('title').'"'))->count();
+
+            if($areaOfInterestExist> 0)
+                return redirect()->back()->withErrors(['skill_name'=>'Area of interest already exists.'])->withInput();
+
+            $parent_id = $request->input('parent_id');
+            if(empty($parent_id))
+                $parent_id=null;
+
+            AreaOfInterest::create([
+                'title'=>$request->input('title'),
+                'parent_id'=>$request->input('parent_id')
+            ]);
+            $request->session()->flash('msg_val', "Area of interest created successfully!!!");
+            return redirect('site_admin');
+        }
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','Global Activity Log');
+        return view('admin.partials.add_area_of_interest');
     }
 
     public function get_category_paginate(){
@@ -353,6 +524,26 @@ class HomeController extends Controller
                     view()->share('site_activity',$site_activity);
                     view()->share('site_activity_text','Global Activity Log');
                     return view('admin.partials.skill_view');
+                }
+            }
+        }
+        return view('errors.404');
+
+    }
+
+    public function area_of_interest_view(Request $request,$area_id){
+        if(!empty($area_id)){
+            $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
+            $area_id = $areaOfInterestIDHashID->decode($area_id);
+            if(!empty($area_id)){
+                $area_id= $area_id[0];
+                $areaOfInterestObj = AreaOfInterest::find($area_id);
+                if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0){
+                    view()->share('areaOfInterestObj',$areaOfInterestObj);
+                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                    view()->share('site_activity',$site_activity);
+                    view()->share('site_activity_text','Global Activity Log');
+                    return view('admin.partials.area_of_interest_view');
                 }
             }
         }
@@ -423,50 +614,79 @@ class HomeController extends Controller
         return view('errors.404');
     }
 
-    public function skill_edit(Request $request,$skill_id){
-        if(!empty($skill_id)){
-            $skill_id_encoded = $skill_id;
-            $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
-            $skill_id = $jobSkillIDHashID->decode($skill_id);
-            if(!empty($skill_id)){
-                $skill_id= $skill_id[0];
-                $skillObj = JobSkill::find($skill_id);
-                if(!empty($skillObj) && count($skillObj) > 0){
+
+
+    public function area_of_interest_edit(Request $request,$area_id){
+        if(!empty($area_id)){
+            $area_id_encoded = $area_id;
+            $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
+            $area_id = $areaOfInterestIDHashID->decode($area_id);
+            if(!empty($area_id)){
+                $area_id= $area_id[0];
+                $areaOfInterestObj = AreaOfInterest::find($area_id);
+                if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0){
                     if($request->isMethod('post')){
                         $validator = \Validator::make($request->all(), [
-                            'skill_name' => 'required'
+                            'title' => 'required'
                         ]);
 
                         if ($validator->fails())
                             return redirect()->back()->withErrors($validator)->withInput();
 
-                        $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'" and id != "'
-                                .$skill_id.'"'))->count();
+                        $areaOfInterestExist = AreaOfInterest::whereRaw('LOWER(title) = "'.strtolower($request->input('title').'" and id != "'.$area_id.'"'))->count();
 
-                        if($skillExist> 0)
-                            return redirect()->back()->withErrors(['skill_name'=>'Skill name already exists.'])->withInput();
+                        if($areaOfInterestExist > 0)
+                            return redirect()->back()->withErrors(['title'=>'Area of Interest already exists.'])->withInput();
 
                         $parent_id = $request->input('parent_id');
                         if(empty($parent_id))
                             $parent_id=null;
 
-                        $skillObj->update([
-                            'skill_name'=>$request->input('skill_name'),
+                        $areaOfInterestObj->update([
+                            'title'=>$request->input('title'),
                             'parent_id'=>$request->input('parent_id')
                         ]);
-                        $request->session()->flash('msg_val', "Job skill updated successfully!!!");
+                        $request->session()->flash('msg_val', "Area of Interest updated successfully!!!");
                         return redirect('site_admin');
                     }
-                    view()->share('skillObj',$skillObj);
+                    view()->share('areaOfInterestObj',$areaOfInterestObj);
                     $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                     view()->share('site_activity',$site_activity);
                     view()->share('site_activity_text','Global Activity Log');
-                    view()->share('method','job_skills/'.$skill_id_encoded .'/edit');
-                    view()->share('parent_skills',JobSkill::where('id','!=',$skill_id)->lists('skill_name','id')->all());
-                    return view('admin.partials.add_skill');
+                    view()->share('method','area_of_interest/'.$area_id_encoded .'/edit');
+                    view()->share('parent_area_of_interest',AreaOfInterest::where('id','!=',$area_id)->lists('title','id')->all());
+                    return view('admin.partials.add_area_of_interest');
                 }
             }
         }
         return view('errors.404');
+    }
+
+    public function get_skills(Request $request){
+        $terms = $request->input('term');
+        $page = $request->input('page');
+        if(!empty($terms)){
+            if($page == 0 || empty($page))
+                $page =0;
+            $str = JobSkill::getHierarchy($terms,$page );
+
+            if(!empty($str)){
+                foreach($str as $index=>$s){
+                    if(is_array($s['name'])){
+                        $str[$index]['name']=implode(" > ",array_reverse($s['name']));
+                    }
+
+                }
+                return \Response::json(['items'=>$str,'total_counts'=>$obj = JobSkill::where('skill_name','like',$terms.'%')->count()]);
+            }
+        }
+        return \Response::json([]);
+
+    }
+
+    public function get_next_level_skills(Request $request){
+        $id = $request->input('id');
+        $skills = JobSkill::where('parent_id',$id)->lists('skill_name','id')->all();
+        return \Response::json(['success'=>true,'data'=>$skills]);
     }
 }

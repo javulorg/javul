@@ -108,6 +108,24 @@ $(function(){
         });
         return false;
     });
+    $(document).off("click",".more-area-of-interest").on('click','.more-area-of-interest',function(e){
+        e.preventDefault();
+        $(".area_of_interest_loading").show();
+        var page = $(this).data('url').split('page=')[1];
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        $.ajax({
+            type:'get',
+            url:siteURL+'/area_of_interest/get_area_of_interest_paginate',
+            data:{page:page},
+            success:function(resp){
+                $(".area_of_interest-table tbody tr:last-child").remove();
+                $(".area_of_interest-table tbody").append(resp.html);
+                $(".area_of_interest_loading").hide();
+                $(".loading_content_hide").css('opacity','1');
+            }
+        });
+        return false;
+    });
     $(document).off("click",".more-category").on('click','.more-category',function(e){
         e.preventDefault();
         $(".category_loading").show();

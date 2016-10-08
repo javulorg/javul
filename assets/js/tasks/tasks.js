@@ -223,10 +223,68 @@ $(document).ready(function() {
             $("#objective").select2('enable',false);
         }
 
+        function formatSkills (repo) {
+            if (repo.loading) return repo.text;
+
+            var markup = "<div class='select2-result-repository clearfix'>" +
+                "<div class='select2-result-repository__meta'>" +
+                "<div class='select2-result-repository__title'>" + repo.name + "</div></div></div></div>";
+
+            /*if (repo.description) {
+                markup += "<div class='select2-result-repository__description'>" + repo.description + "</div>";
+            }
+
+            markup += "<div class='select2-result-repository__statistics'>" +
+                "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> " + repo.forks_count + " Forks</div>" +
+                "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> " + repo.stargazers_count + " Stars</div>" +
+                "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> " + repo.watchers_count + " Watchers</div>" +
+                "</div>" +
+                "</div></div>";*/
+
+            return markup;
+        }
+
+        function formatSkillsSelection (repo) {
+            return repo.text;
+        }
+
 
         $("#task_skills").select2({
-            allowClear:true,
-            placeholder:"Select Skills"
+            allowClear: true,
+            width: '100%',
+            displayValue:'skill_name',
+            ajax: {
+                url: siteURL+"/job_skills/get_skills",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            //more: (params.page * 1) < data.total_counts
+                            more:false
+                        }
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+            minimumInputLength: 1,
+            templateResult: formatSkills, // omitted for brevity, see the source of this page
+            templateSelection: formatSkillsSelection // omitted for brevity, see the source of this page
         });
 
         $("#unit").on('change',function(){

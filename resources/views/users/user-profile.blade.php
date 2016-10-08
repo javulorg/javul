@@ -1,7 +1,12 @@
 <div class="grey-bg" style="padding-top:20px;margin-bottom: 20px; ">
         <div class="row">
-            <div class="col-sm-3 text-center form-group">
-                <img src="{!! url('assets/images/user.png')!!}" class="img-rounded-circle"/>
+            <div class="col-sm-4 text-center form-group">
+                @if(!empty($userObj->profile_pic) && file_exists(base_path('uploads/user_profile/'.$userIDHashID->encode($userObj->id).'/'.$userObj->profile_pic)))
+                    <img src="{!! url('uploads/user_profile/'.$userIDHashID->encode($userObj->id).'/'.$userObj->profile_pic) !!}" class="img-rounded-circle"/>
+                @else
+                    <img src="{!! url('assets/images/user.png')!!}" class="img-rounded-circle"/>
+                @endif
+
                 <div style="display: block">
                     <ul title="Ratings" class="list-inline ratings text-center">
                         <li>
@@ -22,7 +27,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-sm-9 hidden-xs">
+            <div class="col-sm-8 hidden-xs">
                 <div class="user-header">
                     <h3>{{$userObj->first_name.' '.$userObj->last_name}}</h3>
                 </div>
@@ -32,19 +37,21 @@
                 </div>
                 <div class="user-header">
                     <span class="glyphicon glyphicon-thumbs-up"></span>
+                    <?php $job_skills = explode(",",$userObj->job_skills); ?>
                     Skills:
-                    @if(!empty($skills))
-                        @foreach($skills as $skill)
-                            <span class="label label-info tags">{{$skill->skill_name}}</span>
+                    @if(!empty($job_skills))
+                        @foreach($job_skills as $skill)
+                            <span class="label label-info tags">{{\App\JobSkill::getName($skill)}}</span>
                         @endforeach
                     @endif
                 </div>
                 <div class="user-header">
                     <span class="glyphicon glyphicon-bookmark"></span>
                     Area of Interest:
-                    @if(!empty($interestObj))
-                        @foreach($interestObj as $interest)
-                            <span class="label label-info tags">{{$interest->title}}</span>
+                    <?php $area_of_interest = explode(",",$userObj->area_of_interest); ?>
+                    @if(!empty($area_of_interest))
+                        @foreach($area_of_interest as $interest)
+                            <span class="label label-info tags">{{\App\AreaOfInterest::getName($interest)}}</span>
                         @endforeach
                     @endif
                 </div>

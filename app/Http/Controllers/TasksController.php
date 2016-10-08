@@ -219,6 +219,10 @@ class TasksController extends Controller
 
             // create task
             $slug=substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
+
+            $task_skills =$request->input('task_skills');
+            if(!empty($task_skills))
+                $task_skills  = implode(",",$task_skills );
             $task_id = Task::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$unit_id[0],
@@ -227,7 +231,7 @@ class TasksController extends Controller
                 'slug'=>$slug,
                 'description'=>$request->input('description'),
                 'summary'=>$request->input('summary'),
-                'skills'=>implode(",",$request->input('task_skills')),
+                'skills'=>$task_skills,
                 'estimated_completion_time_start'=>date('Y-m-d h:i',$start_date),
                 'estimated_completion_time_end'=>date('Y-m-d h:i',$end_date),
                 'task_action'=>$request->input('action_items'),
@@ -419,6 +423,9 @@ class TasksController extends Controller
 
                     // update task
                     $slug=substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
+                    $task_skills =$request->input('task_skills');
+                    if(!empty($task_skills))
+                        $task_skills  = implode(",",$task_skills );
                     Task::where('id',$task_id)->update([
                         //'user_id'=>Auth::user()->id,
                         'unit_id'=>$unit_id[0],
@@ -427,7 +434,7 @@ class TasksController extends Controller
                         'slug'=>$slug,
                         'description'=>$request->input('description'),
                         'summary'=>$request->input('summary'),
-                        'skills'=>implode(",",$request->input('task_skills')),
+                        'skills'=>$task_skills,
                         'estimated_completion_time_start'=>date('Y-m-d h:i',$start_date),
                         'estimated_completion_time_end'=>date('Y-m-d h:i',$end_date),
                         'task_action'=>trim($request->input('action_items')),

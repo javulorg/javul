@@ -238,12 +238,21 @@
                     dataType:'json',
                     success:function(resp){
                         if(resp.success){
-                            bootbox.dialog({
+                            $(".div-table-second-cell").css('z-index','100');
+                            $(".list-item-main").css('z-index','100');
+                            var box = bootbox.dialog({
                                 message: resp.html
                             });
+
+                            box.on("hidden.bs.modal", function (e) {
+                                $(".list-item-main").css('z-index','99999');
+                                $(".div-table-second-cell").css('z-index','99999');
+                            });
+
+                            box.modal('show');
                         }
                     }
-                })
+                });
             }
             return false;
         });

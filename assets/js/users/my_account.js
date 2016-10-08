@@ -307,6 +307,32 @@ $(document).ready(function() {
         }
     });
 
+    $("#update_profile").on('click',function(){
+        $form = $("#personal-info");
+        $form.find('.help-block').html('');
+        $.ajax({
+            type:'POST',
+            url:siteURL+'/account/update_personal_info',
+            dataType:'json',
+            async:true,
+            data:$form.serialize(),
+            success:function(resp){
+                if(resp.success){
+                    $(".message").html('<div class="alert alert-success" style="margin-bottom:15px;">'+
+                        '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                    '<strong>Success!</strong> Profile updated successfully...'+
+                    '</div>');
+
+                }
+                else{
+                    $.each(resp.errors,function(index,value){
+                        $form.find("#"+index).parent('.col-sm-4').find('.help-block').html(value);
+                    });
+                }
+            }
+        })
+    })
+
     $("#country").select2({
         theme: "bootstrap",
         placeholder:"Select Country",
@@ -324,6 +350,15 @@ $(document).ready(function() {
     $("#city").select2({
         theme: "bootstrap",
         placeholder:"Select City"
+    });
+
+    $("#job_skills").select2({
+        theme: "bootstrap",
+        placeholder:"Select job skills"
+    });
+    $("#area_of_interest").select2({
+        theme: "bootstrap",
+        placeholder:"Select Area of Interest"
     });
 });
 

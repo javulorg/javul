@@ -19,4 +19,11 @@ class AreaOfInterest extends Model
      * @var array
      */
     protected $fillable = ['title','parent_id'];
+
+    public static function getName($id){
+        $obj = self::find($id);
+        if(count($obj) && !empty($obj))
+            return $obj->title;
+    }
+
 }

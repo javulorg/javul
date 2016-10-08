@@ -38,6 +38,7 @@ class ViewComposerServiceProvider extends ServiceProvider
         $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
         $issueDocumentIDHashID = new Hashids('issue document id hash',10,\Config::get('app.encode_chars'));
         $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
+        $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
 
 
         $loggedInUser = \App\User::where('loggedin',1)->count();
@@ -54,6 +55,7 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('issueIDHashID',$issueIDHashID);
         view()->share('issueDocumentIDHashID',$issueDocumentIDHashID);
         view()->share('jobSkillIDHashID',$jobSkillIDHashID);
+        view()->share('areaOfInterestIDHashID',$areaOfInterestIDHashID);
 
         view()->composer('elements.footer',function($view){
 

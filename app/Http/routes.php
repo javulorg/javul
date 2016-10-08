@@ -15,6 +15,8 @@ Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
 Route::get('/account', 'AccountController@index');
 Route::get('/account/logout', 'AccountController@logout');
+Route::post('/account/upload_profile', 'AccountController@upload_profile');
+Route::post('/account/remove_profile_pic', 'AccountController@remove_profile_pic');
 Route::any('/userprofiles/{user_id}','UserController@user_profile');
 Route::any('/userprofiles/{user_id}/{slug}','UserController@user_profile');
 Route::get('/my_tasks','UserController@my_tasks');
@@ -22,6 +24,7 @@ Route::post('/account/withdraw','AccountController@withdraw');
 Route::post('/account/paypal_email_check','AccountController@paypal_email_check');
 Route::post('/account/update-creditcard','AccountController@update_creditcard');
 Route::any('/notification/success','NotificationController@success_payment');
+Route::post('/account/update_personal_info','AccountController@update_personal_info');
 Route::any('/notification/error','NotificationController@error_payment');
 Route::any('/notification/ipn_payment','NotificationController@ipn_payment');
 Route::any('/notification/ipn_donation','NotificationController@ipn_donation');
@@ -33,13 +36,22 @@ Route::get('/my_watchlist','HomeController@my_watchlist');
 Route::any('/site_admin','HomeController@site_admin');
 Route::any('/skills/get_skill_paginate','HomeController@get_skill_paginate');
 Route::any('/category/get_category_paginate','HomeController@get_category_paginate');
+Route::any('/area_of_interest/get_area_of_interest_paginate','HomeController@get_area_of_interest_paginate');
+
+Route::any('job_skills/get_skills','HomeController@get_skills');
+Route::any('job_skills/get_next_level_skills','HomeController@get_next_level_skills');
 
 Route::any('/category/add','HomeController@category_add');
 Route::any('/job_skills/add','HomeController@skill_add');
-Route::any('/job_skills/{skill_id}/edit','HomeController@skill_edit');
+Route::any('/job_skills/delete','HomeController@skill_delete');
+Route::any('/job_skills/edit','HomeController@skill_edit');
+Route::any('/area_of_interest/add','HomeController@area_of_interest_add');
+//Route::any('/job_skills/{skill_id}/edit','HomeController@skill_edit');
 Route::any('/category/{category_id}/edit','HomeController@category_edit');
-Route::get('/job_skills/{skill_id}','HomeController@skill_view');
+Route::any('/area_of_interest/{area_id}/edit','HomeController@area_of_interest_edit');
+//Route::get('/job_skills/{skill_id}','HomeController@skill_view');
 Route::get('/category/{category_id}','HomeController@category_view');
+Route::any('/area_of_interest/{area_id}','HomeController@area_of_interest_view');
 
 Route::auth();
 
@@ -121,6 +133,7 @@ Route::any('issues/{issue_id}/view','IssuesController@view');
 Route::any('issues/{issue_id}/edit','IssuesController@edit');
 Route::any('issues/{unit_id}/{objective_id}/add','IssuesController@create');
 Route::any('issues/{unit_id}/{objective_id}/{task_id}/add','IssuesController@create');
+
 
 
 Route::resource('/issues','IssuesController');

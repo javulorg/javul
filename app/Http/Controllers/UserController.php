@@ -23,7 +23,7 @@ class UserController extends Controller
         $this->middleware('auth',['except'=>['user_profile']]);
     }
 
-    public function user_profile(Request $request,$user_id)
+    public function user_profile(Request $request,$user_id,$slug=null)
     {
         if(!empty($user_id)){
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
@@ -92,7 +92,7 @@ class UserController extends Controller
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','global activity log');
+        view()->share('site_activity_text','Global Activity Log');
 
         view()->share('myCancelledTask',$myCancelledTask);
         view()->share('myEvaluationTask',$myEvaluationTask);

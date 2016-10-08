@@ -15,10 +15,10 @@ return [
 
     'env' => env('APP_ENV', 'production'),
     'encode_chars'=>'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
-    'support_email'=>'aadhyatechnologies34@gmail.com',
+	'support_email'=>'aadhyatechnologies34@gmail.com',
     'site_name'=>'Javul.org',
-    'site_activity_page_limit'=>5,
-    'global_site_activity_page'=>20,
+	'site_activity_page_limit'=>5,
+	'global_site_activity_page'=>20,
     'page_limit'=>5,
 
     /*
@@ -165,6 +165,7 @@ return [
         Laravel\Cashier\CashierServiceProvider::class,
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
 		Netshell\Paypal\PaypalServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class
 
     ],
 
@@ -213,6 +214,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
 		'Paypal' => Netshell\Paypal\Facades\Paypal::class,
+        'Image' => Intervention\Image\Facades\Image::class
 
     ],
 

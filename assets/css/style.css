@@ -22,7 +22,7 @@ body, h1, h2, h3, h4, h5, h6{
 .blue-bg{background-color:#03A9F5;color:#fff;}
 .btn.blue-bg{border:1px solid #fff;}
 .btn.blue-bg.active{background-color:#34BAF7;color:#fff;border:1px solid #fff;}
-.grey-bg{background-color:#EEEEEE;}
+.grey-bg{background-color:#ebe9e9}
 .marginTop10{margin-top:10px;}
 .marginTop20{margin-top:20px;}
 .colorIssue{color:#58a0e0 !important;}
@@ -143,6 +143,12 @@ a .fa-plus{margin-right: 10px;}
 .documents thead tr th{font-size: 13px !important;padding-left:0px; }
 .issue-table tbody tr td p,.unit-table tbody tr td p{margin:0px;}
 .featured_heading p:first-child{margin: 0px;}
+.add_edit_skills button{display: block;margin:10px;background-color:#5a5858;border-radius:2px;border:1px solid transparent;color:#fff;}
+.new_box{display:inline-block;width:auto;border:1px solid #828790;height:94px;overflow-y:scroll;margin:0px;position:relative;top:4px}
+.new_box a{display: inline-block;padding-left: 5px;padding-right: 5px;color:#333;text-decoration: none;}
+.new_box a:hover{text-decoration:none;}
+a.hierarchy{margin: 0px;}
+a.add_skill{text-decoration: underline;color:#337ab7}
 @media (max-width: 1200px) {
     .user-menu-right.mrgnrt30{margin-right: 0px;}
     .user-menu-left,.user-menu-right{font-size: 12px;}
