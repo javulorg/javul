@@ -116,7 +116,7 @@
 @if($authUserObj->role == "superadmin")
     <div class="row">
         <div class="col-sm-6 form-group">
-            <div class="panel panel-default panel-dark-grey">
+            <div class="panel panel-default panel-grey">
                 <div class="panel-heading">
                     <h4>Task Evaluation</h4>
                 </div>
@@ -171,7 +171,7 @@
             </div>
         </div>
         <div class="col-sm-6 form-group">
-            <div class="panel panel-default panel-dark-grey">
+            <div class="panel panel-default panel-grey">
                 <div class="panel-heading">
                     <h4>Task Cancellation</h4>
                 </div>

@@ -69,6 +69,7 @@ class UserController extends Controller
 
         $myEvaluationTask =[];
         $myCancelledTask = [];
+
         if(Auth::user()->role == "superadmin"){
             $myEvaluationTask = Task::join('task_complete','tasks.id','=','task_complete.task_id')
                 ->join('users','task_complete.user_id','=','users.id')
@@ -85,10 +86,14 @@ class UserController extends Controller
                 ->where('tasks.status','cancelled')
                 ->groupBy('task_cancel.task_id')
                 ->get();
+
+
             /*$myEvaluationTask = Task::with(['task_complete','task_complete.users'])
                     ->where('status','completion_evaluation')
                     ->get();*/
         }
+
+        view()->share('pending_skills',$pending_skills);
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);

@@ -30,26 +30,65 @@
                             <div class="panel-heading">
                                 <h4>Job Skills</h4>
                             </div>
-                            <div class="panel-body table-inner loading_content_hide">
+                            <div class="panel-body table-inner loading_content_hide list-group ">
+                                @if(!empty($authUserObj) && $authUserObj->role == "superadmin" && !empty($need_approve_skills) && count($need_approve_skills) > 0)
+                                    <div class="row form-group">
+                                        <div class="col-sm-6">
+                                            <div class="panel panel-default panel-grey">
+                                                <div class="panel-heading">
+                                                    <h4>Pending Job Skills</h4>
+                                                </div>
+                                                <div class="panel-body table-inner table-responsive" style="max-height: 100%">
+                                                    <table class="table table-striped" style="height:600px;overflow-y: auto;">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Skill Name</th>
+                                                            <th>Status</th>
+                                                            <th></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        @foreach($need_approve_skills as $p_skill)
+                                                            <tr>
+                                                                <td>
+                                                                    @if($p_skill->action_type == "delete")
+                                                                        {{\App\JobSkill::getName($p_skill->job_skill_id)}}
+                                                                    @else
+                                                                        {{$p_skill->skill_name}}
+                                                                    @endif
+                                                                </td>
+                                                                <td>{{ucfirst($p_skill->action_type)}}</td>
+                                                                <td><a href="#" class="btn btn-xs btn-success mark-skill-approve"
+                                                                       data-id="{{$p_skill->prefix_id}}">Mark as
+                                                                        Approve</a></td>
+                                                            </tr>
+                                                        @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="row form-group">
                                     <div class="col-sm-12">
                                         <div class="all_levels">
                                             @if(count($firstBox_skills) > 0)
-                                                <select name="skill" id="skill_firstbox" class="first_level hierarchy" size="5" data-number="1">
-                                                    @foreach($firstBox_skills as $skill_id=>$skill)
-                                                        <option value="{{$skill_id}}">{{$skill}}&nbsp;></option>
-                                                    @endforeach
-                                                </select>
+                                                <div class="hierarchy_parent">
+                                                    <select name="skill" id="skill_firstbox" class="first_level hierarchy" size="5" data-number="1">
+                                                        @foreach($firstBox_skills as $skill_id=>$skill)
+                                                            <option value="{{$skill_id}}" data-type="{{$skill['type']}}">{{$skill['name']}}&nbsp;></option>
+                                                        @endforeach
+                                                    </select>
+                                                    <div style="margin-left:10px;margin-top:5px;">
+                                                        <a class="btn black-btn btn-xs add_skill" data-pos="first" id="add_skill_btn" style="padding:5px 10px 5px;
+                                        text-decoration:none;">
+                                                            <i class="fa fa-plus plus"></i> <span class="plus_text" style="left:-5px;">ADD</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             @endif
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12" style="margin-bottom: 10px;margin-left: 10px;">
-                                        <a class="btn black-btn btn-xs add_skill" id="add_skill_btn" style="padding:5px 10px 5px;
-                                        text-decoration:none;">
-                                            <i class="fa fa-plus plus"></i> <span class="plus_text">ADD SKILL</span>
-                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -198,297 +237,5 @@
         var msg_val ='{{ $msg_val }}';
     </script>
     <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(function(){
-            $('.show_bid_details').on('click',function(){
-                var id = $(this).attr('data-id');
-                if($.trim(id) != ""){
-                    $.ajax({
-                        type:'get',
-                        url:siteURL+'/tasks/get_biding_details',
-                        data:{id:id},
-                        dataType:'json',
-                        success:function(resp){
-                            if(resp.success){
-                                bootbox.dialog({
-                                    message: resp.html
-                                });
-                            }
-                        }
-                    })
-                }
-                return false;
-            });
-
-            $(document).off("change","select.hierarchy").on('change',"select.hierarchy",function(event){
-                var that = $(this);
-                getNextBox(that);
-                return false;
-            });
-            $(document).off("click","a.hierarchy").on('click',"a.hierarchy",function(event){
-                var that = $(this).addClass('selected');
-                getNextBox(that);
-                return false;
-            });
-
-            $(document).off("click",".add_skill").on("click",".add_skill",function(){
-
-                var frm = '<form method="post" id="add_skill_form">'+
-                        '<div class="row">'+
-                        '<div class="col-sm-12">'+
-                        '<label class="control-label">Skill Name</label>'+
-                        '<input type="text" name="skill_name" class="form-control"/>';
-
-                        var parent_id = 0;
-                        if($(this).attr('id') != "add_skill_btn"){
-                            parent_id= $(this).parent('div').attr('data-prev');
-                        }
-                        frm+='<input type="hidden" name="parent_id" value="'+parent_id+'"/></div>'+
-                        '</div>'+
-                        '</form>';
-                var box = bootbox.dialog({
-                    title: "Add new skill",
-                    message: frm,
-                    buttons: {
-                        danger: {
-                            label: "Cancel",
-                            className: "btn-danger",
-                            callback: function() {
-                                bootbox.hideAll();
-                            }
-                        },
-                        success: {
-                            label: "Add Skill",
-                            className: "btn-success",
-                            callback: function(e) {
-                                $.ajax({
-                                    type:'get',
-                                    url:siteURL+'/job_skills/add',
-                                    data:$("#add_skill_form").serialize(),
-                                    dataType:'json',
-                                    success:function(resp){
-                                        if(resp.success){
-                                            bootbox.hideAll();
-                                            toastr['success']('Job skill added successfully!!!', '') ;
-                                            window.location.reload(true);
-                                        }
-                                        else{
-                                            var error='';
-                                            $.each(resp.errors,function(index,val){
-                                                error+='<span>'+val+'</span>';
-                                            });
-                                            toastr['error'](error, '') ;
-                                            return false;
-                                        }
-                                    }
-                                })
-                                return false;
-                            }
-                        }
-                    }
-                });
-
-                $(".div-table-second-cell").css('z-index','100');
-                $(".list-item-main").css('z-index','100');
-
-                box.on("hidden.bs.modal", function (e) {
-                    $(".list-item-main").css('z-index','99999');
-                    $(".div-table-second-cell").css('z-index','99999');
-                });
-
-                box.modal('show');
-                return false;
-            });
-
-            $(document).off("click",".delete_skill").on("click",".delete_skill",function(){
-                var selected = $(this).attr('data-prev');
-
-                var box = bootbox.dialog({
-                    title: "Are you sure?",
-                    message: 'Are you sure. you want to delete ?',
-                    buttons: {
-                        danger: {
-                            label: "Cancel",
-                            className: "btn-danger",
-                            callback: function() {
-                                bootbox.hideAll();
-                            }
-                        },
-                        success: {
-                            label: "Delete",
-                            className: "btn-success",
-                            callback: function(e) {
-                                $.ajax({
-                                    type:'get',
-                                    url:siteURL+'/job_skills/delete',
-                                    data:{id:selected},
-                                    dataType:'json',
-                                    success:function(resp){
-                                        if(resp.success){
-                                            bootbox.hideAll();
-                                            toastr['success']('Job skill deleted successfully!!!', '') ;
-                                            window.location.reload(true);
-                                        }
-                                        else{
-
-                                            toastr['error'](resp.msg, '') ;
-                                            return false;
-                                        }
-                                    }
-                                });
-                                return false;
-                            }
-                        }
-                    }
-                });
-
-                $(".div-table-second-cell").css('z-index','100');
-                $(".list-item-main").css('z-index','100');
-
-                box.on("hidden.bs.modal", function (e) {
-                    $(".list-item-main").css('z-index','99999');
-                    $(".div-table-second-cell").css('z-index','99999');
-                });
-
-                box.modal('show');
-                return false;
-            });
-
-            $(document).off("click",".edit_skill").on("click",".edit_skill",function(){
-                var selected = $(this).attr('data-id');
-                var skill_name = $(this).attr('data-text')
-
-                var frm = '<form method="post" id="edit_skill_form">'+
-                        '<div class="row">'+
-                        '<div class="col-sm-12">'+
-                        '<label class="control-label">Skill Name</label>'+
-                        '<input type="text" name="skill_name" class="form-control" value="'+skill_name.replace(">","")+'"/>' +
-                        '<input type="hidden" name="selected_id" value="'+selected+'"/>';
-
-
-                frm+='</div>'+
-                        '</div>'+
-                        '</form>';
-                var box = bootbox.dialog({
-                    title: "Update skill",
-                    message: frm,
-                    buttons: {
-                        danger: {
-                            label: "Cancel",
-                            className: "btn-danger",
-                            callback: function() {
-                                bootbox.hideAll();
-                            }
-                        },
-                        success: {
-                            label: "Edit Skill",
-                            className: "btn-success",
-                            callback: function(e) {
-                                $.ajax({
-                                    type:'get',
-                                    url:siteURL+'/job_skills/edit',
-                                    data:$("#edit_skill_form").serialize(),
-                                    dataType:'json',
-                                    success:function(resp){
-                                        if(resp.success){
-                                            bootbox.hideAll();
-                                            toastr['success']('Job skill updated successfully!!!', '') ;
-                                            window.location.reload(true);
-                                        }
-                                        else{
-                                            var error='';
-                                            $.each(resp.errors,function(index,val){
-                                                error+='<span>'+val+'</span>';
-                                            });
-                                            toastr['error'](error, '') ;
-                                            return false;
-                                        }
-                                    }
-                                })
-                                return false;
-                            }
-                        }
-                    }
-                });
-
-                $(".div-table-second-cell").css('z-index','100');
-                $(".list-item-main").css('z-index','100');
-
-                box.on("hidden.bs.modal", function (e) {
-                    $(".list-item-main").css('z-index','99999');
-                    $(".div-table-second-cell").css('z-index','99999');
-                });
-
-                box.modal('show');
-                return false;
-            });
-
-            function getNextBox(that){
-
-                if(that.attr('id') == "skill_firstbox"){
-                    var id =that.val();
-                    var box_number = that.data('number');
-                }
-                else
-                {
-                    var id =that.attr('data-value');
-                    var box_number = that.attr('data-number');
-                }
-                $.ajax({
-                    type:'get',
-                    url:siteURL+'/job_skills/get_next_level_skills',
-                    data:{id:id},
-                    dataType:'json',
-                    success:function(resp){
-                        if(resp.success){
-
-                            if(Object.keys(resp.data).length > 0)
-                            {
-                                $(".add_edit_skills").remove();
-                                var next_level=$(".all_levels").find('select,.new_box').length;
-                                console.log(next_level+' '+box_number);
-                                if(next_level > box_number ){
-                                    for(var i=box_number;i<=next_level;i++){
-                                        if($(".all_levels").find('select,.new_box').length != box_number)
-                                            $(".all_levels").find('.new_box:last').remove();
-                                    }
-                                }
-                                next_level=$(".all_levels").find('select,.new_box').length;
-
-                                var html = '<div class="hierarchy new_box" data-prev="'+id+'" data-number="'+(next_level+1)+'">';
-                                $.each(resp.data,function(index,val){
-                                    html+='<div><a  href="" class="hierarchy" data-number="'+(next_level+1)+'" data-value="'+index+'">'+val+'&nbsp;></a><a ' +
-                                            'class="edit_skill" data-id="'+index+'" data-text="'+val+'">Edit</a></div>';
-                                })
-                                html+= '<a class="add_skill">ADD NEW</a></div>';
-                                $(".all_levels").append(html);
-                                return false;
-                            }
-                            else{
-                                $(".add_edit_skills").remove();
-                                var next_level=$(".all_levels").find('select,.new_box').length;
-                                if(next_level > box_number ){
-                                    for(var i=box_number;i<=next_level;i++){
-                                        if($(".all_levels").find('select,.new_box').length != box_number)
-                                            $(".all_levels").find('.new_box:last').remove();
-                                    }
-                                }
-
-                                var html = '<div class="add_edit_skills" data-prev="'+id+'" style="border: 1px solid rgb(170, 170, 170); display: ' +
-                                        'inline-block; height:94px; position: relative;top:14px;vertical-align: top;' +
-                                        'margin-left: 10px;"><button  class="add_skill" style="display: block;' +
-                                        'margin:10px">ADD NEW</button><button data-prev="'+id+'" class="delete_skill" style="display: ' +
-                                        'block;' +
-                                        'margin:10px">DELETE SKILL</button></div>' ;
-                                $(".all_levels").append(html);
-                            }
-                        }
-
-                    }
-                });
-            }
-
-        });
-
-    </script>
+    <script src="{!! url('assets/js/admin/site_admin.js') !!}" type="text/javascript"></script>
 @endsection

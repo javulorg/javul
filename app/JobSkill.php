@@ -3,10 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Hashids\Hashids;
 
 class JobSkill extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+    public $timestamps = true;
     /**
      * The table associated with the model.
      *
@@ -18,7 +22,7 @@ class JobSkill extends Model
      *
      * @var array
      */
-    protected $fillable = ['skill_name','parent_id'];
+    protected $fillable = ['skill_name','parent_id','status'];
 
     public static function getSkillNameLink($ids = ''){
         if(empty($ids))

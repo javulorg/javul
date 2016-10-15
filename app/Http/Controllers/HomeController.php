@@ -6,6 +6,7 @@ use App\AreaOfInterest;
 use App\Http\Requests;
 use App\Issue;
 use App\JobSkill;
+use App\JobSkillHistory;
 use App\Objective;
 use App\SiteActivity;
 use App\Task;
@@ -193,18 +194,43 @@ class HomeController extends Controller
         if(!Auth::check())
             return \Redirect::to(url(''));
 
+        $where = '';
+        if(Auth::user()->role != "superadmin")
+            $where=" AND user_id=".Auth::user()->id;
+
         $categoriesObj =UnitCategory::paginate(\Config::get('app.site_activity_page_limit'));
-        $jobSkillsObj = \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id,c.skill_name,   p.skill_name AS Parentskill_name
-                                    FROM job_skills c LEFT JOIN job_skills p ON (c.parent_id = p.id) WHERE IF(c.parent_id IS NULL, 0, c
+        $jobSkillsObj = \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id,c.skill_name,   p.skill_name AS Parentskill_name,IF(ISNULL(job_skills_history.`skill_name`),NULL,job_skills_history.`skill_name`) AS history_skill_name
+                                    ,IF(ISNULL(job_skills_history.`prefix_id`),NULL,job_skills_history.`prefix_id`) AS prefix_id,IF(ISNULL(job_skills_history.`user_id`),NULL,job_skills_history.`user_id`) AS user_id
+                                    FROM job_skills c LEFT JOIN job_skills p ON (c.parent_id = p.id) LEFT JOIN job_skills_history ON
+                                    c.id=job_skills_history.`job_skill_id`'.$where.' WHERE IF(c.parent_id IS NULL, 0, c
                                     .parent_id) = 0 AND c.id <> 0 ORDER BY  c.id');
 
         $firstBox_skills = [];
+        $need_approve_skills = [];
         if(count($jobSkillsObj) > 0 && !empty($jobSkillsObj)){
             foreach($jobSkillsObj as $skill){
-                $firstBox_skills[$skill->id]=$skill->skill_name;
+                if(!empty($skill->history_skill_name) && $skill->user_id == Auth::user()->id)
+                    $firstBox_skills[$skill->prefix_id]=['type'=>'old','name'=>$skill->history_skill_name];
+                else
+                    $firstBox_skills[$skill->id]=['type'=>'old','name'=>$skill->skill_name];
             }
         }
 
+        // also list the skill he added but yet not approved by siteadmin.
+        if(Auth::user()->role != "superadmin") {
+            $pending_skills = JobSkillHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->lists('skill_name','prefix_id')
+                ->all();
+            if(count($pending_skills) > 0){
+                foreach($pending_skills as $index=>$skl_nm)
+                    $firstBox_skills[$index]=['type'=>'new','name'=>$skl_nm];
+            }
+        }
+        else
+            $need_approve_skills = JobSkillHistory::orderBy('action_type')->get();
+
+
+        $need_approve_skills =[];
+        view()->share('need_approve_skills',$need_approve_skills);
         view()->share('firstBox_skills',$firstBox_skills);
         $area_of_interestObj = AreaOfInterest::paginate(\Config::get('app.site_activity_page_limit'));
 
@@ -314,15 +340,50 @@ class HomeController extends Controller
             return \Response::json(['success'=>false,'errors'=>['skill_name'=>'Skill name already exists']]);
 
         $parent_id = $request->input('parent_id');
+
         if(empty($parent_id))
             $parent_id=0;
+        else
+            $parent_id = str_replace("JBSH","",$parent_id);
 
-        JobSkill::create([
+        $data  = [
             'skill_name'=>$request->input('skill_name'),
             'parent_id'=>$parent_id
-        ]);
+        ];
 
-        return \Response::json(['success'=>true]);
+        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $user_id = $userIDHashID->encode(Auth::user()->id);
+
+        $skill_id = '';
+
+        $path_text = $request->input('path_text');
+        $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> added skill <a href="'.url('site_admin').'">'
+            .$data['skill_name'].'</a>';
+        if(!empty($path_text)){
+            $html.=' to the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+        }
+
+
+        if(Auth::user()->role =="superadmin") {
+            $data['status'] = "approved";
+            $skill_id =JobSkill::create($data)->id;
+        }
+        else{
+            $type = $request->input('tbl_type');
+            if($type == "null")
+                $type =null;
+            $data['user_id']=Auth::user()->id;
+            $data['skill_name']=$request->input('skill_name');
+            $data['action_type']='add';
+            $data['parent_id_belongs_to'] =$type;
+            $skill_id = JobSkillHistory::create($data)->id;
+        }
+        SiteActivity::create([
+            'user_id'=>Auth::user()->id,
+            'comment'=>$html
+        ]);
+        return \Response::json(['success'=>true,'skill_id'=>$skill_id,'skill_name'=>$data['skill_name']]);
         /*view()->share('skillObj',[]);
         view()->share('parent_skills',JobSkill::lists('skill_name','id')->all());
         view()->share('method','job_skills/add');
@@ -355,33 +416,93 @@ class HomeController extends Controller
         view()->share('site_activity_text','Global Activity Log');
         return view('admin.partials.add_skill');*/
     }
-    public function skill_edit(Request $request){
+    public function skill_edit(Request $request)
+    {
 
-        if(!Auth::check() || !$request->ajax())
-            return \Response::json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
+        if (!Auth::check() || !$request->ajax())
+            return \Response::json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
 
         $validator = \Validator::make($request->all(), [
             'skill_name' => 'required'
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success'=>false,'errors'=>$validator->messages()]);
+            return \Response::json(['success' => false, 'errors' => $validator->messages()]);
 
         $selected_id = $request->input('selected_id');
-        if(empty($selected_id) || !is_numeric($selected_id))
-            return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
+        if (empty($selected_id))
+            return \Response::json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
 
-        $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'"'))->count();
+        $skill_name = $request->input('skill_name');
+        $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.$skill_name.'"')->count();
 
-        if($skillExist> 0)
-            return \Response::json(['success'=>false,'errors'=>['skill_name'=>'Skill name already exists']]);
+        if ($skillExist > 0)
+            return \Response::json(['success' => false, 'errors' => ['skill_name' => 'Skill name already exists']]);
 
-        $jobSkillObj= JobSkill::find($selected_id);
-        if(count($jobSkillObj) > 0 && !empty($jobSkillObj)){
-            $jobSkillObj->update([
-                'skill_name'=>$request->input('skill_name')
-            ]);
-            return \Response::json(['success'=>true]);
+        $type = $request->input('tbl_type');
+        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $user_id = $userIDHashID->encode(Auth::user()->id);
+        if(Auth::user()->role == "superadmin") {
+            $data['status'] = "approved";
+            //$jobSkillObj->update($data);
+        }
+        else {
+            if ($type == "old") {
+                $job_skill_id= $selected_id;
+                if(strpos($selected_id,"JBSH") !== false) {
+                    $job_skill_id = JobSkillHistory::where('prefix_id', $selected_id)->first()->job_skill_id;
+                    $selected_id = str_replace("JBSH","",$selected_id);
+                }
+
+                $jobSkillObj= JobSkill::find($job_skill_id );
+                if(count($jobSkillObj) > 0 && !empty($jobSkillObj)) {
+                    $obj = JobSkillHistory::where('job_skill_id', $jobSkillObj->id)->where('user_id', Auth::user()->id)->first();
+                    if (!empty($obj) && count($obj) > 0) {
+                        $obj->delete();
+                    }
+
+                    $data['parent_id_belongs_to'] = null;
+                    $data['job_skill_id'] = $selected_id;
+                    $data['user_id'] = Auth::user()->id;
+                    $data['skill_name'] = $request->input('skill_name');
+                    $data['action_type'] = 'edit';
+
+                    $skill_id = JobSkillHistory::create($data)->id;
+
+                    $path_text = $request->input('path_text');
+                    $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                        .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited skill <a href="'.url('site_admin').'">'
+                        .$data['skill_name'].'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'skill_id'=>$jobSkillObj->id,'type'=>$type,'skill_name'=>$data['skill_name'] ]);
+                }
+
+            } else {
+                $obj = JobSkillHistory::find($selected_id);
+                if(!empty($obj) && count($obj) > 0) {
+                    $obj->update(['skill_name' => $request->input('skill_name')]);
+                    $path_text = $request->input('path_text');
+                    $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                        .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited skill <a href="'.url('site_admin').'">'
+                        .$request->input('skill_name').'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'skill_id'=>$obj->id,'type'=>$type,'skill_name'=>$request->input('skill_name')]);
+                }
+            }
         }
         return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
 
@@ -434,13 +555,59 @@ class HomeController extends Controller
     public function skill_delete(Request $request){
         if(Auth::check() && $request->ajax()){
             $id = $request->input('id');
-            $jobSkillExist = JobSkill::whereRaw('parent_id = "'.$id.'"')->count();
+            $type = $request->input('type');
+            $path_text = $request->input('path_text');
+
+            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $user_id = $userIDHashID->encode(Auth::user()->id);
+
+
+            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> deleted skill <a href="'.url('site_admin').'">';
+
+            if($type == "new"){
+                $obj = JobSkillHistory::where('id',$id)->where('user_id',Auth::user()->id)->first();
+                if(!empty($obj) && count($obj) > 0) {
+                    $html.=$obj->skill_name.'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+                    $obj->delete();
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'msg'=>'Skill deleted successfully']);
+                }
+            }
+            else{
+                $data['parent_id_belongs_to'] = null;
+                $data['job_skill_id'] = $id;
+                $data['user_id'] = Auth::user()->id;
+                $data['action_type'] = 'delete';
+                JobSkillHistory::create($data);
+
+                $jobObj = JobSkill::find($id);
+                if(count($jobObj) > 0 && !empty($jobObj))
+                    $html.=$jobObj->skill_name.'</a>';
+                if(!empty($path_text)){
+                    $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                }
+                SiteActivity::create([
+                    'user_id'=>Auth::user()->id,
+                    'comment'=>$html
+                ]);
+
+                return \Response::json(['success'=>true]);
+            }
+            /*$jobSkillExist = JobSkill::whereRaw('parent_id = "'.$id.'"')->count();
             if($jobSkillExist == 0){
                 $cnt = JobSkill::find($id)->count();
-                if($cnt > 0)
+                if($cnt > 0) {
                     JobSkill::find($id)->forceDelete();
+                }
                 return \Response::json(['success'=>true,'msg'=>'Skill deleted successfully']);
-            }
+            }*/
         }
         return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
     }
@@ -686,7 +853,132 @@ class HomeController extends Controller
 
     public function get_next_level_skills(Request $request){
         $id = $request->input('id');
-        $skills = JobSkill::where('parent_id',$id)->lists('skill_name','id')->all();
+        $type = $request->input('type');
+        if (strpos($id, 'JBSH') !== false) {
+            if($type == "old")
+                $id = JobSkillHistory::where('prefix_id',$id)->first()->job_skill_id;
+            else
+                $id = JobSkillHistory::where('prefix_id',$id)->first()->id;
+        }
+
+        if($type == "new"){
+            $dataObj=JobSkillHistory::where('parent_id',$id)->where('parent_id_belongs_to','new')->get();
+        }
+        else {
+
+            $where=" AND user_id=".Auth::user()->id;
+
+            $dataObj = \DB::select('SELECT
+                                      job_skills.id AS id,
+                                      NULL AS history_id,
+                                      NULL AS job_id,
+                                      job_skills.skill_name AS skill_name,
+                                      NULL AS history_skill_name,
+                                      job_skills.parent_id AS parent_id,
+                                      NULL AS history_parent_id,
+                                      NULL AS action_type
+                                    FROM
+                                      `job_skills` , job_skills_history
+                                    WHERE job_skills.parent_id = ' . $id . ' AND job_skills.id !=  job_skills_history.job_skill_id
+                                    UNION ALL
+                                    SELECT
+                                      job_skills.id AS id,
+                                      history.history_id AS history_id,
+                                      history.job_id AS job_id,
+                                      job_skills.skill_name AS skill_name,
+                                      history.history_skill_name AS history_skill_name,
+                                      job_skills.parent_id AS parent_id,
+                                      history.history_parent_id AS history_parent_id,
+                                      history.action_type AS action_type
+                                    FROM
+                                      `job_skills`
+                                      LEFT JOIN
+                                        (SELECT
+                                          job_skills_history.id AS history_id,
+                                          job_skill_id AS job_id,user_id,
+                                          job_skills_history.`skill_name` AS history_skill_name,
+                                          job_skills_history.parent_id AS history_parent_id,
+                                          action_type FROM job_skills_history WHERE (parent_id_belongs_to="old" OR parent_id_belongs_to IS
+                                           NULL)'.$where.') history
+                                          ON job_skills.id = history.`job_id`
+                                        WHERE job_skills.parent_id = '.$id.'
+                                    UNION
+                                    ALL
+                                    SELECT
+                                      id,
+                                      id as history_id,
+                                      job_skill_id AS job_id,
+                                      skill_name,
+                                      skill_name AS history_skill_name,
+                                      parent_id,
+                                      parent_id AS history_parent_id,
+                                      action_type
+                                    FROM
+                                      job_skills_history
+                                    WHERE parent_id = ' . $id . $where.' AND parent_id_belongs_to="old" AND action_type != "delete" order by id');
+        }
+
+
+        $skills =  [];
+        $deleted_ids = [];
+        if(!empty($dataObj)){
+            foreach($dataObj as $skillObj){
+                if(in_array($skillObj->id,$deleted_ids))
+                    continue;
+                if($skillObj->action_type == "delete") {
+                    $deleted_ids[]=$skillObj->id;
+                    if(isset($skills[$skillObj->id])) {
+                        unset($skills[$skillObj->id]);
+                    }
+                    continue;
+                }
+                if($type == "new"){
+                    $skills[$skillObj->id] = ['type' => 'new', 'name' => $skillObj->skill_name];
+                }
+                else {
+                    if (!empty($skillObj->action_type) && $skillObj->action_type == "edit")
+                        $skills[$skillObj->id] = ['type' => 'old', 'name' => $skillObj->history_skill_name];
+                    elseif (!empty($skillObj->action_type) && $skillObj->action_type == "add")
+                        $skills[$skillObj->history_id] = ['type' => 'new', 'name' => $skillObj->history_skill_name];
+                    else
+                        $skills[$skillObj->id] = ['type' => 'old', 'name' => $skillObj->skill_name];
+                }
+            }
+        }
+
+       /* dd($dataObj);
+        if($type  == "old")
+            $skills = JobSkill::where('parent_id',$id)->lists('skill_name','id')->all();
+        else
+            $skills=JobSkillHistory::where('parent_id',$id)->lists('skill_name','id')->all();*/
         return \Response::json(['success'=>true,'data'=>$skills]);
+    }
+
+    public function approveSkill(Request $request){
+        if($request->ajax() && Auth::check()){
+            if(Auth::user()->role=="superadmin"){
+                $prefix_id = $request->input('id');
+                if(!empty($prefix_id)){
+                    $jobSkillHistory = JobSkillHistory::where('prefix_id',$prefix_id)->first();
+                    if(!empty($jobSkillHistory) && count($jobSkillHistory) > 0){
+                        if($jobSkillHistory->parent_id_belongs_to == "old"){
+                            $data['skill_name']=$jobSkillHistory->skill_name;
+                            $data['parent_id']=$jobSkillHistory->parent_id;
+                            $data['status']='approved';
+                            if($jobSkillHistory->action_type == "add"){
+                                JobSkill::create($data);
+                                $jobSkillHistory->delete();
+                                return \Response::json(['success'=>true]);
+                            }
+                            elseif($jobSkillHistory->action_type == "add"){
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
+
     }
 }

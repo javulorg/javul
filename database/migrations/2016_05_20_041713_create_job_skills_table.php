@@ -16,6 +16,7 @@ class CreateJobSkillsTable extends Migration
             $table->increments('id');
             $table->string('skill_name');
             $table->integer('parent_id')->nullable();
+            $table->string('status',20)->default('pending');
             $table->timestamps();
             $table->softDeletes();
         });

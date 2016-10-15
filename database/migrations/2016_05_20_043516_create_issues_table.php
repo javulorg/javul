@@ -27,6 +27,8 @@ class CreateIssuesTable extends Migration
             $table->text('file_attachments')->nullable();
             $table->string('status');
             $table->text('resolution')->nullable();
+            $table->integer('verified_by')->nullable();
+            $table->integer('resolved_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
