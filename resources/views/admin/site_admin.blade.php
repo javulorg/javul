@@ -32,14 +32,14 @@
                             </div>
                             <div class="panel-body table-inner loading_content_hide list-group ">
                                 @if(!empty($authUserObj) && $authUserObj->role == "superadmin" && !empty($need_approve_skills) && count($need_approve_skills) > 0)
-                                    <div class="row form-group">
+                                    <div class="row form-group skill-approve-panel">
                                         <div class="col-sm-6">
                                             <div class="panel panel-default panel-grey">
                                                 <div class="panel-heading">
                                                     <h4>Pending Job Skills</h4>
                                                 </div>
-                                                <div class="panel-body table-inner table-responsive" style="max-height: 100%">
-                                                    <table class="table table-striped" style="height:600px;overflow-y: auto;">
+                                                <div class="panel-body table-inner table-responsive">
+                                                    <table class="table table-striped">
                                                         <thead>
                                                         <tr>
                                                             <th>Skill Name</th>
@@ -58,9 +58,14 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>{{ucfirst($p_skill->action_type)}}</td>
-                                                                <td><a href="#" class="btn btn-xs btn-success mark-skill-approve"
+                                                                <td>
+                                                                    <a href="#" class="btn btn-xs btn-success mark-skill-approve"
                                                                        data-id="{{$p_skill->prefix_id}}">Mark as
-                                                                        Approve</a></td>
+                                                                        Approve</a>
+
+                                                                    <a href="#" class="btn btn-xs btn-danger discard-change"
+                                                                       data-id="{{$p_skill->prefix_id}}">Discard</a>
+                                                                </td>
                                                             </tr>
                                                         @endforeach
                                                         </tbody>
@@ -72,23 +77,7 @@
                                 @endif
                                 <div class="row form-group">
                                     <div class="col-sm-12">
-                                        <div class="all_levels">
-                                            @if(count($firstBox_skills) > 0)
-                                                <div class="hierarchy_parent">
-                                                    <select name="skill" id="skill_firstbox" class="first_level hierarchy" size="5" data-number="1">
-                                                        @foreach($firstBox_skills as $skill_id=>$skill)
-                                                            <option value="{{$skill_id}}" data-type="{{$skill['type']}}">{{$skill['name']}}&nbsp;></option>
-                                                        @endforeach
-                                                    </select>
-                                                    <div style="margin-left:10px;margin-top:5px;">
-                                                        <a class="btn black-btn btn-xs add_skill" data-pos="first" id="add_skill_btn" style="padding:5px 10px 5px;
-                                        text-decoration:none;">
-                                                            <i class="fa fa-plus plus"></i> <span class="plus_text" style="left:-5px;">ADD</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        </div>
+                                        @include('admin.partials.skill_browse',['from'=>'site_admin'])
                                     </div>
                                 </div>
                             </div>
@@ -235,7 +224,9 @@
         var msg_flag ='{{ $msg_flag }}';
         var msg_type ='{{ $msg_type }}';
         var msg_val ='{{ $msg_val }}';
+        var page='site_admin';
     </script>
     <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
     <script src="{!! url('assets/js/admin/site_admin.js') !!}" type="text/javascript"></script>
+    <script src="{!! url('assets/js/admin/skill_browse.js') !!}" type="text/javascript"></script>
 @endsection

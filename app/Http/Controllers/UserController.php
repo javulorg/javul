@@ -93,7 +93,7 @@ class UserController extends Controller
                     ->get();*/
         }
 
-        view()->share('pending_skills',$pending_skills);
+
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);

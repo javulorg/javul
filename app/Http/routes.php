@@ -41,6 +41,8 @@ Route::any('/area_of_interest/get_area_of_interest_paginate','HomeController@get
 Route::any('job_skills/get_skills','HomeController@get_skills');
 Route::any('job_skills/get_next_level_skills','HomeController@get_next_level_skills');
 Route::get('job_skills/approve_skill','HomeController@approveSkill');
+Route::get('job_skills/discard_skill_changes','HomeController@discard_skill_change');
+Route::get('job_skills/browse_skills','HomeController@browse_skills');
 Route::any('/category/add','HomeController@category_add');
 Route::any('/job_skills/add','HomeController@skill_add');
 Route::any('/job_skills/delete','HomeController@skill_delete');

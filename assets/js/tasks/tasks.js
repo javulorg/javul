@@ -249,7 +249,7 @@ $(document).ready(function() {
         }
 
 
-        $("#task_skills").select2({
+         var skillSelect2 = $("#task_skills").select2({
             allowClear: true,
             width: '100%',
             displayValue:'skill_name',
@@ -285,6 +285,15 @@ $(document).ready(function() {
             minimumInputLength: 1,
             templateResult: formatSkills, // omitted for brevity, see the source of this page
             templateSelection: formatSkillsSelection // omitted for brevity, see the source of this page
+        });
+
+        skillSelect2.on("select2:unselect",function(e){
+            var id = e.params.data.id;
+            var index = selected_skill_id.indexOf(id);
+            if (index > -1) {
+                selected_skill_id.splice(index, 1);
+            }
+            return false;
         });
 
         $("#unit").on('change',function(){
@@ -374,6 +383,45 @@ $(document).ready(function() {
     });
 
 
+    $(".browse-skills").on('click',function(){
+        $.ajax({
+            type:'get',
+            url:siteURL+'/job_skills/browse_skills',
+            dataType:'json',
+            success:function(resp){
+                if(resp.success){
+                    browse_skill_box = bootbox.dialog({
+                        message: resp.html,
+                        title: "Browse Skill",
+                        buttons: {
+                            success: {
+                                label: "Set Skill",
+                                className: "btn-success okay-btn",
+                                callback: function(e) {
+                                    if($.trim(selected_skill_id) != ""){
+                                        $("#task_skills").select2('val',selected_skill_id);
+                                    }
+                                    else {
+                                        toastr['error']('Please select skill', '');
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    browse_skill_box.on("shown.bs.modal", function (e) {
+                        browse_skill_box.find('.okay-btn').prop('disabled',true);
+                    });
+                    browse_skill_box.on("hidden.bs.modal", function (e) {
+                        browse_skill_box='';
+                    });
+
+                    browse_skill_box.modal('show');
+                }
+            }
+        });
+        return false;
+    });
     // when user click on submit for approval.
     $(".submit_for_approval").click(function(){
        var tid = $(this).attr('data-task_id');

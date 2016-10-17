@@ -2,13 +2,17 @@
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.css') !!}" rel="stylesheet" type="text/css" />
-    <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+<link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+<link href="{!! url('assets/plugins/select2/css/select2-bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
 
 <style>
     .hide-native-select .btn-group, .hide-native-select .btn-group .multiselect, .hide-native-select .btn-group.multiselect-container
     {width:100% !important;}
     .select2-container--bootstrap .select2-results > .select2-results__options{max-height: 200px;overflow-y:auto}
     .option.load-more{padding:5px;}
+    .hierarchy_parent{margin-left: 10px;}
+    .add_edit_skills div:first-child{margin-top:0px;padding-left:5px;padding-right:5px;}
+    .new_box,#skill_firstbox{min-width: 12.5em;width:100%;}
 </style>
 @endsection
 @section('content')
@@ -130,15 +134,21 @@
                                     <label class="control-label">Task Skills</label>
                                     <div class="input-icon right">
                                         <i class="fa select-error"></i>
-                                        <select name="task_skills[]" class="form-control" id="task_skills" multiple="multiple">
-                                            <option value="">Select</option>
-                                            @if(!empty($task_skills))
-                                                @foreach($task_skills as $skill_id=>$skill)
-                                                    <option value="{{$skill_id}}" @if(!empty($exploded_task_list) && in_array($skill_id,
-                                                            $exploded_task_list)) selected=selected @endif>{{$skill}}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>
+                                        <div class="input-group">
+                                            <select name="task_skills[]" class="form-control" id="task_skills" multiple="multiple">
+                                                <option value="">Select</option>
+                                                @if(!empty($task_skills))
+                                                    @foreach($task_skills as $skill_id=>$skill)
+                                                        <option value="{{$skill_id}}" @if(!empty($exploded_task_list) && in_array($skill_id,
+                                                                $exploded_task_list)) selected=selected @endif>{{$skill}}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+
+                                                <a href="" class="browse-skills input-group-addon" style="border-radius: 0px;
+                                                color:#333;text-decoration: none;">Browse</a>
+
+                                        </div>
                                         @if ($errors->has('task_skills'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('task_skills') }}</strong>
@@ -320,6 +330,9 @@
     var editTask = '{{$editFlag}}';
     var actionListFlag = "<?=$actionListFlag?>";
     var from_unit = '{{(!empty($unitInfo) && !empty($task_objective_id) ?true:false)}}';
+    var page='task';
+    var browse_skill_box='';
+    var selected_skill_id= new Array();
     toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -338,6 +351,6 @@
 <script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
-
+<script src="{!! url('assets/js/admin/skill_browse.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/tasks/tasks.js') !!}"></script>
 @endsection
