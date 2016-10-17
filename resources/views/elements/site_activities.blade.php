@@ -23,7 +23,11 @@
 
                                     </div>
                                     <div class="border-main child_{{$index}}">
+                                        @if($index == count($site_activity) - 1)
+                                        <div class="hide-last-border"></div>
+                                        @else
                                         <div></div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

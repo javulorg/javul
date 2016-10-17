@@ -1,3 +1,93 @@
+<nav class="navbar navbar-grey" style="margin-bottom: 0px;min-height: 35px;">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle navbar-top-menu collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-0" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-0">
+            <ul class="top-most-icons nav">
+                @if (empty($authUserObj))
+                    <li class="top_menu_li">
+                        <a href="{!! url('register') !!}">
+                            Sign Up <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li">
+                        <a href="{!! url('login') !!}">
+                            Login <i class="fa fa-sign-in" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                @else
+                    <li class="top_menu_li">
+                        <a href="#">
+                            Alerts <i class="fa fa-bell" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li">
+                        <a href="{!! url('my_watchlist') !!}">
+                            Watch List <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li">
+                        <a href="#">
+                            My Contributions <i class="fa fa-file-text" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li">
+                        <a href="{!! url('my_tasks') !!}">
+                            My Tasks <i class="fa fa-tasks" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li">
+                        <a href="#">
+                            Inbox <i class="fa fa-envelope" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="top_menu_separator middle_sep">&nbsp;|&nbsp;</li>
+                    <li class="middle_li_block" style="display: none;"></li>
+                    <li class="top_menu_li">
+                        <a href="{!! url('account') !!}">
+                            My Profile <i class="fa fa-user" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li">
+                        <a href="{!! url('account') !!}">
+                            Account Settings <i class="fa fa-cog" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li">
+                        <a href="#">
+                            Logged in as: {{$authUserObj->first_name.' '.$authUserObj->last_name}}
+                        </a>
+                    </li>
+                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li">
+                        <a href="{!! url('account/logout') !!}">
+                            Logout <i class="fa fa-sign-out" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
 <nav class="navbar navbar-grey navbar-orange">
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
