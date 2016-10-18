@@ -384,6 +384,7 @@ class HomeController extends Controller
             $data['skill_name']=$request->input('skill_name');
             $data['action_type']='add';
             $data['parent_id_belongs_to'] =$type;
+            $data['skill_hierarchy']=$path_text;
             $skill_id = JobSkillHistory::create($data)->id;
         }
         SiteActivity::create([
@@ -487,6 +488,7 @@ class HomeController extends Controller
                         $job_skill_id =$job_skill_id->job_skill_id;
                     $selected_id = str_replace("JBSH","",$selected_id);
                 }
+                $path_text = $request->input('path_text');
 
                 $jobSkillObj= JobSkill::find($job_skill_id );
                 if(count($jobSkillObj) > 0 && !empty($jobSkillObj)) {
@@ -500,10 +502,8 @@ class HomeController extends Controller
                     $data['user_id'] = Auth::user()->id;
                     $data['skill_name'] = $request->input('skill_name');
                     $data['action_type'] = 'edit';
-
+                    $data['skill_hierarchy']=$path_text;
                     $skill_id = JobSkillHistory::create($data)->id;
-
-                    $path_text = $request->input('path_text');
 
                     if(!empty($path_text)){
                         $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -518,9 +518,11 @@ class HomeController extends Controller
 
             } else {
                 $obj = JobSkillHistory::find($selected_id);
+                $path_text = $request->input('path_text');
                 if(!empty($obj) && count($obj) > 0) {
-                    $obj->update(['skill_name' => $request->input('skill_name')]);
-                    $path_text = $request->input('path_text');
+                    $data['skill_name']= $request->input('skill_name');
+                    $data['skill_hierarchy']=$path_text;
+                    $obj->update($data);
                     $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                         .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited skill <a href="'.url('site_admin').'">'
                         .$request->input('skill_name').'</a>';
@@ -646,6 +648,7 @@ class HomeController extends Controller
                     $data['job_skill_id'] = $id;
                     $data['user_id'] = Auth::user()->id;
                     $data['action_type'] = 'delete';
+                    $data['skill_hierarchy']=$path_text;
                     JobSkillHistory::create($data);
 
                     $jobObj = JobSkill::find($id);
@@ -917,79 +920,9 @@ class HomeController extends Controller
         $id = $request->input('id');
         $type = $request->input('type');
         $job_skill_history_id = null;
+        $page = $request->input('page');
 
-        if (strpos($id, 'JBSH') !== false) {
-            if($type == "old") {
-                $job_skill_history_id = str_replace("JBSH","",$id);
-                $id = JobSkillHistory::where('prefix_id', $id)->first()->job_skill_id;
-            }
-            else
-                $id = JobSkillHistory::where('prefix_id',$id)->first()->id;
-        }
-
-        if($type == "new"){
-            $dataObj=JobSkillHistory::where('parent_id',$id)->where('parent_id_belongs_to','new')->get();
-        }
-        else {
-
-            $where=" AND user_id=".Auth::user()->id;
-            if(!empty($job_skill_history_id))
-                $where_last = "( parent_id =".$id." OR parent_id=".$job_skill_history_id.")";
-            else
-                $where_last = " parent_id =".$id;
-
-            \DB::enableQueryLog();
-            $dataObj = \DB::select('SELECT
-                                      job_skills.id AS id,
-                                      NULL AS history_id,
-                                      NULL AS job_id,
-                                      job_skills.skill_name AS skill_name,
-                                      NULL AS history_skill_name,
-                                      job_skills.parent_id AS parent_id,
-                                      NULL AS history_parent_id,
-                                      NULL AS action_type
-                                    FROM
-                                      `job_skills` , job_skills_history
-                                    WHERE job_skills.parent_id = ' . $id . ' AND job_skills.id !=  job_skills_history.job_skill_id
-                                    UNION ALL
-                                    SELECT
-                                      job_skills.id AS id,
-                                      history.history_id AS history_id,
-                                      history.job_id AS job_id,
-                                      job_skills.skill_name AS skill_name,
-                                      history.history_skill_name AS history_skill_name,
-                                      job_skills.parent_id AS parent_id,
-                                      history.history_parent_id AS history_parent_id,
-                                      history.action_type AS action_type
-                                    FROM
-                                      `job_skills`
-                                      LEFT JOIN
-                                        (SELECT
-                                          job_skills_history.id AS history_id,
-                                          job_skill_id AS job_id,user_id,
-                                          job_skills_history.`skill_name` AS history_skill_name,
-                                          job_skills_history.parent_id AS history_parent_id,
-                                          action_type FROM job_skills_history WHERE (parent_id_belongs_to="old" OR parent_id_belongs_to IS
-                                           NULL)'.$where.') history
-                                          ON job_skills.id = history.`job_id`
-                                        WHERE job_skills.parent_id = '.$id.'
-                                    UNION
-                                    ALL
-                                    SELECT
-                                      prefix_id as id,
-                                      prefix_id as history_id,
-                                      job_skill_id AS job_id,
-                                      skill_name,
-                                      skill_name AS history_skill_name,
-                                      parent_id,
-                                      parent_id AS history_parent_id,
-                                      action_type
-                                    FROM
-                                      job_skills_history
-                                    WHERE ' . $where_last . $where.' AND parent_id_belongs_to="old" AND action_type != "delete" order by id');
-            //dd(\DB::getQueryLog());
-        }
-
+        $dataObj = JobSkill::getSkillForBrowse($page,$id,$type);
 
         $skills =  [];
         $deleted_ids = [];
@@ -1030,6 +963,10 @@ class HomeController extends Controller
         if($request->ajax() && Auth::check()){
             if(Auth::user()->role=="superadmin"){
                 $prefix_id = $request->input('id');
+
+                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $user_id = $userIDHashID->encode(Auth::user()->id);
+
                 if(!empty($prefix_id)){
                     $jobSkillHistory = JobSkillHistory::where('prefix_id',$prefix_id)->first();
                     if(!empty($jobSkillHistory) && count($jobSkillHistory) > 0){
@@ -1060,7 +997,24 @@ class HomeController extends Controller
                                     }
                                 }
                             }
+                            $jobSkillHistoryTemp = $jobSkillHistory;
+
                             $jobSkillHistory->delete();
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved addition of skill <a href="'.url('site_admin').'">';
+
+                            $html.=$jobSkillHistoryTemp->skill_name.'</a>';
+                            if(!empty($jobSkillHistoryTemp->skill_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$jobSkillHistoryTemp->skill_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
+
                             return \Response::json(['success'=>true]);
 
                         }
@@ -1069,7 +1023,23 @@ class HomeController extends Controller
                             if(!empty($jobSkillObj) && count($jobSkillObj) > 0){
                                 $jobSkillObj->update(['skill_name'=>$jobSkillHistory->skill_name]);
                             }
+
+                            $jobSkillHistoryTemp = $jobSkillHistory;
                             $jobSkillHistory->delete();
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved edition of skill <a href="'.url('site_admin').'">';
+
+                            $html.=$jobSkillHistoryTemp->skill_name.'</a>';
+                            if(!empty($jobSkillHistoryTemp->skill_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$jobSkillHistoryTemp->skill_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
                             return \Response::json(['success'=>true]);
                         }
                         elseif($jobSkillHistory->action_type=="delete"){
@@ -1084,7 +1054,25 @@ class HomeController extends Controller
                             $jobSkillObj =JobSkill::where('id',$jobSkillHistory->job_skill_id)->first();
                             if(!empty($jobSkillObj) && count($jobSkillObj) > 0)
                                 $jobSkillObj->forceDelete();
+
+                            $jobSkillHistoryTemp = $jobSkillHistory;
+
                             $jobSkillHistory->delete();
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved deletion of skill <a href="'.url('site_admin').'">';
+
+                            $html.=$jobSkillHistoryTemp->skill_name.'</a>';
+                            if(!empty($jobSkillHistoryTemp->skill_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$jobSkillHistoryTemp->skill_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
+
                             return \Response::json(['success'=>true]);
                         }
                     }
@@ -1100,10 +1088,39 @@ class HomeController extends Controller
             if(Auth::check()) {
                 if (Auth::user()->role == "superadmin") {
                     $prefix_id = $request->input('id');
+
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id = $userIDHashID->encode(Auth::user()->id);
+
                     if (!empty($prefix_id)) {
                         $jobSkillHistory = JobSkillHistory::where('prefix_id', $prefix_id)->first();
                         if (!empty($jobSkillHistory) && count($jobSkillHistory) > 0) {
+                            $jobSkillHistoryTemp = $jobSkillHistory;
+
                             $jobSkillHistory->delete();
+
+                            $op_type = '';
+                            if($jobSkillHistoryTemp->action_type == "add")
+                                $op_type ="addition";
+                            elseif($jobSkillHistoryTemp->action_type == "edit")
+                                $op_type ="edition";
+                            elseif($jobSkillHistoryTemp->action_type == "delete")
+                                $op_type ="deletion";
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> rejected '.$op_type.' of skill <a href="'.url
+                                ('site_admin').'">';
+
+                            $html.=$jobSkillHistoryTemp->skill_name.'</a>';
+                            if(!empty($jobSkillHistoryTemp->skill_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$jobSkillHistoryTemp->skill_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
                             return \Response::json(['success' => true]);
                         } else
                             return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);

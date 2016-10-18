@@ -1,7 +1,7 @@
 $(function(){
     $(document).off("change","select.hierarchy").on('change',"select.hierarchy",function(event){
         var that = $(this);
-        getNextBox(that);
+        getNextBox(that,page);
         if(page=="task") {
             var text = $(this).find(':selected').text();
             text= text.replace('>','');
@@ -23,7 +23,7 @@ $(function(){
             selected_skill_id.push($(this).attr('data-value'));
         }
         // $(this).parents('.hierarchy_parent').find(".buttons").find(".edit_skill").removeClass("disabled");
-        getNextBox(that);
+        getNextBox(that,page);
         return false;
     });
 
@@ -43,7 +43,7 @@ $(function(){
         $.ajax({
             type:'get',
             url:siteURL+'/job_skills/get_next_level_skills',
-            data:{id:id,type:type},
+            data:{id:id,type:type,page:page},
             dataType:'json',
             success:function(resp){
                 if(resp.success){

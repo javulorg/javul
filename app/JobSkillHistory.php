@@ -20,6 +20,6 @@ class JobSkillHistory extends Model
      *
      * @var array
      */
-    protected $fillable = ['job_skill_id','action_type','user_id','parent_id','skill_name','parent_id_belongs_to'];
+    protected $fillable = ['job_skill_id','action_type','user_id','parent_id','skill_name','parent_id_belongs_to','skill_hierarchy'];
 
 }

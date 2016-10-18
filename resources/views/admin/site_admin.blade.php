@@ -34,44 +34,37 @@
                                 @if(!empty($authUserObj) && $authUserObj->role == "superadmin" && !empty($need_approve_skills) && count($need_approve_skills) > 0)
                                     <div class="row form-group skill-approve-panel">
                                         <div class="col-sm-6">
-                                            <div class="panel panel-default panel-grey">
-                                                <div class="panel-heading">
-                                                    <h4>Pending Job Skills</h4>
-                                                </div>
-                                                <div class="panel-body table-inner table-responsive">
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                        <tr>
-                                                            <th>Skill Name</th>
-                                                            <th>Status</th>
-                                                            <th></th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        @foreach($need_approve_skills as $p_skill)
-                                                            <tr>
-                                                                <td>
-                                                                    @if($p_skill->action_type == "delete")
-                                                                        {{\App\JobSkill::getName($p_skill->job_skill_id)}}
-                                                                    @else
-                                                                        {{$p_skill->skill_name}}
-                                                                    @endif
-                                                                </td>
-                                                                <td>{{ucfirst($p_skill->action_type)}}</td>
-                                                                <td>
-                                                                    <a href="#" class="btn btn-xs btn-success mark-skill-approve"
-                                                                       data-id="{{$p_skill->prefix_id}}">Mark as
-                                                                        Approve</a>
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Skill Name</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($need_approve_skills as $p_skill)
+                                                    <tr>
+                                                        <td>
+                                                            @if($p_skill->action_type == "delete")
+                                                                {{\App\JobSkill::getName($p_skill->job_skill_id)}}
+                                                            @else
+                                                                {{$p_skill->skill_name}}
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ucfirst($p_skill->action_type)}}</td>
+                                                        <td>
+                                                            <a href="#" class="btn btn-xs btn-success mark-skill-approve"
+                                                               data-id="{{$p_skill->prefix_id}}">Mark as
+                                                                Approve</a>
 
-                                                                    <a href="#" class="btn btn-xs btn-danger discard-change"
-                                                                       data-id="{{$p_skill->prefix_id}}">Discard</a>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
+                                                            <a href="#" class="btn btn-xs btn-danger discard-change"
+                                                               data-id="{{$p_skill->prefix_id}}">Discard</a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 @endif
