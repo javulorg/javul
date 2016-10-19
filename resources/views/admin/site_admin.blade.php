@@ -82,61 +82,49 @@
                             <div class="panel-heading">
                                 <h4>Unit Categories</h4>
                             </div>
-                            <div class="panel-body table-inner table-responsive loading_content_hide">
-                                <div class="loading_dots category_loading" style="position: absolute;top:0%;left:43%;z-index: 9999;display:
-                                none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
-                                </div>
-                                <table class="table table-striped category-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Category Name</th>
-                                        <th>Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @if(count($categoriesObj) > 0 && !empty($categoriesObj))
-                                        @foreach($categoriesObj as $category)
-                                            <tr>
-                                                <td>
-                                                    <a href="{!! url('category/'.$unitCategoryIDHashID->encode($category->id))!!}">
-                                                        {{$category->name}}
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    @if($category->status == "pending")
-                                                        <span class="text-danger">{{ucfirst($category->status)}}</span>
-                                                    @else
-                                                        <span class="colorLightGreen">{{ucfirst($category->status)}}</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="2">
-                                                No record found.
-                                            </td>
-                                        </tr>
-                                    @endif
-                                    <tr style="background-color: #fff;text-align: right;">
-                                        <td colspan="2">
-                                            <a class="btn black-btn" id="add_category_btn" href="{!! url('category/add') !!}" style="padding-right:10px;padding-left:10px">
-                                                <i class="fa fa-plus plus"></i> <span class="plus_text">ADD CATEGORY</span>
-                                            </a>
+                            <div class="panel-body table-inner loading_content_hide list-group ">
+                                @if(!empty($authUserObj) && $authUserObj->role == "superadmin" && !empty($need_approve_categories) && count($need_approve_categories) > 0)
+                                    <div class="row form-group skill-approve-panel">
+                                        <div class="col-sm-6">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Category Name</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($need_approve_categories as $p_category)
+                                                    <tr>
+                                                        <td>
+                                                            @if($p_category->action_type == "delete")
+                                                                {{\App\UnitCategory::getName($p_category->unit_category_id)}}
+                                                            @else
+                                                                {{$p_category->name}}
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ucfirst($p_category->action_type)}}</td>
+                                                        <td>
+                                                            <a href="#" class="btn btn-xs btn-success mark-category-approve"
+                                                               data-id="{{$p_category->prefix_id}}">Mark as
+                                                                Approve</a>
 
-                                            @if($categoriesObj->lastPage() > 1 && $categoriesObj->lastPage() != $categoriesObj->currentPage())
-                                                <a href="#" data-url="{{$categoriesObj->url($categoriesObj->currentPage()+1) }}"
-                                                   class="btn more-black-btn more-category"  type="button" style="margin-right: 0px;padding-right:10px;padding-left:10px">
-                                                    <span class="more_dots">...</span> MORE CATEGORIES
-                                                </a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                                            <a href="#" class="btn btn-xs btn-danger discard-category-change"
+                                                               data-id="{{$p_category->prefix_id}}">Discard</a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endif
+                                <div class="row form-group">
+                                    <div class="col-sm-12">
+                                        @include('admin.partials.unit_category_browse',['from'=>'site_admin'])
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -147,63 +135,49 @@
                             <div class="panel-heading">
                                 <h4>Area of interest</h4>
                             </div>
-                            <div class="panel-body table-inner table-responsive loading_content_hide">
-                                <div class="loading_dots area_of_interest_loading" style="position: absolute;top:0%;left:43%;z-index: 9999;display:
-                                none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
-                                </div>
-                                <table class="table table-striped area_of_interest-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Parent Area of Interest</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @if(count($area_of_interestObj) > 0 && !empty($area_of_interestObj))
-                                        @foreach($area_of_interestObj as $area_of_interest)
-                                            <tr>
-                                                <td>
-                                                    <a href="{!! url('area_of_interest/'.$areaOfInterestIDHashID->encode($area_of_interest->id))!!}">
-                                                        {{$area_of_interest->title}}
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    @if(!empty($area_of_interest->parent_id))
-                                                        <a href="{!! url('area_of_interest/'.$areaOfInterestIDHashID->encode($area_of_interest->parent_id )) !!}">
-                                                            {{\App\AreaOfInterest::getName($area_of_interest->parent_id)}}
-                                                        </a>
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="2">
-                                                No record found.
-                                            </td>
-                                        </tr>
-                                    @endif
-                                    <tr style="background-color: #fff;text-align: right;">
-                                        <td colspan="2">
-                                            <a class="btn black-btn" id="add_category_btn" href="{!! url('area_of_interest/add') !!}" style="padding-right:10px;padding-left:10px">
-                                                <i class="fa fa-plus plus"></i> <span class="plus_text">ADD AREA OF INTEREST</span>
-                                            </a>
+                            <div class="panel-body table-inner loading_content_hide list-group ">
+                                @if(!empty($authUserObj) && $authUserObj->role == "superadmin" && !empty($need_approve_areaOfInterest) && count($need_approve_areaOfInterest) > 0)
+                                    <div class="row form-group skill-approve-panel">
+                                        <div class="col-sm-6">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Area Of Interest</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($need_approve_areaOfInterest as $areaOfInterest)
+                                                    <tr>
+                                                        <td>
+                                                            @if($areaOfInterest->action_type == "delete")
+                                                                {{\App\AreaOfInterest::getName($areaOfInterest->area_of_interest_id)}}
+                                                            @else
+                                                                {{$areaOfInterest->title}}
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ucfirst($areaOfInterest->action_type)}}</td>
+                                                        <td>
+                                                            <a href="#" class="btn btn-xs btn-success mark-area-of-interest-approve"
+                                                               data-id="{{$areaOfInterest->prefix_id}}">Mark as
+                                                                Approve</a>
 
-                                            @if($area_of_interestObj->lastPage() > 1 && $area_of_interestObj->lastPage() != $area_of_interestObj->currentPage())
-                                                <a href="#" data-url="{{$area_of_interestObj->url($area_of_interestObj->currentPage()+1) }}"
-                                                   class="btn more-black-btn more-area-of-interest"  type="button" style="margin-right: 0px;padding-right:10px;padding-left:10px">
-                                                    <span class="more_dots">...</span> MORE AREA OF INTEREST
-                                                </a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                                            <a href="#" class="btn btn-xs btn-danger discard-area-of-interest-change"
+                                                               data-id="{{$areaOfInterest->prefix_id}}">Discard</a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endif
+                                <div class="row form-group">
+                                    <div class="col-sm-12">
+                                        @include('admin.partials.area_of_interest_browse',['from'=>'site_admin'])
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -222,4 +196,9 @@
     <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
     <script src="{!! url('assets/js/admin/site_admin.js') !!}" type="text/javascript"></script>
     <script src="{!! url('assets/js/admin/skill_browse.js') !!}" type="text/javascript"></script>
+    <script src="{!! url('assets/js/admin/category_browse.js') !!}" type="text/javascript"></script>
+    <script src="{!! url('assets/js/admin/category_op.js') !!}" type="text/javascript"></script>
+
+    <script src="{!! url('assets/js/admin/area_of_interest_browse.js') !!}" type="text/javascript"></script>
+    <script src="{!! url('assets/js/admin/area_of_interest_op.js') !!}" type="text/javascript"></script>
 @endsection

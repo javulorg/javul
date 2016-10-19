@@ -383,45 +383,7 @@ $(document).ready(function() {
     });
 
 
-    $(".browse-skills").on('click',function(){
-        $.ajax({
-            type:'get',
-            url:siteURL+'/job_skills/browse_skills',
-            dataType:'json',
-            success:function(resp){
-                if(resp.success){
-                    browse_skill_box = bootbox.dialog({
-                        message: resp.html,
-                        title: "Browse Skill",
-                        buttons: {
-                            success: {
-                                label: "Set Skill",
-                                className: "btn-success okay-btn",
-                                callback: function(e) {
-                                    if($.trim(selected_skill_id) != ""){
-                                        $("#task_skills").select2('val',selected_skill_id);
-                                    }
-                                    else {
-                                        toastr['error']('Please select skill', '');
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    browse_skill_box.on("shown.bs.modal", function (e) {
-                        browse_skill_box.find('.okay-btn').prop('disabled',true);
-                    });
-                    browse_skill_box.on("hidden.bs.modal", function (e) {
-                        browse_skill_box='';
-                    });
 
-                    browse_skill_box.modal('show');
-                }
-            }
-        });
-        return false;
-    });
     // when user click on submit for approval.
     $(".submit_for_approval").click(function(){
        var tid = $(this).attr('data-task_id');

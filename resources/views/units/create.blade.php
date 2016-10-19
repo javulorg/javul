@@ -1,6 +1,7 @@
 @extends('layout.default')
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+<link href="{!! url('assets/plugins/select2/css/select2-bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
 <style>
     .select2-results {
         max-height: 300px;
@@ -11,7 +12,9 @@
         overflow-y: auto;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
-
+    .hierarchy_parent{margin-left: 10px;}
+    .add_edit_categories div:first-child{margin-top:0px;padding-left:5px;padding-right:5px;}
+    .new_box,#category_firstbox{min-width: 12.5em;width:100%;}
 </style>
 @endsection
 @section('content')
@@ -90,14 +93,18 @@
                         <div class="col-sm-4 form-group">
                             <label class="control-label">{!! trans('messages.unit_category') !!}</label>
                             <div class="input-icon right">
-                                <i class="fa select-error"></i>
-                                <select class="form-control" name="unit_category[]" id="unit_category" multiple="multiple">
-                                    @if(count($unit_category_arr) > 0)
-                                        @foreach($unit_category_arr as $id=>$val)
-                                            <option value="{{$id}}" @if(!empty($edit_unit_category) && in_array($id,$edit_unit_category)) selected=selected @endif>{{$val}}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
+                                <div class="input-group">
+                                    <i class="fa select-error"></i>
+                                    <select class="form-control" name="unit_category[]" id="unit_category" multiple="multiple">
+                                        @if(count($unit_category_arr) > 0)
+                                            @foreach($unit_category_arr as $id=>$val)
+                                                <option value="{{$id}}" @if(!empty($edit_unit_category) && in_array($id,$edit_unit_category)) selected=selected @endif>{{$val}}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    <a href="" class="browse-categories input-group-addon" style="border-radius: 0px;
+                                                    color:#333;text-decoration: none;">Browse</a>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-4 form-group">
@@ -240,6 +247,12 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
+    <script>
+        var page='unit';
+        var browse_category_box='';
+        var selected_categories_id= new Array();
+    </script>
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/units/units.js') !!}"></script>
+<script src="{!! url('assets/js/admin/category_browse.js') !!}" type="text/javascript"></script>
 @endsection

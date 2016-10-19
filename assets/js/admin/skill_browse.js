@@ -1,8 +1,8 @@
 $(function(){
-    $(document).off("change","select.hierarchy").on('change',"select.hierarchy",function(event){
+    $(document).off("change","#skill_firstbox").on('change',"#skill_firstbox",function(event){
         var that = $(this);
         getNextBox(that,page);
-        if(page=="task") {
+        if(page=="task" || page=="account") {
             var text = $(this).find(':selected').text();
             text= text.replace('>','');
             $(".selected_text_task").html('<b>' + text + '</b>');
@@ -11,10 +11,10 @@ $(function(){
         }
         return false;
     });
-    $(document).off("click","a.hierarchy").on('click',"a.hierarchy",function(event){
+    $(document).off("click","a.select_skill").on('click',"a.select_skill",function(event){
         $(this).parents('.new_box').find("a.hierarchy").removeClass('selected');
         var that = $(this).addClass('selected');
-        if(page=="task"){
+        if(page=="task" || page=="account"){
             var text = $(this).html();
             text= text.replace('&nbsp; &gt;','');
             $(".selected_text_task").html('<b>' + text + '</b>');
@@ -63,14 +63,14 @@ $(function(){
                         var html = '<div class="hierarchy_parent"><div class="hierarchy new_box" data-number="'+
                             (next_level+1)+'">';
                         $.each(resp.data,function(index,val){
-                            html+='<a  href="" class="hierarchy" data-number="'+(next_level+1)+'" data-value="'+index+'" ' +
+                            html+='<a  href="#" class="hierarchy select_skill" data-number="'+(next_level+1)+'" data-value="'+index+'" ' +
                                 'data-type="'+val.type+'" >'+val.name+'&nbsp; ></a>';
                         });
                         if(page == "site_admin") {
                             html += '</div>' +
                                 '<div class="buttons">' +
                                 '<div style="display:block;">' +
-                                '<a class="btn black-btn btn-xs add_skill" style="text-decoration: none; padding: 5px 10px;">' +
+                                '<a href="#" class="btn black-btn btn-xs add_skill" style="text-decoration: none; padding: 5px 10px;">' +
                                 '<i class="fa fa-plus plus"></i> <span class="plus_text" style="left:-5px;">ADD</span>' +
                                 '</a></div>' +
                                 '<div style="display:block;margin-top:5px;"><a class="edit_skill btn black-btn ' +
@@ -117,4 +117,44 @@ $(function(){
             }
         });
     }
+
+    $(".browse-skills").on('click',function(){
+        $.ajax({
+            type:'get',
+            url:siteURL+'/job_skills/browse_skills',
+            dataType:'json',
+            success:function(resp){
+                if(resp.success){
+                    browse_skill_box = bootbox.dialog({
+                        message: resp.html,
+                        title: "Browse Skill",
+                        buttons: {
+                            success: {
+                                label: "Set Skill",
+                                className: "btn-success okay-btn",
+                                callback: function(e) {
+                                    if($.trim(selected_skill_id) != ""){
+                                        $("#task_skills").select2('val',selected_skill_id);
+                                    }
+                                    else {
+                                        toastr['error']('Please select skill', '');
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    browse_skill_box.on("shown.bs.modal", function (e) {
+                        browse_skill_box.find('.okay-btn').prop('disabled',true);
+                    });
+                    browse_skill_box.on("hidden.bs.modal", function (e) {
+                        browse_skill_box='';
+                    });
+
+                    browse_skill_box.modal('show');
+                }
+            }
+        });
+        return false;
+    });
 });

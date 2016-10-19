@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AreaOfInterest;
+use App\AreaOfInterestHistory;
 use App\Http\Requests;
 use App\Issue;
 use App\JobSkill;
@@ -12,6 +13,7 @@ use App\SiteActivity;
 use App\Task;
 use App\Unit;
 use App\UnitCategory;
+use App\UnitCategoryHistory;
 use App\User;
 use App\Watchlist;
 use Illuminate\Http\Request;
@@ -198,7 +200,8 @@ class HomeController extends Controller
         if(Auth::user()->role != "superadmin")
             $where=" AND user_id=".Auth::user()->id;
 
-        $categoriesObj =UnitCategory::paginate(\Config::get('app.site_activity_page_limit'));
+
+        //get skills
         $jobSkillsObj = \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id,c.skill_name,   p.skill_name AS Parentskill_name,IF(ISNULL(job_skills_history.`skill_name`),NULL,job_skills_history.`skill_name`) AS history_skill_name
                                     ,IF(ISNULL(job_skills_history.`prefix_id`),NULL,job_skills_history.`prefix_id`) AS prefix_id,IF(ISNULL(job_skills_history.`user_id`),NULL,job_skills_history.`user_id`) AS user_id
                                     FROM job_skills c LEFT JOIN job_skills p ON (c.parent_id = p.id) LEFT JOIN job_skills_history ON
@@ -216,23 +219,86 @@ class HomeController extends Controller
             }
         }
 
+        //get unit categories
+        $unitCategoriesObj = \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.name, p.name AS Parentcategory_name,
+                                          IF(ISNULL(unit_category_history.`name`),NULL,unit_category_history.`name`) AS history_category_name,
+                                          IF(ISNULL(unit_category_history.`prefix_id`),NULL,unit_category_history.`prefix_id`) AS prefix_id,
+                                          IF(ISNULL(unit_category_history.`user_id`),NULL,unit_category_history.`user_id`) AS user_id
+                                          FROM  unit_category c LEFT JOIN unit_category p ON (c.parent_id = p.id)
+                                          LEFT JOIN unit_category_history ON c.id = unit_category_history.`unit_category_id` '.$where.'
+                                          WHERE IF(c.parent_id IS NULL, 0, c.parent_id) = 0  AND c.id <> 0 ORDER BY c.id ');
+
+        $firstBox_category = [];
+        $need_approve_categories = [];
+        if(count($unitCategoriesObj) > 0 && !empty($unitCategoriesObj)){
+            foreach($unitCategoriesObj as $category){
+                if(!empty($category->history_category_name) && $category->user_id == Auth::user()->id)
+                    $firstBox_category[$category->prefix_id]=['type'=>'old','name'=>$category->history_category_name];
+                else
+                    $firstBox_category[$category->id]=['type'=>'old','name'=>$category->name];
+            }
+        }
+
+
+        //get area of interest
+        $area_of_interestObj= \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.title, p.title AS Parenttitle,
+                                          IF(ISNULL(area_of_interest_history.`title`),NULL,area_of_interest_history.`title`) AS
+                                          history_area_of_interest_name,
+                                          IF(ISNULL(area_of_interest_history.`prefix_id`),NULL,area_of_interest_history.`prefix_id`) AS prefix_id,
+                                          IF(ISNULL(area_of_interest_history.`user_id`),NULL,area_of_interest_history.`user_id`) AS user_id
+                                          FROM  area_of_interest c LEFT JOIN area_of_interest p ON (c.parent_id = p.id)
+                                          LEFT JOIN area_of_interest_history ON c.id = area_of_interest_history.`area_of_interest_id`'.$where.'
+                                          WHERE IF(c.parent_id IS NULL, 0, c.parent_id) = 0  AND c.id <> 0 ORDER BY c.id ');
+
+        $firstBox_areaOfInterest = [];
+        $need_approve_areaOfInterest = [];
+        if(count($area_of_interestObj) > 0 && !empty($area_of_interestObj)){
+            foreach($area_of_interestObj as $area_of_interest){
+                if(!empty($area_of_interest->history_area_of_interest_name) && $area_of_interest->user_id == Auth::user()->id)
+                    $firstBox_areaOfInterest[$area_of_interest->prefix_id]=['type'=>'old','name'=>$area_of_interest->history_area_of_interest_name];
+                else
+                    $firstBox_areaOfInterest[$area_of_interest->id]=['type'=>'old','name'=>$area_of_interest->title];
+            }
+        }
+
         // also list the skill he added but yet not approved by siteadmin.
         if(Auth::user()->role != "superadmin") {
+            //get pending skills of current user
             $pending_skills = JobSkillHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->lists('skill_name','prefix_id')
                 ->all();
             if(count($pending_skills) > 0){
                 foreach($pending_skills as $index=>$skl_nm)
                     $firstBox_skills[$index]=['type'=>'new','name'=>$skl_nm];
             }
+
+            //get pending categories of current user
+            $pending_categories = UnitCategoryHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->lists('name','prefix_id')->all();
+            if(count($pending_categories) > 0){
+                foreach($pending_categories as $index=>$cat_nm)
+                    $firstBox_category[$index]=['type'=>'new','name'=>$cat_nm];
+            }
+
+            //get pending area of interest of current user
+            $pending_areaofInterest = AreaOfInterestHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->lists('title','prefix_id')->all();
+            if(count($pending_areaofInterest) > 0){
+                foreach($pending_areaofInterest as $index=>$area_nm)
+                    $firstBox_areaOfInterest[$index]=['type'=>'new','name'=>$area_nm];
+            }
         }
-        else
+        else {
             $need_approve_skills = JobSkillHistory::orderBy('action_type')->get();
-
-
+            $need_approve_categories = UnitCategoryHistory::orderBy('action_type')->get();
+            $need_approve_areaOfInterest= AreaOfInterestHistory::orderBy('action_type')->get();
+        }
 
         view()->share('need_approve_skills',$need_approve_skills);
         view()->share('firstBox_skills',$firstBox_skills);
-        $area_of_interestObj = AreaOfInterest::paginate(\Config::get('app.site_activity_page_limit'));
+
+        view()->share('need_approve_categories',$need_approve_categories);
+        view()->share('firstBox_category',$firstBox_category);
+
+        view()->share('need_approve_areaOfInterest',$need_approve_areaOfInterest);
+        view()->share('firstBox_areaOfInterest',$firstBox_areaOfInterest);
 
         $msg_flag = false;
         $msg_val = '';
@@ -248,9 +314,9 @@ class HomeController extends Controller
         view()->share('msg_type',$msg_type);
 
 
-        view()->share('jobSkillsObj',$jobSkillsObj);
-        view()->share('categoriesObj',$categoriesObj);
-        view()->share('area_of_interestObj',$area_of_interestObj);
+        //view()->share('jobSkillsObj',$jobSkillsObj);
+        //view()->share('categoriesObj',$categoriesObj);
+        //view()->share('area_of_interestObj',$area_of_interestObj);
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
@@ -282,45 +348,75 @@ class HomeController extends Controller
 
     public function category_add(Request $request)
     {
+        if(!$request->ajax())
+            return view('errors.404');
+
         if(!Auth::check())
-            return \Redirect::to(url(''));
+            return \Response::json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
 
-        view()->share('categoryObj',[]);
-        view()->share('parent_categories',UnitCategory::lists('name','id')->all());
-        view()->share('method','category/add');
-        if($request->isMethod('post')){
-            $validator = \Validator::make($request->all(), [
-                'name' => 'required',
-                'status' => 'required'
-            ]);
+        $validator = \Validator::make($request->all(), [
+            'category_name' => 'required'
+        ]);
 
-            if ($validator->fails())
-                return redirect()->back()->withErrors($validator)->withInput();
+        if ($validator->fails())
+            return \Response::json(['success'=>false,'errors'=>$validator->messages()]);
 
-            $categoryExist = UnitCategory::whereRaw('LOWER(name) = "'.strtolower($request->input('name').'"'))->count();
+        $categoryExist = UnitCategory::whereRaw('LOWER(name) = "'.strtolower($request->input('category_name').'"'))->count();
 
-            if($categoryExist > 0)
-                return redirect()->back()->withErrors(['name'=>'Name already exists.'])->withInput();
+        if($categoryExist > 0)
+            return redirect()->back()->withErrors(['name'=>'Unit category already exists.'])->withInput();
 
-            $parent_id = $request->input('parent_id');
-            if(empty($parent_id))
-                $parent_id=null;
-            $status = "pending";
-            if(Auth::user()->role == "superadmin")
-                $status =$request->input('status');
 
-            UnitCategory::create([
-                'name'=>$request->input('name'),
-                'status'=>$status,
-                'parent_id'=>$request->input('parent_id')
-            ]);
-            $request->session()->flash('msg_val', "Unit Category created successfully!!!");
-            return redirect('site_admin');
+        $parent_id = $request->input('parent_id');
+        $temp_parent_id = $parent_id;
+
+        if(empty($parent_id))
+            $parent_id=0;
+        else
+            $parent_id = str_replace("UCH","",$parent_id);
+
+
+        $data  = [
+            'name'=>$request->input('category_name'),
+            'parent_id'=>$parent_id
+        ];
+
+        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $user_id = $userIDHashID->encode(Auth::user()->id);
+
+        $path_text = $request->input('path_text');
+        $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> added category <a href="'.url('site_admin').'">'
+            .$data['name'].'</a>';
+        if(!empty($path_text)){
+            $html.=' to the <a href="'.url('site_admin').'">'.$path_text.'</a>';
         }
-        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-        view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','Global Activity Log');
-        return view('admin.partials.add_category');
+
+
+        if(Auth::user()->role =="superadmin") {
+            $data['status'] = "approved";
+            $category_id =UnitCategory::create($data)->id;
+        }
+        else{
+            $type = $request->input('tbl_type');
+            if($type == "null")
+                $type =null;
+            elseif($type == "old"){
+                $unitCategoryHistoryObj = UnitCategoryHistory::where('prefix_id',$temp_parent_id)->first();
+                if(!empty($unitCategoryHistoryObj) && count($unitCategoryHistoryObj) > 0 && !empty($unitCategoryHistoryObj->unit_category_id))
+                    $data['parent_id'] = $unitCategoryHistoryObj->unit_category_id;
+            }
+            $data['user_id']=Auth::user()->id;
+            $data['action_type']='add';
+            $data['parent_id_belongs_to'] =$type;
+            $data['category_hierarchy']=$path_text;
+            $category_id = UnitCategoryHistory::create($data)->id;
+        }
+        SiteActivity::create([
+            'user_id'=>Auth::user()->id,
+            'comment'=>$html
+        ]);
+        return \Response::json(['success'=>true,'category_id'=>$category_id,'category_name'=>$data['name']]);
     }
 
     public function skill_add(Request $request){
@@ -392,37 +488,6 @@ class HomeController extends Controller
             'comment'=>$html
         ]);
         return \Response::json(['success'=>true,'skill_id'=>$skill_id,'skill_name'=>$data['skill_name']]);
-        /*view()->share('skillObj',[]);
-        view()->share('parent_skills',JobSkill::lists('skill_name','id')->all());
-        view()->share('method','job_skills/add');
-        if($request->isMethod('post')){
-            $validator = \Validator::make($request->all(), [
-                'skill_name' => 'required'
-            ]);
-
-            if ($validator->fails())
-                return redirect()->back()->withErrors($validator)->withInput();
-
-            $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'"'))->count();
-
-            if($skillExist> 0)
-                return redirect()->back()->withErrors(['skill_name'=>'Skill name already exists.'])->withInput();
-
-            $parent_id = $request->input('parent_id');
-            if(empty($parent_id))
-                $parent_id=null;
-
-            JobSkill::create([
-                'skill_name'=>$request->input('skill_name'),
-                'parent_id'=>$request->input('parent_id')
-            ]);
-            $request->session()->flash('msg_val', "Job skill created successfully!!!");
-            return redirect('site_admin');
-        }
-        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-        view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','Global Activity Log');
-        return view('admin.partials.add_skill');*/
     }
     public function skill_edit(Request $request)
     {
@@ -470,7 +535,6 @@ class HomeController extends Controller
                 if(!empty($path_text)){
                     $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
                 }
-                $jobSkillObj->delete();
                 SiteActivity::create([
                     'user_id'=>Auth::user()->id,
                     'comment'=>$html
@@ -539,52 +603,6 @@ class HomeController extends Controller
             }
         }
         return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
-
-
-        /*if(!empty($skill_id)){
-            $skill_id_encoded = $skill_id;
-            $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
-            $skill_id = $jobSkillIDHashID->decode($skill_id);
-            if(!empty($skill_id)){
-                $skill_id= $skill_id[0];
-                $skillObj = JobSkill::find($skill_id);
-                if(!empty($skillObj) && count($skillObj) > 0){
-                    if($request->isMethod('post')){
-                        $validator = \Validator::make($request->all(), [
-                            'skill_name' => 'required'
-                        ]);
-
-                        if ($validator->fails())
-                            return redirect()->back()->withErrors($validator)->withInput();
-
-                        $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'" and id != "'
-                                .$skill_id.'"'))->count();
-
-                        if($skillExist> 0)
-                            return redirect()->back()->withErrors(['skill_name'=>'Skill name already exists.'])->withInput();
-
-                        $parent_id = $request->input('parent_id');
-                        if(empty($parent_id))
-                            $parent_id=null;
-
-                        $skillObj->update([
-                            'skill_name'=>$request->input('skill_name'),
-                            'parent_id'=>$request->input('parent_id')
-                        ]);
-                        $request->session()->flash('msg_val', "Job skill updated successfully!!!");
-                        return redirect('site_admin');
-                    }
-                    view()->share('skillObj',$skillObj);
-                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    view()->share('site_activity',$site_activity);
-                    view()->share('site_activity_text','Global Activity Log');
-                    view()->share('method','job_skills/'.$skill_id_encoded .'/edit');
-                    view()->share('parent_skills',JobSkill::where('id','!=',$skill_id)->lists('skill_name','id')->all());
-                    return view('admin.partials.add_skill');
-                }
-            }
-        }
-        return view('errors.404');*/
     }
     public function skill_delete(Request $request){
         if(Auth::check() && $request->ajax()){
@@ -609,7 +627,10 @@ class HomeController extends Controller
 
                 $jobSkillObj= JobSkill::find($job_skill_id );
                 if(!empty($jobSkillObj) && count($jobSkillObj) > 0) {
-                    $jobSkillObj->udpate(['skill_name' => $request->input('skill_name')]);
+                    $taskObj = \DB::select('SELECT * FROM tasks WHERE FIND_IN_SET('.$job_skill_id.',skills)');
+                    if(!empty($taskObj) && count($taskObj) > 0)
+                        return \Response::json(['success'=>false,'msg'=>'You can not delete this skill. Currently it is used in task.']);
+
                     $html.=$jobSkillObj->skill_name.'</a>';
                     if(!empty($path_text)){
                         $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -625,7 +646,12 @@ class HomeController extends Controller
             }
             else{
                 if($type == "new"){
-                    $obj = JobSkillHistory::where('id',$id)->where('user_id',Auth::user()->id)->first();
+                    if(strpos($id,"JBSH") !== false)
+                        $obj = JobSkillHistory::where('prefix_id',$id)->where('user_id',Auth::user()->id)->first();
+                    else
+                        $obj = JobSkillHistory::where('id',$id)->where('user_id',Auth::user()->id)->first();
+
+
                     if(!empty($obj) && count($obj) > 0) {
                         $html.=$obj->skill_name.'</a>';
                         if(!empty($path_text)){
@@ -665,233 +691,527 @@ class HomeController extends Controller
                     return \Response::json(['success'=>true]);
                 }
             }
-            /*$jobSkillExist = JobSkill::whereRaw('parent_id = "'.$id.'"')->count();
-            if($jobSkillExist == 0){
-                $cnt = JobSkill::find($id)->count();
-                if($cnt > 0) {
-                    JobSkill::find($id)->forceDelete();
-                }
-                return \Response::json(['success'=>true,'msg'=>'Skill deleted successfully']);
-            }*/
         }
         return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
     }
-    public function area_of_interest_add(Request $request){
-        if(!Auth::check())
-            return \Redirect::to(url(''));
 
-        view()->share('areaOfInterestObj',[]);
-        view()->share('parent_area_of_interest',AreaOfInterest::lists('title','id')->all());
-        view()->share('method','area_of_interest/add');
-        if($request->isMethod('post')){
-            $validator = \Validator::make($request->all(), [
-                'title' => 'required'
-            ]);
+    public function category_edit(Request $request){
 
-            if ($validator->fails())
-                return redirect()->back()->withErrors($validator)->withInput();
+        if(!$request->ajax())
+            return view('errors.404');
 
-            $areaOfInterestExist = AreaOfInterest::whereRaw('LOWER(title) = "'.strtolower($request->input('title').'"'))->count();
+        if (!Auth::check())
+            return \Response::json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
 
-            if($areaOfInterestExist> 0)
-                return redirect()->back()->withErrors(['skill_name'=>'Area of interest already exists.'])->withInput();
+        $validator = \Validator::make($request->all(), [
+            'category_name' => 'required'
+        ]);
 
-            $parent_id = $request->input('parent_id');
-            if(empty($parent_id))
-                $parent_id=null;
+        if ($validator->fails())
+            return \Response::json(['success' => false, 'errors' => $validator->messages()]);
 
-            AreaOfInterest::create([
-                'title'=>$request->input('title'),
-                'parent_id'=>$request->input('parent_id')
-            ]);
-            $request->session()->flash('msg_val', "Area of interest created successfully!!!");
-            return redirect('site_admin');
+        $selected_id = $request->input('selected_id');
+        if (empty($selected_id))
+            return \Response::json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
+
+        $category_name = $request->input('category_name');
+        $category_nameExist = UnitCategory::whereRaw('LOWER(name) = "'.$category_name.'" and id !='.$selected_id)->count();
+
+        if ($category_nameExist > 0)
+            return \Response::json(['success' => false, 'errors' => ['category_name' => 'Unit category name already exists']]);
+
+        $type = $request->input('tbl_type');
+        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $user_id = $userIDHashID->encode(Auth::user()->id);
+
+        $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited category <a href="'.url('site_admin').'">'
+            .$request->input('category_name').'</a>';
+
+        if(Auth::user()->role == "superadmin") {
+            $unit_category_id= $selected_id;
+            if(strpos($selected_id,"JBSH") !== false) {
+                $unit_category_id_temp = UnitCategoryHistory::where('prefix_id', $selected_id)->first();
+                if(!empty($unit_category_id_temp) && count($unit_category_id_temp) > 0 && !empty($unit_category_id_temp->unit_category_id))
+                    $unit_category_id =$unit_category_id_temp->job_skill_id;
+            }
+
+            $unitCategoryObj= UnitCategory::find($unit_category_id );
+            if(!empty($unitCategoryObj) && count($unitCategoryObj) > 0) {
+                $unitCategoryObj->udpate(['name' => $request->input('category_name')]);
+                $html.=$unitCategoryObj->name.'</a>';
+                if(!empty($path_text)){
+                    $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                }
+
+                SiteActivity::create([
+                    'user_id'=>Auth::user()->id,
+                    'comment'=>$html
+                ]);
+                return \Response::json(['success'=>true,'category_id'=>$unitCategoryObj->id,'type'=>'old','category_name'=>$category_name]);
+            }
+            return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
         }
-        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-        view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','Global Activity Log');
-        return view('admin.partials.add_area_of_interest');
-    }
+        else {
+            if ($type == "old") {
+                $unit_category_id= $selected_id;
+                if(strpos($selected_id,"UCH") !== false) {
+                    $unit_category_id_temp = UnitCategoryHistory::where('prefix_id', $selected_id)->first();
+                    if(!empty($unit_category_id_temp) && count($unit_category_id_temp) > 0)
+                        $unit_category_id =$unit_category_id_temp->unit_category_id;
+                    $selected_id = str_replace("UCH","",$selected_id);
+                }
+                $path_text = $request->input('path_text');
 
-    public function get_category_paginate(){
-        if(!Auth::check())
-            return \Response::json(['success'=>true,'html'=>'']);
+                $unitCategoryObj= UnitCategory::find($unit_category_id );
+                if(count($unitCategoryObj) > 0 && !empty($unitCategoryObj)) {
+                    $obj = UnitCategoryHistory::where('unit_category_id', $unitCategoryObj->id)->where('user_id', Auth::user()->id)->first();
+                    if (!empty($obj) && count($obj) > 0) {
+                        $obj->delete();
+                    }
 
-        $page_limit = \Config::get('app.page_limit');
-        $categoryObj = UnitCategory::paginate($page_limit);
-        view()->share('categoryObj',$categoryObj);
-        $html = view('admin.partials.more_categories')->render();
-        return \Response::json(['success'=>true,'html'=>$html]);
-    }
+                    $data['parent_id_belongs_to'] = null;
+                    $data['unit_category_id'] = $selected_id;
+                    $data['user_id'] = Auth::user()->id;
+                    $data['name'] = $request->input('category_name');
+                    $data['action_type'] = 'edit';
+                    $data['category_hierarchy']=$path_text;
+                    $category_id = UnitCategoryHistory::create($data)->id;
 
-    public function category_view(Request $request,$category_id){
-        if(!empty($category_id)){
-            $unitCategoryIDHashID = new Hashids('unit category id hash',10,\Config::get('app.encode_chars'));
-            $category_id = $unitCategoryIDHashID->decode($category_id);
-            if(!empty($category_id)){
-                $category_id= $category_id[0];
-                $categoryObj = UnitCategory::find($category_id);
-                if(!empty($categoryObj) && count($categoryObj) > 0){
-                    view()->share('categoryObj',$categoryObj);
-                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    view()->share('site_activity',$site_activity);
-                    view()->share('site_activity_text','Global Activity Log');
-                    return view('admin.partials.category_view');
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'category_id'=>$unitCategoryObj->id,'type'=>$type,
+                        'category_name'=>$data['name'] ]);
+                }
+
+            } else {
+                $obj = UnitCategoryHistory::find($selected_id);
+                $path_text = $request->input('path_text');
+                if(!empty($obj) && count($obj) > 0) {
+                    $data['name']= $request->input('category_name');
+                    $data['category_hierarchy']=$path_text;
+                    $obj->update($data);
+                    $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                        .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited category <a href="'.url('site_admin').'">'
+                        .$data['name'].'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'category_id'=>$obj->id,'type'=>$type,'category_name'=>$data['name']]);
                 }
             }
         }
-        return view('errors.404');
+        return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
 
     }
-    public function skill_view(Request $request,$skill_id){
-        if(!empty($skill_id)){
-            $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
-            $skill_id = $jobSkillIDHashID->decode($skill_id);
-            if(!empty($skill_id)){
-                $skill_id= $skill_id[0];
-                $skillObj = JobSkill::find($skill_id);
-                if(!empty($skillObj) && count($skillObj) > 0){
-                    view()->share('skillObj',$skillObj);
-                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    view()->share('site_activity',$site_activity);
-                    view()->share('site_activity_text','Global Activity Log');
-                    return view('admin.partials.skill_view');
+
+    public function category_delete(Request $request){
+        if(!$request->ajax())
+            return view('errors.404');
+
+        if(Auth::check()){
+
+            $id = $request->input('id');
+            $type = $request->input('type');
+            $path_text = $request->input('path_text');
+
+            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $user_id = $userIDHashID->encode(Auth::user()->id);
+
+
+            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> deleted category <a href="'.url('site_admin').'">';
+
+            if(Auth::user()->role == "superadmin"){
+                $unit_category_id= $id;
+                if(strpos($id,"UCH") !== false) {
+                    $unit_category_id_temp = UnitCategoryHistory::where('prefix_id', $id)->first();
+                    if(!empty($unit_category_id_temp) && count($unit_category_id_temp) > 0 && !empty($unit_category_id_temp->unit_category_id))
+                        $unit_category_id =$unit_category_id_temp->unit_category_id;
                 }
-            }
-        }
-        return view('errors.404');
 
-    }
+                $unitCategoryObj= UnitCatergory::find($unit_category_id);
+                if(!empty($unitCategoryObj) && count($unitCategoryObj) > 0) {
 
-    public function area_of_interest_view(Request $request,$area_id){
-        if(!empty($area_id)){
-            $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
-            $area_id = $areaOfInterestIDHashID->decode($area_id);
-            if(!empty($area_id)){
-                $area_id= $area_id[0];
-                $areaOfInterestObj = AreaOfInterest::find($area_id);
-                if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0){
-                    view()->share('areaOfInterestObj',$areaOfInterestObj);
-                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    view()->share('site_activity',$site_activity);
-                    view()->share('site_activity_text','Global Activity Log');
-                    return view('admin.partials.area_of_interest_view');
+                    $taskObj = \DB::select('SELECT * FROM units WHERE FIND_IN_SET('.$unit_category_id.',category_id)');
+                    if(!empty($taskObj) && count($taskObj) > 0)
+                        return \Response::json(['success'=>false,'msg'=>'You can not delete this category. Currently it is used in unit.']);
+
+
+                    $html.=$unitCategoryObj->name.'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+                    $unitCategoryObj->delete();
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'msg'=>'Unit category deleted successfully']);
                 }
+                return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
             }
-        }
-        return view('errors.404');
+            else{
+                if($type == "new"){
+                    if(strpos($id,"UCH") !== false)
+                        $obj = UnitCategoryHistory::where('prefix_id', $id)->where('user_id',Auth::user()->id)->first();
+                    else
+                        $obj = UnitCategoryHistory::where('id',$id)->where('user_id',Auth::user()->id)->first();
 
-    }
-
-    public function category_edit(Request $request,$category_id){
-        if(!empty($category_id)){
-            $category_id_encoded = $category_id;
-            $unitCategoryIDHashID = new Hashids('unit category id hash',10,\Config::get('app.encode_chars'));
-            $category_id = $unitCategoryIDHashID->decode($category_id);
-            if(!empty($category_id)){
-                $category_id= $category_id[0];
-                $categoryObj = UnitCategory::find($category_id);
-                if(!empty($categoryObj) && count($categoryObj) > 0){
-                    if($request->isMethod('post')){
-                        $validator = \Validator::make($request->all(), [
-                            'name' => 'required'
-                        ]);
-
-                        if ($validator->fails())
-                            return redirect()->back()->withErrors($validator)->withInput();
-
-                        
-                        $categoryExist = UnitCategory::whereRaw('LOWER(name) = "'.strtolower($request->input('name').'" and id !="'.$category_id.'"'))
-                                        ->count();
-
-
-                        if($categoryExist > 0)
-                            return redirect()->back()->withErrors(['name'=>'Name already exists.'])->withInput();
-
-                        $category_name=$request->input('name');
-                        $parent_id = $request->input('parent_id');
-
-                        $status = "pending";
-                        if(Auth::user()->role == "superadmin")
-                            $status=$request->input('status');
-
-                        if($categoryObj->name != $category_name || $categoryObj->parent_id != $parent_id || Auth::user()->role == "superadmin"){
-                            if(empty($parent_id))
-                                $parent_id=null;
-
-                            $categoryObj->update([
-                                'name'=>$request->input('name'),
-                                'status'=>$status,
-                                'parent_id'=>$request->input('parent_id')
-                            ]);
-                            $request->session()->flash('msg_val', "Unit category updated successfully!!!");
-                            return redirect('site_admin');
+                    if(!empty($obj) && count($obj) > 0) {
+                        $html.=$obj->name.'</a>';
+                        if(!empty($path_text)){
+                            $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
                         }
-                        $request->session()->flash('msg_val', "Nothing to update!!!");
-                        return redirect('site_admin');
-
-
-
+                        $obj->delete();
+                        SiteActivity::create([
+                            'user_id'=>Auth::user()->id,
+                            'comment'=>$html
+                        ]);
+                        return \Response::json(['success'=>true,'msg'=>'Unit category deleted successfully']);
                     }
-                    view()->share('categoryObj',$categoryObj);
-                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    view()->share('site_activity',$site_activity);
-                    view()->share('site_activity_text','Global Activity Log');
-                    view()->share('parent_categories',UnitCategory::where('id','!=',$category_id)->lists('name','id')->all());
-                    view()->share('method','category/'.$category_id_encoded .'/edit');
-                    return view('admin.partials.add_category');
+                    return \Response::json(['success'=>false,'msg'=>'No category found. Please try again later.']);
+                }
+                else{
+                    $taskObj = \DB::select('SELECT * FROM units WHERE FIND_IN_SET('.$id.',category_id)');
+                    if(!empty($taskObj) && count($taskObj) > 0)
+                        return \Response::json(['success'=>false,'msg'=>'You can not delete this category. Currently it is used in unit.']);
+
+                    $data['parent_id_belongs_to'] = null;
+                    $data['unit_category_id'] = $id;
+                    $data['user_id'] = Auth::user()->id;
+                    $data['action_type'] = 'delete';
+                    $data['category_hierarchy']=$path_text;
+                    UnitCategoryHistory::create($data);
+
+                    $jobObj = UnitCategory::find($id);
+                    if(count($jobObj) > 0 && !empty($jobObj))
+                        $html.=$jobObj->name.'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+
+                    return \Response::json(['success'=>true]);
                 }
             }
         }
-        return view('errors.404');
+        return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
     }
 
+    public function area_of_interest_add(Request $request){
+        if(!$request->ajax())
+            return view('errors.404');
+
+        if(!Auth::check())
+            return \Response::json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
+
+        $validator = \Validator::make($request->all(), [
+            'title' => 'required'
+        ]);
+
+        if ($validator->fails())
+            return \Response::json(['success'=>false,'errors'=>$validator->messages()]);
+
+        $areaofInterestExist = AreaOfInterest::whereRaw('LOWER(title) = "'.strtolower($request->input('title').'"'))->count();
+
+        if($areaofInterestExist > 0)
+            return redirect()->back()->withErrors(['name'=>'Area of interest already exists.'])->withInput();
 
 
-    public function area_of_interest_edit(Request $request,$area_id){
-        if(!empty($area_id)){
-            $area_id_encoded = $area_id;
-            $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
-            $area_id = $areaOfInterestIDHashID->decode($area_id);
-            if(!empty($area_id)){
-                $area_id= $area_id[0];
-                $areaOfInterestObj = AreaOfInterest::find($area_id);
-                if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0){
-                    if($request->isMethod('post')){
-                        $validator = \Validator::make($request->all(), [
-                            'title' => 'required'
-                        ]);
+        $parent_id = $request->input('parent_id');
+        $temp_parent_id = $parent_id;
 
-                        if ($validator->fails())
-                            return redirect()->back()->withErrors($validator)->withInput();
+        if(empty($parent_id))
+            $parent_id=0;
+        else
+            $parent_id = str_replace("AOIH","",$parent_id);
 
-                        $areaOfInterestExist = AreaOfInterest::whereRaw('LOWER(title) = "'.strtolower($request->input('title').'" and id != "'.$area_id.'"'))->count();
 
-                        if($areaOfInterestExist > 0)
-                            return redirect()->back()->withErrors(['title'=>'Area of Interest already exists.'])->withInput();
+        $data  = [
+            'title'=>$request->input('title'),
+            'parent_id'=>$parent_id
+        ];
 
-                        $parent_id = $request->input('parent_id');
-                        if(empty($parent_id))
-                            $parent_id=null;
+        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $user_id = $userIDHashID->encode(Auth::user()->id);
 
-                        $areaOfInterestObj->update([
-                            'title'=>$request->input('title'),
-                            'parent_id'=>$request->input('parent_id')
-                        ]);
-                        $request->session()->flash('msg_val', "Area of Interest updated successfully!!!");
-                        return redirect('site_admin');
+        $path_text = $request->input('path_text');
+        $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> added area of interest <a href="'.url('site_admin').'">'
+            .$data['title'].'</a>';
+        if(!empty($path_text)){
+            $html.=' to the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+        }
+
+
+        if(Auth::user()->role =="superadmin") {
+            $data['status'] = "approved";
+            $area_id =AreaOfInterest::create($data)->id;
+        }
+        else{
+            $type = $request->input('tbl_type');
+            if($type == "null")
+                $type =null;
+            elseif($type == "old"){
+                $unitCategoryHistoryObj = UnitCategoryHistory::where('prefix_id',$temp_parent_id)->first();
+                if(!empty($unitCategoryHistoryObj) && count($unitCategoryHistoryObj) > 0 && !empty($unitCategoryHistoryObj->unit_category_id))
+                    $data['parent_id'] = $unitCategoryHistoryObj->unit_category_id;
+            }
+            $data['user_id']=Auth::user()->id;
+            $data['action_type']='add';
+            $data['parent_id_belongs_to'] =$type;
+            $data['area_of_interest_hierarchy']=$path_text;
+            $area_id = AreaOfInterestHistory::create($data)->id;
+        }
+        SiteActivity::create([
+            'user_id'=>Auth::user()->id,
+            'comment'=>$html
+        ]);
+        return \Response::json(['success'=>true,'area_of_interest_id'=>$area_id,'title'=>$data['title']]);
+    }
+
+    public function area_of_interest_edit(Request $request){
+        if(!$request->ajax())
+            return view('errors.404');
+
+        if (!Auth::check())
+            return \Response::json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
+
+        $validator = \Validator::make($request->all(), [
+            'title' => 'required'
+        ]);
+
+        if ($validator->fails())
+            return \Response::json(['success' => false, 'errors' => $validator->messages()]);
+
+        $selected_id = $request->input('selected_id');
+        if (empty($selected_id))
+            return \Response::json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
+
+        $title = $request->input('title');
+        if(strpos($selected_id,"AOIH") !== false)
+            $temp_id = str_replace("AOIH","",$selected_id);
+        else
+            $temp_id = $selected_id;
+        $areaofInterest_nameExist = AreaOfInterest::whereRaw('LOWER(title) = "'.$title.'" and id !='.$temp_id )->count();
+
+        if ($areaofInterest_nameExist > 0)
+            return \Response::json(['success' => false, 'errors' => ['title' => 'Area of interest already exists']]);
+
+        $type = $request->input('tbl_type');
+        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $user_id = $userIDHashID->encode(Auth::user()->id);
+
+        $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited area of interest <a href="'.url('site_admin').'">'
+            .$title.'</a>';
+
+        if(Auth::user()->role == "superadmin") {
+            $area_of_interest_id= $selected_id;
+            if(strpos($selected_id,"AOIH") !== false) {
+                $area_of_interest_id_temp = AreaOfInterestHistory::where('prefix_id', $selected_id)->first();
+                if(!empty($area_of_interest_id_temp) && count($area_of_interest_id_temp) > 0 && !empty
+                    ($area_of_interest_id_temp->area_of_interest_id))
+                    $area_of_interest_id =$area_of_interest_id_temp->area_of_interest_id;
+            }
+
+            $areaOfInterestObj= AreaOfInterest::find($area_of_interest_id );
+            if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0) {
+                $areaOfInterestObj->udpate(['title' => $title]);
+                $html.=$areaOfInterestObj->name.'</a>';
+                if(!empty($path_text)){
+                    $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                }
+
+                SiteActivity::create([
+                    'user_id'=>Auth::user()->id,
+                    'comment'=>$html
+                ]);
+                return \Response::json(['success'=>true,'area_of_interest_id'=>$areaOfInterestObj->id,'type'=>'old','title'=>$title]);
+            }
+            return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
+        }
+        else {
+            if ($type == "old") {
+                $area_of_interest_id= $selected_id;
+                if(strpos($selected_id,"AOIH") !== false) {
+                    $area_of_interest_id_temp = AreaOfInterestHistory::where('prefix_id', $selected_id)->first();
+                    if(!empty($area_of_interest_id_temp) && count($area_of_interest_id_temp) > 0)
+                        $area_of_interest_id =$area_of_interest_id_temp->area_of_interest_id;
+                    $selected_id = str_replace("AOIH","",$selected_id);
+                }
+                $path_text = $request->input('path_text');
+
+                $areaOfInterestObj= AreaOfInterest::find($area_of_interest_id );
+
+                if(count($areaOfInterestObj) > 0 && !empty($areaOfInterestObj)) {
+                    $obj = AreaOfInterestHistory::where('area_of_interest_id', $areaOfInterestObj->id)->where('user_id', Auth::user()->id)->first();
+                    if (!empty($obj) && count($obj) > 0) {
+                        $obj->delete();
                     }
-                    view()->share('areaOfInterestObj',$areaOfInterestObj);
-                    $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    view()->share('site_activity',$site_activity);
-                    view()->share('site_activity_text','Global Activity Log');
-                    view()->share('method','area_of_interest/'.$area_id_encoded .'/edit');
-                    view()->share('parent_area_of_interest',AreaOfInterest::where('id','!=',$area_id)->lists('title','id')->all());
-                    return view('admin.partials.add_area_of_interest');
+
+                    $data['parent_id_belongs_to'] = null;
+                    $data['area_of_interest_id'] = $selected_id;
+                    $data['user_id'] = Auth::user()->id;
+                    $data['title'] = $request->input('title');
+                    $data['action_type'] = 'edit';
+                    $data['area_of_interest_hierarchy']=$path_text;
+                    $area_of_interest_id = AreaOfInterestHistory::create($data)->id;
+
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'area_of_interest_id'=>$areaOfInterestObj->id,'type'=>$type,
+                        'title'=>$data['title'] ]);
+                }
+
+            } else {
+                if(strpos($selected_id,"AOIH") !== false)
+                    $temp_id = str_replace("AOIH","",$selected_id);
+                else
+                    $temp_id = $selected_id;
+                $obj = AreaOfInterestHistory::find($temp_id);
+                $path_text = $request->input('path_text');
+                if(!empty($obj) && count($obj) > 0) {
+                    $data['title']= $request->input('title');
+                    $data['area_of_interest_hierarchy']=$path_text;
+                    $obj->update($data);
+                    $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                        .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited area of interest <a href="'.url('site_admin').'">'
+                        .$data['title'].'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'area_of_interest_id'=>$obj->id,'type'=>$type,'title'=>$data['title']]);
                 }
             }
         }
-        return view('errors.404');
+        return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
+    }
+
+    public function area_of_interest_delete(Request $request){
+        if(!$request->ajax())
+            return view('errors.404');
+
+        if(Auth::check()){
+
+            $id = $request->input('id');
+            $type = $request->input('type');
+            $path_text = $request->input('path_text');
+
+            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $user_id = $userIDHashID->encode(Auth::user()->id);
+
+
+            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> deleted area of interest <a href="'.url('site_admin').'">';
+
+            if(Auth::user()->role == "superadmin"){
+                $area_of_interest_id= $id;
+                if(strpos($id,"AOIH") !== false) {
+                    $area_of_interest_id_temp = AreaOfInterestHistory::where('prefix_id', $id)->first();
+                    if(!empty($area_of_interest_id_temp) && count($area_of_interest_id_temp) > 0 && !empty
+                        ($area_of_interest_id_temp->area_of_interest_id))
+                        $area_of_interest_id =$area_of_interest_id_temp->area_of_interest_id;
+                }
+
+                $areaOfInterestObj= AreaOfInterest::find($area_of_interest_id);
+                if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0) {
+
+                    $taskObj = \DB::select('SELECT * FROM users WHERE FIND_IN_SET('.$area_of_interest_id.',area_of_interest)');
+                    if(!empty($taskObj) && count($taskObj) > 0)
+                        return \Response::json(['success'=>false,'msg'=>'You can not delete this area of interest. Currently it is used by
+                        some user.']);
+
+
+                    $html.=$areaOfInterestObj->title.'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+                    $areaOfInterestObj->delete();
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+                    return \Response::json(['success'=>true,'msg'=>'Area of interest deleted successfully']);
+                }
+                return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
+            }
+            else{
+                if($type == "new"){
+                    if(strpos($id,"AOIH") !== false)
+                        $obj = AreaOfInterestHistory::where('prefix_id', $id)->where('user_id',Auth::user()->id)->first();
+                    else
+                        $obj = AreaOfInterestHistory::where('id',$id)->where('user_id',Auth::user()->id)->first();
+
+                    if(!empty($obj) && count($obj) > 0) {
+                        $html.=$obj->title.'</a>';
+                        if(!empty($path_text)){
+                            $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                        }
+                        $obj->delete();
+                        SiteActivity::create([
+                            'user_id'=>Auth::user()->id,
+                            'comment'=>$html
+                        ]);
+                        return \Response::json(['success'=>true,'msg'=>'Area of interest deleted successfully']);
+                    }
+                    return \Response::json(['success'=>false,'msg'=>'No category found. Please try again later.']);
+                }
+                else{
+                    $taskObj = \DB::select('SELECT * FROM users WHERE FIND_IN_SET('.$id.',area_of_interest)');
+                    if(!empty($taskObj) && count($taskObj) > 0)
+                        return \Response::json(['success'=>false,'msg'=>'You can not delete this area of interest. Currently it is used by
+                         some users.']);
+
+                    $data['parent_id_belongs_to'] = null;
+                    $data['area_of_interest_id'] = $id;
+                    $data['user_id'] = Auth::user()->id;
+                    $data['action_type'] = 'delete';
+                    $data['area_of_interest_hierarchy']=$path_text;
+                    AreaOfInterestHistory::create($data);
+
+                    $jobObj = AreaOfInterest::find($id);
+                    if(count($jobObj) > 0 && !empty($jobObj))
+                        $html.=$jobObj->title.'</a>';
+                    if(!empty($path_text)){
+                        $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
+                    }
+                    SiteActivity::create([
+                        'user_id'=>Auth::user()->id,
+                        'comment'=>$html
+                    ]);
+
+                    return \Response::json(['success'=>true]);
+                }
+            }
+        }
+        return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
     }
 
     public function get_skills(Request $request){
@@ -1083,6 +1403,248 @@ class HomeController extends Controller
 
     }
 
+    public function approve_category(Request $request){
+        if($request->ajax() && Auth::check()){
+            if(Auth::user()->role=="superadmin"){
+                $prefix_id = $request->input('id');
+
+                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                if(!empty($prefix_id)){
+                    $unitCategoryHistory = UnitCategoryHistory::where('prefix_id',$prefix_id)->first();
+                    if(!empty($unitCategoryHistory) && count($unitCategoryHistory) > 0){
+
+                        $data['name']=$unitCategoryHistory->name;
+
+                        if($unitCategoryHistory->action_type == "add"){
+                            $data['parent_id']=$unitCategoryHistory->parent_id;
+                            $data['status']='approved';
+
+                            $new_category_id = UnitCategory::create($data)->id;
+
+                            // find it's child and update with job_skill's table record : $new_skill_id
+                            $children = UnitCategoryHistory::where('parent_id',$unitCategoryHistory->id)->where('parent_id_belongs_to','new')
+                                ->where('action_type','add')->get();
+                            if(!empty($children) && count($children) > 0){
+                                foreach($children as $child){
+                                    $ch = UnitCategoryHistory::find($child->id);
+                                    if(!empty($ch) && count($ch) > 0){
+                                        $ch->update(['parent_id_belongs_to'=>'old','parent_id'=>$new_category_id]);
+                                    }
+                                }
+                            }
+                            $unitCategoryHistoryTemp = $unitCategoryHistory;
+
+                            $unitCategoryHistory->delete();
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved addition of category <a href="'.url
+                                ('site_admin').'">';
+
+                            $html.=$unitCategoryHistoryTemp->name.'</a>';
+                            if(!empty($unitCategoryHistoryTemp->category_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$unitCategoryHistoryTemp->category_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
+
+                            return \Response::json(['success'=>true]);
+
+                        }
+                        elseif($unitCategoryHistory->action_type == "edit"){
+                            $unitCategoryObj = UnitCategory::where('id',$unitCategoryHistory->unit_category_id)->first();
+                            if(!empty($unitCategoryObj) && count($unitCategoryObj) > 0){
+                                $unitCategoryObj->update(['name'=>$unitCategoryHistory->name]);
+
+                                $unitCategoryHistoryTemp = $unitCategoryHistory;
+                                $unitCategoryHistory->delete();
+
+                                $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved edition of category <a href="'.url('site_admin').'">';
+
+                                $html.=$unitCategoryHistoryTemp->name.'</a>';
+                                if(!empty($unitCategoryHistoryTemp->category_hierarchy)){
+                                    $html.=' in the <a href="'.url('site_admin').'">'.$unitCategoryHistoryTemp->category_hierarchy.'</a>';
+                                }
+
+                                SiteActivity::create([
+                                    'user_id'=>Auth::user()->id,
+                                    'comment'=>$html
+                                ]);
+
+                                return \Response::json(['success'=>true]);
+                            }
+                            return \Response::json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
+
+                        }
+                        elseif($unitCategoryHistory->action_type=="delete"){
+                            $childrenExist = UnitCategory::where('parent_id',$unitCategoryHistory->unit_category_id)->get();
+                            if(!empty($childrenExist) && count($childrenExist) > 0){
+                                return \Response::json(['success'=>false,'msg'=>'You can\t delete the parent category.']);
+                            }
+                            $taskObj = \DB::select('SELECT * from units WHERE FIND_IN_SET('.$unitCategoryHistory->unit_category_id.',category_id)');
+                            if(!empty($taskObj) && count($taskObj) > 0){
+                                return \Response::json(['success'=>false,'msg'=>'This category currently assigned to unit. You can not
+                                delete this category.']);
+                            }
+                            $unitCategoryObj =UnitCategory::where('id',$unitCategoryHistory->unit_category_id)->first();
+                            if(!empty($unitCategoryObj) && count($unitCategoryObj) > 0)
+                                $unitCategoryObj->forceDelete();
+
+                            $unitCategoryHistoryTemp = $unitCategoryHistory;
+
+                            $unitCategoryHistory->delete();
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved deletion of category <a href="'.url
+                                ('site_admin').'">';
+
+                            $html.=$unitCategoryHistoryTemp->name.'</a>';
+                            if(!empty($unitCategoryHistoryTemp->category_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$unitCategoryHistoryTemp->category_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
+
+                            return \Response::json(['success'=>true]);
+                        }
+                    }
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
+
+    }
+
+    public function approve_area_of_interest(Request $request){
+        if($request->ajax() && Auth::check()){
+            if(Auth::user()->role=="superadmin"){
+                $prefix_id = $request->input('id');
+
+                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                if(!empty($prefix_id)){
+                    $areaOfInterestHistory = AreaOfInterestHistory::where('prefix_id',$prefix_id)->first();
+                    if(!empty($areaOfInterestHistory) && count($areaOfInterestHistory) > 0){
+
+                        $data['title']=$areaOfInterestHistory->title;
+
+                        if($areaOfInterestHistory->action_type == "add"){
+                            $data['parent_id']=$areaOfInterestHistory->parent_id;
+                            $data['status']='approved';
+
+                            $new_area_of_interest_id = AreaOfInterest::create($data)->id;
+
+                            // find it's child and update with job_skill's table record : $new_skill_id
+                            $children = AreaOfInterestHistory::where('parent_id',$areaOfInterestHistory->id)->where('parent_id_belongs_to','new')
+                                ->where('action_type','add')->get();
+                            if(!empty($children) && count($children) > 0){
+                                foreach($children as $child){
+                                    $ch = AreaOfInterestHistory::find($child->id);
+                                    if(!empty($ch) && count($ch) > 0){
+                                        $ch->update(['parent_id_belongs_to'=>'old','parent_id'=>$new_area_of_interest_id]);
+                                    }
+                                }
+                            }
+                            $areaOfInterestHistoryTemp = $areaOfInterestHistory;
+
+                            $areaOfInterestHistory->delete();
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved addition of area of interest <a href="'.url('site_admin').'">';
+
+                            $html.=$areaOfInterestHistoryTemp->title.'</a>';
+                            if(!empty($areaOfInterestHistoryTemp->area_of_interest_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$areaOfInterestHistoryTemp->area_of_interest_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
+
+                            return \Response::json(['success'=>true]);
+
+                        }
+                        elseif($areaOfInterestHistory->action_type == "edit"){
+                            $areaOfInterestObj = AreaOfInterest::where('id',$areaOfInterestHistory->area_of_interest)->first();
+                            if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0){
+                                $areaOfInterestObj->update(['title'=>$areaOfInterestHistory->title]);
+
+                                $areaOfInterestHistoryTemp = $areaOfInterestHistory;
+                                $areaOfInterestHistory->delete();
+
+                                $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved edition of area of interest <a href="'.url('site_admin').'">';
+
+                                $html.=$areaOfInterestHistoryTemp->title.'</a>';
+                                if(!empty($areaOfInterestHistoryTemp->area_of_interest_hierarchy)){
+                                    $html.=' in the <a href="'.url('site_admin').'">'.$areaOfInterestHistoryTemp->area_of_interest_hierarchy.'</a>';
+                                }
+
+                                SiteActivity::create([
+                                    'user_id'=>Auth::user()->id,
+                                    'comment'=>$html
+                                ]);
+
+                                return \Response::json(['success'=>true]);
+                            }
+                            return \Response::json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
+
+                        }
+                        elseif($areaOfInterestHistory->action_type=="delete"){
+                            $childrenExist = AreaOfInterest::where('parent_id',$areaOfInterestHistory->area_of_interest_id)->get();
+                            if(!empty($childrenExist) && count($childrenExist) > 0){
+                                return \Response::json(['success'=>false,'msg'=>'You can\t delete the parent area of interest.']);
+                            }
+                            $taskObj = \DB::select('SELECT * from users WHERE FIND_IN_SET('.$areaOfInterestHistory->unit_category_id.',area_of_interest)');
+                            if(!empty($taskObj) && count($taskObj) > 0){
+                                return \Response::json(['success'=>false,'msg'=>'This area of interest currently assigned to some users.
+                                 You can not delete this area of interest.']);
+                            }
+                            $areaOfInterestObj =AreaOfInterest::where('id',$areaOfInterestHistory->area_of_interest)->first();
+                            if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0)
+                                $areaOfInterestObj->forceDelete();
+
+                            $areaOfInterestHistoryTemp = $areaOfInterestHistory;
+
+                            $areaOfInterestHistory->delete();
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved deletion of area of interest <a href="'.url('site_admin').'">';
+
+                            $html.=$areaOfInterestHistoryTemp->title.'</a>';
+                            if(!empty($areaOfInterestHistoryTemp->area_of_interest_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$areaOfInterestHistoryTemp->area_of_interest_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
+
+                            return \Response::json(['success'=>true]);
+                        }
+                    }
+                }
+            }
+        }
+        return \Response::json(['success'=>false]);
+
+    }
+
     public function discard_skill_change(Request $request){
         if($request->ajax() ){
             if(Auth::check()) {
@@ -1133,6 +1695,108 @@ class HomeController extends Controller
         }
         return view('errors.404');
     }
+
+    public function discard_category_changes(Request $request){
+        if($request->ajax() ){
+            if(Auth::check()) {
+                if (Auth::user()->role == "superadmin") {
+                    $prefix_id = $request->input('id');
+
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                    if (!empty($prefix_id)) {
+                        $unitCategoryHistory = UnitCategoryHistory::where('prefix_id', $prefix_id)->first();
+                        if (!empty($unitCategoryHistory) && count($unitCategoryHistory) > 0) {
+                            $unitCategoryHistoryTemp = $unitCategoryHistory;
+
+                            $unitCategoryHistory->delete();
+
+                            $op_type = '';
+                            if($unitCategoryHistoryTemp->action_type == "add")
+                                $op_type ="addition";
+                            elseif($unitCategoryHistoryTemp->action_type == "edit")
+                                $op_type ="edition";
+                            elseif($unitCategoryHistoryTemp->action_type == "delete")
+                                $op_type ="deletion";
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> rejected '.$op_type.' of category <a href="'.url
+                                ('site_admin').'">';
+
+                            $html.=$unitCategoryHistoryTemp->name.'</a>';
+                            if(!empty($unitCategoryHistoryTemp->category_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$unitCategoryHistoryTemp->category_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
+                            return \Response::json(['success' => true]);
+                        } else
+                            return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                    } else
+                        return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                }
+            }
+            return \Response::json(['success' => false, 'msg' => 'You are not authorized person to perform this action.']);
+
+        }
+        return view('errors.404');
+    }
+
+    public function discard_area_of_interest_changes(Request $request){
+        if($request->ajax() ){
+            if(Auth::check()) {
+                if (Auth::user()->role == "superadmin") {
+                    $prefix_id = $request->input('id');
+
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                    if (!empty($prefix_id)) {
+                        $areaOfInterestHistory = AreaOfInterestHistory::where('prefix_id', $prefix_id)->first();
+                        if (!empty($areaOfInterestHistory) && count($areaOfInterestHistory) > 0) {
+                            $areaOfInterestHistoryTemp = $areaOfInterestHistory;
+
+                            $areaOfInterestHistory->delete();
+
+                            $op_type = '';
+                            if($areaOfInterestHistoryTemp->action_type == "add")
+                                $op_type ="addition";
+                            elseif($areaOfInterestHistoryTemp->action_type == "edit")
+                                $op_type ="edition";
+                            elseif($areaOfInterestHistoryTemp->action_type == "delete")
+                                $op_type ="deletion";
+
+                            $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> rejected '.$op_type.' of area of interest <a href="'.url('site_admin').'">';
+
+                            $html.=$areaOfInterestHistoryTemp->title.'</a>';
+                            if(!empty($areaOfInterestHistoryTemp->area_of_interest_hierarchy)){
+                                $html.=' in the <a href="'.url('site_admin').'">'.$areaOfInterestHistoryTemp->area_of_interest_hierarchy.'</a>';
+                            }
+
+                            SiteActivity::create([
+                                'user_id'=>Auth::user()->id,
+                                'comment'=>$html
+                            ]);
+
+                            return \Response::json(['success' => true]);
+                        } else
+                            return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                    } else
+                        return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                }
+            }
+            return \Response::json(['success' => false, 'msg' => 'You are not authorized person to perform this action.']);
+
+        }
+        return view('errors.404');
+    }
+
     public function browse_skills(Request $request){
         if($request->ajax()){
             if(Auth::check()){
@@ -1154,5 +1818,174 @@ class HomeController extends Controller
 
         }
         return view('errors.404');
+    }
+
+    public function browse_categories(Request $request){
+        if($request->ajax()){
+            if(Auth::check()){
+                $unitCategoriesObj = \DB::select('SELECT  c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.name, p.name AS
+                                              Parentcategory_name
+                                              FROM unit_category c LEFT JOIN unit_category p ON (c.parent_id = p.id) WHERE IF(c.parent_id IS
+                                              NULL, 0, c.parent_id) = 0 AND c.id <> 0 ORDER BY c.id ');
+
+                $firstBox_category = [];
+                if(count($unitCategoriesObj) > 0 && !empty($unitCategoriesObj)){
+                    foreach($unitCategoriesObj as $category){
+                        $firstBox_category[$category->id]=['type'=>'old','name'=>$category->name];
+                    }
+                }
+                view()->share('firstBox_category',$firstBox_category);
+                $html = view('admin.partials.unit_category_browse',['from'=>'unit'])->render();
+                return \Response::json(['success'=>true,'html'=>$html]);
+            }
+            return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+
+        }
+        return view('errors.404');
+    }
+
+    public function browse_area_of_interest(Request $request){
+        if($request->ajax()){
+            if(Auth::check()){
+                $areaOfInterestObj = \DB::select('SELECT  c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.title, p.title AS
+                                              Parenttitle
+                                              FROM area_of_interest c LEFT JOIN area_of_interest p ON (c.parent_id = p.id) WHERE IF(c
+                                              .parent_id IS
+                                              NULL, 0, c.parent_id) = 0 AND c.id <> 0 ORDER BY c.id ');
+
+                $firstBox_areaOfInterest = [];
+                if(count($areaOfInterestObj) > 0 && !empty($areaOfInterestObj)){
+                    foreach($areaOfInterestObj as $are_of_interest){
+                        $firstBox_areaOfInterest[$are_of_interest->id]=['type'=>'old','name'=>$are_of_interest->title];
+                    }
+                }
+                view()->share('firstBox_areaOfInterest',$firstBox_areaOfInterest);
+                $html = view('admin.partials.area_of_interest_browse',['from'=>'account'])->render();
+                return \Response::json(['success'=>true,'html'=>$html]);
+            }
+            return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+
+        }
+        return view('errors.404');
+    }
+
+    public function get_next_level_categories(Request $request){
+        $id = $request->input('id');
+        $type = $request->input('type');
+        $unit_category_history_id = null;
+        $page = $request->input('page');
+
+        $dataObj = UnitCategory::getCategoryForBrowse($page,$id,$type);
+        //dd($dataObj);
+
+        $categories =  [];
+        $deleted_ids = [];
+        if(!empty($dataObj)){
+            foreach($dataObj as $categoryObj){
+                if(in_array($categoryObj->id,$deleted_ids))
+                    continue;
+                if($categoryObj->action_type == "delete") {
+                    $deleted_ids[]=$categoryObj->id;
+                    if(isset($categories[$categoryObj->id])) {
+                        unset($categories[$categoryObj->id]);
+                    }
+                    continue;
+                }
+                if($type == "new"){
+                    $categories[$categoryObj->id] = ['type' => 'new', 'name' => $categoryObj->name];
+                }
+                else {
+                    if (!empty($categoryObj->action_type) && $categoryObj->action_type == "edit")
+                        $categories[$categoryObj->id] = ['type' => 'old', 'name' => $categoryObj->history_category_name];
+                    elseif (!empty($categoryObj->action_type) && $categoryObj->action_type == "add")
+                        $categories[$categoryObj->history_id] = ['type' => 'new', 'name' => $categoryObj->history_category_name];
+                    else
+                        $categories[$categoryObj->id] = ['type' => 'old', 'name' => $categoryObj->name];
+                }
+            }
+        }
+        return \Response::json(['success'=>true,'data'=>$categories]);
+    }
+
+    public function get_categories(Request $request){
+        $terms = $request->input('term');
+        $page = $request->input('page');
+        if(!empty($terms)){
+            if($page == 0 || empty($page))
+                $page =0;
+            $str = UnitCategory::getHierarchy($terms,$page );
+
+            if(!empty($str)){
+                foreach($str as $index=>$s){
+                    if(is_array($s['name'])){
+                        $str[$index]['name']=implode(" > ",array_reverse($s['name']));
+                    }
+
+                }
+                return \Response::json(['items'=>$str,'total_counts'=>UnitCategory::where('name','like',$terms.'%')->count()]);
+            }
+        }
+        return \Response::json([]);
+
+    }
+
+    public function get_area_of_interest(Request $request){
+        $terms = $request->input('term');
+        $page = $request->input('page');
+        if(!empty($terms)){
+            if($page == 0 || empty($page))
+                $page =0;
+            $str = AreaOfInterest::getHierarchy($terms,$page );
+
+            if(!empty($str)){
+                foreach($str as $index=>$s){
+                    if(is_array($s['name'])){
+                        $str[$index]['name']=implode(" > ",array_reverse($s['name']));
+                    }
+
+                }
+                return \Response::json(['items'=>$str,'total_counts'=>AreaOfInterest::where('title','like',$terms.'%')->count()]);
+            }
+        }
+        return \Response::json([]);
+
+    }
+
+
+    public function get_next_level_area_of_interest(Request $request){
+        $id = $request->input('id');
+        $type = $request->input('type');
+        $unit_category_history_id = null;
+        $page = $request->input('page');
+
+        $dataObj = AreaOfInterest::getAreaOFInterestForBrowse($page,$id,$type);
+
+        $areaOfInterests =  [];
+        $deleted_ids = [];
+        if(!empty($dataObj)){
+            foreach($dataObj as $areaOfInterestObj){
+                if(in_array($areaOfInterestObj->id,$deleted_ids))
+                    continue;
+                if($areaOfInterestObj->action_type == "delete") {
+                    $deleted_ids[]=$areaOfInterestObj->id;
+                    if(isset($areaOfInterests[$areaOfInterestObj->id])) {
+                        unset($areaOfInterests[$areaOfInterestObj->id]);
+                    }
+                    continue;
+                }
+                if($type == "new"){
+                    $areaOfInterests[$areaOfInterestObj->id] = ['type' => 'new', 'name' => $areaOfInterestObj->title];
+                }
+                else {
+                    if (!empty($areaOfInterestObj->action_type) && $areaOfInterestObj->action_type == "edit")
+                        $areaOfInterests[$areaOfInterestObj->id] = ['type' => 'old', 'name' => $areaOfInterestObj->history_area_of_interest_name];
+                    elseif (!empty($areaOfInterestObj->action_type) && $areaOfInterestObj->action_type == "add")
+                        $areaOfInterests[$areaOfInterestObj->history_id] = ['type' => 'new', 'name' => $areaOfInterestObj->history_area_of_interest_name];
+                    else
+                        $areaOfInterests[$areaOfInterestObj->id] = ['type' => 'old', 'name' => $areaOfInterestObj->title];
+                }
+            }
+        }
+        return \Response::json(['success'=>true,'data'=>$areaOfInterests]);
     }
 }

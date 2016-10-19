@@ -145,7 +145,7 @@
                                                 @endif
                                             </select>
 
-                                                <a href="" class="browse-skills input-group-addon" style="border-radius: 0px;
+                                            <a href="" class="browse-skills input-group-addon" style="border-radius: 0px;
                                                 color:#333;text-decoration: none;">Browse</a>
 
                                         </div>

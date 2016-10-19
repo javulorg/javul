@@ -222,16 +222,111 @@ $(document).ready(function() {
         placeholder:"Select City"
     });
 
-    $("#unit_category").select2({
-        theme: "bootstrap",
+    function formatSkills (repo) {
+        if (repo.loading) return repo.text;
+
+        var markup = "<div class='select2-result-repository clearfix'>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" + repo.name + "</div></div></div></div>";
+        return markup;
+    }
+
+    function formatSkillsSelection (repo) {
+        console.log(repo.text);
+        return repo.text;
+    }
+    var categoriesSelect2 = $("#unit_category").select2({
         allowClear: true,
-        placeholder: "Select an option"
+        width: '100%',
+        displayValue:'skill_name',
+        ajax: {
+            url: siteURL+"/unit_category/get_categories",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    term: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+
+
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+
+                return {
+                    results: data.items,
+                    pagination: {
+                        //more: (params.page * 1) < data.total_counts
+                        more:false
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 1,
+        templateResult: formatSkills, // omitted for brevity, see the source of this page
+        templateSelection: formatSkillsSelection // omitted for brevity, see the source of this page
+    });
+
+    categoriesSelect2.on("select2:unselect",function(e){
+        var id = e.params.data.id;
+        var index = selected_categories_id.indexOf(id);
+        if (index > -1) {
+            selected_categories_id.splice(index, 1);
+        }
+        return false;
     });
 
     $("#related_to").select2({
         theme: "bootstrap",
         allowClear: true,
         placeholder: "Select an option"
+    });
+
+    $(".browse-categories").on('click',function(){
+        $.ajax({
+            type:'get',
+            url:siteURL+'/unit_category/browse_categories',
+            dataType:'json',
+            success:function(resp){
+                if(resp.success){
+                    browse_category_box = bootbox.dialog({
+                        message: resp.html,
+                        title: "Browse Category",
+                        buttons: {
+                            success: {
+                                label: "Set Category",
+                                className: "btn-success okay-btn",
+                                callback: function(e) {
+                                    if($.trim(selected_categories_id) != ""){
+                                        $("#unit_category").select2('val',selected_categories_id);
+                                    }
+                                    else {
+                                        toastr['error']('Please select category', '');
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    browse_category_box.on("shown.bs.modal", function (e) {
+                        browse_category_box.find('.okay-btn').prop('disabled',true);
+                    });
+                    browse_category_box.on("hidden.bs.modal", function (e) {
+                        browse_category_box='';
+                    });
+
+                    browse_category_box.modal('show');
+                }
+            }
+        });
+        return false;
     });
 
     function format(country) {

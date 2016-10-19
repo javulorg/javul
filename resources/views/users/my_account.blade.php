@@ -2,6 +2,7 @@
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-fileinput/fileinput.min.css') !!}" rel="stylesheet" type="text/css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css" rel="stylesheet" type="text/css" />
+<link href="{!! url('assets/plugins/select2/css/select2-bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
 <style>
     .file-loading{margin: 80px auto;}
     #kv-avatar-errors-1{width: auto !important;}
@@ -32,6 +33,9 @@
         max-width: 220px;
     }
     .help-block{color:#a94442}
+    .hierarchy_parent{margin-left: 10px;}
+    .add_edit_skills div:first-child{margin-top:0px;padding-left:5px;padding-right:5px;}
+    .new_box,#skill_firstbox,#area_of_interest_firstbox{min-width: 12.5em;width:100%;}
 
 </style>
 @endsection
@@ -256,12 +260,16 @@
                                         <label class="control-label">Job Skills</label>
                                         <div class="input-icon right">
                                             <i class="fa select-error"></i>
-                                            <select class="form-control" name="job_skills[]" id="job_skills" multiple>
-                                                @foreach($job_skills as $skill_id=>$skill_name)
-                                                    <option value="{{$skill_id}}" @if(!empty($users_skills) && in_array($skill_id,$users_skills))
-                                                    selected=selected @endif>{{$skill_name}}</option>
-                                                @endforeach
-                                            </select>
+                                            <div class="input-group">
+                                                <select class="form-control" name="job_skills[]" id="task_skills" multiple>
+                                                    @foreach($job_skills as $skill_id=>$skill_name)
+                                                        <option value="{{$skill_id}}" @if(!empty($users_skills) && in_array($skill_id,$users_skills))
+                                                        selected=selected @endif>{{$skill_name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <a href="" class="browse-skills input-group-addon" style="border-radius: 0px;
+                                                color:#333;text-decoration: none;">Browse</a>
+                                            </div>
                                             <span class="help-block"></span>
                                         </div>
                                     </div>
@@ -269,12 +277,16 @@
                                         <label class="control-label">Area of Interest</label>
                                         <div class="input-icon right">
                                             <i class="fa select-error"></i>
-                                            <select class="form-control" name="area_of_interest[]" id="area_of_interest" multiple>
-                                                @foreach($area_of_interest as $area_id=>$area_name)
-                                                    <option value="{{$area_id}}" @if(!empty($users_area_of_interest) && in_array($area_id,$users_area_of_interest))
-                                                    selected=selected @endif>{{$area_name}}</option>
-                                                @endforeach
-                                            </select>
+                                            <div class="input-group">
+                                                <select class="form-control" name="area_of_interest[]" id="area_of_interest" multiple>
+                                                    @foreach($area_of_interest as $area_id=>$area_name)
+                                                        <option value="{{$area_id}}" @if(!empty($users_area_of_interest) && in_array($area_id,$users_area_of_interest))
+                                                        selected=selected @endif>{{$area_name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <a href="" class="browse-area-of-interest input-group-addon" style="border-radius: 0px;
+                                                color:#333;text-decoration: none;">Browse</a>
+                                            </div>
                                             <span class="help-block"></span>
                                         </div>
                                     </div>
@@ -431,7 +443,12 @@
         var msg_flag ='{{ $msg_flag }}';
         var msg_type ='{{ $msg_type }}';
         var msg_val ='{{ $msg_val }}';
+        var page='account';
+        var browse_skill_box='';
+        var selected_skill_id= new Array();
 
+        var browse_area_of_interest_box='';
+        var selected_area_of_interest_id= new Array();
         $(function(){
 
             $(document).off("click",".remove_profile_pic").on('click',".remove_profile_pic",function(e){
@@ -457,4 +474,6 @@
     <script type="text/javascript" src="{!! url('assets/js/users/my_account.js') !!}"></script>
     <script type="text/javascript" src="{!! url('assets/js/jquery.payment.js') !!}"></script>
     <script type="text/javascript" src="{!! url('assets/js/donations.js') !!}"></script>
+    <script src="{!! url('assets/js/admin/skill_browse.js') !!}" type="text/javascript"></script>
+    <script src="{!! url('assets/js/admin/area_of_interest_browse.js') !!}" type="text/javascript"></script>
 @endsection

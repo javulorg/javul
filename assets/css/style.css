@@ -143,7 +143,7 @@ a .fa-plus{margin-right: 10px;}
 .documents thead tr th{font-size: 13px !important;padding-left:0px; }
 .issue-table tbody tr td p,.unit-table tbody tr td p{margin:0px;}
 .featured_heading p:first-child{margin: 0px;}
-.add_edit_skills button{display: block;margin:10px;background-color:#5a5858;border-radius:2px;border:1px solid transparent;color:#fff;}
+.add_edit_area_of_interest button,.add_edit_categories button,.add_edit_skills button{display: block;margin:10px;background-color:#5a5858;border-radius:2px;border:1px solid transparent;color:#fff;}
 #skill_firstbox{height:94px;}
 .new_box{display:inline-block;width:auto;border:1px solid #828790;height:94px;overflow-y:scroll;min-width: 110px;}
 .new_box a{display: inline-block;padding-left: 5px;padding-right: 5px;color:#333;text-decoration: none;}
@@ -153,8 +153,8 @@ a.hierarchy.selected{background-color:#3399FF;color:#fff}
 a.add_skill{text-decoration: underline;color:#337ab7}
 .hierarchy_parent{ display: inline-block;margin: 0;position: relative;vertical-align: top;}
 .hierarchy_parent .buttons{margin-left:10px;margin-top:1px;}
-.add_edit_skills{display:inline-block; vertical-align: top;}
-.add_edit_skills div:first-child{margin-top: 10px;margin-left: 10px;min-height: 94px;padding-top:25px;}
+.add_edit_area_of_interest,.add_edit_categories,.add_edit_skills{display:inline-block; vertical-align: top;}
+.add_edit_area_of_interest div:first-child,.add_edit_categories div:first-child,.add_edit_skills div:first-child{margin-top: 10px;margin-left: 10px;min-height: 94px;padding-top:25px;}
 .highlight_delete{background-color: #f2dede;padding:2px 10px 2px 7px }
 /* Webkit */
 .new_skill_dynamic::-webkit-input-placeholder { color: #337ab7;opacity: 1 }

@@ -132,7 +132,7 @@ $(function(){
                                         }
 
                                         var html ='<div class="hierarchy_parent"><div class="hierarchy new_box" data-number="'+total_box+'">'+
-                                            '<a href="" class="hierarchy" data-number="'+total_box+'" data-value="'+resp.skill_id+'" data-type="new">' +
+                                            '<a href="" class="hierarchy select_skill" data-number="'+total_box+'" data-value="'+resp.skill_id+'" data-type="new">' +
                                             resp.skill_name+' &nbsp; &gt;</a>'+
                                             '</div>'+
                                             '<div class="buttons">'+
@@ -147,7 +147,7 @@ $(function(){
 
                                         if(pos != "last") {
                                             box_number = that.parents('.hierarchy_parent').find(".new_box").attr('data-number');
-                                            that.parents('.hierarchy_parent').find(".new_box").append('<a href="" class="hierarchy"' +
+                                            that.parents('.hierarchy_parent').find(".new_box").append('<a href="" class="hierarchy select_skill"' +
                                                 ' data-number="'+box_number+'" data-value="' + resp.skill_id + '" data-type="new">'+resp.skill_name+' &nbsp;&gt;</a> ');
                                                 return false;
                                         }
@@ -502,7 +502,108 @@ $(function(){
                         if(that.parents('tbody').find('tr').length > 1)
                             that.parents('tr').remove();
                         else
-                        $(".skill-approve-panel").remove();
+                        that.parents(".skill-approve-panel").remove();
+                    }
+                    else {
+                        toastr['error'](resp.msg, '') ;
+                    }
+                }
+            });
+        }
+        return false;
+    });
+
+
+
+    $(document).off("click",".mark-category-approve").on("click",".mark-category-approve",function(){
+        var id = $(this).attr('data-id');
+        var that = $(this);
+        if($.trim(id) != ""){
+            $.ajax({
+                type:'get',
+                url:siteURL+'/unit_category/approve_category',
+                data:{id:id},
+                dataType:'json',
+                success:function(resp){
+                    if(resp.success){
+                        toastr['success']('Unit category approved successfully!!!', '') ;
+                        that.parents('tr').remove();
+                    }
+                    else
+                        toastr['error'](resp.msg, '') ;
+
+                }
+            });
+        }
+        return false;
+    });
+
+    $(document).off("click",".discard-category-change").on("click",".discard-category-change",function(){
+        var id = $(this).attr('data-id');
+        var that = $(this);
+        if($.trim(id) != ""){
+            $.ajax({
+                type:'get',
+                url:siteURL+'/unit_category/discard_category_changes',
+                data:{id:id},
+                dataType:'json',
+                success:function(resp){
+                    if(resp.success){
+                        toastr['success']('Job skill changes discarded successfully!!!', '') ;
+                        if(that.parents('tbody').find('tr').length > 1)
+                            that.parents('tr').remove();
+                        else
+                            that.parents(".skill-approve-panel").remove();
+                    }
+                    else {
+                        toastr['error'](resp.msg, '') ;
+                    }
+                }
+            });
+        }
+        return false;
+    });
+
+
+    $(document).off("click",".mark-area-of-interest-approve").on("click",".mark-area-of-interest-approve",function(){
+        var id = $(this).attr('data-id');
+        var that = $(this);
+        if($.trim(id) != ""){
+            $.ajax({
+                type:'get',
+                url:siteURL+'/area_of_interest/approve_area_of_interest',
+                data:{id:id},
+                dataType:'json',
+                success:function(resp){
+                    if(resp.success){
+                        toastr['success']('Area of interest approved successfully!!!', '') ;
+                        that.parents('tr').remove();
+                    }
+                    else
+                        toastr['error'](resp.msg, '') ;
+
+                }
+            });
+        }
+        return false;
+    });
+
+    $(document).off("click",".discard-area-of-interest-change").on("click",".discard-area-of-interest-change",function(){
+        var id = $(this).attr('data-id');
+        var that = $(this);
+        if($.trim(id) != ""){
+            $.ajax({
+                type:'get',
+                url:siteURL+'/area_of_interest/discard_area_of_interest_changes',
+                data:{id:id},
+                dataType:'json',
+                success:function(resp){
+                    if(resp.success){
+                        toastr['success']('Job skill changes discarded successfully!!!', '') ;
+                        if(that.parents('tbody').find('tr').length > 1)
+                            that.parents('tr').remove();
+                        else
+                            that.parents(".skill-approve-panel").remove();
                     }
                     else {
                         toastr['error'](resp.msg, '') ;

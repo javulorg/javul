@@ -331,7 +331,20 @@ $(document).ready(function() {
                 }
             }
         })
-    })
+    });
+
+    function formatSkills (repo) {
+        if (repo.loading) return repo.text;
+
+        var markup = "<div class='select2-result-repository clearfix'>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" + repo.name + "</div></div></div></div>";
+        return markup;
+    }
+
+    function formatSkillsSelection (repo) {
+        return repo.text;
+    }
 
     $("#country").select2({
         theme: "bootstrap",
@@ -352,13 +365,97 @@ $(document).ready(function() {
         placeholder:"Select City"
     });
 
-    $("#job_skills").select2({
-        theme: "bootstrap",
-        placeholder:"Select job skills"
+    var skillSelect2 = $("#task_skills").select2({
+        allowClear: true,
+        width: '100%',
+        displayValue:'skill_name',
+        ajax: {
+            url: siteURL+"/job_skills/get_skills",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    term: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+
+                return {
+                    results: data.items,
+                    pagination: {
+                        //more: (params.page * 1) < data.total_counts
+                        more:false
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 1,
+        templateResult: formatSkills, // omitted for brevity, see the source of this page
+        templateSelection: formatSkillsSelection // omitted for brevity, see the source of this page
     });
-    $("#area_of_interest").select2({
-        theme: "bootstrap",
-        placeholder:"Select Area of Interest"
+
+    skillSelect2.on("select2:unselect",function(e){
+        var id = e.params.data.id;
+        var index = selected_skill_id.indexOf(id);
+        if (index > -1) {
+            selected_skill_id.splice(index, 1);
+        }
+        return false;
+    });
+
+    var areaOfInterestSelect2 =  $("#area_of_interest").select2({
+        allowClear: true,
+        width: '100%',
+        displayValue:'skill_name',
+        ajax: {
+            url: siteURL+"/area_of_interest/get_area_of_interest",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    term: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+
+                return {
+                    results: data.items,
+                    pagination: {
+                        //more: (params.page * 1) < data.total_counts
+                        more:false
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 1,
+        templateResult: formatSkills, // omitted for brevity, see the source of this page
+        templateSelection: formatSkillsSelection // omitted for brevity, see the source of this page
+    });
+    areaOfInterestSelect2.on("select2:unselect",function(e){
+        var id = e.params.data.id;
+        var index = selected_area_of_interest_id.indexOf(id);
+        if (index > -1) {
+            selected_area_of_interest_id.splice(index, 1);
+        }
+        return false;
     });
 });
 
