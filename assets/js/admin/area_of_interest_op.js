@@ -396,7 +396,7 @@ $(document).off("click",".add_area_of_interest").on("click",".add_area_of_intere
                                         $('#area_of_interest_firstbox option:selected').attr('data-type',resp.type);
                                         $('#area_of_interest_firstbox option:selected').attr('value',resp.area_of_interest_id);
                                         if(box_number != 1 && $(".all_levels_area_of_interest").find(".hierarchy_parent").length == 1){
-                                            that.parents(".add_edit_categories").find("div:first").html('<span>Selected:<br/>'+resp.title+'</span>');
+                                            that.parents(".add_edit_area_of_interest").find("div:first").html('<span>Selected:<br/>'+resp.title+'</span>');
                                         }
                                         return false;
                                     }

@@ -262,6 +262,7 @@ function getSiteActivity(page){
         data:{page:page},
         success:function(resp){
             $(".site_activity_list .panel-body").find(".more-btn").remove();
+            $(".site_activity_list .panel-body").find('.last-site-activity').remove();
             $(".site_activity_list .panel-body").append(resp.html);
             $(".site_activity_loading").hide();
             $(".loading_content_hide").css('opacity','1');
@@ -276,6 +277,7 @@ function getGlobalSiteActivity(page){
         data:{page:page,from_page:'global_activity'},
         success:function(resp){
             $(".site_activity_list .panel-body").find(".more-btn").remove();
+            $(".site_activity_list .panel-body").find('.last-site-activity').remove();
             $(".site_activity_list .panel-body").append(resp.html);
             $(".site_activity_loading").hide();
             $(".loading_content_hide").css('opacity','1');

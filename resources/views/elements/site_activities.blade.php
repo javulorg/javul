@@ -24,9 +24,13 @@
                                     </div>
                                     <div class="border-main child_{{$index}}">
                                         @if($index == count($site_activity) - 1)
-                                        <div class="hide-last-border"></div>
+                                            <div class="hide-last-border"></div>
+                                            <div class="last-site-activity"></div>
+                                        @elseif($index == 0)
+                                            <div></div>
+                                            <div class="first-site-activity"></div>
                                         @else
-                                        <div></div>
+                                            <div></div>
                                         @endif
                                     </div>
                                 </div>
@@ -75,6 +79,9 @@
                             </div>
                             <div class="border-main child_{{$i}}">
                                 <div></div>
+                                @if($index == count($site_activity) - 1)
+                                    <div class="last-site-activity"></div>
+                                @endif
                             </div>
                         </div>
                     </div>

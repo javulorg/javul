@@ -530,7 +530,7 @@ class HomeController extends Controller
 
             $jobSkillObj= JobSkill::find($job_skill_id );
             if(!empty($jobSkillObj) && count($jobSkillObj) > 0) {
-                $jobSkillObj->udpate(['skill_name' => $request->input('skill_name')]);
+                $jobSkillObj->update(['skill_name' => $request->input('skill_name')]);
                 $html.=$jobSkillObj->skill_name.'</a>';
                 if(!empty($path_text)){
                     $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -666,7 +666,10 @@ class HomeController extends Controller
                     }
                 }
                 else{
-                    $taskObj = \DB::select('SELECT * FROM tasks WHERE FIND_IN_SET('.$id.',skills)');
+                    $temp_id = $id;
+                    if(strpos($temp_id ,"JBSH") !== false)
+                        $temp_id = str_replace("JBSH","",$temp_id );
+                    $taskObj = \DB::select('SELECT * FROM tasks WHERE FIND_IN_SET('.$temp_id.',skills)');
                     if(!empty($taskObj) && count($taskObj) > 0)
                         return \Response::json(['success'=>false,'msg'=>'You can not delete this skill. Currently it is used in task.']);
 
@@ -738,7 +741,7 @@ class HomeController extends Controller
 
             $unitCategoryObj= UnitCategory::find($unit_category_id );
             if(!empty($unitCategoryObj) && count($unitCategoryObj) > 0) {
-                $unitCategoryObj->udpate(['name' => $request->input('category_name')]);
+                $unitCategoryObj->update(['name' => $request->input('category_name')]);
                 $html.=$unitCategoryObj->name.'</a>';
                 if(!empty($path_text)){
                     $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -884,7 +887,10 @@ class HomeController extends Controller
                     return \Response::json(['success'=>false,'msg'=>'No category found. Please try again later.']);
                 }
                 else{
-                    $taskObj = \DB::select('SELECT * FROM units WHERE FIND_IN_SET('.$id.',category_id)');
+                    $temp_id = $id;
+                    if(strpos($temp_id ,"UCH") !== false)
+                        $temp_id = str_replace("UCH","",$temp_id );
+                    $taskObj = \DB::select('SELECT * FROM units WHERE FIND_IN_SET('.$temp_id.',category_id)');
                     if(!empty($taskObj) && count($taskObj) > 0)
                         return \Response::json(['success'=>false,'msg'=>'You can not delete this category. Currently it is used in unit.']);
 
@@ -1032,7 +1038,7 @@ class HomeController extends Controller
 
             $areaOfInterestObj= AreaOfInterest::find($area_of_interest_id );
             if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0) {
-                $areaOfInterestObj->udpate(['title' => $title]);
+                $areaOfInterestObj->update(['title' => $title]);
                 $html.=$areaOfInterestObj->name.'</a>';
                 if(!empty($path_text)){
                     $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -1135,14 +1141,12 @@ class HomeController extends Controller
                 $area_of_interest_id= $id;
                 if(strpos($id,"AOIH") !== false) {
                     $area_of_interest_id_temp = AreaOfInterestHistory::where('prefix_id', $id)->first();
-                    if(!empty($area_of_interest_id_temp) && count($area_of_interest_id_temp) > 0 && !empty
-                        ($area_of_interest_id_temp->area_of_interest_id))
+                    if(!empty($area_of_interest_id_temp) && count($area_of_interest_id_temp) > 0 && !empty($area_of_interest_id_temp->area_of_interest_id))
                         $area_of_interest_id =$area_of_interest_id_temp->area_of_interest_id;
                 }
 
                 $areaOfInterestObj= AreaOfInterest::find($area_of_interest_id);
                 if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0) {
-
                     $taskObj = \DB::select('SELECT * FROM users WHERE FIND_IN_SET('.$area_of_interest_id.',area_of_interest)');
                     if(!empty($taskObj) && count($taskObj) > 0)
                         return \Response::json(['success'=>false,'msg'=>'You can not delete this area of interest. Currently it is used by
@@ -1184,7 +1188,11 @@ class HomeController extends Controller
                     return \Response::json(['success'=>false,'msg'=>'No category found. Please try again later.']);
                 }
                 else{
-                    $taskObj = \DB::select('SELECT * FROM users WHERE FIND_IN_SET('.$id.',area_of_interest)');
+                    $temp_id = $id;
+                    if(strpos($temp_id ,"AOIH") !== false)
+                        $temp_id = str_replace("AOIH","",$temp_id );
+
+                    $taskObj = \DB::select('SELECT * FROM users WHERE FIND_IN_SET('.$temp_id.',area_of_interest)');
                     if(!empty($taskObj) && count($taskObj) > 0)
                         return \Response::json(['success'=>false,'msg'=>'You can not delete this area of interest. Currently it is used by
                          some users.']);
@@ -1535,6 +1543,7 @@ class HomeController extends Controller
 
                 if(!empty($prefix_id)){
                     $areaOfInterestHistory = AreaOfInterestHistory::where('prefix_id',$prefix_id)->first();
+
                     if(!empty($areaOfInterestHistory) && count($areaOfInterestHistory) > 0){
 
                         $data['title']=$areaOfInterestHistory->title;
@@ -1578,7 +1587,7 @@ class HomeController extends Controller
 
                         }
                         elseif($areaOfInterestHistory->action_type == "edit"){
-                            $areaOfInterestObj = AreaOfInterest::where('id',$areaOfInterestHistory->area_of_interest)->first();
+                            $areaOfInterestObj = AreaOfInterest::where('id',$areaOfInterestHistory->area_of_interest_id)->first();
                             if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0){
                                 $areaOfInterestObj->update(['title'=>$areaOfInterestHistory->title]);
 
@@ -1608,12 +1617,12 @@ class HomeController extends Controller
                             if(!empty($childrenExist) && count($childrenExist) > 0){
                                 return \Response::json(['success'=>false,'msg'=>'You can\t delete the parent area of interest.']);
                             }
-                            $taskObj = \DB::select('SELECT * from users WHERE FIND_IN_SET('.$areaOfInterestHistory->unit_category_id.',area_of_interest)');
+                            $taskObj = \DB::select('SELECT * from users WHERE FIND_IN_SET('.$areaOfInterestHistory->area_of_interest_id.',area_of_interest)');
                             if(!empty($taskObj) && count($taskObj) > 0){
                                 return \Response::json(['success'=>false,'msg'=>'This area of interest currently assigned to some users.
                                  You can not delete this area of interest.']);
                             }
-                            $areaOfInterestObj =AreaOfInterest::where('id',$areaOfInterestHistory->area_of_interest)->first();
+                            $areaOfInterestObj =AreaOfInterest::where('id',$areaOfInterestHistory->area_of_interest_id)->first();
                             if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0)
                                 $areaOfInterestObj->forceDelete();
 
