@@ -7,7 +7,7 @@
     </style>
 @endsection
 @section('content')
-    <div class="container">
+    <div class="container maincontent-div" style="display:none;">
         <div class="row form-group" style="margin-bottom:15px">
             @include('elements.user-menu',['page'=>'tasks'])
         </div>
@@ -24,6 +24,7 @@
                                 <th>{!! trans('messages.unit_name') !!}</th>
                                 <th>{!! trans('messages.unit_category') !!}</th>
                                 <th>{!! trans('messages.description') !!}</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -50,6 +51,12 @@
                                         <td><div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
                                             ($unit->description)!!}"><span
                                                         class="ellipsis_text">{!!trim($unit->description)!!}</span></div></td>
+                                        <td>
+                                            <a href="#" class="remove-from-watchlist text-danger" data-id="{{$unitIDHashID->encode($unit->id)}}"
+                                               data-type="unit">
+                                                <span><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                            </a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             @else
@@ -73,6 +80,7 @@
                             <tr>
                                 <th>Objective Name</th>
                                 <th>{!! trans('messages.description') !!}</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -82,8 +90,15 @@
                                         <td><a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/'.$objective->slug) !!}">{{$objective->name}}</a></td>
 
                                         <td><div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
-                                            ($objective->description)!!}"><span
-                                                        class="ellipsis_text">{!!trim($objective->description)!!}</span></div></td>
+                                            ($objective->description)!!}">
+                                                <span class="ellipsis_text">{!!trim($objective->description)!!}</span></div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="remove-from-watchlist text-danger" data-id="{{$objectiveIDHashID->encode($objective->id)}}"
+                                               data-type="objective">
+                                                <span><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                            </a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             @else
@@ -109,6 +124,7 @@
                             <tr>
                                 <th>Task Name</th>
                                 <th>Description</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -119,6 +135,12 @@
                                         <td><div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
                                         ($task->description)!!}">
                                             <span class="ellipsis_text">{!!trim($task->description)!!}</span></div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="remove-from-watchlist text-danger" data-id="{{$taskIDHashID->encode($task->id)}}"
+                                               data-type="task">
+                                                <span><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -144,11 +166,15 @@
                                 <th>Issue Name</th>
                                 <th>Issue Category</th>
                                 <th>Description</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td colspan="4">No record(s) found.</td>
+                                    <td>
+
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -161,11 +187,17 @@
 @endsection
 @section('page-scripts')
     <script src="{!! url('assets/plugins/jquery.ThreeDots.min.js') !!}" type="text/javascript"></script>
+
     <script type="text/javascript">
+        var msg_flag='';
         $(function(){
+            $(".maincontent-div").show();
             var the_obj = $('.text_wraps').ThreeDots({
                 max_rows: 1
             });
+
         })
     </script>
+    <script src="{!! url('assets/js/users/my_watchlist.js') !!}" type="text/javascript"></script>
+    <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
 @endsection

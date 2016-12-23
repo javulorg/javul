@@ -80,8 +80,13 @@
                                         <label class="control-label upper">skills</label>
                                     </div>
                                     <div class="col-xs-8 borderLFT text-left">
-                                        <label class="control-label form-control text-label-value">SKILL1</label>
-                                        <label class="control-label form-control text-label-value">SKILL2</label>
+                                        @if(!empty($skill_names) && count($skill_names) > 0)
+                                            @foreach($skill_names as $skil)
+                                                <label class="control-label form-control text-label-value">{{$skil}}</label>
+                                            @endforeach
+                                        @else
+                                            <label class="control-label form-control text-label-value">-</label>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row borderBTM lnht30">

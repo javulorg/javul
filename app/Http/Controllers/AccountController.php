@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Alerts;
 use App\AreaOfInterest;
 use App\City;
 use App\Country;
@@ -82,6 +83,9 @@ class AccountController extends Controller
         view()->share('users_cards',$users_card);
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         view()->share('user_id_encoded',$userIDHashID->encode(Auth::user()->id));
+
+        $alertsObj = Alerts::where('user_id',Auth::user()->id)->first();
+        view()->share('alertsObj',$alertsObj);
 
         //expiry years of card
         //$expiry_years = SiteConfigs::getCardExpiryYear();

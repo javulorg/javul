@@ -61,6 +61,14 @@ class UserController extends Controller
         return view('errors.404');
     }
 
+    public function my_contribution(){
+
+        $site_activities = SiteActivity::where('user_id',Auth::user()->id)->orderBy('id','desc')->paginate(\Config::get('app.global_site_activity_page'));
+        view()->share('site_activities',$site_activities );
+
+        return view('users.my_contributions');
+    }
+
     public function my_tasks(){
         $myBids = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')->where('task_bidders.user_id',
             Auth::user()->id)->whereNull('task_bidders.status')->select(['tasks.name','tasks.slug','tasks.status as task_status',

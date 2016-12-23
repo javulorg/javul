@@ -51,6 +51,12 @@ class JobSkill extends Model
 
     }
 
+    public static function getSKillWithComma($ids){
+        $obj = self::whereIn('id',explode(",",$ids))->pluck('skill_name')->all();
+        if(!empty($obj) && count($obj) > 0)
+            return $obj;
+        return [];
+    }
     public static function getName($id){
         $obj = self::find($id);
         if(count($obj) && !empty($obj))
@@ -183,7 +189,7 @@ class JobSkill extends Model
                                       NULL AS history_parent_id,
                                       NULL AS action_type
                                     FROM
-                                      `job_skills` , job_skills_history
+                                      `job_skills`
                                     WHERE job_skills.parent_id = ' . $id . ' order by id');
         }
         return $dataObj;

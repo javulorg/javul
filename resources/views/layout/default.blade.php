@@ -99,6 +99,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <script>
             $(function(){
                 $('.left-button').each(function(index, item) {
+                    console.log(100 /$(item).find('.btn').length);
                     $(item).find('.btn').css(
                         'width', 100 / $(item).find('.btn').length + '%'
                     )

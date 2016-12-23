@@ -20,6 +20,7 @@ Route::post('/account/remove_profile_pic', 'AccountController@remove_profile_pic
 Route::any('/userprofiles/{user_id}','UserController@user_profile');
 Route::any('/userprofiles/{user_id}/{slug}','UserController@user_profile');
 Route::get('/my_tasks','UserController@my_tasks');
+Route::get('/my_contributions','UserController@my_contribution');
 Route::post('/account/withdraw','AccountController@withdraw');
 Route::post('/account/paypal_email_check','AccountController@paypal_email_check');
 Route::post('/account/update-creditcard','AccountController@update_creditcard');
@@ -32,6 +33,7 @@ Route::get('/activities','HomeController@global_activities');
 Route::get('/get_unit_site_activity_paginate','HomeController@get_unit_site_activity_paginate');
 Route::get('/get_site_activity_paginate','HomeController@get_site_activity_paginate');
 Route::get('/add_to_watchlist','HomeController@add_to_watchlist');
+Route::get('/remove_from_watchlist','HomeController@remove_from_watchlist');
 Route::get('/my_watchlist','HomeController@my_watchlist');
 Route::any('/site_admin','HomeController@site_admin');
 Route::any('/skills/get_skill_paginate','HomeController@get_skill_paginate');
@@ -94,10 +96,11 @@ Route::auth();
 
 // unit controller route
 Route::any('units/add', 'UnitsController@create');
+Route::get('unit/set_featured_unit','UnitsController@set_featured_unit');
 Route::any('units/{unitid}/edit', 'UnitsController@edit');
 Route::post('units/get_state', 'UnitsController@get_state');
 Route::post('units/get_city', 'UnitsController@get_city');
-
+Route::post('units/get_featured_unit','UnitsController@get_featured_unit');
 Route::get('units/delete_unit', 'UnitsController@delete_unit');
 Route::get('units/available_bid/{unit_id}','UnitsController@available_bids');
 Route::any('units/{unitid}/{slug}', 'UnitsController@view');
@@ -148,6 +151,8 @@ Route::get('funds/success','FundsController@success');
 Route::get('funds/cancel','FundsController@cancel');
 
 Route::get('issues/remove_issue_document','IssuesController@remove_document');
+Route::get('/issues/get_issues_paginate','IssuesController@get_issues_paginate');
+Route::any('/issues/add','IssuesController@add');
 Route::post('issues/importance','IssuesController@add_importance');
 Route::post('issues/sort_issue','IssuesController@sort_issues');
 Route::any('issues/{unit_id}/add','IssuesController@create');
@@ -158,6 +163,7 @@ Route::any('issues/{unit_id}/{objective_id}/add','IssuesController@create');
 Route::any('issues/{unit_id}/{objective_id}/{task_id}/add','IssuesController@create');
 
 
+Route::post('alerts/set_alert','AlertsController@set_alert');
 
 Route::resource('/issues','IssuesController');
 Route::resource('/objectives','ObjectivesController');
@@ -165,6 +171,7 @@ Route::resource('/tasks','TasksController');
 Route::resource('/units','UnitsController');
 Route::resource('/user','UserController');
 Route::resource('/funds','FundsController');
+Route::resource('/alerts','AlertsController');
 
 
 

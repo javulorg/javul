@@ -1,5 +1,6 @@
 @extends('layout.default')
 @section('page-css')
+    <link href="{!! url('assets/plugins/select2/css/select2-bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
     <style>
         .hierarchy{margin-left:10px;margin-top: 10px;}
     </style>
@@ -25,6 +26,37 @@
             </div>
             <div class="col-sm-8">
                 <div class="row form-group">
+                    @if(Auth::user()->role == "superadmin")
+                        <div class="col-sm-12">
+                            <div class="panel panel-grey panel-default">
+                                <div class="panel-heading">
+                                    Featured Unit
+                                </div>
+                                <div class="panel-body list-group">
+                                    <div class="list-group-item col-xs-6" style="padding: 7px 10px;border:0px;">
+                                        <label class="control-label">Search unit by name or category</label>
+                                        <select name="featured_unit" class="form-control" id="featured_unit" multiple="multiple">
+                                            @if(count($unitList) > 0 && !empty($unitList))
+                                                @foreach($unitList as $unit)
+                                                    <option value="{{$unitIDHashID->encode($unit->id)}}" @if($unit->featured_unit == 1)
+                                                    selected="selected" @endif>{{$unit->name}}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                    {{--<div class="list-group-item col-xs-6" style="padding: 7px 10px;border:0px;">
+                                        <label class="control-label">Currently Featured Unit:</label>
+                                        @if(!empty($featuredUnit))
+                                            <input type="text" name="unit" class="form-control featured_unit_admin"
+                                                   disabled value="{{$featuredUnit->name}}">
+                                        @else
+                                            <input type="text" name="unit" class="form-control featured_unit_admin" value="-" disabled>
+                                        @endif
+                                    </div>--}}
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="col-sm-12">
                         <div class="panel panel-grey panel-default">
                             <div class="panel-heading">
@@ -191,6 +223,7 @@
         var msg_flag ='{{ $msg_flag }}';
         var msg_type ='{{ $msg_type }}';
         var msg_val ='{{ $msg_val }}';
+        var _token = '{{csrf_token()}}';
         var page='site_admin';
     </script>
     <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>

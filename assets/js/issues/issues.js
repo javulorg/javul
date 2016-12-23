@@ -89,6 +89,34 @@ var FormValidation = function () {
 $(document).ready(function() {
     FormValidation.init();
 
+    if($("#unit_id").length > 0){
+        $("#unit_id").select2({
+            allowClear:true,
+            placeholder:"Select Unit"
+        }).on('select2:select',function(event){
+            var id = $(event.currentTarget).find("option:selected").val();
+            if($.trim(id) != ""){
+                $.ajax({
+                    type:'post',
+                    url:siteURL+'/tasks/get_objective',
+                    data:{unit_id:id,_token:csrf_token},
+                    dataType:'json',
+                    success:function(resp){
+                        if(resp.success){
+                            var html='<option value="">Select</option>';
+                            $.each(resp.objectives,function(index,val){
+                                html+='<option value="'+index+'">'+val+'</option>'
+                            });
+                            $("#objective_id").html(html).select2({allowClear:true,placeholder:"Select Objective"});
+                        }
+                        else {
+                            toastr['error']('Objectives not found.', '') ;
+                        }
+                    }
+                });
+            }
+        });
+    }
     $("#objective_id").select2({
         allowClear:true,
         placeholder:"Select Objective"

@@ -31,6 +31,7 @@
         </div>--}}
 
         <div class="row">
+            @if(!empty($site_activity))
             <div class="col-sm-4">
                 @include('units.partials.unit_information_left_table',['unitObj'=>$unitObj,'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
                 <div class="left" style="position: relative;margin-top: 30px;">
@@ -44,7 +45,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-8">
+            @endif
+            <div class="@if(empty($site_activity)) col-sm-12 @else col-sm-8 @endif">
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
                         @if(empty($issueObj))
@@ -56,11 +58,13 @@
                     <div class="panel-body list-group">
                         <div class="list-group-item">
                             <form role="form" method="post" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data"
-                                  action="{!! url('issues/'.\Request::segment(2).'/'.$action_method) !!}">
+                                  @if(!empty($site_activity)) action="{!! url('issues/'.\Request::segment(2).'/'.$action_method) !!}"
+                                  @else action="{!! url('issues/'.$action_method) !!}" @endif>
                                 {!! csrf_field() !!}
                                 <div class="row">
-
+                                    @if(!empty($site_activity))
                                     <input type="hidden" name="unit" value="{{$unitIDHashID->encode($unitObj->id)}}"/>
+                                    @endif
                                     <div class="col-sm-4 form-group {{ $errors->has('issue_title') ? ' has-error' : '' }}">
                                         <label class="control-label">Issue Title</label>
                                         <div class="input-icon right">
@@ -75,7 +79,25 @@
                                             @endif
                                         </div>
                                     </div>
-
+                                    @if(empty($site_activity))
+                                        <div class="col-sm-4 form-group">
+                                            <label class="control-label">Select Unit</label>
+                                            <div class="input-icon right">
+                                                <i class="fa select-error"></i>
+                                                <select name="unit_id" id="unit_id" class="form-control">
+                                                    <option value="">Select</option>
+                                                    @if(count($unitObj) > 0)
+                                                        @foreach($unitObj as $unit)
+                                                            <option value="{{$unitIDHashID->encode($unit->id)}}"
+                                                                    @if(!empty($issueObj) && $unit->id == $issueObj->unit_id)
+                                                                    selected=selected
+                                                                    @endif>{{$unit->name}}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+                                    @endif
                                     <div class="col-sm-4 form-group">
                                         <label class="control-label">Select Objective</label>
                                         <div class="input-icon right">
@@ -204,6 +226,7 @@
         var can_res = '{{$user_can_resolve_issue}}';
         var can_chnge_status = '{{$user_can_change_status}}';
         var issue_status = '{{(!empty($issueObj)?$issueObj->status:false)}}';
+        var csrf_token = '{{csrf_token()}}';
         toastr.options = {
             "closeButton": true,
             "debug": false,

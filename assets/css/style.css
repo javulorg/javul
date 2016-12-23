@@ -36,6 +36,7 @@ body, h1, h2, h3, h4, h5, h6{
 .btn-group>.user-menu-right:first-child{border-left: 1px solid #cecece;border-radius: 0px;}
 .mrgnrt30{margin-right: 30px;}
 .user-menu-left span,.user-menu-right span{padding-left:5px; }
+.left-button .user-menu-left{font-size: 12px;padding-top:9px;}
 .user-menu-right-icons{color:#b93c89 !important;}
 .time_digit,.time_text{display: inline-block;}
 .time_digit{position: relative;top:-10px;}
@@ -165,7 +166,7 @@ a.add_skill{text-decoration: underline;color:#337ab7}
 /* IE10+ */
 .new_skill_dynamic:-ms-input-placeholder { color: #337ab7; opacity: 1}
 .top-most-icons{list-style: none;margin-top:5px;width:100%;text-align: right;}
-.top-most-icons li{display: inline-block;line-height: 30px;}
+.top-most-icons li{display: inline-block;line-height: 30px;font-size: 13px}
 .top-most-icons li a:hover{text-decoration: none;}
 .top-most-icons li a{padding: 0px;}
 .nav > li > a:focus,.nav > li > a:hover{background-color: transparent;}
@@ -173,6 +174,7 @@ a.add_skill{text-decoration: underline;color:#337ab7}
 .browse-skills:hover,.browse-skills:focus{text-decoration: none;}
 .last-site-activity{top:-70px !important;;border:1px solid #fff !important;height:60px !important;}
 .first-site-activity{border:1px solid #fff !important;top:-105px !important;height:40px !important;}
+.featured_unit_admin{border:none !important;background-color:transparent !important;cursor:default !important;}
 @media (max-width: 1200px) {
     .user-menu-right.mrgnrt30{margin-right: 0px;}
     .user-menu-left,.user-menu-right{font-size: 12px;}
@@ -274,9 +276,14 @@ a.add_skill{text-decoration: underline;color:#337ab7}
 @media (max-width: 415px){
     .border-main.child_0{top:20px;}
 }
+@media (max-width: 391px){
+    .left-button .user-menu-left{font-size: 11px;padding-top:9px;}
+}
+
 @media (max-width: 325px) {
     .widthMenu{width: 15%;}
 }
+.has-error .sweetcaptcha{border:1px solid #a94442;}
 .panel-heading h4{font-weight: 500;font-size: 15px;}
 .panel-body.list-group,.panel-body.table-inner{padding:0px;}
 .panel-body .table{margin-bottom:0px;}

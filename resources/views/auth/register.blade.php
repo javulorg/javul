@@ -105,7 +105,16 @@
                         @endif
                     </div>
                 </div>
-
+                <div class="row form-group{{ $errors->has('captcha') ? ' has-error' : '' }}">
+                    <div class="col-sm-7">
+                    {!! $sweetcaptcha->get_html() !!}
+                    </div>
+                    <div class="col-sm-5">
+                        @if( $errors->has('captcha'))
+                            <span style="color:#a94442">{{ $errors->first('captcha')}}</span>
+                        @endif
+                    </div>
+                </div>
                 <div class="row form-group">
                     <div class="col-sm-12">
                         <button class="btn btn-lg orange-bg btn-block" type="submit">

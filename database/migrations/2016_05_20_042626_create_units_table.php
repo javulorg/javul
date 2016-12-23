@@ -29,6 +29,7 @@ class CreateUnitsTable extends Migration
             $table->string('status')->comment="active or disabled";
             $table->integer('parent_id')->nullable();
             $table->integer('modified_by')->nullable();
+            $table->tinyInteger('featured_unit')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -41,7 +41,7 @@
                     </li>
                     <li class="top_menu_separator">&nbsp;|&nbsp;</li>
                     <li class="top_menu_li">
-                        <a href="#">
+                        <a href="{!! url('my_contributions') !!}">
                             My Contributions <i class="fa fa-file-text" aria-hidden="true"></i>
                         </a>
                     </li>
@@ -51,6 +51,7 @@
                             My Tasks <i class="fa fa-tasks" aria-hidden="true"></i>
                         </a>
                     </li>
+
                     <li class="top_menu_separator">&nbsp;|&nbsp;</li>
                     <li class="top_menu_li">
                         <a href="#">
@@ -60,7 +61,7 @@
                     <li class="top_menu_separator middle_sep">&nbsp;|&nbsp;</li>
                     <li class="middle_li_block" style="display: none;"></li>
                     <li class="top_menu_li">
-                        <a href="{!! url('account') !!}">
+                        <a href="{!! url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower(Auth::user()->first_name).'_'.strtolower(Auth::user()->last_name)) !!}">
                             My Profile <i class="fa fa-user" aria-hidden="true"></i>
                         </a>
                     </li>
@@ -72,7 +73,7 @@
                     </li>
                     <li class="top_menu_separator">&nbsp;|&nbsp;</li>
                     <li class="top_menu_li">
-                        <a href="#">
+                        <a href="{!! url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower(Auth::user()->first_name).'_'.strtolower(Auth::user()->last_name)) !!}">
                             Logged in as: {{$authUserObj->first_name.' '.$authUserObj->last_name}}
                         </a>
                     </li>

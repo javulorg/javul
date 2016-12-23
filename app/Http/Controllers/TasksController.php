@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ActivityPoint;
+use App\Alerts;
 use App\Fund;
 use App\JobSkill;
 use App\Library\Helpers;
@@ -28,7 +29,7 @@ use Illuminate\Support\Facades\Input;
 class TasksController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate']]);
+        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists']]);
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
         view()->share('site_activity_text','Unit Activity Log');
     }
@@ -239,6 +240,7 @@ class TasksController extends Controller
                 'status'=>'editable'
             ])->id;
 
+
             $task_id_decoded= $task_id;
             $taskIDHashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->encode($task_id);
@@ -329,6 +331,20 @@ class TasksController extends Controller
             ]);
 
             // TODO: create forum entry when task is created : in PDF page no - 10
+
+            // mail send if alert is on
+            $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+            if(!empty($alertObj) && $alertObj->task_management == 1) {
+                $toEmail = Auth::user()->email;
+                $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
+                $subject = 'Task created successfully. ';
+
+                \Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
+                    $message->to($toEmail, $toName)->subject($subject);
+                    $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                });
+            }
+
 
             // After Created Unit send mail to site admin
             $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
@@ -567,6 +583,20 @@ class TasksController extends Controller
                         updated task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
                     ]);
 
+                    // mail send
+                    $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                    if(!empty($alertObj) && $alertObj->task_management == 1) {
+                        $toEmail = Auth::user()->email;
+                        $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
+                        $subject = 'Task updated successfully. ';
+
+                        \Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
+                            $message->to($toEmail, $toName)->subject($subject);
+                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        });
+                    }
+
+
                     // After Created Unit send mail to site admin
                     $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
                     $unitCreator = User::find(Auth::user()->id);
@@ -649,6 +679,7 @@ class TasksController extends Controller
      * @return mixed
      */
     public function remove_task_documents(Request $request){
+        
         $task_id = $request->input('task_id');
         $id = $request->input('id');
         $fromEdit = $request->input('fromEdit');
@@ -810,7 +841,9 @@ class TasksController extends Controller
 
                     view()->share('site_activity',$site_activity);
                     view()->share('unit_activity_id',$taskObj->unit_id);
+                    $skillNames = JobSkill::getSKillWithComma($taskObj->skills);
 
+                    view()->share('skill_names',$skillNames);
                     return view('tasks.view');
                 }
             }
@@ -1756,6 +1789,7 @@ class TasksController extends Controller
     public function lists(Request $request)
     {
         $unit_id = $request->segment(2);
+        $unit_id_encoded = $unit_id;
         if(!empty($unit_id)){
             $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
@@ -1767,6 +1801,7 @@ class TasksController extends Controller
                 view()->share('taskObj',$taskObj);
                 view()->share('site_activity',$site_activity);
                 view()->share('unit_activity_id',$unit_id);
+                view()->share('unit_id_encoded',$unit_id_encoded);
                 return view('tasks.partials.list');
             }
         }

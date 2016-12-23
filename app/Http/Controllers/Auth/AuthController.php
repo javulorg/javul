@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Objective;
+use App\sweetcaptcha;
 use App\Task;
 use App\Unit;
 use App\User;
@@ -34,12 +35,20 @@ class AuthController extends Controller
      */
     protected $redirectTo = '/';
 
+    public $sweetcaptcha;
+
     /**
      * Create a new authentication controller instance.
      */
     public function __construct()
     {
         view()->share('user_login',\Auth::check());
+        $this->sweetcaptcha =new  sweetcaptcha(
+            env('SWEETCAPTCHA_APP_ID'),
+            env('SWEETCAPTCHA_KEY'),
+            env('SWEETCAPTCHA_SECRET'),
+            public_path('sweetcaptcha.php')
+        );
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
     }
 
@@ -51,15 +60,29 @@ class AuthController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $validator = Validator::make($data, [
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:6|confirmed'
             /*'country'=>'required',
             'state'=>'required',
             'city'=>'required',*/
         ]);
+
+        $validator->after(function($validator) use ($data) {
+            if(!isset($data['sckey']) || !isset($data['scvalue'])){
+                $validator->errors()->add('captcha', 'Captcha required.');
+            }
+
+            if (isset($data['sckey']) and isset($data['scvalue']) and
+                $this->sweetcaptcha->check(array('sckey' => $data['sckey'], 'scvalue' => $data['scvalue'])) !== "true")
+            {
+                $validator->errors()->add('captcha', 'Captcha is wrong. Please try again.');
+            }
+        });
+
+        return $validator;
     }
 
     /**
@@ -70,7 +93,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        $userData=User::create([
+        /*$userData=User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
@@ -79,13 +102,18 @@ class AuthController extends Controller
             'city_id' => 43070,
             'password' => bcrypt($data['password']),
             'role'=>'user'
-        ]);
+        ]);*/
+
+        $userData= User::find(1);
 
         $toEmail = $data['email'];
         $toName= $data['first_name'].' '.$data['last_name'];
         $subject="Welcome To Javul.org";
 
-        \Mail::send('emails.registration', ['userObj'=> $userData ], function($message) use ($toEmail,$toName,$subject)
+        $email_token = User::getEmailToken();
+
+
+        \Mail::send('emails.registration', ['userObj'=> $userData,'token'=>$email_token ], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
@@ -93,6 +121,12 @@ class AuthController extends Controller
 
         return $userData;
 
+    }
+
+    public function showRegistrationForm()
+    {
+        view()->share('sweetcaptcha',$this->sweetcaptcha);
+        return view('auth.register');
     }
 
     /**

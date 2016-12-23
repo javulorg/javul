@@ -614,5 +614,71 @@ $(function(){
         return false;
     });
 
+
+    // for featured unit
+    function formatSkills (repo) {
+        if (repo.loading) return repo.text;
+
+        var markup = "<div class='select2-result-repository clearfix'>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" + repo.text + "</div></div></div></div>";
+
+        /*if (repo.description) {
+         markup += "<div class='select2-result-repository__description'>" + repo.description + "</div>";
+         }
+
+         markup += "<div class='select2-result-repository__statistics'>" +
+         "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> " + repo.forks_count + " Forks</div>" +
+         "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> " + repo.stargazers_count + " Stars</div>" +
+         "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> " + repo.watchers_count + " Watchers</div>" +
+         "</div>" +
+         "</div></div>";*/
+        return markup;
+    }
+
+    function formatSkillsSelection (repo) {
+        return repo.text;
+    }
+
+
+    var featured_unit = $("#featured_unit").select2({
+        width: '100%',
+        maximumSelectionLength: 1,
+
+    }).on('select2:select',function(event){
+        var id = $(event.currentTarget).find("option:selected").val();
+        if($.trim(id) != ""){
+            $.ajax({
+                type:'get',
+                url:siteURL+'/unit/set_featured_unit',
+                data:{id:id,type:'set'},
+                dataType:'json',
+                success:function(resp){
+                    if(resp.success){
+                        toastr['success']('Featured unit set successfully!!!', '') ;
+                    }
+                    else {
+                        toastr['error'](resp.msg, '') ;
+                    }
+                }
+            });
+        }
+    }).on('select2:unselect',function(event){
+        $.ajax({
+            type:'get',
+            url:siteURL+'/unit/set_featured_unit',
+            data:{type:'delete'},
+            dataType:'json',
+            success:function(resp){
+                if(resp.success){
+                    toastr['success']('Featured unit removed successfully!!!', '') ;
+                }
+                else {
+                    toastr['error'](resp.msg, '') ;
+                }
+            }
+        });
+    });
+
 });
 

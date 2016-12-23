@@ -18,7 +18,7 @@ use Hashids\Hashids;
 class ObjectivesController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view','get_objectives_paginate']]);
+        $this->middleware('auth',['except'=>['index','view','get_objectives_paginate','lists']]);
         view()->share('site_activity_text','Unit Activity Log');
     }
 

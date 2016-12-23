@@ -38,8 +38,12 @@ $(function(){
         var from_page = $(this).data('from_page');
         var page = $(this).data('url').split('page=')[1];
         $(this).parents(".loading_content_hide").css('opacity','0.5');
-        if($.trim(from_page) != "" && from_page == "global")
-            getGlobalSiteActivity(page);
+        if($.trim(from_page) != "" && (from_page == "global" || from_page == "user")) {
+            if(from_page == "global")
+                from_page = "global_activity";
+
+            getGlobalSiteActivity(page, from_page);
+        }
         else
             getSiteActivity(page);
         return false;
@@ -52,6 +56,16 @@ $(function(){
         var page = $(this).data('url').split('page=')[1];
         $(this).parents(".loading_content_hide").css('opacity','0.5');
         getUnits(page);
+        return false;
+    });
+
+    //load more units
+    $(document).off("click",".more-issues").on('click','.more-issues',function(e){
+        e.preventDefault();
+        $(".unit_loading").show();
+        var page = $(this).data('url').split('page=')[1];
+        $(this).parents(".loading_content_hide").css('opacity','0.5');
+        getIssues(page);
         return false;
     });
 
@@ -270,11 +284,11 @@ function getSiteActivity(page){
     });
 }
 
-function getGlobalSiteActivity(page){
+function getGlobalSiteActivity(page,from_page){
     $.ajax({
         type:'get',
         url:siteURL+'/get_site_activity_paginate',
-        data:{page:page,from_page:'global_activity'},
+        data:{page:page,from_page:from_page},
         success:function(resp){
             $(".site_activity_list .panel-body").find(".more-btn").remove();
             $(".site_activity_list .panel-body").find('.last-site-activity').remove();
@@ -289,6 +303,20 @@ function getUnits(page){
     $.ajax({
         type:'get',
         url:siteURL+'/units/get_units_paginate',
+        data:{page:page},
+        success:function(resp){
+            $(".unit-table tbody tr:last-child").remove();
+            $(".unit-table tbody").append(resp.html);
+            $(".unit_loading").hide();
+            $(".loading_content_hide").css('opacity','1');
+        }
+    });
+}
+
+function getIssues(page){
+    $.ajax({
+        type:'get',
+        url:siteURL+'/issues/get_issues_paginate',
         data:{page:page},
         success:function(resp){
             $(".unit-table tbody tr:last-child").remove();

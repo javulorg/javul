@@ -140,7 +140,7 @@ class UnitCategory extends Model
                                       NULL AS history_parent_id,
                                       NULL AS action_type
                                     FROM
-                                      `unit_category` , unit_category_history
+                                      `unit_category`
                                     WHERE unit_category.parent_id = ' . $id . ' order by id');
         }
         return $dataObj;

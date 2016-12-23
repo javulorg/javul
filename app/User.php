@@ -317,4 +317,14 @@ class User extends Authenticatable
             return ['success'=>false,'error_msg'=>$paymentResponse['error']];
 
     }
+    public static function getEmailToken(){
+        $flag = false;
+        $token = md5(openssl_random_pseudo_bytes(32));
+        do{
+            $totalEmail = User::where('email_token','=',$token)->count();
+            if($totalEmail == 0)
+                $flag = true;
+        }while(!$flag);
+        return $token;
+    }
 }

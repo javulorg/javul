@@ -199,6 +199,7 @@ class UnitsController extends Controller
     public function edit($unit_id,Request $request){
         if(!empty($unit_id))
         {
+            $unitIDEncoded = $unit_id;
             $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
@@ -311,7 +312,7 @@ class UnitsController extends Controller
                     });
 
                     $request->session()->flash('msg_val', "Unit updated successfully!!!");
-                    return redirect('units');
+                    return redirect('units/'.$unitIDEncoded.'/'.$slug);
 
                 }
                 elseif(!empty($units)){
@@ -507,6 +508,57 @@ class UnitsController extends Controller
         $html = view('units.partials.more_units')->render();
         return \Response::json(['success'=>true,'html'=>$html]);
 
+    }
+
+    public function get_featured_unit(Request $request){
+        $terms = $request->input('term');
+        if(!empty($terms)){
+            $obj = Unit::where('name','like',$terms.'%')->get();
+            $names = [];
+            if(!empty($obj) && count($obj) > 0){
+                foreach($obj as $unit){
+                    $names[]=['id'=>$unit->id,'text'=>$unit->name];
+                }
+
+            }
+            return \Response::json(['items'=>$names,'total_counts'=>$obj = Unit::where('name','like',$terms.'%')->get()]);
+        }
+        return \Response::json([]);
+
+    }
+
+    public function set_featured_unit(Request $request){
+        $id = $request->input('id');
+        $type = $request->input('type');
+        if(!empty($id) && $type == "set"){
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($id);
+            if(!empty($unit_id)){
+                $unit_id = $unit_id[0];
+                $unitObj = Unit::find($unit_id);
+                if(!empty($unitObj)){
+                    $featuredUnits = Unit::where('featured_unit',1)->get();
+                    if(!empty($featuredUnits) && count($featuredUnits) > 0){
+                        foreach($featuredUnits as $fUnit){
+                            Unit::find($fUnit->id)->update(['featured_unit'=>0]);
+                        }
+                    }
+                    $unitObj->update(['featured_unit'=>1]);
+                    return \Response::json(['success'=>true]);
+                }
+            }
+        }
+        if($type == "delete")
+        {
+            $featuredUnits = Unit::where('featured_unit',1)->get();
+            if(!empty($featuredUnits) && count($featuredUnits) > 0){
+                foreach($featuredUnits as $fUnit){
+                    Unit::find($fUnit->id)->update(['featured_unit'=>0]);
+                }
+            }
+            return \Response::json(['success'=>true]);
+        }
+        return \Response::json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
     }
     public function show()
     {

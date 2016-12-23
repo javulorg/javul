@@ -24,25 +24,35 @@
                                     <i class="fa fa-star"></i>
                                 </div>
                                 <h4>FEATURED UNIT</h4>
-                                @if(!empty($authUserObj))
-                                    <div class="pull-right" style="padding:10px;">
-                                        <a href="{!! url('my_tasks') !!}" class="btn btn-xs pull-right">
-                                            <span class="glyphicon glyphicon-tasks"></span> My Tasks
-                                        </a>
-                                    </div>
-                                @endif
                             </div>
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-sm-8 featured_heading">
-                                        <h4 class="colorLightGreen">Information Technology</h4>
+                                        <h4 class="colorLightGreen">
+                                            @if(!empty($featured_unit) && count($featured_unit) > 0)
+                                                {{$featured_unit->name }}
+                                            @else
+                                                No featured unit.
+                                            @endif
+                                        </h4>
                                     </div>
                                     <div class="col-sm-4 featured_heading text-right colorLightBlue">
-                                        <i class="fa fa-home"></i> UNIT HOME PAGE
+                                        @if(!empty($featured_unit) && count($featured_unit) > 0)
+                                            <i class="fa fa-home"></i>
+                                            <a href="{!! url('units/'.$unitIDHashID->encode($featured_unit->id).'/'.$featured_unit->slug) !!}">
+                                                UNIT HOME PAGE
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                                 <hr style="margin-top: 0px;">
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                                <p>
+                                    @if(!empty($featured_unit) && count($featured_unit) > 0)
+                                        {!!  $featured_unit->description !!}
+                                    @else
+                                        No Description available.
+                                    @endif
+                                </p>
                             </div>
                         </div>
                         @if(count($recentUnits) > 5)

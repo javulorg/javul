@@ -15,6 +15,7 @@ use App\Unit;
 use App\UnitCategory;
 use App\UnitCategoryHistory;
 use App\User;
+use App\Alerts;
 use App\Watchlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,9 @@ class HomeController extends Controller
         view()->share('recentUsers',$recentUsers);
         view()->share('site_activity_text','Global Activity Log');
 
+        $featured_unit = Unit::where('featured_unit',1)->first();
+        view()->share('featured_unit',$featured_unit);
+
         $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
 
@@ -93,14 +97,24 @@ class HomeController extends Controller
 
     public function get_site_activity_paginate(Request $request){
         $page_limit = \Config::get('app.site_activity_page_limit');
+        $site_activity_text= "Global Activity Log";
         if($request->has('from_page')){
             $page = $request->input('from_page');
-            if($page == "global_activity")
+            if($page == "global_activity") {
                 $page_limit = \Config::get('app.global_site_activity_page');
+                $site_activity = SiteActivity::orderBy('id','desc')->paginate($page_limit);
+            }else{
+                $page_limit = \Config::get('app.global_site_activity_page');
+                $site_activity = SiteActivity::where('user_id',Auth::user()->id)->orderBy('id','desc')->paginate($page_limit);
+                $site_activity_text= "Unit Activity Log";
+            }
         }
-        $site_activity = SiteActivity::orderBy('id','desc')->paginate($page_limit);
+        else{
+            $site_activity = SiteActivity::orderBy('id','desc')->paginate($page_limit);
+        }
+
         view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','Global Activity Log');
+        view()->share('site_activity_text',$site_activity_text);
         view()->share('ajax',true);
         $html = view('elements.site_activities')->render();
         return \Response::json(['success'=>true,'html'=>$html]);
@@ -149,12 +163,26 @@ class HomeController extends Controller
                         break;
                 }
                 if(!empty($obj)){
-                    $exist = Watchlist::where(strtolower($type).'_id',$id)->get();
+                    $exist = Watchlist::where(strtolower($type).'_id',$id)->where('user_id',Auth::user()->id)->get();
                     if(empty($exist) || count($exist) == 0 ){
-                        Watchlist::create([
+                        /*Watchlist::create([
                             'user_id'=>Auth::user()->id,
                             strtolower($type).'_id'=>$id
-                        ]);
+                        ]);*/
+
+                        // send mail if email notification is on as per doc point : 8
+                        $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                        if(!empty($alertObj) && $alertObj->watched_items == 1) {
+                            $toEmail = Auth::user()->email;
+                            $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
+                            $subject = 'Added '.$type.':'.$obj->title.' to watchlist.';
+
+                            \Mail::send('emails.watched_item', ['userObj' => Auth::user(), 'itemObj' => $obj,'type'=>'added'], function($message)
+                            use ($toEmail, $toName, $subject) {
+                                $message->to($toEmail, $toName)->subject($subject);
+                                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                            });
+                        }
                         return \Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
                     }
                     else
@@ -195,10 +223,18 @@ class HomeController extends Controller
     public function site_admin(Request $request){
         if(!Auth::check())
             return \Redirect::to(url(''));
-
+        $featuredUnit = [];
+        $unitList = [];
         $where = '';
         if(Auth::user()->role != "superadmin")
             $where=" AND user_id=".Auth::user()->id;
+        else {
+            //$featuredUnit = Unit::where('featured_unit', 1)->first();
+            $unitList  = Unit::all();
+        }
+
+        view()->share('unitList',$unitList);
+        view()->share('featuredUnit',$featuredUnit);
 
 
         //get skills
@@ -1996,5 +2032,70 @@ class HomeController extends Controller
             }
         }
         return \Response::json(['success'=>true,'data'=>$areaOfInterests]);
+    }
+
+    public function remove_from_watchlist(Request $request){
+        $id = $request->input('id');
+        $type = $request->input('type');
+        $flag = true;
+        $obj = [];
+        if(!empty($id) && !empty($type)){
+            switch($type){
+                case 'unit':
+                    $hashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                    $id = $hashID->decode($id);
+                    if(!empty($id)) {
+                        $id = $id[0];
+                        $obj = Watchlist::where('user_id',Auth::user()->id)->where('unit_id',$id)->first();
+                    }
+                    break;
+                case'objective':
+                    $hashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                    $id = $hashID->decode($id);
+                    if(!empty($id)) {
+                        $id = $id[0];
+                        $obj = Watchlist::where('user_id',Auth::user()->id)->where('objective_id',$id)->first();
+                    }
+                    break;
+                case 'task':
+                    $hashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                    $id = $hashID->decode($id);
+                    if(!empty($id)) {
+                        $id = $id[0];
+                        $obj = Watchlist::where('user_id',Auth::user()->id)->where('task_id',$id)->first();
+                    }
+                    break;
+                case 'issue':
+                    $hashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+                    $id = $hashID->decode($id);
+                    if(!empty($id)) {
+                        $id = $id[0];
+                        $obj = Watchlist::where('user_id',Auth::user()->id)->where('issue_id',$id)->first();
+                    }
+                    break;
+                default:
+                    $flag = false;
+                    break;
+            }
+            if($flag && !empty($obj)){
+                // send mail if email notification is on as per doc point : 8
+                $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                if(!empty($alertObj) && $alertObj->watched_items == 1) {
+                    $toEmail = Auth::user()->email;
+                    $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
+                    $subject = 'Removed '.$type.':'.$obj->title.' from watchlist.';
+
+                    \Mail::send('emails.watched_item', ['userObj' => Auth::user(), 'itemObj' => $obj,'type'=>'removed'], function($message)
+                    use ($toEmail, $toName, $subject) {
+                        $message->to($toEmail, $toName)->subject($subject);
+                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    });
+                }
+                $obj->delete();
+                return \Response::json(['success'=>true]);
+            }
+        }
+        return \Response::json(['success'=>false]);
+
     }
 }

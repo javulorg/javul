@@ -89,6 +89,16 @@
         <div class="list-group-item">
             <div class="row">
                 <div class="col-xs-4 borderRT paddingTB7">
+                    <label class="control-label upper">UNIT CREDIBILITY</label>
+                </div>
+                <div class="col-xs-8 paddingTB7">
+                    <label class="control-label colorLightBlue upper">{{\App\City::getName($unitObj->city_id)}}</label>
+                </div>
+            </div>
+        </div>
+        <div class="list-group-item">
+            <div class="row">
+                <div class="col-xs-4 borderRT paddingTB7">
                     <label class="control-label upper" style="width: 100%;">
                         <span class="fund_icon">FUND</span>
                         <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>

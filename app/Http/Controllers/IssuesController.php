@@ -19,10 +19,38 @@ use App\Http\Requests;
 class IssuesController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index']]);
+        $this->middleware('auth',['except'=>['index','lists','view']]);
     }
 
+    public function index(Request $request){
+        $msg_flag = false;
+        $msg_val = '';
+        $msg_type = '';
+        if($request->session()->has('msg_val')){
+            $msg_val =  $request->session()->get('msg_val');
+            $request->session()->forget('msg_val');
+            $msg_flag = true;
+            $msg_type = "success";
+        }
+        view()->share('msg_flag',$msg_flag);
+        view()->share('msg_val',$msg_val);
+        view()->share('msg_type',$msg_type);
 
+        // get all issues for listing
+        $issues = Issue::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+        view()->share('issues',$issues );
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text','Global Activity Log');
+        return view('issues.issues');
+    }
+    public function get_issues_paginate(Request $request){
+        $page_limit = \Config::get('app.page_limit');
+        $issues = Issue::orderBy('id','desc')->paginate($page_limit);
+        view()->share('issues',$issues);
+        $html = view('issues.partials.more_issues')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
+    }
     /**
      * Create issue page
      * @param Request $request
@@ -164,6 +192,97 @@ class IssuesController extends Controller
         }*/
 
 
+    }
+
+    /**
+     * Create issue page
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function add(Request $request){
+
+        if($request->isMethod('post')) {
+            $validator = \Validator::make($request->all(), [
+                'title' => 'required',
+                'unit_id'=>'required',
+                'objective_id'=>'required',
+                'task_id'=>'required',
+                'description' => 'required'
+            ]);
+
+            if ($validator->fails())
+                return redirect()->back()->withErrors($validator)->withInput();
+
+            $unit_id = $request->input('unit_id');
+            $objective_id = $request->input('objective_id');
+            $task_id = $request->input('task_id');
+
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(empty($unit_id))
+                return redirect()->back()->withErrors(['errors'=>['Unit not found.']])->withInput();
+            $unit_id = $unit_id[0];
+
+            // get selected objective_id
+            $selected_objective_id = Issue::getSelectedObjective($request);
+
+            //get all selected task_id
+            $selected_task_id_arr= Issue::getSelectedTask($request);
+
+            $issue_id = Issue::create([
+                'title'=>$request->input('title'),
+                'description'=>$request->input('description'),
+                'user_id'=>Auth::user()->id,
+                'status'=>'unverified',
+                'unit_id'=>$unit_id,
+                'objective_id'=>$selected_objective_id,
+                'task_id'=>$selected_task_id_arr
+            ])->id;
+
+            // upload issue documents
+            IssueDocuments::uploadDocuments($issue_id,$request);
+            // upload finish
+
+            ActivityPoint::create([
+                'user_id'=>Auth::user()->id,
+                'issue_id'=>$issue_id,
+                'points'=>2,
+                'comments'=>'Issue Created',
+                'type'=>'issue'
+            ]);
+
+            // add site activity record for global statistics.
+            $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+            $issue_id_encoded = $issueIDHashID->encode($issue_id);
+
+            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $user_id = $userIDHashID->encode(Auth::user()->id);
+
+            SiteActivity::create([
+                'user_id'=>Auth::user()->id,
+                'unit_id'=>$unit_id,
+                'objective_id'=>null,
+                'task_id'=>null,
+                'issue_id'=>$issue_id,
+                'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        created issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
+            ]);
+
+            $request->session()->flash('msg_val', "Issue created successfully!!!");
+            return redirect('issues');
+        }
+        view()->share('site_activity',[]);
+        view()->share('unitObj',Unit::all());
+        view()->share('objectiveObj',[]);
+        view()->share('taskObj',[]);
+        view()->share('user_can_change_status',false);
+        view()->share('user_can_resolve_issue',false);
+        view()->share('taskObj',[]);
+        view()->share('issueDocumentsObj',[]);
+
+        view()->share('action_method','add');
+        return view('issues.create');
     }
 
     public function edit(Request $request,$issue_id){
