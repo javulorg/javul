@@ -50,7 +50,7 @@
                                         </a>
                                     </div>
                                     <div class="col-xs-7 text-center">
-                                        <i class="fa fa-history"></i> REVISION HISTORY
+                                        <a href="{!! route('objectives_revison',[$objectiveIDHashID->encode($objectiveObj->id)]) !!}"><i class="fa fa-history"></i> REVISION HISTORY</a>
                                     </div>
                                 </div>
                             </div>
@@ -209,12 +209,18 @@
                     </div>
                 </div>
             </div>
+
+            @include('forum.element.objective')
+
         </div>
     </div>
 </div>
 @include('elements.footer')
 @endsection
 @section('page-scripts')
+<link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+<script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/js/forumObjective.js') !!}" type="text/javascript"></script>
 <script>
     $(function(){
         $(".both-div").css("min-height",($(".objective-desc").height())+10+'px');

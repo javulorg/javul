@@ -15,7 +15,6 @@ use App\Unit;
 use App\UnitCategory;
 use App\UnitCategoryHistory;
 use App\User;
-use App\Alerts;
 use App\Watchlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -165,24 +164,10 @@ class HomeController extends Controller
                 if(!empty($obj)){
                     $exist = Watchlist::where(strtolower($type).'_id',$id)->where('user_id',Auth::user()->id)->get();
                     if(empty($exist) || count($exist) == 0 ){
-                        /*Watchlist::create([
+                        Watchlist::create([
                             'user_id'=>Auth::user()->id,
                             strtolower($type).'_id'=>$id
-                        ]);*/
-
-                        // send mail if email notification is on as per doc point : 8
-                        $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                        if(!empty($alertObj) && $alertObj->watched_items == 1) {
-                            $toEmail = Auth::user()->email;
-                            $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                            $subject = 'Added '.$type.':'.$obj->title.' to watchlist.';
-
-                            \Mail::send('emails.watched_item', ['userObj' => Auth::user(), 'itemObj' => $obj,'type'=>'added'], function($message)
-                            use ($toEmail, $toName, $subject) {
-                                $message->to($toEmail, $toName)->subject($subject);
-                                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
-                            });
-                        }
+                        ]);
                         return \Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
                     }
                     else
@@ -2078,19 +2063,6 @@ class HomeController extends Controller
                     break;
             }
             if($flag && !empty($obj)){
-                // send mail if email notification is on as per doc point : 8
-                $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                if(!empty($alertObj) && $alertObj->watched_items == 1) {
-                    $toEmail = Auth::user()->email;
-                    $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                    $subject = 'Removed '.$type.':'.$obj->title.' from watchlist.';
-
-                    \Mail::send('emails.watched_item', ['userObj' => Auth::user(), 'itemObj' => $obj,'type'=>'removed'], function($message)
-                    use ($toEmail, $toName, $subject) {
-                        $message->to($toEmail, $toName)->subject($subject);
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
-                    });
-                }
                 $obj->delete();
                 return \Response::json(['success'=>true]);
             }

@@ -20,6 +20,7 @@ class CreateUnitsTable extends Migration
             $table->string('name');
             $table->string('slug');
             $table->text('description');
+            $table->string('comment');
             $table->string('credibility')->comment='platinum,gold,silver or bronze';
             $table->integer('country_id')->unsigned()->nullable();
             $table->integer('state_id')->unsigned()->nullable();

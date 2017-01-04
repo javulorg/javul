@@ -15,12 +15,164 @@ use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
+use App\Forum;
+use App\IssuesRevision;
+use Carbon\Carbon;
 
 class IssuesController extends Controller
 {
     public function __construct(){
         $this->middleware('auth',['except'=>['index','lists','view']]);
     }
+
+    public function revison($issue_id ,Request $request){
+        view()->share('issue_id',$issue_id);
+        if(!empty($issue_id)){
+            $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+            $issue_id = $issueIDHashID ->decode($issue_id);
+            if(!empty($issue_id)){
+                $issue_id = $issue_id[0];
+                $issueObj = Issue::with(['issue_documents'])->find($issue_id);
+                if(!empty($issueObj)  && count($issueObj) > 0){
+                    $unitObj = Unit::find($issueObj->unit_id);
+                    view()->share('unitObj',$unitObj);
+                    view()->share('issueObj',$issueObj);
+                    $site_activity = SiteActivity::where('unit_id',$issueObj->unit_id)->orderBy('id','desc')
+                                    ->paginate(\Config::get('app.site_activity_page_limit'));
+
+                    $availableUnitFunds =Fund::getUnitDonatedFund($issueObj->unit_id);
+                    $awardedUnitFunds =Fund::getUnitAwardedFund($issueObj->unit_id);
+
+                    $upvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('importance_level','+1')->count();
+                    $downvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('importance_level','-1')->count();
+
+                    if($upvotedCnt == 0 && $downvotedCnt == 0)
+                        $importancePercentage = 0;
+                    else
+                        $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
+
+                    if(is_float($importancePercentage))
+                        $importancePercentage = ceil($importancePercentage);
+
+                    $status_class='';
+                    if($issueObj->status=="unverified")
+                        $status_class="text-danger";
+                    elseif($issueObj->status=="verified")
+                        $status_class="text-info";
+                    elseif($issueObj->status == "resolved")
+                        $status_class = "text-success";
+                    view()->share('status_class',$status_class);
+                    view()->share('importancePercentage',$importancePercentage);
+                    view()->share('upvotedCnt',$upvotedCnt);
+                    view()->share('downvotedCnt',$downvotedCnt);
+                    view()->share('importancePercentage',$importancePercentage);
+                    view()->share('availableUnitFunds',$availableUnitFunds);
+                    view()->share('awardedUnitFunds',$awardedUnitFunds);
+                    view()->share('site_activity',$site_activity);
+                    view()->share('unit_activity_id',$issueObj->unit_id);
+                    view()->share('site_activity_text','unit activity log');
+
+                     // Forum Object coading 
+                    view()->share("unit_id", $issueObj->unit_id);
+                    view()->share("section_id", 3);
+                    view()->share("object_id",$issueObj->id);
+
+                    $revisions = IssuesRevision::select(['issues_revisions.user_id','issues_revisions.id','issues_revisions.unit_id','issues_revisions.comment','issues_revisions.size','issues_revisions.created_at','users.first_name','users.last_name',])
+                            ->join('users', 'users.id', '=', 'issues_revisions.user_id')
+                            ->where("issues_revisions.unit_id","=",$issueObj->unit_id)
+                            ->where("issues_revisions.issues_id","=",$issueObj->id)
+                            ->get();
+
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+
+                    view()->share('userIDHashID', $userIDHashID);
+                    view()->share('Carbon', new Carbon);
+                    view()->share('revisions',$revisions );
+
+                    // Forum Object coading End
+
+                    return view('issues.revison.view');
+                }
+            }
+        }
+        return view('errors.404');
+    }
+
+    public function diff($issue_id,$rev1,$rev2,Request $request){
+        view()->share('issue_id',$issue_id);
+        if(!empty($issue_id)){
+            $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+            $issue_id = $issueIDHashID ->decode($issue_id);
+            if(!empty($issue_id)){
+                $issue_id = $issue_id[0];
+                $issueObj = Issue::with(['issue_documents'])->find($issue_id);
+                if(!empty($issueObj)  && count($issueObj) > 0){
+                    $unitObj = Unit::find($issueObj->unit_id);
+                    view()->share('unitObj',$unitObj);
+                    view()->share('issueObj',$issueObj);
+                    $site_activity = SiteActivity::where('unit_id',$issueObj->unit_id)->orderBy('id','desc')
+                                    ->paginate(\Config::get('app.site_activity_page_limit'));
+
+                    $availableUnitFunds =Fund::getUnitDonatedFund($issueObj->unit_id);
+                    $awardedUnitFunds =Fund::getUnitAwardedFund($issueObj->unit_id);
+
+                    $upvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('importance_level','+1')->count();
+                    $downvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('importance_level','-1')->count();
+
+                    if($upvotedCnt == 0 && $downvotedCnt == 0)
+                        $importancePercentage = 0;
+                    else
+                        $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
+
+                    if(is_float($importancePercentage))
+                        $importancePercentage = ceil($importancePercentage);
+
+                    $status_class='';
+                    if($issueObj->status=="unverified")
+                        $status_class="text-danger";
+                    elseif($issueObj->status=="verified")
+                        $status_class="text-info";
+                    elseif($issueObj->status == "resolved")
+                        $status_class = "text-success";
+                    view()->share('status_class',$status_class);
+                    view()->share('importancePercentage',$importancePercentage);
+                    view()->share('upvotedCnt',$upvotedCnt);
+                    view()->share('downvotedCnt',$downvotedCnt);
+                    view()->share('importancePercentage',$importancePercentage);
+                    view()->share('availableUnitFunds',$availableUnitFunds);
+                    view()->share('awardedUnitFunds',$awardedUnitFunds);
+                    view()->share('site_activity',$site_activity);
+                    view()->share('unit_activity_id',$issueObj->unit_id);
+                    view()->share('site_activity_text','unit activity log');
+
+                     // Forum Object coading 
+                    view()->share("unit_id", $issueObj->unit_id);
+                    view()->share("section_id", 3);
+                    view()->share("object_id",$issueObj->id);
+
+                    $revisions = IssuesRevision::select(['issues_revisions.user_id','issues_revisions.id','issues_revisions.description','issues_revisions.unit_id','issues_revisions.comment','issues_revisions.size','issues_revisions.created_at','users.first_name','users.last_name',])
+                            ->join('users', 'users.id', '=', 'issues_revisions.user_id')
+                            ->where("issues_revisions.unit_id","=",$issueObj->unit_id)
+                            ->where("issues_revisions.issues_id","=",$issueObj->id)
+                            ->whereIn("issues_revisions.id",[ (int)$rev1, (int)$rev2 ])
+                            ->get();
+
+                    if($revisions->count() == 2){
+                        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+
+                        view()->share('userIDHashID', $userIDHashID);
+                        view()->share('Carbon', new Carbon);
+                        view()->share('revisions',$revisions );
+                                  
+                        return view("issues.revison.changes_difference");
+                    }
+
+                }
+            }
+        }
+        return view('errors.404');
+    }
+
 
     public function index(Request $request){
         $msg_flag = false;
@@ -320,6 +472,35 @@ class IssuesController extends Controller
 
                         if(empty($status))
                             $status = $issueObj->status;
+
+                        /* Store old data Start */
+                            $bytes = IssuesRevision::strBytes( str_replace(' ', '', strip_tags($request->input('description'))) );
+                            $oldBytes = IssuesRevision::strBytes( str_replace(' ', '', strip_tags($issueObj->description)) );
+                            
+                            $IssuesRevision = new IssuesRevision;
+                            $IssuesRevision->modified_by = Auth::user()->id;
+                            $IssuesRevision->size = (  $bytes - $oldBytes );
+                            $IssuesRevision->user_id = $issueObj->user_id;
+                            $IssuesRevision->unit_id = $issueObj->unit_id;
+                            $IssuesRevision->objective_id = $issueObj->objective_id;
+                            $IssuesRevision->task_id = $issueObj->task_id;
+                            $IssuesRevision->title = $issueObj->title;
+                            $IssuesRevision->description = $issueObj->description;
+                            $IssuesRevision->file_attachments = $issueObj->file_attachments;
+                            $IssuesRevision->status = $issueObj->status;
+                            $IssuesRevision->resolution = $issueObj->resolution;
+                            $IssuesRevision->created_at = $issueObj->created_at;
+                            $IssuesRevision->updated_at = $issueObj->created_at;
+                            $IssuesRevision->deleted_at = $issueObj->created_at;
+                            $IssuesRevision->issues_id = $issueObj->id;
+                            $IssuesRevision->comment = $issueObj->comment." ";
+                            
+                            
+
+                            $IssuesRevision->save();
+                        /* Store old data End */
+
+
                         $updateArr = [
                             'title'=>$request->input('title'),
                             'description'=>$request->input('description'),
@@ -474,6 +655,21 @@ class IssuesController extends Controller
                     view()->share('awardedUnitFunds',$awardedUnitFunds);
                     view()->share('site_activity',$site_activity);
                     view()->share('site_activity_text','unit activity log');
+
+                    view()->share("unit_id", $issueObj->unit_id);
+                    view()->share("section_id", 3);
+                    view()->share("object_id",$issueObj->id);
+                     view()->share('unit_activity_id',$issueObj->unit_id);
+
+                    $forumID =  Forum::checkTopic(array(
+                        'unit_id' => $issueObj->unit_id,
+                        'section_id' => 3,
+                        'object_id' => $issueObj->id,
+                    ));
+                    
+                    if(!empty($forumID)){
+                        view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
+                    }
 
                     return view('issues.view');
                 }

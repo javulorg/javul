@@ -15,12 +15,14 @@ use App\State;
 use App\Task;
 use App\TaskBidder;
 use App\Unit;
+use App\UnitRevision;
 use App\UnitCategory;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use Hashids\Hashids;
+use Carbon\Carbon;
 
 
 class UnitsController extends Controller
@@ -28,6 +30,90 @@ class UnitsController extends Controller
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view','get_units_paginate']]);
         view()->share('site_activity_text','Unit Activity Log');
+    }
+
+    public function diff($unit_id,$rev1,$rev2,Request $request){
+        if(!empty($unit_id))
+        {
+            view()->share('unit_id',$unit_id );
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id = $unit_id[0];
+                $units = Unit::getUnitWithCategories($unit_id);
+
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $availableFunds =Fund::getUnitDonatedFund($unit_id);
+                $awardedFunds =Fund::getUnitAwardedFund($unit_id);
+
+                view()->share('unitObj',$units );
+                view()->share('unit_activity_id',$unit_id);
+                view()->share('availableFunds',$availableFunds );
+                view()->share('awardedFunds',$awardedFunds );
+                view()->share('site_activity',$site_activity);
+                
+                $revisions = UnitRevision::select(['unit_revisions.user_id','unit_revisions.description','unit_revisions.id','unit_revisions.unit_id','unit_revisions.comment','unit_revisions.size','unit_revisions.created_at','users.first_name','users.last_name',])
+                            ->join('users', 'users.id', '=', 'unit_revisions.user_id')
+                            ->where("unit_revisions.unit_id","=",$unit_id)
+                            ->whereIn("unit_revisions.id",[ (int)$rev1, (int)$rev2 ])
+                            ->get();
+
+                if($revisions->count() == 2){
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+
+                    view()->share('userIDHashID', $userIDHashID);
+                    view()->share('Carbon', new Carbon);
+                    view()->share('revisions',$revisions );
+                              
+                    return view("units.revison.changes_difference");
+                }
+            }
+
+        }
+        return view('errors.404');
+    }
+
+    public function revison($unit_id,Request $request)
+    {
+        if(!empty($unit_id))
+        {
+            view()->share('unit_id',$unit_id );
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id = $unit_id[0];
+                $units = Unit::getUnitWithCategories($unit_id);
+
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $availableFunds =Fund::getUnitDonatedFund($unit_id);
+                $awardedFunds =Fund::getUnitAwardedFund($unit_id);
+
+                view()->share('unitObj',$units );
+                view()->share('unit_activity_id',$unit_id);
+                view()->share('availableFunds',$availableFunds );
+                view()->share('awardedFunds',$awardedFunds );
+                view()->share('site_activity',$site_activity);
+                
+                $revisions = UnitRevision::select(['unit_revisions.user_id','unit_revisions.id','unit_revisions.unit_id','unit_revisions.comment','unit_revisions.size','unit_revisions.created_at','users.first_name','users.last_name',])
+                            ->join('users', 'users.id', '=', 'unit_revisions.user_id')
+                            ->where("unit_revisions.unit_id","=",$unit_id)
+                            ->get();
+
+
+                //Carbon::createFromFormat('Y-m-d H:i:s', $pageChanges->time_stamp)->diffForHumans();
+
+                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+
+                view()->share('userIDHashID', $userIDHashID);
+                view()->share('Carbon', new Carbon);
+                view()->share('revisions',$revisions );
+                          
+                return view("units.revison.view");
+                
+            }
+
+        }
+        return view('errors.404');
     }
 
     public function index(Request $request){
@@ -235,6 +321,32 @@ class UnitsController extends Controller
                         $status="active";
 
                     $slug=substr(str_replace(" ","_",strtolower($request->input('unit_name'))),0,20);
+
+                    // store old revision data start
+
+                        $bytes = UnitRevision::strBytes( str_replace(' ', '', strip_tags($request->input('description'))) );
+                        $oldBytes = UnitRevision::strBytes( str_replace(' ', '', strip_tags($units->description)) );
+
+                        $UnitRevision = new UnitRevision();
+                        $UnitRevision->unit_id  = $units->id;
+                        $UnitRevision->user_id  = $units->user_id;
+                        $UnitRevision->category_id  = $units->category_id;
+                        $UnitRevision->name  = $units->name;
+                        $UnitRevision->description  = $units->description;
+                        $UnitRevision->comment  = $units->comment;
+                        $UnitRevision->credibility  = $units->credibility;
+                        $UnitRevision->country_id  = (int)$units->country_id;
+                        $UnitRevision->state_id  = (int)$units->state_id;
+                        $UnitRevision->city_id  = (int)$units->city_id;
+                        $UnitRevision->status  = $units->status;
+                        $UnitRevision->parent_id  = $units->parent_id;
+                        $UnitRevision->modified_by  = Auth::user()->id;
+                        $UnitRevision->size  = (  $bytes - $oldBytes );
+                        $UnitRevision->created_at  = date("Y-m-d H:i:s");
+
+                        $UnitRevision->save();
+                   
+                    // store old revision data end
 
                     // update unit data.
                     Unit::where('id',$unit_id)->update([

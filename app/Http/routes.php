@@ -93,9 +93,21 @@ Route::auth();
 
 })->where('all', '(.*)');*/
 
+Route::post('users/{user_id}/save_page', 'UserWikiController@save_pagedata')->name("user_wiki_save_page")->middleware('auth');
+Route::get('users/{slug}/{user_id}/wiki', 'UserWikiController@home')->name("user_wiki_home");
+Route::get('users/{slug}/{user_id}/wiki/recent_changes', 'UserWikiController@recent_changes')->name("user_wiki_recent_changes");
+Route::get('users/{slug}/{user_id}/wiki/pages', 'UserWikiController@pagelist')->name("user_wiki_page_list");
+Route::get('users/{slug}/{user_id}/wiki/history/{page_id}', 'UserWikiController@page_history')->name("user_wiki_history");
+Route::get('users/{slug}/{user_id}/wiki/diff/{rev1?}/{rev2?}', 'UserWikiController@page_diff')->name("user_wiki_rev_diff");
+Route::get('users/{slug}/{user_id}/wiki/new_page/{page_id?}', 'UserWikiController@page_create')->name("user_wiki_newpage")->middleware('auth');
+Route::get('users/{slug}/{user_id}/wiki/edit_page/{page_id}', 'UserWikiController@page_create')->name("user_wiki_editpage")->middleware('auth');
+Route::get('users/{slug}/{page_id}/wiki/{page_slug}', 'UserWikiController@view')->name("user_wiki_view");
+
 
 // unit controller route
 Route::any('units/add', 'UnitsController@create');
+Route::get('units/{unitid}/revison', 'UnitsController@revison')->name('unit_revison');
+Route::get('units/{unitid}/diff/{rev1}/{rev2}', 'UnitsController@diff')->name('unit_revison_cmp');
 Route::get('unit/set_featured_unit','UnitsController@set_featured_unit');
 Route::any('units/{unitid}/edit', 'UnitsController@edit');
 Route::post('units/get_state', 'UnitsController@get_state');
@@ -112,6 +124,9 @@ Route::get('units/search_by_location', 'UnitsController@search_by_location');
 
 // objective controller route
 Route::any('objectives/add','ObjectivesController@create');
+Route::get('objectives/{objectiveid}/revison', 'ObjectivesController@revison')->name('objectives_revison');
+Route::get('objectives/{objectiveid}/diff/{rev1}/{rev2}', 'ObjectivesController@diff')->name('objectives_revison_cmp');
+
 Route::any('objectives/{unitid}/add', 'ObjectivesController@create');
 Route::any('objectives/{objectiveid}/edit', 'ObjectivesController@edit');
 Route::post('objectives/importance', 'ObjectivesController@add_importance');
@@ -120,8 +135,56 @@ Route::get('objectives/{unitid}/lists', 'ObjectivesController@lists');
 Route::any('objectives/{objectiveid}/{slug}', 'ObjectivesController@view');
 Route::get('objectives/get_objectives_paginate', 'ObjectivesController@get_objectives_paginate');
 
+// chat controller route
+Route::get('chat', 'ChatController@index');
+Route::post('chat/create_room', 'ChatController@create_room');
+Route::post('chat/sendmsg', 'ChatController@sendmsg');
+Route::post('chat/loaduser/{flag?}', 'ChatController@loaduser');
+Route::post('chat/loadmsg', 'ChatController@loadmsg');
+Route::post('chat/online', 'ChatController@online');
+Route::get('chat/{roomid}', 'ChatController@chatroom');
+// message controller route
+Route::get('inbox', 'MessageController@inbox');
+Route::get('message/sent', 'MessageController@sent');
+Route::get('message/view/{message_id}', 'MessageController@view');
+Route::any('message/send/{user_id?}', 'MessageController@send');
+// wiki controller route
+Route::get('wiki/home/{unit_id}/{slug}', 'WikiController@home');
+Route::get('wiki/menu/{unit_id}/{slug}', 'WikiController@menu');
+Route::get('wiki/all_pages/{unit_id}/{slug}', 'WikiController@pages');
+//Route::get('wiki/view_history/{unit_id}/{slug}', 'WikiController@changes');
+Route::any('wiki/edit/{unit_id}/{slug}/{wiki_page_id?}', 'WikiController@edit');
+Route::any('wiki/edit_revision/{unit_id}/{slug}/{wiki_page_rev_id?}', 'WikiController@edit_revision');
+Route::get('wiki/diff/{unit_id}/{revision_id}/{slug}', 'WikiController@difference');
+Route::get('wiki/diff/{unit_id}/{revision_id}/{compare_id}/{slug}', 'WikiController@difference_selected');
+Route::get('wiki/revision_view/{unit_id}/{revision_id}/{slug}', 'WikiController@revision_view');
+Route::get('wiki/recent_changes/{unit_id}/{slug}', 'WikiController@changes');
+Route::get('wiki/history/{unit_id}/{wiki_page_id}/{slug}', 'WikiController@history_single_page');
+Route::get('wiki/{unit_id}/{wiki_page_id}/{slug}', 'WikiController@view');
+Route::any('wiki/history/{unit_id?}/{slug}', 'WikiController@history');
+
+// chat controller route
+//Route::get('forum/{unit_id}/{section_id}', 'ForumController@view');
+Route::get('forum', 'ForumController@index');
+Route::post('forum/submit', 'ForumController@submit');
+Route::post('forum/submitauto', 'ForumController@submitauto');
+Route::post('forum/loadObjectiveComment', 'ForumController@loadObjectiveComment');
+Route::post('forum/postSubmit', 'ForumController@postSubmit');
+Route::post('forum/postLoad', 'ForumController@postLoad');
+Route::post('forum/postUpDown', 'ForumController@postUpDown');
+Route::post('forum/ideapoint', 'ForumController@ideapoint');
+Route::post('forum/post_ideapoint', 'ForumController@post_ideapoint');
+Route::post('forum/topicUpDown', 'ForumController@topicUpDown');
+Route::get('forum/create/{unit_id}/{section_id}', 'ForumController@create');
+Route::get('forum/post/{unit_id}/{slug}', 'ForumController@post');
+Route::get('forum/{unit_id}', 'ForumController@index');
+Route::get('forum/{unit_id}/{section_id}', 'ForumController@view');
+
+
 // tasks controller route
 Route::any('tasks/add', 'TasksController@create');
+Route::get('tasks/{taskid}/revison', 'TasksController@revison')->name('tasks_revison');
+Route::get('tasks/{taskid}/diff/{rev1}/{rev2}', 'TasksController@diff')->name('tasks_revison_cmp');
 Route::any('tasks/{unitid}/{objectiveid}/add', 'TasksController@create');
 Route::post('tasks/get_objective', 'TasksController@get_objective');
 Route::post('tasks/get_tasks', 'TasksController@get_tasks');
@@ -155,6 +218,8 @@ Route::get('funds/success','FundsController@success');
 Route::get('funds/cancel','FundsController@cancel');
 
 Route::get('issues/remove_issue_document','IssuesController@remove_document');
+Route::get('issues/{taskid}/revison', 'IssuesController@revison')->name('issues_revison');
+Route::get('issues/{taskid}/diff/{rev1}/{rev2}', 'IssuesController@diff')->name('issues_revison_cmp');
 Route::get('/issues/get_issues_paginate','IssuesController@get_issues_paginate');
 Route::any('/issues/add','IssuesController@add');
 Route::post('issues/importance','IssuesController@add_importance');

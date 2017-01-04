@@ -23,6 +23,7 @@ class CreateTasksTable extends Migration
             $table->string('name');
             $table->string('slug');
             $table->text('description');
+            $table->string('comment');
             $table->text('task_action');
             $table->text('summary')->nullable();
             $table->string('skills');

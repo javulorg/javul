@@ -13,6 +13,8 @@ use App\Unit;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use App\UserWiki;
+use App\Wiki;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +27,7 @@ class UserController extends Controller
 
     public function user_profile(Request $request,$user_id,$slug=null)
     {
+        view()->share('user_id_hash',$user_id);
         if(!empty($user_id)){
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
@@ -45,6 +48,35 @@ class UserController extends Controller
                 $interestObj = [];
                 if(!empty($userObj->job_skills))
                     $interestObj = AreaOfInterest::whereIn('id',explode(",",$userObj->area_of_interest))->get();
+
+                $userWiki = UserWiki::select(['page_content','id'])
+                                    ->where("user_id","=",$user_id)
+                                    ->where("page_type","=","2")
+                                    ->get();
+                if( $userWiki->count() == 0){
+                    
+                    $wikipage =  new UserWiki;
+                    $wikipage->page_content = 'Welcome to the User wiki home page';
+                    $wikipage->page_title = 'Home Page';
+                    $wikipage->comment = '';
+                    $wikipage->private = 1;
+                    $wikipage->page_type = 2;
+                    $wikipage->slug = 'home-page';
+                    $wikipage->user_id = $user_id;
+                    $wikipage->save();
+
+                    $userWiki[0] = $wikipage;
+                }
+
+                $userPageIDHashID= new Hashids('userpage id hash',10,\Config::get('app.encode_chars'));
+                $page_id = $userPageIDHashID->encode($userWiki[0]->id);
+                $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
+                view()->share('activityPoints_forum',$activityPoints_forum);
+
+                $userWiki[0]->page_content = Wiki::parse($userWiki[0]->page_content);
+                view()->share("page_id_hase",$page_id);
+
+                view()->share('userWiki',$userWiki);
 
                 view()->share('objectivesObj',$objectivesObj);
                 view()->share('tasksObj',$tasksObj);

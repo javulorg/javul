@@ -21,6 +21,7 @@ class CreateObjectivesTable extends Migration
             $table->string('name');
             $table->string('slug')->nullable();
             $table->text('description');
+            $table->string('comment');
             $table->string('status')->comment="in-progress, completed or archieved";
             $table->integer('parent_id')->nullable();
             $table->integer('modified_by')->nullable();

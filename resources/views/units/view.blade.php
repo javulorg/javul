@@ -50,7 +50,7 @@
                                     </a>
                                 </div>
                                 <div class="col-xs-7 text-center">
-                                    <i class="fa fa-history"></i> REVISION HISTORY
+                                    <a href="{!! route('unit_revison',[$unitIDHashID->encode($unitObj->id)]) !!}"><i class="fa fa-history"></i> REVISION HISTORY</a>
                                 </div>
                             </div>
                         </div>

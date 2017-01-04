@@ -34,11 +34,11 @@
                         <div class="col-xs-12">
                             <ul class="unit_info_link_2">
                                 <i class="fa fa-quote-right colorLightBlue"></i>
-                                <li><a href="#" class="colorLightBlue upper">FORUM</a></li>
+                                <li><a href="{!! url('forum') !!}/{!! $unitIDHashID->encode($unitObj->id) !!}" class="colorLightBlue upper">FORUM </a></li>
                                 <i class="fa fa-comments colorLightBlue"></i>
-                                <li><a href="#" class="colorLightBlue upper">CHAT</a></li>
+                                <li><a href="#" class="colorLightBlue start-unit-chat upper" data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}">CHAT (<span id="chat-online">0</span>) </a></li>
                                 <i class="fa fa-wikipedia-w colorLightBlue"></i>
-                                <li><a href="#" class="colorLightBlue upper">WIKI</a></li>
+                                <li><a href="{!! url('wiki/home') !!}/{!! $unitIDHashID->encode($unitObj->id).'/'.$unitObj->slug !!}" class="colorLightBlue upper">WIKI</a></li>
                             </ul>
                         </div>
                     </div>
@@ -51,7 +51,8 @@
                     <label class="control-label upper">OTHER LINKS</label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
-                    <label class="control-label colorLightBlue">LINK1, LINK2</label>
+                    <label class="control-label colorLightBlue">{!! $unitObj->other_menulink !!}</label>
+                    <a class="pull-right" href="{!! url('wiki/menu') !!}/{!! $unitIDHashID->encode($unitObj->id).'/'.$unitObj->slug !!}"> <i class="fa fa-pencil"></i> </a>
                 </div>
             </div>
         </div>
@@ -118,3 +119,23 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    window.onload = function(){
+    
+        function chatOnline(){
+            $.ajax({
+                type:'post',
+                url:siteURL  + '/chat/online',
+                data:{_token:'{{csrf_token()}}',unit_id:{!! $unitObj->id !!}},
+                dataType:'json',
+                complete: function(xhr, textStatus) {
+                    setTimeout(function(){ chatOnline() }, 5000);
+                },
+                success:function(resp,text,xhr){
+                    $("#chat-online").html(resp.online);
+                }
+            })
+        }
+        chatOnline();
+    }
+</script>
