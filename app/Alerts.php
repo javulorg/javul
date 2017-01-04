@@ -17,6 +17,6 @@ class Alerts extends Model
      *
      * @var array
      */
-    protected $fillable = ["user_id","forum_replies","watched_items","inbox","fund_received","task_management"];
+    protected $fillable = ["user_id","forum_replies","watched_items","inbox","fund_received","task_management","all"];
 
 }

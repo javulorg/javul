@@ -40,11 +40,21 @@ class AlertsController extends Controller
             $val = 1;
             if($flag == "false")
                 $val=0;
+
+
+            if($field_name == "all") {
+                $data = ['forum_replies' => $val, 'watched_items' => $val, 'inbox' => $val, 'fund_received' => $val, 'task_management' => $val];
+                $data[$field_name] = $val;
+            }
+            else
+                $data[$field_name] = $val;
+
             if(!empty($alertObj) && count($alertObj) > 0){
-                $alertObj->update([$field_name=>$val]);
+                $alertObj->update($data);
                 return \Response::json(['success'=>true]);
             }else
-                Alerts::create(['user_id'=>Auth::user()->id,$field_name=>1]);
+                $data['user_id']=Auth::user()->id;
+                Alerts::create($data);
                 return \Response::json(['success'=>true]);
         }
         return \Response::json(['success'=>false]);

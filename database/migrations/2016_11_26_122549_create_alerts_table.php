@@ -16,6 +16,7 @@ class CreateAlertsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->tinyInteger('all')->default(0);
             $table->tinyInteger('account_creation')->default(1);
             $table->tinyInteger('confirmation_email')->default(1);
             $table->tinyInteger('forum_replies')->default(0);

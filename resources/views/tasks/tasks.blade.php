@@ -31,6 +31,21 @@
                     <table class="table table-striped tasks-table">
                         <thead>
                         <tr>
+                            <td colspan=7 class="">
+                                <input type="text" placeholder="Search by Skill" name="task_skill_search" id="task_skill_search"
+                                       class="form-control"/>
+
+                                <input type="text" placeholder="Search by Status" name="task_status_search" id="task_status_search"
+                                       class="form-control"/>
+                                <div style="display:inline-block;position:relative;top:-2px">
+                                    <a class="btn black-btn form-control search_tasks" data-token="{{csrf_token()}}">Search</a>
+
+                                    <a class="btn black-btn form-control reset_unit_search" href="{!! url('tasks') !!}"
+                                       style="display:none">Reset</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
                             <th>Task Name</th>
                             <th>Objective Name</th>
                             <th>Unit Name</th>

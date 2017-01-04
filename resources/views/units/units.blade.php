@@ -30,9 +30,66 @@
                         </div>
                         <table class="table table-striped unit-table">
                             <thead>
-                            <tr>
-                                <td colspan="3"></td>
-                            </tr>
+                                <tr>
+                                    <td colspan=3 class="unit_search_td">
+
+                                        <div class="row form-group">
+                                            <div class="col-sm-12">
+                                                <select name="unit_category_search" class="form-control" id="unit_category_search"></select>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}"/>
+                                        <!--<select name="location_search" class="form-control" id="location_search" style="display:none;
+                                        "></select>-->
+                                        <div class="row form-group">
+                                            <div class="col-sm-4 form-group">
+                                                <div class="input-icon right">
+                                                    <i class="fa select-error"></i>
+                                                    <select class="form-control" name="country" id="country">
+                                                        <option value="">{!! trans('messages.select') !!}</option>
+                                                        @if(count($countries) > 0)
+                                                            @foreach($countries as $id=>$val)
+                                                                @if($val == "dash_line" || $val == "dash_line1")
+                                                                    <option value="{{$id}}" disabled></option>
+                                                                @else
+                                                                    <option value="{{$id}}">{{$val}}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 form-group">
+                                                <div class="input-icon right">
+                                                    <i class="fa select-error"></i>
+                                                    <select class="form-control" name="state" id="state">
+                                                        <option value="">{!! trans('messages.select') !!}</option>
+                                                    </select>
+                                                    <span class="states_loader location_loader" style="display: none">
+                                                        <img src="{!! url('assets/images/small_loader.gif') !!}"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 form-group">
+                                                <div class="input-icon right">
+                                                    <i class="fa select-error"></i>
+                                                    <select class="form-control" name="city" id="city" >
+                                                        <option value="">{!! trans('messages.select') !!}</option>
+                                                    </select>
+                                                    <span class="cities_loader location_loader" style="display: none">
+                                                        <img src="{!! url('assets/images/small_loader.gif') !!}"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display:inline-block;position:relative;top:-6px">
+                                            <a class="btn black-btn form-control search_unit" data-token="{{csrf_token()}}">Search</a>
+
+                                            <a class="btn black-btn form-control reset_unit_search" href="{!! url('units') !!}"
+                                               style="display:none">Reset</a>
+                                        </div>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <th>{!! trans('messages.unit_name') !!}</th>
                                     <th>{!! trans('messages.unit_category') !!}</th>
@@ -111,5 +168,6 @@
     })
 </script>
 <script src="{!! url('assets/js/units/delete_unit.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/js/units/unit_location.js') !!}"></script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
 @endsection

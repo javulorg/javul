@@ -105,6 +105,9 @@ Route::get('units/delete_unit', 'UnitsController@delete_unit');
 Route::get('units/available_bid/{unit_id}','UnitsController@available_bids');
 Route::any('units/{unitid}/{slug}', 'UnitsController@view');
 Route::get('units/get_units_paginate', 'UnitsController@get_units_paginate');
+Route::post('units/search_units', 'UnitsController@search_units');
+Route::get('units/search_by_category', 'UnitsController@search_by_category');
+Route::get('units/search_by_location', 'UnitsController@search_by_location');
 
 
 // objective controller route
@@ -139,6 +142,7 @@ Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
 Route::get('tasks/{unitid}/lists', 'TasksController@lists');
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 Route::get('tasks/get_tasks_paginate', 'TasksController@get_tasks_paginate');
+Route::post('tasks/search_tasks', 'TasksController@search_tasks');
 
 
 Route::get('funds/donate/unit/{unit_id}','FundsController@donate_to_unit_objective_task');

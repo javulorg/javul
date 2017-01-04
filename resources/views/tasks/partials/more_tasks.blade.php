@@ -80,4 +80,8 @@
             @endif
         </td>
     </tr>
+@else
+    <tr>
+        <td colspan="7">No record found.</td>
+    </tr>
 @endif

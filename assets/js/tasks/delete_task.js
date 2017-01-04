@@ -50,5 +50,41 @@ $(function(){
 
        }
        return false;
-   })
-})
+   });
+
+    $(document).off('click','.search_tasks').on('click','.search_tasks',function(){
+        var task_skill_search = $("#task_skill_search").val();
+        var task_status_search = $("#task_status_search").val();
+        if($.trim(task_skill_search) == "" && $.trim(task_status_search) == ""){
+            $("#task_skill_search").parent('td').addClass('has-error');
+            $("#task_status_search").parent('td').addClass('has-error');
+        }else{
+            $("#task_skill_search").parent('td').removeClass('has-error');
+            $("#task_status_search").parent('td').removeClass('has-error');
+            $(".reset_unit_search").show();
+            var token = $(this).attr('data-token');
+
+            $(".task_loading").show();
+            $(this).parents(".loading_content_hide").css('opacity','0.5');
+
+            $.ajax({
+                type:'post',
+                url:siteURL+'/tasks/search_tasks',
+                data:{task_skill_search:task_skill_search,task_status_search:task_status_search,_token:token},
+                dataType:'json',
+                success:function(resp){
+                    $(".tasks-table tbody").html(resp.html);
+                    $(".task_loading").hide();
+                    $(".loading_content_hide").css('opacity','1');
+                    if($(".text_wraps").length > 0) {
+                        var the_obj = $('.text_wraps').ThreeDots({
+                            max_rows: 1
+                        });
+                    }
+                }
+            })
+        }
+
+        return false;
+    });
+});

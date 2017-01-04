@@ -158,9 +158,9 @@
                                         <option value="">{!! trans('messages.select') !!}</option>
                                     @endif
                                 </select>
-                    <span class="states_loader location_loader" style="display: none">
-                        <img src="{!! url('assets/images/small_loader.gif') !!}"/>
-                    </span>
+                                <span class="states_loader location_loader" style="display: none">
+                                    <img src="{!! url('assets/images/small_loader.gif') !!}"/>
+                                </span>
                             </div>
                         </div>
                         <div class="col-sm-4 form-group">
@@ -178,9 +178,9 @@
                                         <option value="">{!! trans('messages.select') !!}</option>
                                     @endif
                                 </select>
-                    <span class="cities_loader location_loader" style="display: none">
-                        <img src="{!! url('assets/images/small_loader.gif') !!}"/>
-                    </span>
+                                <span class="cities_loader location_loader" style="display: none">
+                                    <img src="{!! url('assets/images/small_loader.gif') !!}"/>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -254,5 +254,6 @@
     </script>
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/units/units.js') !!}"></script>
+<script src="{!! url('assets/js/units/unit_location.js') !!}"></script>
 <script src="{!! url('assets/js/admin/category_browse.js') !!}" type="text/javascript"></script>
 @endsection

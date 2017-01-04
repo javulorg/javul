@@ -234,7 +234,6 @@
                                                             {{"Time left for editing: ".$availableDays." days."}})
                                                         @endif
                                                     @endif
-
                                                     @if($taskObj->status == "editable")
                                                         (<a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a>)
                                                     @endif

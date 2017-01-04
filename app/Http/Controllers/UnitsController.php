@@ -46,10 +46,14 @@ class UnitsController extends Controller
 
         // get all units for listing
         $units = Unit::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+
         view()->share('units',$units );
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
         view()->share('site_activity_text','Global Activity Log');
+
+        $countries = Unit::getAllCountryWithFrequent();
+        view()->share('countries',$countries);
         return view('units.units');
     }
 
@@ -560,6 +564,126 @@ class UnitsController extends Controller
         }
         return \Response::json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
     }
+    public function search_units(Request $request){
+        $by_category_type = $request->input('category');
+
+        $country = $request->input('country');
+        $state = $request->input('state');
+        $city = $request->input('city');
+
+        /*$units = Unit::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+        view()->share('units',$units );*/
+
+        $where = '';
+        \DB::enableQueryLog();
+        $unitObj = \DB::table('units');
+
+        if(trim($by_category_type) != ""){
+            /*$unit_category_ids = \DB::table('unit_category')->whereRaw(\DB::raw('name like \'%'.$by_category_type.'%\''))->pluck('id');
+            if(!empty($unit_category_ids)) {
+                foreach($unit_category_ids as $index=>$cate_id){
+                    if($index == 0)
+                        $where.='FIND_IN_SET('.$cate_id.',category_id)';
+                    else
+                        $where.=' OR FIND_IN_SET('.$cate_id.',category_id)';
+                }
+            }*/
+            $where.='FIND_IN_SET('.$by_category_type.',category_id)';
+        }
+        if(trim($country) != "" || trim($state) != "" || trim($city) != ""){
+            // country
+            if(trim($country) != "") {
+                if (!empty($where))
+                    $where .= ' OR (country_id = '.$country;
+                else
+                    $where .= ' (country_id = '.$country;
+            }
+
+            //state
+            if(trim($state) != "") {
+                if (!empty($where)) {
+                    if(trim($country) != "")
+                        $where .= ' AND state_id = ' . $state;
+                    else
+                        $where .= ' OR state_id = ' . $state;
+                }
+                else {
+                    if(trim($country) != "")
+                        $where .= ' AND state_id = ' . $state;
+                    else
+                        $where .= ' state_id = ' . $state;
+                }
+            }
+
+            //city
+            if(trim($city) != "") {
+                if (!empty($where)) {
+                    if(trim($country) != "" && trim($state) != "")
+                        $where .= ' AND city_id = ' . $city.')';
+                    else
+                        $where .= ' OR city_id = ' . $city.')';
+                }
+                else {
+                    if(trim($country) != "" && trim($state) != "")
+                        $where .= ' AND city_id = ' . $city.')';
+                    else
+                        $where .= ' city_id = ' . $city.')';
+                }
+            }
+        }
+
+        $unitObj = $unitObj->whereRaw($where)->paginate(\Config::get('app.page_limit'));
+//dd(\DB::getQueryLog());
+        view()->share('units',$unitObj);
+        $html = view('units.partials.more_units')->render();
+        return \Response::json(['success'=>true,'html'=>$html]);
+    }
+
+    public function search_by_location(Request $request){
+        $terms = $request->input('term');
+        $page = $request->input('page');
+        if(!empty($terms)){
+            if($page == 0)
+                $obj = UnitCategory::where('name','like',$terms.'%')->get();
+            else {
+                $offset = ($page - 1) * 10;
+                $obj = UnitCategory::where('name','like',$terms.'%')->skip($offset)->take(10)->get();
+            }
+
+            $names = [];
+            if(!empty($obj) && count($obj) > 0){
+                foreach($obj as $category){
+                    $names[]=['id'=>$category->id,'name'=>$category->name];
+                }
+
+            }
+            return \Response::json(['items'=>$names,'total_counts'=> UnitCategory::where('name','like',$terms.'%')->count()]);
+        }
+        return \Response::json([]);
+    }
+    public function search_by_category(Request $request){
+        $terms = $request->input('q');
+        $page = $request->input('page');
+        if(!empty($terms)){
+            if($page == 0)
+                $obj = UnitCategory::where('name','like',$terms.'%')->get();
+            else {
+                $offset = ($page - 1) * 10;
+                $obj = UnitCategory::where('name','like',$terms.'%')->skip($offset)->take(10)->get();
+            }
+
+            $names = [];
+            if(!empty($obj) && count($obj) > 0){
+                foreach($obj as $category){
+                    $names[]=['id'=>$category->id,'text'=>$category->name];
+                }
+
+            }
+            return \Response::json(['items'=>$names,'total_counts'=> UnitCategory::where('name','like',$terms.'%')->count()]);
+        }
+        return \Response::json([]);
+    }
+
     public function show()
     {
 

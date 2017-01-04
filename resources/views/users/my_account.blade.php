@@ -346,6 +346,14 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            <tr>
+                                <td width="40%" style="width: 40%;">Default All</td>
+                                <td>
+                                    <input @if(!empty($alertsObj) && $alertsObj->all == 1) checked  @endif data-toggle="toggle" type="checkbox" name="alert_all"
+                                           id="alert_all" class="alerts" value="all">
+                                </td>
+                                <td>-</td>
+                            </tr>
                                 <tr>
                                     <td width="40%" style="width: 40%;">Account Creation</td>
                                     <td>
@@ -370,7 +378,7 @@
                                         <input @if(!empty($alertsObj) && $alertsObj->forum_replies == 1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_forum_replies"
-                                               id="alert_forum_replies" class="alerts" value="forum_replies">
+                                               id="alert_forum_replies" class="alerts dynamic_alert" value="forum_replies">
                                     </td>
                                     <td>
                                         <input checked disabled data-toggle="toggle" type="checkbox">
@@ -383,7 +391,7 @@
                                         <input @if(!empty($alertsObj) && $alertsObj->watched_items==1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_watched_items"
-                                               id="alert_watched_items" class="alerts" value="watched_items">
+                                               id="alert_watched_items" class="alerts dynamic_alert" value="watched_items">
                                     </td>
                                     <td>
                                         <input checked disabled data-toggle="toggle" type="checkbox">
@@ -396,7 +404,7 @@
                                         <input @if(!empty($alertsObj) && $alertsObj->inbox==1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_inbox"
-                                               id="alert_inbox" class="alerts" value="inbox">
+                                               id="alert_inbox" class="alerts dynamic_alert" value="inbox">
                                     </td>
                                     <td>
                                         <input checked disabled data-toggle="toggle" type="checkbox">
@@ -409,7 +417,7 @@
                                         <input @if(!empty($alertsObj) && $alertsObj->fund_received==1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_fund_received"
-                                               id="alert_fund_received" class="alerts" value="fund_received">
+                                               id="alert_fund_received" class="alerts dynamic_alert" value="fund_received">
                                     </td>
                                     <td>
                                         <input checked disabled data-toggle="toggle" type="checkbox">
@@ -422,10 +430,11 @@
                                         <input @if(!empty($alertsObj) && $alertsObj->task_management==1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_task_management"
-                                               id="alert_task_management" class="alerts" value="task_management">
+                                               id="alert_task_management" class="alerts dynamic_alert" value="task_management">
                                     </td>
                                     <td>
                                         <input checked disabled data-toggle="toggle" type="checkbox">
+                                        <input type="hidden" name="changed_by" id="changed_by" value=""/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -530,27 +539,46 @@
         }
 
         $(function(){
-            $(".alerts").on('change',function(){
+            $(".alerts").on('change',function(e){
                 var flag=$(this).prop('checked');
                 var field_name = $(this).val();
+                var changedBy = $("#changed_by").val();
+                var flag_to_return = true;
+                if(field_name == "all")
+                    $("#changed_by").val(1);
+                else if(changedBy == 1) {
+                    flag_to_return = false;
+                }
 
-                $.ajax({
-                    type: 'post',
-                    url: siteURL + '/alerts/set_alert',
-                    data: {_token: '{{csrf_token()}}', field_name: field_name, flag: flag},
-                    dataType: 'json',
-                    success: function (resp) {
-                        if (resp.success) {
-                            if (flag)
-                                toastr['success'](field_name + ' enabled successfully.', '');
-                            else
-                                toastr['success'](field_name + ' disabled successfully.', '');
+                if(flag_to_return) {
+                    $.ajax({
+                        type: 'post',
+                        url: siteURL + '/alerts/set_alert',
+                        data: {_token: '{{csrf_token()}}', field_name: field_name, flag: flag},
+                        dataType: 'json',
+                        success: function (resp) {
+                            if (resp.success) {
+                                if (flag) {
+                                    if (field_name == "all") {
+                                        $('.dynamic_alert').bootstrapToggle('on');
+                                    }
+                                    toastr['success'](field_name + ' enabled successfully.', '');
+                                }
+                                else {
+                                    if (field_name == "all") {
+                                        $('.dynamic_alert').bootstrapToggle('off');
+                                    }
+                                    toastr['success'](field_name + ' disabled successfully.', '');
+                                }
+                                $("#changed_by").val('');
+                            }
                         }
-                    }
-                });
-
-                return false;
+                    });
+                }
+                return true;
             });
+
+
         });
     </script>
     <script>
