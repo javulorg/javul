@@ -93,7 +93,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        /*$userData=User::create([
+        $userData=User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
@@ -102,18 +102,13 @@ class AuthController extends Controller
             'city_id' => 43070,
             'password' => bcrypt($data['password']),
             'role'=>'user'
-        ]);*/
-
-        $userData= User::find(1);
+        ]);
 
         $toEmail = $data['email'];
         $toName= $data['first_name'].' '.$data['last_name'];
         $subject="Welcome To Javul.org";
 
-        $email_token = User::getEmailToken();
-
-
-        \Mail::send('emails.registration', ['userObj'=> $userData,'token'=>$email_token ], function($message) use ($toEmail,$toName,$subject)
+        \Mail::send('emails.registration', ['userObj'=> $userData ], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));

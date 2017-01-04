@@ -30,9 +30,6 @@
                         </div>
                         <table class="table table-striped unit-table">
                             <thead>
-                            <tr>
-                                <td colspan="3"></td>
-                            </tr>
                                 <tr>
                                     <th>{!! trans('messages.unit_name') !!}</th>
                                     <th>{!! trans('messages.unit_category') !!}</th>

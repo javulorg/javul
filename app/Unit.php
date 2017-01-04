@@ -67,20 +67,39 @@ class Unit extends Model
         if(!empty($unit_id))
             $where .= " and units.id='".$unit_id."' ";
 
-        $unitsObj = \DB::select( DB::raw("SELECT units.*,GROUP_CONCAT(unit_category.name SEPARATOR ', ') as category_name FROM units INNER JOIN
-        unit_category ON " .
-            "(units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  ) $where GROUP BY units.id") );
+        $unitsObj = \DB::select( DB::raw("SELECT cr.total_member,units.*,GROUP_CONCAT(unit_category.name SEPARATOR ', ') as category_name,
+            (SELECT count(*) FROM forum_topic WHERE unit_id = units.id ) as totaltopic
+            FROM units INNER JOIN unit_category ON  (units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  ) 
+            LEFT JOIN chat_room cr ON (cr.unit_id = units.id ) 
+            $where GROUP BY units.id") );
+
+        $extraWhere = array();
+        $extraWhere[] = array("wiki_pages.unit_id","=",$unit_id);
+        $extraWhere[] = array("wiki_pages.is_wikihome","=",3);
+        
+
+        $wiki = DB::table("wiki_pages")
+                        ->select("page_content")
+                        ->where($extraWhere)
+                        ->get();
+
+        if(!empty($wiki)){
+            $wiki[0]->page_content = Wiki::parse($wiki[0]->page_content);
+        }
 
         if(count($unitsObj) == 1){
             $unitsObjTmp = $unitsObj[0];
-            if(!empty($unit_id))
+            if(!empty($unit_id)){
+                $unitsObjTmp->other_menulink = empty($wiki) ? "Other Link" : $wiki[0]->page_content;
                 return $unitsObjTmp;
+            }
             $unitsObj= array_filter((array)$unitsObj[0]);
             if(!empty($unitsObj)){
                 $temp[] =(object)$unitsObjTmp ;
                 return $temp;
             }
         }
+
         return $unitsObj;
     }
 

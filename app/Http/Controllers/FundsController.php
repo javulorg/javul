@@ -307,18 +307,6 @@ class FundsController extends Controller
                     $response = Paypal::transferAmountToUser($inputData);
                     if($response['success'])
                         $response['url'] =env('ADAPTIVE_PAYMENT_URL').$response['paykey'];
-
-                    $alertObj = Alerts::where('user_id',$obj->id)->first();
-                    if(!empty($alertObj) && $alertObj->fund_received == 1) {
-                        $toEmail = $obj->email;
-                        $toName= $obj->first_name.' '.$obj->last_name;
-                        $subject = $amount.' fund received from '.Auth::user()->email;
-
-                        \Mail::send('emails.fund_received', ['userObj' => Auth::user(), 'amount' => $amount], function($message) use($toEmail, $toName, $subject) {
-                            $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
-                        });
-                    }
                 }
                 else
                     $response = User::donateAmount($inputData);

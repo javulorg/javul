@@ -119,6 +119,34 @@ License: You must have a valid license purchased only from themeforest(the above
 
             })
         </script>
+
+        <script type="text/javascript">
+            $(".container").delegate(".start-unit-chat","click",function(){
+            $this = $(this);
+            var unit_id = $this.attr("data-unit_id");
+            
+            $.ajax({
+                type:'post',
+                url:siteURL  + '/chat/create_room',
+                data:{_token:'{{csrf_token()}}',unit_id:unit_id},
+                dataType:'json',
+                complete: function(xhr, textStatus) {
+                   if(xhr.status == 401){
+                        location = siteURL + "/login";
+                   }
+                },
+                success:function(resp,text,xhr){
+
+                    if(resp.location){
+                       location = resp.location;
+                    }
+                    else{
+                        toastr['error']('Something goes wrong. Please try again later.', '');
+                    }
+                }
+            })
+        });
+        </script>
         <!-- END PAGE LEVEL PLUGINS -->
         @yield('page-scripts')
     </body>

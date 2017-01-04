@@ -55,7 +55,7 @@
                                         @endif
                                     </div>
                                     <div class="col-xs-7 text-center">
-                                        <i class="fa fa-history"></i> REVISION HISTORY
+                                        <a href="{!! route('tasks_revison',[$taskIDHashID->encode($taskObj->id)]) !!}"><i class="fa fa-history"></i> REVISION HISTORY</a>
                                     </div>
                                 </div>
                             </div>
@@ -157,6 +157,10 @@
                         {!! $taskObj->objective->description!!}
                     </div>
                 </div>
+
+                @include('forum.element.objective')
+
+
             </div>
 
         </div>
@@ -165,6 +169,9 @@
 @include('elements.footer')
 @endsection
 @section('page-scripts')
+<link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+<script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/js/forumObjective.js') !!}" type="text/javascript"></script>
 <script>
     toastr.options = {
         "closeButton": true,

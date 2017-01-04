@@ -25,6 +25,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
+use App\Forum;
+use App\TasksRevision;
+use Carbon\Carbon;
 
 class TasksController extends Controller
 {
@@ -32,6 +35,163 @@ class TasksController extends Controller
         $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists']]);
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
         view()->share('site_activity_text','Unit Activity Log');
+    }
+
+    public function revison($task_id){
+        view()->share('task_id',$task_id);
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::with(['objective','task_documents'])->find($task_id);
+                if(empty($taskObj))
+                    return ('errors.404');
+
+                $taskObj->unit=[];
+                if(!empty($taskObj->objective))
+                    $taskObj->unit = Unit::getUnitWithCategories($taskObj->unit_id);
+                if(!empty($taskObj)){
+                    view()->share('taskObj',$taskObj );
+
+                    $flag =Task::isUnitAdminOfTask($task_id); // right now considered only unit admin can assigned task to bidder if they
+                    // want task creator can also assign task to bidder then remove this and uncomment above lines
+                    $taskBidders = [];
+                    if($flag){
+                        $taskBidders = TaskBidder::join('users','task_bidders.user_id','=','users.id')
+                                        ->select(['users.first_name','users.last_name','users.id as user_id','task_bidders.*'])
+                                        ->where('task_id',$task_id)->get();
+                    }
+                    view()->share('taskBidders',$taskBidders);
+                    // end display listing of bidders
+
+                    $availableFunds =Fund::getTaskDonatedFund($task_id);
+                    $awardedFunds =Fund::getTaskAwardedFund($task_id);
+
+                    view()->share('availableFunds',$availableFunds );
+                    view()->share('awardedFunds',$awardedFunds );
+
+                    $availableUnitFunds =Fund::getUnitDonatedFund($taskObj->unit_id);
+                    $awardedUnitFunds =Fund::getUnitAwardedFund($taskObj->unit_id);
+
+                    view()->share('availableUnitFunds',$availableUnitFunds );
+                    view()->share('awardedUnitFunds',$awardedUnitFunds );
+
+
+                    // Forum Object coading 
+                    view()->share("unit_id", $taskObj->unit_id);
+                    view()->share("section_id", 2);
+                    view()->share("object_id",$taskObj->id);
+
+                    $site_activity = SiteActivity::where('unit_id',$taskObj->unit_id)
+                                    ->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+
+                    view()->share('site_activity',$site_activity);
+                    view()->share('unit_activity_id',$taskObj->unit_id);
+
+                    $revisions = TasksRevision::select(['tasks_revisions.user_id','tasks_revisions.id','tasks_revisions.unit_id','tasks_revisions.comment','tasks_revisions.size','tasks_revisions.created_at','users.first_name','users.last_name',])
+                            ->join('users', 'users.id', '=', 'tasks_revisions.user_id')
+                            ->where("tasks_revisions.unit_id","=",$taskObj->unit_id)
+                            ->where("tasks_revisions.task_id","=",$taskObj->id)
+                            ->get();
+
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+
+                    view()->share('userIDHashID', $userIDHashID);
+                    view()->share('Carbon', new Carbon);
+                    view()->share('revisions',$revisions );
+
+                    return view('tasks.revison.view');
+                }
+            }
+        }
+        return view('errors.404');
+    }
+
+    public function diff($task_id,$rev1,$rev2,Request $request){
+        view()->share('task_id',$task_id);
+        if(!empty($task_id)){
+            $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+            $task_id = $taskIDHashID->decode($task_id);
+            if(!empty($task_id)){
+                $task_id = $task_id[0];
+                $taskObj = Task::with(['objective','task_documents'])->find($task_id);
+                if(empty($taskObj))
+                    return ('errors.404');
+
+                $taskObj->unit=[];
+                if(!empty($taskObj->objective))
+                    $taskObj->unit = Unit::getUnitWithCategories($taskObj->unit_id);
+                if(!empty($taskObj)){
+                    view()->share('taskObj',$taskObj );
+
+                    $flag =Task::isUnitAdminOfTask($task_id); // right now considered only unit admin can assigned task to bidder if they
+                    // want task creator can also assign task to bidder then remove this and uncomment above lines
+                    $taskBidders = [];
+                    if($flag){
+                        $taskBidders = TaskBidder::join('users','task_bidders.user_id','=','users.id')
+                                        ->select(['users.first_name','users.last_name','users.id as user_id','task_bidders.*'])
+                                        ->where('task_id',$task_id)->get();
+                    }
+                    view()->share('taskBidders',$taskBidders);
+                    // end display listing of bidders
+
+                    $availableFunds =Fund::getTaskDonatedFund($task_id);
+                    $awardedFunds =Fund::getTaskAwardedFund($task_id);
+
+                    view()->share('availableFunds',$availableFunds );
+                    view()->share('awardedFunds',$awardedFunds );
+
+                    $availableUnitFunds =Fund::getUnitDonatedFund($taskObj->unit_id);
+                    $awardedUnitFunds =Fund::getUnitAwardedFund($taskObj->unit_id);
+
+                    view()->share('availableUnitFunds',$availableUnitFunds );
+                    view()->share('awardedUnitFunds',$awardedUnitFunds );
+
+
+                    // Forum Object coading 
+                    view()->share("unit_id", $taskObj->unit_id);
+                    view()->share("section_id", 2);
+                    view()->share("object_id",$taskObj->id);
+
+                    $forumID =  Forum::checkTopic(array(
+                        'unit_id' => $taskObj->unit_id,
+                        'section_id' => 2,
+                        'object_id' => $taskObj->id,
+                    ));
+                    
+                    if(!empty($forumID)){
+                        view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
+                    }
+
+                    $site_activity = SiteActivity::where('unit_id',$taskObj->unit_id)
+                                    ->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+
+                    view()->share('site_activity',$site_activity);
+                    view()->share('unit_activity_id',$taskObj->unit_id);
+
+                    $revisions = TasksRevision::select(['tasks_revisions.user_id','tasks_revisions.id','tasks_revisions.unit_id','tasks_revisions.comment','tasks_revisions.size','tasks_revisions.description','tasks_revisions.created_at','users.first_name','users.last_name',])
+                            ->join('users', 'users.id', '=', 'tasks_revisions.user_id')
+                            ->where("tasks_revisions.unit_id","=",$taskObj->unit_id)
+                            ->where("tasks_revisions.task_id","=",$taskObj->id)
+                            ->whereIn("tasks_revisions.id",[ (int)$rev1, (int)$rev2 ])
+                            ->get();
+                           
+                    if($revisions->count() == 2){
+                        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+
+                        view()->share('userIDHashID', $userIDHashID);
+                        view()->share('Carbon', new Carbon);
+                        view()->share('revisions',$revisions );
+                                  
+                        return view("tasks.revison.changes_difference");
+                    }
+
+
+                }
+            }
+        }
+        return view('errors.404');
     }
 
     /**
@@ -157,6 +317,8 @@ class TasksController extends Controller
         view()->share('awardedUnitFunds',$awardedUnitFunds);
         view()->share('task_unit_id',$task_unit_id);
         view()->share('task_objective_id',$task_objective_id);
+        view()->share('unit_activity_id',$task_objective_id);
+
 
         // ********************* end **************************
 
@@ -442,6 +604,37 @@ class TasksController extends Controller
                     $task_skills =$request->input('task_skills');
                     if(!empty($task_skills))
                         $task_skills  = implode(",",$task_skills );
+
+                    /* Store old data Start */
+                        $bytes = TasksRevision::strBytes( str_replace(' ', '', strip_tags($request->input('description'))) );
+                        $oldBytes = TasksRevision::strBytes( str_replace(' ', '', strip_tags($task->description)) );
+
+                        $TasksRevision = new TasksRevision;
+                        $TasksRevision->user_id = $task->user_id;
+                        $TasksRevision->unit_id = $task->unit_id;
+                        $TasksRevision->objective_id = $task->objective_id;
+                        $TasksRevision->name = $task->name;
+                        $TasksRevision->description = $task->description;
+                        $TasksRevision->task_action = $task->task_action;
+                        $TasksRevision->summary = $task->summary;
+                        $TasksRevision->skills = $task->skills;
+                        $TasksRevision->estimated_completion_time_start = $task->estimated_completion_time_start;
+                        $TasksRevision->estimated_completion_time_end = $task->estimated_completion_time_end;
+                        $TasksRevision->compensation = $task->compensation;
+                        $TasksRevision->assign_to = (int)$task->assign_to;
+                        $TasksRevision->status = $task->status;
+                        $TasksRevision->modified_by = Auth::user()->id;
+                        $TasksRevision->created_at = $task->created_at;
+                        $TasksRevision->updated_at = $task->created_at;
+                        $TasksRevision->deleted_at = $task->created_at;
+                        $TasksRevision->comment = $task->comment. " ";
+                        $TasksRevision->task_id = $task->id;
+                        $TasksRevision->size = (  $bytes - $oldBytes );
+
+                        $TasksRevision->save();
+                    /* Store old data End */
+
+
                     Task::where('id',$task_id)->update([
                         //'user_id'=>Auth::user()->id,
                         'unit_id'=>$unit_id[0],
@@ -842,6 +1035,21 @@ class TasksController extends Controller
                     view()->share('site_activity',$site_activity);
                     view()->share('unit_activity_id',$taskObj->unit_id);
                     $skillNames = JobSkill::getSKillWithComma($taskObj->skills);
+
+                    // Forum Object coading 
+                    view()->share("unit_id", $taskObj->unit_id);
+                    view()->share("section_id", 2);
+                    view()->share("object_id",$taskObj->id);
+
+                    $forumID =  Forum::checkTopic(array(
+                        'unit_id' => $taskObj->unit_id,
+                        'section_id' => 2,
+                        'object_id' => $taskObj->id,
+                    ));
+                    
+                    if(!empty($forumID)){
+                        view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
+                    }
 
                     view()->share('skill_names',$skillNames);
                     return view('tasks.view');

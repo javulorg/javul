@@ -95,7 +95,7 @@ footer .container{padding-top:15px;padding-bottom:15px;}
 .label-value{height: auto;border:0px;padding:0px;font-weight: bold !important;}
 .unit_info_link_2,.unit_info_link_1{padding: 0px;list-style: none;}
 .unit_info_link_2 li,.unit_info_link_1 li{display: inline;}
-.unit_info_link_2 li:not(:last-child){margin-right: 20px;}
+.unit_info_link_2 li:not(:last-child){margin-right: 12px;}
 .unit_info_link_2{padding-top:5px;margin-bottom:5px !important}
 .unit_info_link_1{margin-bottom:6px !important}
 .unit-info-main-div{line-height:58px;border-right:1px solid #ddd;}

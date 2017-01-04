@@ -336,100 +336,38 @@
                             </button>
                         </form>
                     </div>
+
                     <div class="list-group tab-pane " id="account_settings">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Alert Name</th>
-                                    <th>Email Alert</th>
-                                    <th>On-site Alert</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td width="40%" style="width: 40%;">Account Creation</td>
-                                    <td>
-                                        <input checked disabled  data-toggle="toggle" type="checkbox" name="alert_account_creation"
-                                               id="alert_account_creation" class="alerts" value="account_creation">
-                                    </td>
-                                    <td>-</td>
-                                </tr>
-
-                                <tr>
-                                    <td width="40%" style="width: 40%;">Confirmation Email</td>
-                                    <td>
-                                        <input checked disabled  data-toggle="toggle" type="checkbox" name="alert_confirmation_email"
-                                               id="alert_confirmation_email" class="alerts" value="confirmation_email">
-                                    </td>
-                                    <td>-</td>
-                                </tr>
-
-                                <tr>
-                                    <td width="40%" style="width: 40%;">Forum Replies</td>
-                                    <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->forum_replies == 1) checked  @endif data-toggle="toggle"
-                                               type="checkbox"
-                                               name="alert_forum_replies"
-                                               id="alert_forum_replies" class="alerts" value="forum_replies">
-                                    </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td width="40%" style="width: 40%;">Watched Items</td>
-                                    <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->watched_items==1) checked  @endif data-toggle="toggle"
-                                               type="checkbox"
-                                               name="alert_watched_items"
-                                               id="alert_watched_items" class="alerts" value="watched_items">
-                                    </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td width="40%" style="width: 40%;">Inbox</td>
-                                    <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->inbox==1) checked  @endif data-toggle="toggle"
-                                               type="checkbox"
-                                               name="alert_inbox"
-                                               id="alert_inbox" class="alerts" value="inbox">
-                                    </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td width="40%" style="width: 40%;">Fund Received</td>
-                                    <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->fund_received==1) checked  @endif data-toggle="toggle"
-                                               type="checkbox"
-                                               name="alert_fund_received"
-                                               id="alert_fund_received" class="alerts" value="fund_received">
-                                    </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td width="40%" style="width: 40%;">Task Management</td>
-                                    <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->task_management==1) checked  @endif data-toggle="toggle"
-                                               type="checkbox"
-                                               name="alert_task_management"
-                                               id="alert_task_management" class="alerts" value="task_management">
-                                    </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        @if(!empty($alertsObj) && count($alertsObj) > 0)
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Alert Name</th>
+                                        <th>Email Alert</th>
+                                        <th>On-site Alert</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($alertsObj as $index=>$alert)
+                                        <tr>
+                                            <td width="40%" style="width: 40%;">{{$alert->alert_name}}</td>
+                                            <td><input @if($alert->alert_status==1) checked @endif @if($alert->alert_name =="account creation" || $alert->alert_name =="confirmation email")
+                                                disabled @endif
+                                                data-toggle="toggle" type="checkbox"
+                                                       name="alert_{{$index}}" id="alert_{{$index}}" class="alerts"
+                                                       value="{{$alert->alert_name}}"></td>
+                                            <td>
+                                                @if($alert->alert_name !="account creation" && $alert->alert_name != "confirmation email")
+                                                    <input checked disabled data-toggle="toggle" type="checkbox">
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
                     </div>
                 </div>
             </div>

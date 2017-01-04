@@ -36,16 +36,14 @@ class AlertsController extends Controller
         $flag = $request->input('flag');
         $field_name = $request->input('field_name');
         if(!empty($field_name)){
-            $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-            $val = 1;
-            if($flag == "false")
-                $val=0;
+            $alertObj = Alerts::where('alert_name','=',$field_name)->first();
             if(!empty($alertObj) && count($alertObj) > 0){
-                $alertObj->update([$field_name=>$val]);
+                $val = 1;
+                if($flag == "false")
+                    $val=0;
+                $alertObj->update(['alert_status'=>$val]);
                 return \Response::json(['success'=>true]);
-            }else
-                Alerts::create(['user_id'=>Auth::user()->id,$field_name=>1]);
-                return \Response::json(['success'=>true]);
+            }
         }
         return \Response::json(['success'=>false]);
     }

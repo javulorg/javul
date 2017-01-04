@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="col-sm-8">
-            <h3 style="display: inline-block;width: 70%;">Total Activity Points : {{$activityPoints}}</h3>
+            <h3 style="display: inline-block;width: 70%;">Total Activity Points : {{$activityPoints}} | Idea Points : {{$activityPoints_forum}}</h3>
             <a class="btn black-btn btn-sm" id="add_funds_btn" href="{!! url('funds/donate/user/'.$userIDHashID->encode($userObj->id)) !!}"
                style="display: inline-block;float:right;margin-top:10px">
                 <i class="fa fa-plus plus"></i>
@@ -143,6 +143,32 @@
                             @endif
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-grey panel-default" style="margin-top:29px ">
+                <div class="panel-heading">
+                    <h4 class="pull-left">User Wiki</h4>
+                    <div class="user-wikihome-tool pull-right">
+                       <div class="user-wikihome-tool pull-right small-a">
+                       <a href="{{ route('user_wiki_newpage',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}"> + New Page </a> | 
+                       <a href="{{ route('user_wiki_recent_changes',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}"> Recent Changes </a> |
+                       <a href="{{ route('user_wiki_page_list',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}"> List All Pages </a>
+                    </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body table-inner table-responsive loading_content_hide">
+                    <div class="wiki-home" style="padding:5px">
+                        <div class="pull-right small-a">
+                            <a href="{{ route('user_wiki_editpage',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash, $page_id_hase ])  }}">Edit</a>
+                            <a href="{{ route('user_wiki_history',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash, $page_id_hase ])  }}">View History</a>
+                            
+                        </div>
+                        <div class="clearfix"></div>
+                            <?= $userWiki[0]->page_content ?>
+                       
                     </div>
                 </div>
             </div>
