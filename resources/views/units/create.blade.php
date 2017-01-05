@@ -228,6 +228,12 @@
                             <textarea class="form-control summernote" name="description">@if(!empty($unitObj)) {!! $unitObj->description !!} @endif</textarea>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-12 form-group">
+                            <label class="control-label">Comment</label>
+                            <input class="form-control" name="comment">
+                        </div>
+                    </div>
                     <div class="row form-group">
                         <div class="col-sm-12 ">
                             <button class="btn black-btn" id="create_unit" type="submit">

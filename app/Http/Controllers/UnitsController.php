@@ -99,11 +99,12 @@ class UnitsController extends Controller
                             ->where("unit_revisions.unit_id","=",$unit_id)
                             ->get();
 
-
+                        
                 //Carbon::createFromFormat('Y-m-d H:i:s', $pageChanges->time_stamp)->diffForHumans();
 
                 $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
 
+                view()->share('units', $units);
                 view()->share('userIDHashID', $userIDHashID);
                 view()->share('Carbon', new Carbon);
                 view()->share('revisions',$revisions );
@@ -115,6 +116,52 @@ class UnitsController extends Controller
         }
         return view('errors.404');
     }
+
+    public function revisonview($unit_id,$revision_id,Request $request)
+    {
+        if(!empty($unit_id))
+        {
+            view()->share('unit_id',$unit_id );
+            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unit_id = $unitIDHashID->decode($unit_id);
+            if(!empty($unit_id)){
+                $unit_id = $unit_id[0];
+                $units = Unit::getUnitWithCategories($unit_id);
+
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $availableFunds =Fund::getUnitDonatedFund($unit_id);
+                $awardedFunds =Fund::getUnitAwardedFund($unit_id);
+
+                view()->share('unitObj',$units );
+                view()->share('unit_activity_id',$unit_id);
+                view()->share('availableFunds',$availableFunds );
+                view()->share('awardedFunds',$awardedFunds );
+                view()->share('site_activity',$site_activity);
+                
+                $revisions = UnitRevision::select(['unit_revisions.user_id','unit_revisions.id','unit_revisions.description','unit_revisions.unit_id','unit_revisions.comment','unit_revisions.size','unit_revisions.created_at','users.first_name','users.last_name',])
+                            ->join('users', 'users.id', '=', 'unit_revisions.user_id')
+                            ->where("unit_revisions.unit_id","=",$unit_id)
+                            ->where("unit_revisions.id","=",$revision_id)
+                            ->get();
+
+                if($revisions->count()==1)
+                {
+                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+
+                    view()->share('units', $units);
+                    view()->share('userIDHashID', $userIDHashID);
+                    view()->share('Carbon', new Carbon);
+                    view()->share('revisions',$revisions->first());
+                              
+                    return view("units.revison.view_revision");
+                }
+                
+            }
+
+        }
+        return view('errors.404');
+    }
+
 
     public function index(Request $request){
         $msg_flag = false;
@@ -352,6 +399,7 @@ class UnitsController extends Controller
                         'description'=>trim($request->input('description')),
                         'credibility'=>$request->input('credibility'),
                         'country_id'=>$request->input('country'),
+                        'comment'=>$request->input('comment'),
                         'state_id'=>$request->input('state'),
                         'city_id'=>$request->input('city'),
                         'status'=>$status,

@@ -101,7 +101,7 @@ class ChatController extends Controller
                     		'id' => $member->id,
     			            'room_id' => $member->room_id,
     			            'user_id' => $member->user_id,
-                            'link'   => $member->user_id ==  Auth::user()->id ? '' : url('userprofiles/'.$user_id.'/'.strtolower($member->first_name.'_'.$member->last_name)),
+                            'link'   =>  url('userprofiles/'.$user_id.'/'.strtolower($member->first_name.'_'.$member->last_name)),
     			            'join_time' => $member->join_time,
     			            'name' => $member->first_name . ' ' . $member->last_name,
                     	);

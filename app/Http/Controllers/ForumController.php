@@ -102,7 +102,8 @@ class ForumController extends Controller
         else if($section_name == 'other_discussions'){
         	$section_id = 4;
         }
-    	view()->share("section_id",$section_id);
+        view()->share("section_id",$section_id);
+    	view()->share("section_name",$section_name);
     	$unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
         $unit_id = $unitIDHashID->decode($unit_id);
         if(!empty($unit_id)){

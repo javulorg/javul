@@ -29,14 +29,11 @@
         <div class="col-md-8">
             <div class="panel panel-grey panel-default">
                 
-                <div class="panel-heading current_task_heading  current_task_heading_red featured_unit_heading">
-                    <div class="featured_unit current_task red">
-                        <i class="fa fa-book"></i>
+                <div class="panel-heading current_task_heading featured_unit_heading">
+                    <div class="featured_unit current_task">
+                        <i class="fa fa-pencil-square-o"></i>
                     </div>
-                    <h4>View History </h4>
-                    <div class="button pull-right small-a">
-                       
-                    </div>
+                    <h4>View History: {!! $taskObj->name !!} </h4>
                 </div>
                 <div class="panel-body list-group">
                     <div class="col-md-12">
@@ -58,7 +55,7 @@
                                  ?>
                                     <tr>
                                         <td> <input type="checkbox" name="id" value="{{ $value['id'] }}" class="single-checkbox"> </td>
-                                        <td>Rev Link</td>
+                                        <td><a href="{!! route('unit_tasks_view',[$task_id,$value['id']])  !!}">View</a> </td>
                                         <td>{{ $Carbon::createFromFormat('Y-m-d H:i:s', $value->created_at)->diffForHumans() }}</td>
                                         <td> <a href="{{ url('userprofiles/'. $user_id .'/'.strtolower($value->first_name.'_'.$value->last_name)) }}"> {{ $value->first_name ." ".$value->last_name }} </a></td>
                                         <td>{{ $value->comment }} </td>

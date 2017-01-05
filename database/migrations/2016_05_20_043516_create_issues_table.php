@@ -24,6 +24,7 @@ class CreateIssuesTable extends Migration
             $table->foreign('task_id')->references('id')->on('tasks');
             $table->string('title');
             $table->text('description')->nullable();
+            $table->string('comment');
             $table->text('file_attachments')->nullable();
             $table->string('status');
             $table->text('resolution')->nullable();

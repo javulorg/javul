@@ -16,6 +16,7 @@ class ObjectiveRevisions extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('unit_id')->unsigned();
             $table->string('name',255);
+            $table->text('description');
             $table->dateTime('created_time');
             $table->longText('comment',255);
             $table->longText('size',10);

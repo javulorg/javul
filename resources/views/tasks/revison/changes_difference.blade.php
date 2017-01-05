@@ -28,13 +28,12 @@
         </div>
          <div class="col-md-8">
             <div class="panel panel-grey panel-default">
-                
-                <div class="panel-heading current_task_heading  current_task_heading_red featured_unit_heading">
-                    <div class="featured_unit current_task red">
-                        <i class="fa fa-book"></i>
+              
+                <div class="panel-heading current_task_heading featured_unit_heading">
+                    <div class="featured_unit current_task">
+                        <i class="fa fa-pencil-square-o"></i>
                     </div>
-                    <h4><b>Comparing Revisions </b></h4>
-                   
+                    <h4>Comparing Revisions</h4>
                 </div>
                 <div class="panel-body list-group">
                     <div class="col-md-12">
