@@ -84,7 +84,7 @@
             <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                 <div class="panel-heading current_unit_heading featured_unit_heading">
                    
-                    <h4 style="width: 100%;line-height: 31px;">Forum
+                    <h4 style="width: 100%;line-height: 31px;"> Subforum: {!! $section_name !!} 
                      <a class="pull-right black-btn" href="{!! url('forum/create').'/'.$unit_id.'/'.$section_name !!}"> Create New Topic </a>
                     </h4>
                 </div>

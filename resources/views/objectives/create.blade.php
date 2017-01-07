@@ -144,6 +144,13 @@
                                     @if(!empty($objectiveObj)) {{$objectiveObj->description}} @endif
                                 </textarea>
                                 </div>
+
+
+                                <div class="col-sm-12 form-group">
+                                    <label class="control-label">Comment</label>
+                                    <input class="form-control" name="comment">
+                                </div>
+                                
                             </div>
                             <div class="row form-group">
                                 <div class="col-sm-12 ">

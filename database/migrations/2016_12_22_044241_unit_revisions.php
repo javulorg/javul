@@ -25,7 +25,7 @@ class UnitRevisions extends Migration
             $table->string('status',255);
             $table->integer('parent_id')->unsigned();
             $table->integer('modified_by')->unsigned();
-            $table->dateTime('created_time');
+            $table->dateTime('created_at');
             $table->string('size',255);
         });
     }

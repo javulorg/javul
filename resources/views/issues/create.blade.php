@@ -198,6 +198,12 @@
                                                 {{$issueObj->resolution}} @endif</textarea>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-sm-12 form-group">
+                                        <label class="control-label">Comment</label>
+                                        <input class="form-control" name="comment">
+                                    </div>
+                                </div>
                                 <div class="row form-group">
                                     <div class="col-sm-12 ">
                                         <button id="create_objective" type="submit"  class="btn black-btn">
@@ -210,6 +216,8 @@
 
                                     </div>
                                 </div>
+
+                                
                             </form>
                         </div>
                     </div>
