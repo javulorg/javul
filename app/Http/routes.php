@@ -106,8 +106,8 @@ Route::get('users/{slug}/{page_id}/wiki/{page_slug}', 'UserWikiController@view')
 
 // unit controller route
 Route::any('units/add', 'UnitsController@create');
-Route::get('units/{unitid}/revison', 'UnitsController@revison')->name('unit_revison');
-Route::get('units/{unitid}/revison/{revision_id}', 'UnitsController@revisonview')->name('unit_revison_view');
+Route::get('units/{unitid}/revisions', 'UnitsController@revison')->name('unit_revison');
+Route::get('units/{unitid}/revisions/{revision_id}', 'UnitsController@revisonview')->name('unit_revison_view');
 Route::get('units/{unitid}/diff/{rev1}/{rev2}', 'UnitsController@diff')->name('unit_revison_cmp');
 Route::get('unit/set_featured_unit','UnitsController@set_featured_unit');
 Route::any('units/{unitid}/edit', 'UnitsController@edit');
@@ -122,8 +122,8 @@ Route::get('units/get_units_paginate', 'UnitsController@get_units_paginate');
 
 // objective controller route
 Route::any('objectives/add','ObjectivesController@create');
-Route::get('objectives/{objectiveid}/revison', 'ObjectivesController@revison')->name('objectives_revison');
-Route::get('objectives/{objectiveid}/revison/{revision_id}', 'ObjectivesController@revisonview')->name('unit_objectives_view');
+Route::get('objectives/{objectiveid}/revisions', 'ObjectivesController@revison')->name('objectives_revison');
+Route::get('objectives/{objectiveid}/revisions/{revision_id}', 'ObjectivesController@revisonview')->name('unit_objectives_view');
 Route::get('objectives/{objectiveid}/diff/{rev1}/{rev2}', 'ObjectivesController@diff')->name('objectives_revison_cmp');
 
 Route::any('objectives/{unitid}/add', 'ObjectivesController@create');
@@ -182,8 +182,8 @@ Route::get('forum/{unit_id}/{section_id}', 'ForumController@view');
 
 // tasks controller route
 Route::any('tasks/add', 'TasksController@create');
-Route::get('tasks/{taskid}/revison', 'TasksController@revison')->name('tasks_revison');
-Route::get('tasks/{taskid}/revison/{revision_id}', 'TasksController@revisonview')->name('unit_tasks_view');
+Route::get('tasks/{taskid}/revisions', 'TasksController@revison')->name('tasks_revison');
+Route::get('tasks/{taskid}/revisions/{revision_id}', 'TasksController@revisonview')->name('unit_tasks_view');
 Route::get('tasks/{taskid}/diff/{rev1}/{rev2}', 'TasksController@diff')->name('tasks_revison_cmp');
 Route::any('tasks/{unitid}/{objectiveid}/add', 'TasksController@create');
 Route::post('tasks/get_objective', 'TasksController@get_objective');
@@ -217,8 +217,8 @@ Route::get('funds/success','FundsController@success');
 Route::get('funds/cancel','FundsController@cancel');
 
 Route::get('issues/remove_issue_document','IssuesController@remove_document');
-Route::get('issues/{issue_id}/revison', 'IssuesController@revison')->name('issues_revison');
-Route::get('issues/{issue_id}/revison/{revision_id}', 'IssuesController@revisonview')->name('unit_issues_view');
+Route::get('issues/{issue_id}/revisions', 'IssuesController@revison')->name('issues_revison');
+Route::get('issues/{issue_id}/revisions/{revision_id}', 'IssuesController@revisonview')->name('unit_issues_view');
 Route::get('issues/{issue_id}/diff/{rev1}/{rev2}', 'IssuesController@diff')->name('issues_revison_cmp');
 Route::get('/issues/get_issues_paginate','IssuesController@get_issues_paginate');
 Route::any('/issues/add','IssuesController@add');
