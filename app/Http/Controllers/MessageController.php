@@ -5,17 +5,27 @@ use App\Http\Requests;
 use App\Message;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
+use DB;
 
 class MessageController extends Controller
 {
-    //
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view','get_units_paginate']]);
     }
+    public function new_msg()
+    {
+        $json = array();
+        $json['count'] = DB::table('message')->where("to","=",Auth::user()->id)->where("isRead","=",DB::raw(0))->count();
+        
+        return json_encode($json);
+    }
+
     public function inbox()
     {
+        Message::setRead();
+
         $filter = array(
-            array('message.from',"=", Auth::user()->id),
+            array('message.to',"=", Auth::user()->id),
         );
         view()->share("page", 'inbox');
         view()->share("messages", Message::getMsg($filter,true) );
@@ -30,7 +40,10 @@ class MessageController extends Controller
         if(!empty($message['message'])){
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode($message['message'][0]['to']);
+
             $message['message'][0]['link'] = url('userprofiles/'. $user_id .'/'.strtolower($message['message'][0]['first_name'].'_'.$message['message'][0]['last_name']));
+
+
             view()->share("message", $message['message'][0] );
             view()->share("myId", Auth::user()->id );
             view()->share("page", '' );
@@ -46,8 +59,9 @@ class MessageController extends Controller
     public function sent()
     {
     	$filter = array(
-    		array('message.to',"=", Auth::user()->id),
+    		array('message.from',"=", Auth::user()->id),
     	);
+
     	view()->share("page", 'sent');
     	view()->share("messages", Message::getMsg($filter,true) );
     	return view("message.inbox");

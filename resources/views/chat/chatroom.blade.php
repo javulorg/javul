@@ -218,24 +218,27 @@
                     },
                     success:function(json){
                         var html = '';
-                        $.each(json['messages'],function(i,j){
-                            if( Number($this.lastId) <= Number(j['id']) ){
-                                $this.lastId = Number(j['id']);
-                            }
-                            var classs = "you";
-                            if($this.user_id == j['user']) classs = "me";
-                            html += '<div class="bubble '+ classs +'" data-id="'+ j['id'] +'">';
-                            html += "<b contextmenu  data-id='" + j['user'] +"' data-profile='"+ j['link'] +"' >" + j['name'] + "</b><br> " + j['body'];
-                            html += '<span class="time">'+ j['time'] +'</span>';
-                            html += '</div>';
-                        });
+                        if(json['messages']){
+                            $.each(json['messages'],function(i,j){
+                                if( Number($this.lastId) <= Number(j['id']) ){
+                                    $this.lastId = Number(j['id']);
+                                }
+                                var classs = "you";
+                                if($this.user_id == j['user']) classs = "me";
+                                html += '<div class="bubble '+ classs +'" data-id="'+ j['id'] +'">';
+                                html += "<b contextmenu  data-id='" + j['user'] +"' data-profile='"+ j['link'] +"' >" + j['name'] + "</b><br> " + j['body'];
+                                html += '<span class="time">'+ j['time'] +'</span>';
+                                html += '</div>';
+                            });
+                        }
                         $this.loaduserHtml(json['members']);
-                        
                         if(reCall){
                             setTimeout(function(){ $this.loadmsg(true); }, 5000);
                         }
-                        $(".message-load").append(html);
-                        if(html != '') $('.message-load').animate({scrollTop: $('.message-load').prop("scrollHeight")}, 500);
+                        if(html != ''){
+                            $(".message-load").append(html);
+                            if(html != '') $('.message-load').animate({scrollTop: $('.message-load').prop("scrollHeight")}, 500);
+                        }
                     }
                 })
                 

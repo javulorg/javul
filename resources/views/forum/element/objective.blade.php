@@ -24,7 +24,7 @@
                         <input type="hidden" name="section_id" value="<?=  $section_id ?>">
                         <input type="hidden" name="object_id" value="<?=  $object_id ?>">
                         <div class="col-sm-12 form-group">
-                            <button class="btn black-btn pull-right">Replay</button>
+                            <button class="btn black-btn pull-right">Reply</button>
                         </div>
                     </form>
                 </div>

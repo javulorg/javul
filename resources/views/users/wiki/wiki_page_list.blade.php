@@ -57,11 +57,11 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-                                <tbody>
+                                <tfoot class="<?= $userWikiPage->links() == '' ? 'hide' : '' ?>">
                                     <tr>
                                         <td colspan="3"> {{ $userWikiPage->links() }} </td>
                                     </tr>
-                                </tbody>
+                                </tfoot>
                             </table>
                         </div>
                     </div>

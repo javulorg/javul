@@ -63,12 +63,13 @@
                                     </tr>
                                 <?php } ?>
                             </tbody>
-                            <tfoot>
+                            <tfoot class="<?= $pages['links'] == '' ? 'hide' : '' ?>">
                                 <tr>
                                     <td class="text-center" colspan="100%"><?= $pages['links'] ?></td>
                                 </tr>
                             </tfoot>
                           </table>
+                          <br>
                         </div>
                     </div>
                     <div class="clearfix"></div>

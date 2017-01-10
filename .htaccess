@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c>
    RewriteEngine On
 
-   RewriteBase /laravel/javul-github/javul/
+   RewriteBase /laravel/javul-final/
    RewriteCond %{REQUEST_FILENAME} !-d
    RewriteRule ^(.*)/$ /$1 [L,R=301]
 

@@ -754,3 +754,14 @@ input:disabled, input.disabled {
     #pay_now{margin-left: 0px;position: relative;top:0px;margin-top: 15px;}
     .user-menu.alert a{font-size:12px;}
 }
+
+#unread-message{
+        position: absolute;
+    padding: 4px;
+    height: 15px;
+    line-height: 6px;
+    right: -4px;
+    top: 2px;
+    border: solid 1px #ed6b75;
+    display: none;
+}
