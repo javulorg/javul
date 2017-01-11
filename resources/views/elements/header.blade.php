@@ -54,8 +54,8 @@
 
                     <li class="top_menu_separator">&nbsp;|&nbsp;</li>
                     <li class="top_menu_li">
-                        <a href="#">
-                            Inbox <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <a href="{!! route('message_inbox') !!}">
+                            Inbox <span id="unread-message"  class="badge badge-danger"></span> <i class="fa fa-envelope" aria-hidden="true"></i>
                         </a>
                     </li>
                     <li class="top_menu_separator middle_sep">&nbsp;|&nbsp;</li>

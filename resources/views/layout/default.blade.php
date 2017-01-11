@@ -121,6 +121,34 @@ License: You must have a valid license purchased only from themeforest(the above
         </script>
 
         <script type="text/javascript">
+            <?php  if(\Auth::check()){ ?>
+                function unreadmsg() {
+                    $.ajax({
+                        type:'post',
+                        url:siteURL  + '/inbox/new_msg',
+                        data:{_token:'{{csrf_token()}}'},
+                        dataType:'json',
+                        complete: function(xhr, textStatus) {
+                          setTimeout(function() {
+                            unreadmsg();
+                          }, 8000);
+                        },
+                        success:function(json){
+                            if(parseInt( json['count'] ) > 0){
+                                $("#unread-message").html(json['count']).fadeIn();
+                            }
+                            else
+                            {
+                                $("#unread-message").append(0).fadeOut();   
+                            }
+                        }
+                    })
+                }
+
+                unreadmsg();
+            <?php } ?>
+
+
             $(".container").delegate(".start-unit-chat","click",function(){
             $this = $(this);
             var unit_id = $this.attr("data-unit_id");

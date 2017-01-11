@@ -146,7 +146,8 @@ Route::post('chat/loadmsg', 'ChatController@loadmsg');
 Route::post('chat/online', 'ChatController@online');
 Route::get('chat/{roomid}', 'ChatController@chatroom');
 // message controller route
-Route::get('inbox', 'MessageController@inbox');
+Route::get('inbox', 'MessageController@inbox')->name("message_inbox");
+Route::post('inbox/new_msg', 'MessageController@new_msg');
 Route::get('message/sent', 'MessageController@sent');
 Route::get('message/view/{message_id}', 'MessageController@view');
 Route::any('message/send/{user_id?}', 'MessageController@send');

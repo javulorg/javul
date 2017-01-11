@@ -11,13 +11,19 @@ class Message extends Model
     	$member = array(
             'body' => $data['message'],
 			'subject' => $data['subject'],
-			'to' => Auth::user()->id,
-			'from' => $data['user_id'],
+			'to' =>  $data['user_id'],
+			'from' =>  Auth::user()->id,
 			'isRead' => 0,
 			'datetime' => date("Y-m-d H:i:s"),
 		);
 		return DB::table('message')->insertGetId($member);
     }
+
+    public static function setRead()
+    {
+         DB::table('message')->where("to","=",Auth::user()->id)->update(['isRead' => 1]);
+    }
+
     public static function users($data = array())
     {
        return  DB::table("users")
@@ -29,9 +35,9 @@ class Message extends Model
     {
     	$messages =  DB::table("message")
     				->select(["message.*","users.first_name","users.last_name"])
-    				->leftJoin('users', 'users.id', '=', 'message.to')
+    				->leftJoin('users', 'users.id', '=', DB::raw(' IF( message.to = '. Auth::user()->id .' ,message.from,message.to)') )
                     ->where(function ($query) {
-                        $query->where("to","=",DB::raw(Auth::user()->id))->orWhere("to","=",DB::raw(Auth::user()->id));
+                        $query->where("to","=",DB::raw(Auth::user()->id))->orWhere("from","=",DB::raw(Auth::user()->id));
                     })
     				->where($filter)
     				->orderBy("message_id","DESC")
