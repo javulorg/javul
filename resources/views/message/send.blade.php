@@ -54,7 +54,9 @@
                                     <label>To</label>
                                     <select  name="user_id" class="form-control" >
                                         <?php foreach ($user as $key => $value) { ?>
-                                            <option value="<?= $value->id ?>"><?= $value->first_name ?> <?= $value->first_name ?></option>
+                                            <option value="<?= $value->id ?>">
+                                                <?= $value->first_name ?> <?= $value->last_name ?>
+                                            </option>
                                         <?php } ?>
                                     </select>
                                 </div>
