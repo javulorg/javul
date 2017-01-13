@@ -28,7 +28,8 @@ use Carbon\Carbon;
 class UnitsController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view','get_units_paginate']]);
+        $this->middleware('auth',['except'=>['index','view','get_units_paginate','search_by_category','search_units','get_state',
+            'get_city']]);
         view()->share('site_activity_text','Unit Activity Log');
     }
 
@@ -210,7 +211,11 @@ class UnitsController extends Controller
     public function get_city(Request $request){
         $state_id = $request->input('state_id');
         $cities = City::where('state_id',$state_id)->lists('name','id');
-        return \Response::json(['success'=>true,'cities'=>$cities]);
+        $state_name = null;
+        if(empty($cities) || count($cities) == 0) {
+            $state_name = State::getName($state_id);
+        }
+        return \Response::json(['success'=>true,'cities'=>$cities,'state_name'=>$state_name]);
     }
 
     /**
@@ -255,6 +260,18 @@ class UnitsController extends Controller
                 $status="active";
 
             $slug=substr(str_replace(" ","_",strtolower($request->input('unit_name'))),0,20);
+            $empty_city_state_name = $request->input('empty_city_state_name');
+
+            /*if(!empty($empty_city_state_name)) {
+                $empty_city_state_name = json_decode($empty_city_state_name);
+                if (count($empty_city_state_name) > 0)
+                    $empty_city_state_name = array_shift($empty_city_state_name);
+                dd($empty_city_state_name);
+            }*/
+            $city = $request->input('city');
+            if(!empty($empty_city_state_name)) {
+                $city = null;
+            }
 
             $unitID = Unit::create([
                 'user_id'=>Auth::user()->id,
@@ -265,9 +282,10 @@ class UnitsController extends Controller
                 'credibility'=>$request->input('credibility'),
                 'country_id'=>$request->input('country'),
                 'state_id'=>$request->input('state'),
-                'city_id'=>$request->input('city'),
+                'city_id'=>$city,
                 'status'=>'active',
-                'parent_id'=>$request->input('parent_unit')
+                'parent_id'=>$request->input('parent_unit'),
+                'state_id_for_city_not_exits'=>$empty_city_state_name
             ])->id;
 
 
@@ -380,7 +398,7 @@ class UnitsController extends Controller
                         $UnitRevision->category_id  = $units->category_id;
                         $UnitRevision->name  = $units->name;
                         $UnitRevision->description  = $units->description;
-                        $UnitRevision->comment  = $units->comment;
+                        $UnitRevision->comment  = $request->input('comment');
                         $UnitRevision->credibility  = $units->credibility;
                         $UnitRevision->country_id  = (int)$units->country_id;
                         $UnitRevision->state_id  = (int)$units->state_id;
@@ -395,6 +413,18 @@ class UnitsController extends Controller
                    
                     // store old revision data end
 
+                    $empty_city_state_name = $request->input('empty_city_state_name');
+
+                    /*if(!empty($empty_city_state_name)) {
+                        $empty_city_state_name = json_decode($empty_city_state_name);
+                        if (count($empty_city_state_name) > 0)
+                            $empty_city_state_name = array_shift($empty_city_state_name);
+                        dd($empty_city_state_name);
+                    }*/
+                    $city = $request->input('city');
+                    if(!empty($empty_city_state_name)) {
+                        $city = null;
+                    }
                     // update unit data.
                     Unit::where('id',$unit_id)->update([
                         'name'=>$request->input('unit_name'),
@@ -405,9 +435,10 @@ class UnitsController extends Controller
                         'country_id'=>$request->input('country'),
                         'comment'=>$request->input('comment'),
                         'state_id'=>$request->input('state'),
-                        'city_id'=>$request->input('city'),
+                        'city_id'=>$city,
                         'status'=>$status,
                         'parent_id'=>$request->input('parent_unit'),
+                        'state_id_for_city_not_exits'=>$empty_city_state_name,
                         'modified_by'=>Auth::user()->id
                     ]);
 
@@ -508,6 +539,17 @@ class UnitsController extends Controller
                     view()->share('unit_category_arr',$unit_category_arr);
                     view()->share('unit_credibility_arr',$unit_credibility_arr);
 
+                    $state_name_as_city_for_field = null;
+                    if(empty($units->city_id))
+                    {
+                        $state_name_as_city = (!empty($units->state_id_for_city_not_exits)?json_decode($units->state_id_for_city_not_exits):'');
+                        //dd($unit->state_id_for_city_not_exits);
+                        if(!empty($state_name_as_city)){
+                            $state_name_as_city = array_shift($state_name_as_city);
+                            $state_name_as_city_for_field = $state_name_as_city;
+                        }
+                    }
+                    view()->share('state_name_as_city_for_field',$state_name_as_city_for_field );
 
                     view()->share('unitObj',$units );
                     return view('units.create');
@@ -538,16 +580,28 @@ class UnitsController extends Controller
                     $userAuth = Auth::user();
                     $taskBidders = [];
                     if(!empty($userAuth))
-                    $taskBidders = Task::join('task_bidders','tasks.id','=','task_bidders.task_id')->where('task_bidders.user_id',
-                        Auth::user()->id)->where('unit_id',$unit_id)->where('tasks.status', '=', "approval")->count();
+                        $taskBidders = Task::join('task_bidders','tasks.id','=','task_bidders.task_id')->where('task_bidders.user_id',
+                            Auth::user()->id)->where('unit_id',$unit_id)->where('tasks.status', '=', "approval")->count();
 
                     if($taskForBidding > 0)
                         $taskForBidding = $taskForBidding - $taskBidders;
 
+                    $state_name_as_city_for_field = null;
                     if($unit->country_id == 247)
                         $cityName = "Global";
-                    else
+                    elseif(!empty($unit->city_id))
                         $cityName = City::find($unit->city_id)->name;
+                    else{
+                        $state_name_as_city = (!empty($unit->state_id_for_city_not_exits)?json_decode($unit->state_id_for_city_not_exits):'');
+                        //dd($unit->state_id_for_city_not_exits);
+                        if(!empty($state_name_as_city)){
+                            $state_name_as_city = array_shift($state_name_as_city);
+                            $state_name_as_city_for_field = $state_name_as_city;
+                            if(!empty($state_name_as_city))
+                                $cityName = $state_name_as_city->name;
+                        }
+                    }
+
 
                     view()->share('taskForBidding',$taskForBidding);
                     view()->share('cityName',$cityName);
@@ -753,17 +807,25 @@ class UnitsController extends Controller
         if(trim($country) != "" || trim($state) != "" || trim($city) != ""){
             // country
             if(trim($country) != "") {
-                if (!empty($where))
-                    $where .= ' OR (country_id = '.$country;
+                if (!empty($where)) {
+                    if(empty($state) && empty($city))
+                        $where .= ' OR (country_id = ' . $country.')';
+                    else
+                        $where .= ' OR (country_id = ' . $country;
+                }
                 else
-                    $where .= ' (country_id = '.$country;
+                    $where .= ' country_id = '.$country;
             }
 
             //state
             if(trim($state) != "") {
                 if (!empty($where)) {
-                    if(trim($country) != "")
-                        $where .= ' AND state_id = ' . $state;
+                    if(trim($country) != "") {
+                        if(empty($city) && !empty($by_category_type))
+                            $where .= ' AND state_id = ' . $state.')';
+                        else
+                            $where .= ' AND state_id = ' . $state;
+                    }
                     else
                         $where .= ' OR state_id = ' . $state;
                 }
@@ -778,20 +840,24 @@ class UnitsController extends Controller
             //city
             if(trim($city) != "") {
                 if (!empty($where)) {
-                    if(trim($country) != "" && trim($state) != "")
-                        $where .= ' AND city_id = ' . $city.')';
+                    if(trim($country) != "" && trim($state) != "") {
+                        if(!empty($by_category_type))
+                            $where .= ' AND city_id = ' . $city . ')';
+                        else
+                            $where .= ' AND city_id = ' . $city;
+                    }
                     else
-                        $where .= ' OR city_id = ' . $city.')';
+                        $where .= ' OR city_id = ' . $city;
                 }
                 else {
                     if(trim($country) != "" && trim($state) != "")
-                        $where .= ' AND city_id = ' . $city.')';
+                        $where .= ' AND city_id = ' . $city;
                     else
-                        $where .= ' city_id = ' . $city.')';
+                        $where .= ' city_id = ' . $city;
                 }
             }
         }
-
+        //dd($where);
         $unitObj = $unitObj->whereRaw($where)->paginate(\Config::get('app.page_limit'));
 //dd(\DB::getQueryLog());
         view()->share('units',$unitObj);

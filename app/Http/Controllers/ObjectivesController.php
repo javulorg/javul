@@ -658,10 +658,18 @@ class ObjectivesController extends Controller
                     $site_activity_text = '';
                     if($type == "up"){
                         $levelValue = "+1";
+                        if($importanceLevelObj->importance_level == '+1')
+                            $levelValue = '0';
+                        else
+                            $levelValue = '+1';
                         $site_activity_text =" upvote objective ";
                     }
                     else{
                         $levelValue = "-1";
+                        if($importanceLevelObj->importance_level == '-1')
+                            $levelValue = '0';
+                        else
+                            $levelValue = '-1';
                         $site_activity_text =" downvote objective ";
                     }
                     if(count($importanceLevelObj) > 0)
@@ -678,7 +686,10 @@ class ObjectivesController extends Controller
                     $upvotedCnt = ImportanceLevel::where('objective_id',$objectiveID)->where('importance_level','+1')->count();
                     $downvotedCnt = ImportanceLevel::where('objective_id',$objectiveID)->where('importance_level','-1')->count();
 
-                    $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
+                    if($levelValue == '0')
+                        $importancePercentage =0;
+                    else
+                        $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
 
                     if(is_float($importancePercentage))
                         $importancePercentage = ceil($importancePercentage);

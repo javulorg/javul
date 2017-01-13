@@ -105,7 +105,7 @@
                         <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
                     </label>
                 </div>
-                <div class="col-xs-8 paddingTB7">
+                <div class="col-xs-8 paddingTB7" style="padding-bottom: 2px;padding-top:5px">
                     <div class="row">
                         <div class="col-xs-6">Available</div>
                         <div class="col-xs-6 text-right">{{number_format($availableFunds,2)}} $</div>
@@ -114,6 +114,46 @@
                         <div class="col-xs-6">Awarded</div>
                         <div class="col-xs-6 text-right">{{number_format($awardedFunds,2)}} $</div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="list-group-item">
+            <div class="row">
+                <div class="col-xs-4 borderRT paddingTB7">
+                    <label class="control-label upper" style="width: 100%;">
+                        <span class="fund_icon">PARENT UNIT</span>
+                    </label>
+                </div>
+                <div class="col-xs-8 paddingTB7">
+                    <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->parent_id).'/'.\App\Unit::getSlug($unitObj->parent_id)) !!}">
+                        {{\App\Unit::getUnitName($unitObj->parent_id)}}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="list-group-item">
+            <div class="row">
+                <div class="col-xs-4 borderRT paddingTB7">
+                    <label class="control-label upper" style="width: 100%;">
+                        <span class="fund_icon">RELATED UNITs</span>
+                    </label>
+                </div>
+                <div class="col-xs-8 paddingTB7">
+                    <?php $related_unit =\App\RelatedUnit::getRelatedUnitName($unitObj->id); $i=0; ?>
+                    @if(count($related_unit) > 0)
+                        @foreach(\App\RelatedUnit::getRelatedUnitName($unitObj->id) as $index=>$val)
+                            <a href="{!! url('units/'.$unitIDHashID->encode($index).'/'.\App\Unit::getSlug($index)) !!}">
+                                {{$val}}
+                            </a>
+                            @if($i == 0 && count($related_unit) > 1)
+                                ,
+                            @elseif($i !=0 && $i != count($related_unit))
+                                ,
+                            @endif
+                            <?php $i++; ?>
+                        @endforeach
+                    @endif
+
                 </div>
             </div>
         </div>

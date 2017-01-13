@@ -85,7 +85,7 @@ class AccountController extends Controller
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         view()->share('user_id_encoded',$userIDHashID->encode(Auth::user()->id));
 
-        $alertsObj = Alerts::all();
+        $alertsObj = Alerts::where('user_id',Auth::user()->id)->first();
         view()->share('alertsObj',$alertsObj);
 
         //expiry years of card

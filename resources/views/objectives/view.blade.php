@@ -65,8 +65,7 @@
                                     <div class="col-xs-4">
                                         <label class="control-label upper" style="width: 100%;">
                                             <span class="fund_icon">FUNDS</span>
-                                            <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus plus
-                                            "></i></div></span>
+                                            <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus plus"></i></div></span>
                                         </label>
                                     </div>
                                     <div class="col-xs-8 text-left borderLFT" style="padding-top:3px; ">
@@ -94,16 +93,18 @@
                                         <label class="control-label">In Progress</label>
                                     </div>
                                 </div>
-                                <div class="row borderBTM lnht30">
-                                    <div class="col-xs-4 text-left">
-                                        <label class="control-label upper">SUPPORT</label>
-                                    </div>
-                                    <div class="col-xs-8 borderLFT">
-                                        <div class="importance-div">
-                                            @include('objectives.partials.importance_level',['objective_id'=>$objectiveObj->id])
+                                @if(\Auth::check())
+                                    <div class="row borderBTM lnht30">
+                                        <div class="col-xs-4 text-left">
+                                            <label class="control-label upper">SUPPORT</label>
+                                        </div>
+                                        <div class="col-xs-8 borderLFT">
+                                            <div class="importance-div">
+                                                @include('objectives.partials.importance_level',['objective_id'=>$objectiveObj->id])
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -229,12 +230,14 @@
 
             var type = $(this).attr('data-type');
             $parentDiv = $(this).parent('div');
-            if(type == "up")
-                var flag =!$parentDiv.hasClass('success-upvote');
-            else if(type=="down")
-                var flag =!$parentDiv.hasClass('success-downvote');
-            else
-                return false;
+            var flag= true;
+            //if(type == "up")
+            //    var flag =!$parentDiv.hasClass('success-upvote');
+            //else if(type=="down")
+            //    var flag =!$parentDiv.hasClass('success-downvote');
+            //else
+              //  return false;
+            //alert(flag);
             if(flag){
                 var that = $(this);
                 var id=$(this).attr('data-id');

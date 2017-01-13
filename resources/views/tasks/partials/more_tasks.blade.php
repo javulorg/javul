@@ -70,13 +70,15 @@
                 <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_task')
                                                 !!}</span>
             </a>
-            @if($tasks->lastPage() > 1 && $tasks->lastPage() != $tasks->currentPage())
-            <a href="#" data-url="{{$tasks->url($tasks->currentPage()+1) }}" data-from_page="{{$from_page}}"
-               @if(!empty($objective_id)) data-objective_id="{{$objectiveIDHashID->encode($objective_id)}}" @endif
-               @if(!empty($unit_id)) data-unit_id="{{$unitIDHashID->encode($unit_id)}}" @endif
-               class="btn more-black-btn more-tasks" type="button">
-                <span class="more_dots">...</span> MORE TASKS
-            </a>
+            @if($from_page != "task_search_view")
+                @if($tasks->lastPage() > 1 && $tasks->lastPage() != $tasks->currentPage())
+                    <a href="#" data-url="{{$tasks->url($tasks->currentPage()+1) }}" data-from_page="{{$from_page}}"
+                       @if(!empty($objective_id)) data-objective_id="{{$objectiveIDHashID->encode($objective_id)}}" @endif
+                       @if(!empty($unit_id)) data-unit_id="{{$unitIDHashID->encode($unit_id)}}" @endif
+                       class="btn more-black-btn more-tasks" type="button">
+                        <span class="more_dots">...</span> MORE TASKS
+                    </a>
+                @endif
             @endif
         </td>
     </tr>

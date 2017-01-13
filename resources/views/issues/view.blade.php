@@ -226,12 +226,13 @@
 
                 var type = $(this).attr('data-type');
                 $parentDiv = $(this).parent('div');
-                if(type == "up")
-                    var flag =!$parentDiv.hasClass('success-upvote');
-                else if(type=="down")
-                    var flag =!$parentDiv.hasClass('success-downvote');
-                else
-                    return false;
+                var flag = true;
+                //if(type == "up")
+                   // var flag =!$parentDiv.hasClass('success-upvote');
+                //else if(type=="down")
+                   // var flag =!$parentDiv.hasClass('success-downvote');
+                //else
+                    //return false;
                 if(flag){
                     var that = $(this);
                     var id=$(this).attr('data-id');

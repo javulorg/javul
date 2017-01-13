@@ -284,6 +284,7 @@ a.add_skill{text-decoration: underline;color:#337ab7}
     .widthMenu{width: 15%;}
 }
 .unit_search_td.has-error .row .col-sm-12 .select2 .selection .select2-selection,.unit_search_td.has-error .row .col-sm-4 .select2 .selection .select2-selection{border: 1px solid #a94442 !important;}
+.tasks_search_td.has-error .row .col-sm-6 .select2 .selection .select2-selection,.tasks_search_td.has-error .row .col-sm-4 .select2 .selection .select2-selection{border: 1px solid #a94442 !important;}
 #task_skill_search,#task_status_search,#unit_category_search,#location_search{width:200px;display: inline-block;}
 .reset_unit_search,.btn.black-btn.form-control.search_unit,.search_tasks{padding-top: 9px;width: 100px;}
 .has-error .sweetcaptcha{border:1px solid #a94442;}

@@ -10,7 +10,7 @@
 @endsection
 @section('content')
 <div class="container">
-<div class="row">
+<div class="row form-group" style="margin-bottom:15px;">
     @include('elements.user-menu',['page'=>'tasks'])
 </div>
 <div class="row form-group">
@@ -24,7 +24,7 @@
                 <b>{{$taskObj->name}}</b>
             </span><br /><br />
         </div>
-        @include('tasks.partials.task_information')
+        {{--@include('tasks.partials.task_information')--}}
     </div>
 </div>
 <form role="form" method="post" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data">

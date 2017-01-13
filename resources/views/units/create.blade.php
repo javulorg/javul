@@ -170,14 +170,20 @@
                                 <select class="form-control" name="city" id="city" @if(!empty($unitObj) && $unitObj->country_id == "global")
                                 disabled @endif>
                                     @if(!empty($unitObj))
-                                        @foreach($cities as $cid=>$val)
-                                            <option value="{{$cid}}" @if(!empty($unitObj) && $unitObj->city_id == $cid)
-                                            selected=selected @endif>{{$val}}</option>
-                                        @endforeach
+                                        @if(!empty($state_name_as_city_for_field))
+                                            <option value="{{$state_name_as_city_for_field->id}}" selected>{{$state_name_as_city_for_field->name}}</option>
+                                        @else
+                                            @foreach($cities as $cid=>$val)
+                                                <option value="{{$cid}}" @if(!empty($unitObj) && $unitObj->city_id == $cid)
+                                                selected=selected @endif>{{$val}}</option>
+                                            @endforeach
+                                        @endif
                                     @else
                                         <option value="">{!! trans('messages.select') !!}</option>
                                     @endif
                                 </select>
+                                <input type="hidden" name="empty_city_state_name" id="empty_city_state_name"
+                                       @if(!empty($state_name_as_city_for_field)) value="{{$unitObj->state_id_for_city_not_exits}}" @endif/>
                                 <span class="cities_loader location_loader" style="display: none">
                                     <img src="{!! url('assets/images/small_loader.gif') !!}"/>
                                 </span>
@@ -231,7 +237,8 @@
                     <div class="row">
                         <div class="col-sm-12 form-group">
                             <label class="control-label">Comment</label>
-                            <input class="form-control" name="comment">
+                            <input class="form-control" name="comment" @if(!empty($unitObj) && !empty($unitObj->comment))
+                            value="{{$unitObj->comment}}" @endif>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -257,6 +264,17 @@
         var page='unit';
         var browse_category_box='';
         var selected_categories_id= new Array();
+        var edit_unit_flag ='{{!empty($unitObj)?true:false}}';
+
+        $(function(){
+            if(edit_unit_flag == 1){
+                var country_id_temp = $("#country").val()
+                if(country_id_temp == 247){
+                    $("#state").prop('disabled',true);
+                    $("#city").prop('disabled',true);
+                }
+            }
+        })
     </script>
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/units/units.js') !!}"></script>

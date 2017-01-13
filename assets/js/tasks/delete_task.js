@@ -1,4 +1,38 @@
 $(function(){
+    $("#task_skill_search").select2({
+        placeholder:'Search by skill',
+        width: '100%',
+        multiple: false,
+        allowClear:true,
+        minimumInputLength: 1,
+        ajax: {
+            type: 'get',
+            url: siteURL+"/tasks/search_by_skills",
+            delay: 250,
+            dataType: 'json',
+            processResults: function(data) {
+                return { results: data.items };
+            },
+            cache: true
+        }
+    });
+    $("#task_status_search").select2({
+        placeholder:'Search by status',
+        width: '100%',
+        multiple: false,
+        allowClear:true,
+        minimumInputLength: 1,
+        ajax: {
+            type: 'get',
+            url: siteURL+"/tasks/search_by_status",
+            delay: 250,
+            dataType: 'json',
+            processResults: function(data) {
+                return { results: data.items };
+            },
+            cache: true
+        }
+    });
    $(".delete-task").on('click',function(){
        var id = $(this).attr('data-id');
        var that = $(this);
@@ -56,11 +90,11 @@ $(function(){
         var task_skill_search = $("#task_skill_search").val();
         var task_status_search = $("#task_status_search").val();
         if($.trim(task_skill_search) == "" && $.trim(task_status_search) == ""){
-            $("#task_skill_search").parent('td').addClass('has-error');
-            $("#task_status_search").parent('td').addClass('has-error');
+            $("#task_skill_search").parents('td').addClass('has-error');
+            $("#task_status_search").parents('td').addClass('has-error');
         }else{
-            $("#task_skill_search").parent('td').removeClass('has-error');
-            $("#task_status_search").parent('td').removeClass('has-error');
+            $("#task_skill_search").parents('td').removeClass('has-error');
+            $("#task_status_search").parents('td').removeClass('has-error');
             $(".reset_unit_search").show();
             var token = $(this).attr('data-token');
 
@@ -76,11 +110,9 @@ $(function(){
                     $(".tasks-table tbody").html(resp.html);
                     $(".task_loading").hide();
                     $(".loading_content_hide").css('opacity','1');
-                    if($(".text_wraps").length > 0) {
-                        var the_obj = $('.text_wraps').ThreeDots({
-                            max_rows: 1
-                        });
-                    }
+                    var the_obj = $('.text_wraps').ThreeDots({
+                        max_rows: 1
+                    });
                 }
             })
         }

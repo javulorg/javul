@@ -28,15 +28,19 @@
                         <span></span>
                         <span></span>
                     </div>
-                    <table class="table table-striped tasks-table">
+                    <table class="table table-striped tasks-table" style="overflow:hidden !important; ">
                         <thead>
                         <tr>
-                            <td colspan=7 class="">
-                                <input type="text" placeholder="Search by Skill" name="task_skill_search" id="task_skill_search"
-                                       class="form-control"/>
+                            <td colspan=7 class="tasks_search_td">
+                                <div class="row form-group">
+                                    <div class="col-sm-6">
+                                        <select name="task_skill_search" class="form-control" id="task_skill_search"></select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <select name="task_status_search" class="form-control" id="task_status_search"></select>
+                                    </div>
+                                </div>
 
-                                <input type="text" placeholder="Search by Status" name="task_status_search" id="task_status_search"
-                                       class="form-control"/>
                                 <div style="display:inline-block;position:relative;top:-2px">
                                     <a class="btn black-btn form-control search_tasks" data-token="{{csrf_token()}}">Search</a>
 
@@ -91,10 +95,16 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
+<script src="{!! url('assets/plugins/jquery.ThreeDots.min.js') !!}" type="text/javascript"></script>
 <script type="text/javascript">
     var msg_flag ='{{ $msg_flag }}';
     var msg_type ='{{ $msg_type }}';
     var msg_val ='{{ $msg_val }}';
+    $(function(){
+        var the_obj = $('.text_wraps').ThreeDots({
+            max_rows: 1
+        });
+    })
 </script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/tasks/delete_task.js') !!}"></script>

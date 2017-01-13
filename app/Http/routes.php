@@ -210,6 +210,11 @@ Route::get('tasks/{unitid}/lists', 'TasksController@lists');
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 Route::get('tasks/get_tasks_paginate', 'TasksController@get_tasks_paginate');
 Route::post('tasks/search_tasks', 'TasksController@search_tasks');
+Route::get('tasks/search_by_skills', 'TasksController@search_by_skills');
+
+Route::get('tasks/search_by_status', 'TasksController@search_by_status');
+
+
 
 
 Route::get('funds/donate/unit/{unit_id}','FundsController@donate_to_unit_objective_task');

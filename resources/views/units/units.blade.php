@@ -28,7 +28,7 @@
                             <span></span>
                             <span></span>
                         </div>
-                        <table class="table table-striped unit-table">
+                        <table class="table table-striped unit-table" style="overflow: hidden">
                             <thead>
                                 <tr>
                                     <td colspan=3 class="unit_search_td">

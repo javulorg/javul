@@ -27,7 +27,7 @@ class Unit extends Model
      * @var array
      */
     protected $fillable = ['user_id','category_id','name','description','credibility','country_id','state_id','city_id','status',
-        'parent_id','modified_by','slug','featured_unit'];
+        'parent_id','modified_by','slug','featured_unit','state_id_for_city_not_exits'];
 
     /**
      * Get UnitCategory of Unit

@@ -10,6 +10,7 @@ use App\Library\Helpers;
 use App\Objective;
 use App\RewardAssignment;
 use App\SiteActivity;
+use App\SiteConfigs;
 use App\Task;
 use App\TaskAction;
 use App\TaskBidder;
@@ -2258,6 +2259,50 @@ class TasksController extends Controller
 
     }
 
+    public  function search_by_skills(Request $request){
+        $terms = $request->input('q');
+        $page = $request->input('page');
+        if(!empty($terms)){
+            if($page == 0)
+                $obj = JobSkill::where('skill_name','like',$terms.'%')->get();
+            else {
+                $offset = ($page - 1) * 10;
+                $obj = JobSkill::where('skill_name','like',$terms.'%')->skip($offset)->take(10)->get();
+            }
+
+            $names = [];
+            if(!empty($obj) && count($obj) > 0){
+                foreach($obj as $job_skill){
+                    $names[]=['id'=>$job_skill->id,'text'=>$job_skill->skill_name];
+                }
+
+            }
+            return \Response::json(['items'=>$names,'total_counts'=> JobSkill::where('skill_name','like',$terms.'%')->count()]);
+        }
+        return \Response::json([]);
+    }
+
+    public  function search_by_status(Request $request){
+        $terms = $request->input('q');
+        $page = $request->input('page');
+        $task_status_arr = SiteConfigs::task_status();
+        $result = array_filter($task_status_arr, function ($item) use ($terms) {
+            if (stripos($item, $terms) !== false) {
+                return true;
+            }
+            return false;
+        });
+        if(!empty($result)){
+            foreach($result as $index=>$status_name){
+                $names[]=['id'=>$index,'text'=>$status_name];
+            }
+
+            return \Response::json(['items'=>$names,'total_counts'=> count($result)]);
+        }
+
+        return \Response::json([]);
+    }
+
 
     public function search_tasks(Request $request){
         $task_skill_search = $request->input('task_skill_search');
@@ -2267,18 +2312,12 @@ class TasksController extends Controller
         view()->share('units',$units );*/
 
         $where = '';
+        \DB::enableQueryLog();
+
         $taskObj = \DB::table('tasks');
 
         if(trim($task_skill_search) != ""){
-            $job_skills_ids = \DB::table('job_skills')->whereRaw(\DB::raw('skill_name like \'%'.$task_skill_search.'%\''))->pluck('id');
-            if(!empty($job_skills_ids)) {
-                foreach($job_skills_ids as $index=>$skill_id){
-                    if($index == 0)
-                        $where.='FIND_IN_SET('.$skill_id.',skills)';
-                    else
-                        $where.=' OR FIND_IN_SET('.$skill_id.',skills)';
-                }
-            }
+            $where.='FIND_IN_SET('.$task_skill_search.',skills)';
         }
         if(trim($task_status_search) != ""){
             if(!empty($where))
@@ -2287,13 +2326,15 @@ class TasksController extends Controller
                 $where.=' status = "'.$task_status_search.'"';
         }
 
+
         if(empty($where))
             $taskObj = [];
         else
-            $taskObj = $taskObj->whereRaw($where)->paginate(\Config::get('app.page_limit'));
+            $taskObj = $taskObj->whereRaw($where)->get();
+
 
         view()->share('tasks',$taskObj);
-        view()->share('from_page','task_view');
+        view()->share('from_page','task_search_view');
         view()->share('unit_id',null);
         view()->share('objective_id',null);
         $html = view('tasks.partials.more_tasks')->render();
