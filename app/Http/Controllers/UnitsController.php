@@ -188,6 +188,10 @@ class UnitsController extends Controller
 
         $countries = Unit::getAllCountryWithFrequent();
         view()->share('countries',$countries);
+
+        $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
+        view()->share('unit_category_arr',$unit_category_arr);
+
         return view('units.units');
     }
 
@@ -792,26 +796,23 @@ class UnitsController extends Controller
         \DB::enableQueryLog();
         $unitObj = \DB::table('units');
 
-        if(trim($by_category_type) != ""){
-            /*$unit_category_ids = \DB::table('unit_category')->whereRaw(\DB::raw('name like \'%'.$by_category_type.'%\''))->pluck('id');
-            if(!empty($unit_category_ids)) {
-                foreach($unit_category_ids as $index=>$cate_id){
-                    if($index == 0)
-                        $where.='FIND_IN_SET('.$cate_id.',category_id)';
-                    else
-                        $where.=' OR FIND_IN_SET('.$cate_id.',category_id)';
-                }
-            }*/
-            $where.='FIND_IN_SET('.$by_category_type.',category_id)';
+        if(!empty($by_category_type)){
+            foreach($by_category_type as $index=>$cate_id){
+                if($index == 0)
+                    $where.='FIND_IN_SET('.$cate_id.',category_id)';
+                else
+                    $where.=' AND FIND_IN_SET('.$cate_id.',category_id)';
+            }
+            //$where.='FIND_IN_SET('.$by_category_type.',category_id)';
         }
         if(trim($country) != "" || trim($state) != "" || trim($city) != ""){
             // country
             if(trim($country) != "") {
                 if (!empty($where)) {
                     if(empty($state) && empty($city))
-                        $where .= ' OR (country_id = ' . $country.')';
+                        $where .= ' and (country_id = ' . $country.')';
                     else
-                        $where .= ' OR (country_id = ' . $country;
+                        $where .= ' and (country_id = ' . $country;
                 }
                 else
                     $where .= ' country_id = '.$country;
@@ -857,11 +858,13 @@ class UnitsController extends Controller
                 }
             }
         }
-        //dd($where);
+
         $unitObj = $unitObj->whereRaw($where)->paginate(\Config::get('app.page_limit'));
-//dd(\DB::getQueryLog());
+
         view()->share('units',$unitObj);
         $html = view('units.partials.more_units')->render();
+        if(empty($html))
+            $html = "<tr><td colspan='3'>No record(s) found.</td></tr>";
         return \Response::json(['success'=>true,'html'=>$html]);
     }
 

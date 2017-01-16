@@ -7,7 +7,8 @@ $(function(){
             text= text.replace('>','');
             $(".selected_text_task").html('<b>' + text + '</b>');
             browse_category_box.find('.okay-btn').prop('disabled',false);
-            selected_categories_id.push($(this).val());
+            //selected_categories_id.push($(this).val());
+
         }
         return false;
     });
@@ -82,6 +83,10 @@ $(function(){
                         return false;
                     }
                     else{
+                        var current_clicked_category_temp = parseInt($(that).attr('data-number'));
+                        if(current_clicked_category_temp == 1)
+                            selected_categories_id.pop();
+
                         $(".add_edit_categories").remove();
                         var next_level=$(".all_levels_category").find('.hierarchy_parent').length;
                         if(next_level > box_number ){

@@ -579,8 +579,12 @@ class ObjectivesController extends Controller
                     $objectiveObj = Objective::where('id',$objective_id)->first();
                     $objectiveObj->tasks = Task::where('objective_id',$objective_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
                     $objectiveObj->unit = Unit::getUnitWithCategories($objectiveObj->unit_id);
-                    $upvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','+1')->count();
-                    $downvotedCnt = ImportanceLevel::where('objective_id',$objective_id)->where('importance_level','-1')->count();
+                    $upvotedCnt = 0;
+                    $downvotedCnt = 0;
+                    if(Auth::check()) {
+                        $upvotedCnt = ImportanceLevel::where('objective_id', $objective_id)->where('user_id', Auth::user()->id)->where('importance_level', '+1')->count();
+                        $downvotedCnt = ImportanceLevel::where('objective_id', $objective_id)->where('user_id', Auth::user()->id)->where('importance_level', '-1')->count();
+                    }
 
                     if($upvotedCnt == 0 && $downvotedCnt == 0)
                         $importancePercentage = 0;
@@ -589,7 +593,7 @@ class ObjectivesController extends Controller
                         $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);
                     }
 
-                    if(is_float($importancePercentage))
+                    if($importancePercentage != 0 && is_float($importancePercentage))
                         $importancePercentage = ceil($importancePercentage);
                     view()->share('upvotedCnt',$upvotedCnt);
                     view()->share('downvotedCnt',$downvotedCnt);
@@ -655,21 +659,27 @@ class ObjectivesController extends Controller
                 $objectiveObj = Objective::find($objectiveID);
                 if(!empty($objectiveObj)){
                     $importanceLevelObj = ImportanceLevel::where('objective_id',$objectiveID)->where('user_id',Auth::user()->id)->first();
+
                     $site_activity_text = '';
                     if($type == "up"){
                         $levelValue = "+1";
-                        if($importanceLevelObj->importance_level == '+1')
-                            $levelValue = '0';
-                        else
-                            $levelValue = '+1';
+                        if(count($importanceLevelObj) > 0) {
+                            if ($importanceLevelObj->importance_level == '+1')
+                                $levelValue = '0';
+                            else
+                                $levelValue = '+1';
+
+                        }
                         $site_activity_text =" upvote objective ";
                     }
                     else{
                         $levelValue = "-1";
-                        if($importanceLevelObj->importance_level == '-1')
-                            $levelValue = '0';
-                        else
-                            $levelValue = '-1';
+                        if(count($importanceLevelObj) > 0) {
+                            if ($importanceLevelObj->importance_level == '-1')
+                                $levelValue = '0';
+                            else
+                                $levelValue = '-1';
+                        }
                         $site_activity_text =" downvote objective ";
                     }
                     if(count($importanceLevelObj) > 0)
@@ -683,10 +693,10 @@ class ObjectivesController extends Controller
                         ]);
                     }
 
-                    $upvotedCnt = ImportanceLevel::where('objective_id',$objectiveID)->where('importance_level','+1')->count();
-                    $downvotedCnt = ImportanceLevel::where('objective_id',$objectiveID)->where('importance_level','-1')->count();
+                    $upvotedCnt = ImportanceLevel::where('objective_id',$objectiveID)->where('user_id',Auth::user()->id)->where('importance_level','+1')->count();
+                    $downvotedCnt = ImportanceLevel::where('objective_id',$objectiveID)->where('user_id',Auth::user()->id)->where('importance_level','-1')->count();
 
-                    if($levelValue == '0')
+                    if($levelValue == '0' || $levelValue == 0)
                         $importancePercentage =0;
                     else
                         $importancePercentage =  ($upvotedCnt * 100) / ($upvotedCnt + $downvotedCnt);

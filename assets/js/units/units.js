@@ -146,6 +146,7 @@ $(document).ready(function() {
         allowClear: true,
         width: '100%',
         displayValue:'skill_name',
+        placeholder:'Select Category',
         ajax: {
             url: siteURL+"/unit_category/get_categories",
             dataType: 'json',
@@ -203,6 +204,8 @@ $(document).ready(function() {
             dataType:'json',
             success:function(resp){
                 if(resp.success){
+                    $(".div-table-second-cell").css('z-index','100');
+                    $(".list-item-main").css('z-index','100');
                     browse_category_box = bootbox.dialog({
                         message: resp.html,
                         title: "Browse Category",
@@ -211,6 +214,10 @@ $(document).ready(function() {
                                 label: "Set Category",
                                 className: "btn-success okay-btn",
                                 callback: function(e) {
+
+                                    if($(".hierarchy_parent").length == 1){
+                                        selected_categories_id.push($("#category_firstbox").val());
+                                    }
                                     if($.trim(selected_categories_id) != ""){
                                         $("#unit_category").select2('val',selected_categories_id);
                                     }
@@ -226,6 +233,8 @@ $(document).ready(function() {
                         browse_category_box.find('.okay-btn').prop('disabled',true);
                     });
                     browse_category_box.on("hidden.bs.modal", function (e) {
+                        $(".list-item-main").css('z-index','99999');
+                        $(".div-table-second-cell").css('z-index','99999');
                         browse_category_box='';
                     });
 

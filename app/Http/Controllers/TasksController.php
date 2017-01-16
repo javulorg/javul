@@ -1739,6 +1739,7 @@ class TasksController extends Controller
 
                 $taskEditors = RewardAssignment::where('task_id',$task_id)->get();
                 $rewardAssigned=true;
+
                 if(empty($taskEditors) || count($taskEditors) == 0){
                     $taskEditors = TaskEditor::where('task_id',$task_id)->where('user_id','!=',$taskObj->assign_to)->get();
                     $rewardAssigned=false;
@@ -2321,7 +2322,7 @@ class TasksController extends Controller
         }
         if(trim($task_status_search) != ""){
             if(!empty($where))
-                $where.=' OR status = "'.$task_status_search.'"';
+                $where.=' AND status = "'.$task_status_search.'"';
             else
                 $where.=' status = "'.$task_status_search.'"';
         }

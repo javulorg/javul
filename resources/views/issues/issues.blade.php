@@ -44,10 +44,12 @@
                                     <tr>
                                         <td>{!! \App\Library\Helpers::timetostr($issue->created_at) !!}</td>
                                         <td>
-                                            {{$issue->title}}
+                                            <a href="{!! url('issues/'.$issueIDHashID->encode($issue->id).'/view') !!}">
+                                                {{$issue->title}}
+                                            </a>
                                         </td>
                                         <td>
-                                            <a href="{!! url('units/'.$unitIDHashID->encode($issue->unit_id).'/'.\App\Unit::getSlug($issue->slug)) !!}">
+                                            <a href="{!! url('units/'.$unitIDHashID->encode($issue->unit_id).'/'.\App\Unit::getSlug($issue->unit_id)) !!}">
                                                 {{\App\Unit::getUnitName($issue->unit_id)}}
                                             </a>
                                         </td>

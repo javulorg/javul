@@ -702,8 +702,13 @@ class IssuesController extends Controller
                     $availableUnitFunds =Fund::getUnitDonatedFund($issueObj->unit_id);
                     $awardedUnitFunds =Fund::getUnitAwardedFund($issueObj->unit_id);
 
-                    $upvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('importance_level','+1')->count();
-                    $downvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('importance_level','-1')->count();
+                    $upvotedCnt = 0;
+                    $downvotedCnt = 0;
+                    if(Auth::check()){
+                        $upvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('user_id',Auth::user()->id)->where('importance_level','+1')->count();
+                        $downvotedCnt = ImportanceLevel::where('issue_id',$issue_id)->where('user_id',Auth::user()->id)->where('importance_level','-1')->count();
+                    }
+
 
                     if($upvotedCnt == 0 && $downvotedCnt == 0)
                         $importancePercentage = 0;
@@ -866,18 +871,22 @@ class IssuesController extends Controller
                     $site_activity_text = '';
                     if($type == "up"){
                         $levelValue = "+1";
-                        if($importanceLevelObj->importance_level == '+1')
-                            $levelValue = '0';
-                        else
-                            $levelValue = '+1';
+                        if(count($importanceLevelObj) > 0) {
+                            if ($importanceLevelObj->importance_level == '+1')
+                                $levelValue = '0';
+                            else
+                                $levelValue = '+1';
+                        }
                         $site_activity_text =" upvote objective ";
                     }
                     else{
                         $levelValue = "-1";
-                        if($importanceLevelObj->importance_level == '-1')
-                            $levelValue = '0';
-                        else
-                            $levelValue = '-1';
+                        if(count($importanceLevelObj) > 0) {
+                            if ($importanceLevelObj->importance_level == '-1')
+                                $levelValue = '0';
+                            else
+                                $levelValue = '-1';
+                        }
                         $site_activity_text =" downvote objective ";
                     }
                     if(count($importanceLevelObj) > 0)

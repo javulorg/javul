@@ -158,6 +158,7 @@ class AccountController extends Controller
             Auth::user()->city_id=$request->input('city');
             Auth::user()->job_skills=$job_skills;
             Auth::user()->area_of_interest=$area_of_interest;
+            Auth::user()->timezone=$request->input('timezone');
             Auth::user()->save();
             return \Response::json(['success'=>true]);
         }

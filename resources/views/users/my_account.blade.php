@@ -248,6 +248,22 @@
                                             </span>
                                         </div>
                                     </div>
+                                    <div class="col-sm-4 form-group">
+                                        <label class="control-label">Timezone</label>
+                                        <div class="input-icon right">
+                                            <i class="fa select-error"></i>
+                                            <select class="form-control" name="timezone" id="timezone">
+                                                @foreach(\App\SiteConfigs::get_timezones_list() as $timezone_index=>$timezone_name)
+                                                    <option value="{{$timezone_index}}" @if(Auth::user()->timezone == $timezone_index)
+                                                    selected=selected @endif>{{$timezone_name}}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="help-block"></span>
+                                            <span class="cities_loader location_loader" style="display: none">
+                                                <img src="{!! url('assets/images/small_loader.gif') !!}"/>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-sm-4 form-group">

@@ -36,7 +36,8 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth',['except'=>['index','add_to_watchlist','get_unit_site_activity_paginate','get_site_activity_paginate','global_activities']]);
+        $this->middleware('auth',['except'=>['index','add_to_watchlist','get_unit_site_activity_paginate','get_site_activity_paginate',
+            'global_activities','get_categories','browse_categories','get_next_level_categories']]);
     }
 
     /**
@@ -1852,7 +1853,7 @@ class HomeController extends Controller
 
     public function browse_categories(Request $request){
         if($request->ajax()){
-            if(Auth::check()){
+            //if(Auth::check()){
                 $unitCategoriesObj = \DB::select('SELECT  c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.name, p.name AS
                                               Parentcategory_name
                                               FROM unit_category c LEFT JOIN unit_category p ON (c.parent_id = p.id) WHERE IF(c.parent_id IS
@@ -1867,8 +1868,8 @@ class HomeController extends Controller
                 view()->share('firstBox_category',$firstBox_category);
                 $html = view('admin.partials.unit_category_browse',['from'=>'unit'])->render();
                 return \Response::json(['success'=>true,'html'=>$html]);
-            }
-            return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+            //}
+            //return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
 
         }
         return view('errors.404');

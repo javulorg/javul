@@ -87,18 +87,18 @@ $(function(){
         return false;
     });
     $(document).off('click','.search_unit').on('click','.search_unit',function(){
-        var category_type_search = $("#unit_category_search").val();
+        var category_type_search = $("#unit_category").val();
         var country_search = $("#country").val();
         var state_search = $("#state").val();
         var city_search = $("#city").val();
 
         if($.trim(category_type_search) == "" && $.trim(country_search) == "" && $.trim(state_search) == "" && $.trim(city_search) == ""){
-            $("#unit_category_search").parent('td').addClass('has-error');
+            $("#unit_category").parent('td').addClass('has-error');
             $("#country").parents('td').addClass('has-error');
             $("#state").parents('td').addClass('has-error');
             $("#city").parents('td').addClass('has-error');
         }else{
-            $("#unit_category_search").parent('td').removeClass('has-error');
+            $("#unit_category").parent('td').removeClass('has-error');
             $("#location_search").parent('td').removeClass('has-error');
             $("#country").parents('td').removeClass('has-error');
             $("#state").parents('td').removeClass('has-error');

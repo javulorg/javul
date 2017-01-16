@@ -59,7 +59,9 @@ class UnitCategory extends Model
         }
         else {
 
-            $where=" AND user_id=".\Auth::user()->id;
+            if(\Auth::check())
+                $where=" AND user_id=".\Auth::user()->id;
+
             if(!empty($unit_category_history_id))
                 $where_last = "( parent_id =".$id." OR parent_id=".$unit_category_history_id.")";
             else
