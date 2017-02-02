@@ -13,6 +13,8 @@
 
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
+Route::post('/global_search','HomeController@global_search');
+Route::post('/check_username','HomeController@check_username');
 Route::get('/account', 'AccountController@index');
 Route::get('/account/logout', 'AccountController@logout');
 Route::post('/account/upload_profile', 'AccountController@upload_profile');
@@ -92,7 +94,7 @@ Route::auth();
     return App::call('\App\Http\Controllers\UnitsController@' . $method_name, $param);
 
 })->where('all', '(.*)');*/
-
+Route::post('login','Auth\AuthController@login');
 Route::post('users/{user_id}/save_page', 'UserWikiController@save_pagedata')->name("user_wiki_save_page")->middleware('auth');
 Route::get('users/{slug}/{user_id}/wiki', 'UserWikiController@home')->name("user_wiki_home");
 Route::get('users/{slug}/{user_id}/wiki/recent_changes', 'UserWikiController@recent_changes')->name("user_wiki_recent_changes");
@@ -252,6 +254,5 @@ Route::resource('/user','UserController');
 Route::resource('/funds','FundsController');
 Route::resource('/alerts','AlertsController');
 
-
-
-
+Route::post('reportconc','IssuesController@report_concern_email');
+Route::get('close_report','IssuesController@reset_captcha_after_close');

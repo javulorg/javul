@@ -137,7 +137,8 @@ $(document).ready(function() {
             ['para', ['ul', 'ol']],
             ['height', []],
             ['fullscreen',['fullscreen']],
-            ['codeview',['codeview']]
+            ['codeview',['codeview']],
+            ['insert', ['link']]
         ],
         height:100
     });

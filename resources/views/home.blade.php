@@ -24,13 +24,6 @@
                                     <i class="fa fa-star"></i>
                                 </div>
                                 <h4>FEATURED UNIT</h4>
-                                @if(!empty($authUserObj))
-                                    <div class="pull-right" style="padding:10px;">
-                                        <a href="{!! url('my_tasks') !!}" class="btn btn-xs pull-right">
-                                            <span class="glyphicon glyphicon-tasks"></span> My Tasks
-                                        </a>
-                                    </div>
-                                @endif
                             </div>
                             <div class="panel-body">
                                 <div class="row">

@@ -37,6 +37,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="{!! url('assets/css/component.css') !!}" rel="stylesheet" type="text/css" />
 
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+	<link href="{!! url('assets/plugins/tooltipster-master/dist/css/tooltip.custom.css') !!}" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -85,8 +86,8 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{!! url('assets/plugins/bootstrap-datetimepicker/collapse.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/bootstrap/js/bootstrap.min.js') !!}" type="text/javascript"></script>
         <script type="text/javascript" src="{!! url('assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js')!!}"></script>
-
-
+        <!--Tooltipster-->
+        <script type="text/javascript" src="{!! url('assets/plugins/tooltipster-master/dist/js/tooltip.custom.js')!!}   "></script>
         <!-- END CORE PLUGINS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="{!! url('assets/plugins/jquery-validation/js/jquery.validate.min.js') !!}" type="text/javascript"></script>
@@ -98,7 +99,11 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/function.js') !!}" type="text/javascript"></script>
         <script>
+
             $(function(){
+                $('span.tooltipster').tooltipster({ //find more options on the tooltipster page
+                    position: 'right'
+                });
                 $('.left-button').each(function(index, item) {
                     $(item).find('.btn').css(
                         'width', 100 / $(item).find('.btn').length + '%'

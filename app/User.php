@@ -18,8 +18,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name','last_name', 'email', 'password','phone','mobile','address','country_id','state_id','city_id','role','job_skills',
-        'area_of_interest','loggedin','stripe_customer_id','credit_card_id','profile_pic','timezone'
+        'first_name','last_name', 'username', 'email', 'password','phone','mobile','address','country_id','state_id','city_id','role','job_skills',
+        'area_of_interest','loggedin','stripe_customer_id','credit_card_id','profile_pic','timezone','quality_of_work','timeliness'
     ];
 
     /**
@@ -130,7 +130,7 @@ class User extends Authenticatable
             $rewards = $taskObj->compensation;
 
             // assign point or amount to task completer, points or amount added while he bidding
-            $taskBidder = TaskBidder::where('task',$task_id)->where('user_id',$taskObj->assign_to)->first();
+            $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',$taskObj->assign_to)->first();
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $taskIDHashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
             if(!empty($taskBidder) && count($taskBidder) > 0){

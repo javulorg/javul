@@ -82,7 +82,7 @@
                                     <div class="col-xs-8 borderLFT text-left">
                                         @if(!empty($skill_names) && count($skill_names) > 0)
                                             @foreach($skill_names as $skil)
-                                                <label class="control-label form-control text-label-value">{{$skil}}</label>
+                                                <label class="control-label ft_size13 form-control text-label-value">{{$skil}}</label>
                                             @endforeach
                                         @else
                                             <label class="control-label form-control text-label-value">-</label>
@@ -160,7 +160,7 @@
 
                 @include('forum.element.objective')
 
-
+                @include('tasks.partials.task_bidders_list',['taskBidders'=>$taskBidders,'taskObj'=>$taskObj])
             </div>
 
         </div>

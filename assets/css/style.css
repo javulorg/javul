@@ -175,6 +175,8 @@ a.add_skill{text-decoration: underline;color:#337ab7}
 .last-site-activity{top:-70px !important;;border:1px solid #fff !important;height:60px !important;}
 .first-site-activity{border:1px solid #fff !important;top:-105px !important;height:40px !important;}
 .featured_unit_admin{border:none !important;background-color:transparent !important;cursor:default !important;}
+.link-dialog .modal-dialog .modal-content .modal-body .checkbox input[type="checkbox"]{position: relative !important;margin-left: 0px !important;}
+
 @media (max-width: 1200px) {
     .user-menu-right.mrgnrt30{margin-right: 0px;}
     .user-menu-left,.user-menu-right{font-size: 12px;}
@@ -768,4 +770,19 @@ input:disabled, input.disabled {
     top: 2px;
     border: solid 1px #ed6b75;
     display: none;
+}
+/*New Added*/
+.ft_size13{
+    font-size: 13px !important;
+}
+.ofhidden{
+    overflow: hidden!important;
+}
+.paddpop{
+    padding: 0px;
+}
+.text{
+    margin: 0px;
+    font-size: 13px;
+
 }

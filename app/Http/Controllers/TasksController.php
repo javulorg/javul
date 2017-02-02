@@ -19,6 +19,7 @@ use App\TaskComplete;
 use App\TaskDocuments;
 use App\TaskEditor;
 use App\TaskHistory;
+use App\TaskRatings;
 use App\Unit;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
@@ -1416,6 +1417,25 @@ class TasksController extends Controller
                         $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
                         $daysRemainingTobid = TaskBidder::getCountDown($task_id);
 
+                        $site_activity = SiteActivity::where('unit_id',$taskObj->unit_id)
+                            ->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+
+                        $quality_of_work = TaskRatings::where('user_id',Auth::user()->id)->sum('quality_of_work');
+                        $timeliness = TaskRatings::where('user_id',Auth::user()->id)->sum('timeliness');
+
+                        $total_ratings =TaskRatings::where('user_id',Auth::user()->id)->count();
+
+                        if($quality_of_work > 0)
+                            $quality_of_work =$quality_of_work/$total_ratings;
+                        if($timeliness > 0)
+                            $timeliness =$timeliness/$total_ratings;
+
+                        view()->share('timeliness',$timeliness);
+                        view()->share('quality_of_work',$quality_of_work);
+
+                        view()->share('site_activity',$site_activity);
+                        view()->share('unit_activity_id',$taskObj->unit_id);
+
                         view()->share('daysRemainingTobid',$daysRemainingTobid);
                         view()->share('taskBidder',$taskBidder );
                         view()->share('taskObj',$taskObj);
@@ -1529,7 +1549,7 @@ class TasksController extends Controller
                 "has been assigned to you.";*/
 
             if($taskBidderObj->status == "offer_sent"){
-                $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:0px;margin-top:10px;margin-bottom:10px">'.
+                $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:15px">'.
                           '<a href="#" class="close" data-dismiss="alert" aria-label="close" style="display:none;">&times;</a>'.
                           '<strong>Task Assigned!</strong> Your bid has been selected and task(<b>'.$taskBidderObj->name.'</b>) ' .
                             'has been assigned to you.'.
@@ -1880,6 +1900,21 @@ class TasksController extends Controller
                         return redirect('tasks');
                     }
                     else{
+                        $taskObj->unit = Unit::getUnitWithCategories($taskObj->unit_id);
+                        $availableUnitFunds =Fund::getUnitDonatedFund($taskObj->unit_id);
+                        $awardedUnitFunds =Fund::getUnitAwardedFund($taskObj->unit_id);
+
+                        view()->share('availableUnitFunds',$availableUnitFunds );
+                        view()->share('awardedUnitFunds',$awardedUnitFunds );
+
+                        $site_activity = SiteActivity::where('unit_id',$taskObj->unit_id)
+                            ->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+
+                        view()->share('site_activity',$site_activity);
+                        view()->share('unit_activity_id',$taskObj->unit_id);
+
+                        $skillNames = JobSkill::getSKillWithComma($taskObj->skills);
+                        view()->share('skill_names',$skillNames);
                         view()->share('taskObj',$taskObj);
                         view()->share('taskCompleteObj',$taskCompleteObj);
                         view()->share('taskEditors',$taskEditors );
@@ -1901,7 +1936,7 @@ class TasksController extends Controller
                 $task_id = $task_id[0];
                 $taskObj = Task::find($task_id);
                 if(!empty($taskObj)){
-                    Task::find($task_id)->update(['status'=>'assigned']);
+                    Task::find($task_id)->update(['status'=>'in_progress']);
                     $taskBidderObj = TaskBidder::where('task_id',$task_id)->where('user_id',$taskObj->assign_to)->first();
                     if(!empty($taskBidderObj))
                         $taskBidderObj->update(['status'=>'re_assigned']);
@@ -1988,8 +2023,6 @@ class TasksController extends Controller
                     if(empty($taskEditors) || count($taskEditors) == 0)
                         $taskEditors = TaskEditor::where('task_id',$task_id)->where('user_id','!=',$taskObj->assign_to)->get();
 
-
-
                     // validate percentage split.
                     $percentageError = [];
                     $totalPercentage=0;
@@ -2039,11 +2072,25 @@ class TasksController extends Controller
 
                     Task::find($task_id)->update(['status'=>'completed']);
 
+                    $quality_of_work = $request->input('quality_of_work');
+                    if(empty($quality_of_work))
+                        $quality_of_work=null;
+
+                    $timeliness = $request->input('timeliness');
+                    if(empty(timeliness))
+                        $timeliness=null;
+
+                    TaskRatings::create([
+                        'user_id'=>$taskObj->assign_to,
+                        'task_id'=>$task_id,
+                        'quality_of_work'=>$quality_of_work,
+                        'timeliness'=>$timeliness
+                    ]);
+
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
 
-                    $taskBidderObj = TaskBidder::where('task_id',$taskObj->id)->where('user_id',
-                        $taskObj->assign_to)->where('charge_type','points')->first();
+                    $taskBidderObj = TaskBidder::where('task_id',$taskObj->id)->where('user_id',$taskObj->assign_to)->where('charge_type','points')->first();
                     if(!empty($taskBidderObj) && count($taskBidderObj) > 0)
                     {
                         ActivityPoint::create([

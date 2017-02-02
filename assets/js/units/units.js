@@ -113,20 +113,38 @@ var FormValidation = function () {
 $(document).ready(function() {
     FormValidation.init();
 
-    $('.summernote').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline']],
-            ['font', []],
-            ['fontsize', []],
-            ['color', []],
-            ['para', ['ul', 'ol']],
-            ['height', []],
-            ['fullscreen',['fullscreen']],
-            ['codeview',['codeview']]
-        ],
-        height:100
-    });
+    if(typeof edit_unit_flag !== typeof undefined && edit_unit_flag) {
+        $('.summernote').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline']],
+                ['font', []],
+                ['fontsize', []],
+                ['color', []],
+                ['para', ['ul', 'ol']],
+                ['height', []],
+                ['fullscreen', ['fullscreen']],
+                ['codeview', ['codeview']],
+                ['insert', ['link']]
+            ],
+            height: 100
+        });
+    }else{
+        $('.summernote').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline']],
+                ['font', []],
+                ['fontsize', []],
+                ['color', []],
+                ['para', ['ul', 'ol']],
+                ['height', []],
+                ['fullscreen', ['fullscreen']],
+                ['codeview', ['codeview']]
+            ],
+            height: 100
+        });
+    }
 
 
 

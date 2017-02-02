@@ -195,7 +195,108 @@ $(function(){
                 }
             })
         }
-    })
+    });
+
+
+    $(".report").click(function(){
+        var visited_url = window.location.href;
+        $(".div-table-second-cell").css('z-index','100');
+        $(".list-item-main").css('z-index','100');
+        var html = '<form class="form-horizontal" role="form" method="post" action="#">'+
+            '<div class="form-group">'+
+            '<label for="name" class="col-sm-2 control-label hide">Name</label>'+
+            '<div class="col-sm-10">'+
+            '<input type="hidden" class="form-control" id="name" name="name" placeholder="First & Last Name" value="Javul Admin">'+
+            '</div>'+
+            '                    </div>'+
+            '<div class="form-group">'+
+            '<label for="email" class="col-sm-2 control-label hide">Email</label>'+
+            '<div class="col-sm-10">'+
+            '<input type="hidden" class="form-control" id="email" name="email" value="javul.org@gmail.com">'+
+            '</div>'+
+            '                    </div>'+
+            '<div class="form-group">'+
+            '<label for="visited url" class="col-sm-2 control-label paddpop">Visited URL</label>'+
+            '<div class="col-sm-10">'+
+            '<input type="text" class="form-control" disabled  id="url" name="url" value="'+visited_url+'">'+
+            '</div>'+
+            '</div>'+
+            '<div class="form-group">'+
+            '<label for="message" class="col-sm-2 control-label">Message</label>'+
+            '<div class="col-sm-10">'+
+            '<textarea class="form-control" id="message" rows="4" name="message" placeholder="Write your message here.">'+
+            '</textarea><span class="text-danger errors" id="message_error"></span>'+
+            '</div>'+
+            '                    </div>';
+
+        if($.trim(login) == ""){
+            html+= '<div class="form-group">'+
+                '<label for="human" class="col-sm-2 control-label captcha_label">'+captcha_code+'</label>'+
+                '<div class="col-sm-10">'+
+                '<input type="text" class="form-control" id="captcha" name="captcha_value" placeholder="Your Answer">'+
+                '<span class="text-danger errors" id="captcha_value_error"></span>'+
+                '</div>'+
+                '</div>'+
+                '</form>';
+        }
+        var bootbox_dialog=bootbox.dialog({
+            title: 'Report a Concern<br><p class="text">Your message will be sent to the Javul.org administrator.',
+            message:html,
+            buttons: {
+                success: {
+                    label: "Submit",
+                    className:'btn-success',
+                    callback: function () {
+                        $(".errors").html('');
+                        var captcha_value=$("#captcha").val();
+                        var name=$('#name').val();
+                        var email=$('#email').val();
+                        var visit_url=$('#url').val();
+                        var message=$('#message').val();
+
+                        $.ajax({
+                            type:'post',
+                            url:siteURL+'/reportconc',
+                            dataType:'json',
+                            data:{_token:report_concern_token,name:name,email:email,visit_url:visit_url,message:message,captcha_value:captcha_value},
+                            success: function(response){
+                                if(!response.success){
+
+                                    $.each(response.errors,function(index,value){
+                                        $("[id='"+index+"_error']").html(value);
+                                    });
+
+                                }
+                                else{
+                                    toastr['success']('Thank you! Your message was sent to the Javul.org admin.', '');
+                                    captcha_code=response.captcha_value;
+                                    bootbox.hideAll();
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                },
+                cancel:{
+                    label:'Cancel',
+                    className:'btn-danger'
+                }
+            }
+        });
+
+        bootbox_dialog.on("hidden.bs.modal", function (e) {
+            $.ajax({
+                type:'get',
+                url:siteURL+'/close_report',
+                dataType:'json',
+                success:function(response){
+                    captcha_code=response.captcha_value;
+                }
+            });
+        });
+
+        bootbox_dialog.modal('show');
+    });
 })
 
 function check_assigned_task(){
@@ -206,7 +307,7 @@ function check_assigned_task(){
         success:function(resp){
             if(resp.success){
                 if($(".confirmation_box_"+resp.task_id).length == 0){
-                    $(".user-menu").parent('.col-sm-12').after('<div class="col-sm-12">'+resp.html+'</div>');
+                    $(".content").find('.container').prepend('<div class="row"><div class="col-sm-12">'+resp.html+'</div></div>');
                 }
                 /*bootbox.dialog({
                     message: resp.html,
@@ -277,9 +378,19 @@ function getSiteActivity(page){
         success:function(resp){
             $(".site_activity_list .panel-body").find(".more-btn").remove();
             $(".site_activity_list .panel-body").find('.last-site-activity').remove();
+
             $(".site_activity_list .panel-body").append(resp.html);
             $(".site_activity_loading").hide();
             $(".loading_content_hide").css('opacity','1');
+
+            $(".site_activity_list .panel-body").find('span.tooltipster').each(function(){
+                if(!$(this).hasClass('tooltipstered')){
+                    $(this).tooltipster({
+                        position: 'right'
+                    });
+                }
+            });
+
         }
     });
 }
@@ -295,6 +406,14 @@ function getGlobalSiteActivity(page,from_page){
             $(".site_activity_list .panel-body").append(resp.html);
             $(".site_activity_loading").hide();
             $(".loading_content_hide").css('opacity','1');
+
+            $(".site_activity_list .panel-body").find('span.tooltipster').each(function(){
+                if(!$(this).hasClass('tooltipstered')){
+                    $(this).tooltipster({
+                        position: 'right'
+                    });
+                }
+            });
         }
     });
 }

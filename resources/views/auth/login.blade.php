@@ -14,7 +14,7 @@
 
                 <div class="row form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <div class="col-sm-12">
-                        <input name="email" type="email" id="email" class="form-control" placeholder="{!! Lang::get('messages.email_address') !!}"
+                        <input name="email" type="text" id="email" class="form-control" placeholder="{!! Lang::get('messages.email_address') !!}"
                                required="" autofocus="" value="{{ old('email') }}">
 
                         @if ($errors->has('email'))

@@ -37,7 +37,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth',['except'=>['index','add_to_watchlist','get_unit_site_activity_paginate','get_site_activity_paginate',
-            'global_activities','get_categories','browse_categories','get_next_level_categories']]);
+            'global_activities','get_categories','browse_categories','get_next_level_categories','global_search','check_username']]);
     }
 
     /**
@@ -72,6 +72,37 @@ class HomeController extends Controller
         view()->share('site_activity',$activities);
         view()->share('site_activity_text','Global Activity Log');
         return view('global_activities');
+    }
+
+    public function global_search(Request $request){
+        $search_word = $request->input('search_word');
+        $unitObj = Unit::where('name','like', '%'.$search_word.'%')->get();
+        view()->share('unitObj',$unitObj);
+
+        $objectiveObj = Objective::where('name','like', '%'.$search_word.'%')->get();
+        view()->share('objectiveObj',$objectiveObj);
+
+        $taskObj = Task::where('name','like', '%'.$search_word.'%')->get();
+        view()->share('taskObj',$taskObj);
+
+        $issueObj = Issue::where('title','like', '%'.$search_word.'%')->get();
+        view()->share('issueObj',$issueObj);
+
+        view()->share('site_activity_text','Global Activity Log');
+        $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity',$site_activity);
+        return view('global_search');
+    }
+ 
+	public function check_username(Request $check){
+        $name=$check->get('check');
+        $user_count=User::where('username',$name)->count();
+        
+        $string=preg_match("/[\s^]*(admin|site|javul|administration)/i",$name);
+        if($string || $user_count > 0)                    
+			return \Response::json(['success'=>true]);
+        
+        return \Response::json(['success'=>false]);
     }
 
     public function get_unit_site_activity_paginate(Request $request){

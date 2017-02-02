@@ -99,15 +99,15 @@ class AccountController extends Controller
             $validator = \Validator::make($request->all(), [
                 'first_name' => 'required',
                 'last_name' => 'required',
-                'email' => 'required|unique:users,email,'.Auth::user()->id,
-                'phone'=>'required|numeric',
+                'email' => 'required|unique:users,email,'.Auth::user()->id
+                /*'phone'=>'required|numeric',
                 'mobile'=>'required|numeric',
                 'country'=>'required',
                 'state'=>'required',
                 'city'=>'required',
                 'address'=>'required',
                 'job_skills'=>'required',
-                'area_of_interest'=>'required'
+                'area_of_interest'=>'required'*/
             ]);
 
             if ($validator->fails())
@@ -120,19 +120,28 @@ class AccountController extends Controller
                 $short_country_name = $short_country_name ->shortname;
 
             $mobile_number = $request->input('mobile');
-            $mobile_number_error='';
-            try {
-                $mobile_number = $phoneUtil->parse($mobile_number, $short_country_name);
-                $isValid = $phoneUtil->isValidNumber($mobile_number);
-            } catch (\libphonenumber\NumberParseException $e) {
-                $mobile_number_error = $e->getMessage();
+            //$mobile_number_error = '';
+            $isValid = true;
+            if(!empty($mobile_number)) {
+                /*try {
+                    $mobile_number = $phoneUtil->parse($mobile_number, $short_country_name);
+                    $isValid = $phoneUtil->isValidNumber($mobile_number);
+                } catch (\libphonenumber\NumberParseException $e) {
+                    $mobile_number_error = $e->getMessage();
+                }*/
+
+                if(!is_numeric($mobile_number))
+                    $isValid=false;
+            }else
+                $mobile_number=null;
+
+            //if(!empty($mobile_number_error))
+              //  return \Response::json(['success'=>false,'errors'=>['mobile'=>$mobile_number_error]]);
+
+            if(!empty($mobile_number)) {
+                if (!$isValid)
+                    return \Response::json(['success' => false, 'errors' => ['mobile' => 'Invalid mobile number']]);
             }
-
-            if(!empty($mobile_number_error))
-                return \Response::json(['success'=>false,'errors'=>['mobile'=>$mobile_number_error]]);
-
-            if(!$isValid)
-                return \Response::json(['success'=>false,'errors'=>['mobile'=>'Invalid mobile number']]);
 
             $job_skills = $request->input('job_skills');
             if(!empty($job_skills))

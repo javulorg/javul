@@ -11,6 +11,22 @@
                         <h2 class="form-signin-heading">{!! Lang::get('messages.please_signup') !!}</h2>
                     </div>
                 </div>
+
+				<div class="row form-group{{ $errors->has('user_name') || $errors->has('username_duplicate') ? ' has-error' : '' }}">
+                    <div class="col-md-12"style="padding: ">
+                        <input type="text" id="uname" class="form-control" required="" name="user_name" value="{{ old('user_name') }}"  placeholder="Enter User Name">
+                       @if ($errors->has('user_name'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('user_name') }}</strong>
+                            </span>
+                       @elseif($errors->has('username_duplicate'))
+                            <span class="help-block ">
+                                <strong>{{ $errors->first('username_duplicate') }}</strong>
+                            </span>
+                       @endif
+                    </div>
+                    <img id="user_img" src="" style="float: right;position: absolute;margin-top: 7px">
+                </div>
                 <div class="row form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                     <div class="col-md-12">
                         <input type="text" class="form-control" required="" name="first_name" value="{{ old('first_name') }}"  placeholder="{!!
@@ -128,3 +144,31 @@
 </div>
 @include('elements.footer')
 @endsection
+@section('page-scripts')
+    <script>
+        $(function(){
+            $("#uname").keyup(function(){
+                var username=$(this).val();
+                var url ='{!! url("") !!}';
+                if(username.length>5){
+                    $("#user_img").attr({src:"http://localhost/javul/assets/images/loader.gif"});
+                    $.ajax({
+                        type:'post',
+                        url:'{!! url("check_username") !!}',
+                        dataType:'json',
+                        data:{_token:'{{csrf_token()}}',check:username},
+                        success: function(data){
+                            if(data.success==true){
+                                $("#user_img").attr({src: url+"/assets/images/not-available.png"});
+                            }else{
+                                $("#user_img").attr({src:url+"/assets/images/available.png"});
+                            }
+                        }
+                    });
+                }
+                if(username.length<6){$("#user_img").attr({src:""});}
+            });
+        });
+    </script>
+@endsection
+

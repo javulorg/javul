@@ -18,11 +18,13 @@ use App\Http\Requests;
 use App\Forum;
 use App\IssuesRevision;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Mc;
 
 class IssuesController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','lists','view']]);
+        $this->middleware('auth',['except'=>['index','lists','view','report_concern_email','reset_captcha_after_close']]);
     }
 
     public function revison($issue_id ,Request $request){
@@ -952,5 +954,49 @@ class IssuesController extends Controller
             }
         }
         return \Response::json(['success'=>false]);
+    }
+
+    public function report_concern_email(Request $email){
+        $validate_fields = ['message'=>'required'];
+        if(!\Auth::check())
+            $validate_fields['captcha_value']='required';
+
+        $validator=\Validator::make($email->all(), $validate_fields);
+        if ($validator->fails()){
+            return \Response::json(['success'=>false,'errors'=>$validator->messages()->toArray()]);
+        }
+
+        $answer=(int)$email->get('captcha_value');
+        $flag =false;
+        if(!\Auth::check()){
+            if($answer==Mc::getMcAnswer())
+                $flag=true;
+        }
+        else
+            $flag=true;
+
+        if($flag){
+            $name=$email->get('name');
+            $email_id=$email->get('email');
+            $visit_url=$email->get('visit_url');
+            $message=$email->get('message');
+            $data=array('name' => $name, 'messages' => $message,'email'=>$email_id,'url'=>$visit_url);
+            Mail::send('emails/report_concern', $data, function ($message){
+                $message->to('javul.org@gmail.com','Administrator')->subject('Report a Concern');
+            });
+            // re-generate captcha
+            Mc::putMcData();
+            $question=Mc::getMcQuestion();
+            return \Response::json(['success'=>true,'captcha_value'=>$question]);
+        }
+        else
+            return \Response::json(['success'=>false,'errors'=>["captcha_value"=>["The captcha is invalid."]]]);
+
+    }
+
+    public function reset_captcha_after_close(Request $reset_captcha){
+        Mc::putMcData();
+        $question=Mc::getMcQuestion();
+        return \Response::json(['success'=>true,'captcha_value'=>$question]);
     }
 }

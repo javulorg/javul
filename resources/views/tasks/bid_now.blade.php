@@ -3,8 +3,19 @@
 <link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.css') !!}" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
+<link href="{!! url('assets/plugins/bootstrap-star-rating-master/css/star-rating.css') !!}" rel="stylesheet" type="text/css" />
 
 <style>
+    span.stars, span.stars span {
+        display: block;
+        background: url('{!! url("assets/images/stars.png") !!}') 0 -16px repeat-x;
+        width: 80px;
+        height: 16px;
+    }
+
+    span.stars span {
+        background-position: 0 0;
+    }
     .hide-native-select .btn-group, .hide-native-select .btn-group .multiselect, .hide-native-select .btn-group.multiselect-container
     {width:100% !important;}
     .bid_comment p{margin:0;}
@@ -119,7 +130,18 @@
                     </div>
                     <div class="list-group tab-pane @if($active == 'bid_now') active @endif" id="bid_now">
                         <div class="list-group-item">
-
+                            <div class="row form-group">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label class="control-label" style="margin-bottom:0px">Task Completion Ratings: Quality of works :<span
+                                                        class="stars" style="display:inline-block">3.5</span> (3.5/5) Timeliness :<span
+                                                        class="stars"  style="display:inline-block">4.5</span>(4
+                                                .5/5)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row form-group">
                                 <div class="col-xs-6 col-sm-4  {{ $errors->has('amount') ? ' has-error' : '' }}">
                                     <div class="input-icon right">
@@ -183,6 +205,7 @@
 @include('elements.footer')
 @stop
 @section('page-scripts')
+<script src="{!! url('assets/plugins/bootstrap-star-rating-master/js/star-rating.js') !!}"></script>
 <script>
     toastr.options = {
         "closeButton": true,
@@ -197,7 +220,24 @@
         "hideEasing": "linear",
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
+    };
+    $.fn.stars = function() {
+        return $(this).each(function() {
+            // Get the value
+            var val = parseFloat($(this).html());
+            val = Math.round(val * 2) / 2;
+            // Make sure that the value is in 0 - 5 range, multiply to get width
+            var size = Math.max(0, (Math.min(5, val))) * 16;
+
+            // Create stars holder
+            var $span = $('<span />').width(size);
+            // Replace the numerical value with stars
+            $(this).html($span);
+        });
     }
+    $(function(){
+        $('span.stars').stars();
+    });
 </script>
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/tasks/task_bid.js') !!}"></script>

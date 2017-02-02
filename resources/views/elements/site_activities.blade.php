@@ -11,7 +11,7 @@
                             <div class="col-xs-12" style="display: table">
                                 <div style="display:table-row">
                                     <div class="div-table-first-cell">
-                                        {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
+                                        <span class="tooltipster" title='{!! ($activity->created_at) !!}'>{!! \App\Library\Helpers::timetostr($activity->created_at) !!}</span>
                                     </div>
                                     <div class="div-table-second-cell">
                                         <div class="circle activity-refresh">
@@ -66,7 +66,7 @@
                     <div class="col-xs-12" style="display: table">
                         <div style="display:table-row">
                             <div class="div-table-first-cell">
-                                {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
+                                <span class="tooltipster" title='{!! ($activity->created_at) !!}'>{!! \App\Library\Helpers::timetostr($activity->created_at) !!}</span>
                             </div>
                             <div class="div-table-second-cell">
                                 <div class="circle activity-refresh">
@@ -106,4 +106,3 @@
         </div>
     @endif
 @endif
-

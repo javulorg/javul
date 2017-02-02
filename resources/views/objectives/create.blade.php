@@ -173,6 +173,10 @@
     @include('elements.footer')
 @stop
 @section('page-scripts')
+    <script>
+        var edit_objective_flag = '{{(!empty($objectiveObj)?true:false)}}';
+
+    </script>
     <script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
     <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
     <script src="{!! url('assets/js/objectives/objectives.js') !!}"></script>

@@ -138,16 +138,27 @@
 
 
                 <li class="search_div_main" style="padding-top: 15px;">
-                    <div class="input-group add-on">
-                        <input type="text" class="form-control" id="search_box" name="search_box" placeholder="{!! trans('messages.search_for') !!}"
-                               aria-describedby="basic-addon1">
-                        <div class="input-group-btn">
-                            <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                    <form action="{!! url('global_search') !!}" method="post">
+                        {!! csrf_field() !!}
+                        <div class="input-group add-on">
+                            <input type="text" class="form-control" id="search_box" name="search_word"
+                                   placeholder="{!! trans('messages.search_for') !!}"
+                                   aria-describedby="basic-addon1"
+                                    @if(\Request::method('post') && \Request::has('search_word')) value="{{\Request::get('search_word')}}" @endif>
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="submit" style="background-color:#ccc;">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </li>
             </ul>
 
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+<script>
+    var captcha_code ='{{$report_question}}';
+    var report_concern_token='{{csrf_token()}}';
+</script>

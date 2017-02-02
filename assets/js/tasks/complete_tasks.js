@@ -225,7 +225,7 @@ $(document).ready(function() {
     });
 
     $("#ok_reassign").on('click',function(){
-        var code = $('#comment').code(),
+        var code = $('#comment').summernote('code'),
             filteredContent = $(code).text().replace(/\s+/g, '');
 
         if(filteredContent.length == 0) {
@@ -236,16 +236,16 @@ $(document).ready(function() {
         else{
             var task_id = $(this).attr('data-tid');
             $("#form_sample_2").attr('action',siteURL+'/tasks/re_assign/'+task_id);
-            $("#form_sample_2").submit();
+            document.getElementById("form_sample_2").submit();
         }
-    })
+    });
 
     $(".cancel_btn").on('click',function(){
         $(".comment_block").hide();
         $(".reward-panel").hide();
         $(".complete_assign_btn").show();
         return false;
-    })
+    });
 
     $("#mark_as_complete").on('click',function(){
         $(".comment_block").hide();

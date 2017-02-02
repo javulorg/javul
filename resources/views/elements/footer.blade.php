@@ -89,7 +89,7 @@
                             <li class="mrgrtlt5">|</li>
                             <li><a href="#" class="colorLightBlue">DISCLAIMER</a></li>
                             <li class="mrgrtlt5">|</li>
-                            <li><a href="#" class="colorLightBlue">REPORT A CONCERN</a></li>
+                            <li><a href="#" class="colorLightBlue report">REPORT A CONCERN</a></li>
                         </ul>
                     </div>
                 </div>

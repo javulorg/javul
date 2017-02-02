@@ -172,42 +172,75 @@ $(document).ready(function() {
             });
         }
 
-        $("#action_items").summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', []],
-                ['height', []],
-                ['fullscreen',['fullscreen']],
-                ['codeview',['codeview']]
-            ]
-        });
 
+
+
+
+        if(typeof editTask !== typeof undefined && editTask) {
+
+            $("#action_items").summernote({
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline']],
+                    ['font', []],
+                    ['fontsize', []],
+                    ['color', []],
+                    ['para', []],
+                    ['height', []],
+                    ['fullscreen',['fullscreen']],
+                    ['codeview',['codeview']],
+                    ['insert', ['link']]
+                ]
+            });
+
+            $('.summernote').summernote({
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline']],
+                    ['font', []],
+                    ['fontsize', []],
+                    ['color', []],
+                    ['para', ['ul', 'ol']],
+                    ['height', []],
+                    ['fullscreen',['fullscreen']],
+                    ['codeview',['codeview']],
+                    ['insert', ['link']]
+                ],
+                height:100
+            });
+        }else{
+
+            $("#action_items").summernote({
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline']],
+                    ['font', []],
+                    ['fontsize', []],
+                    ['color', []],
+                    ['para', []],
+                    ['height', []],
+                    ['fullscreen',['fullscreen']],
+                    ['codeview',['codeview']]
+                ]
+            });
+
+            $('.summernote').summernote({
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline']],
+                    ['font', []],
+                    ['fontsize', []],
+                    ['color', []],
+                    ['para', ['ul', 'ol']],
+                    ['height', []],
+                    ['fullscreen',['fullscreen']],
+                    ['codeview',['codeview']]
+                ],
+                height:100
+            });
+        }
         if(!actionListFlag)
             $('#action_items').summernote('insertUnorderedList');
-
-        $('.summernote').summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', ['ul', 'ol']],
-                ['height', []],
-                ['fullscreen',['fullscreen']],
-                ['codeview',['codeview']]
-            ],
-            height:100
-        });
-
-
-
-
-
 
         $("#unit").select2({
             allowClear:true,

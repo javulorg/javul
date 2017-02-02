@@ -250,7 +250,7 @@
                             <div class="row">
                                 <div class="col-sm-12 form-group">
                                     <div class="document_listing_div">
-                                        <div class="table-responsive">
+                                        <div class="table-responsive ofhidden">
                                             <table class="documents table table-striped">
                                                 <thead>
                                                 <tr>

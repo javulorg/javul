@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Mc;
 use App\Issue;
 use App\Objective;
 use App\SiteActivity;
@@ -57,8 +58,10 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('jobSkillIDHashID',$jobSkillIDHashID);
         view()->share('areaOfInterestIDHashID',$areaOfInterestIDHashID);
 
-        view()->composer('elements.footer',function($view){
-
+        view()->composer('elements.header',function($view){
+			Mc::putMcData();
+            $question=Mc::getMcQuestion();
+            $view->with('report_question',$question);
         });
 
         /*view()->composer('elements.site_activities',function($view){
