@@ -2077,7 +2077,7 @@ class TasksController extends Controller
                         $quality_of_work=null;
 
                     $timeliness = $request->input('timeliness');
-                    if(empty(timeliness))
+                    if(empty($timeliness))
                         $timeliness=null;
 
                     TaskRatings::create([
