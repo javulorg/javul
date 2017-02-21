@@ -138,13 +138,12 @@
 
 
                 <li class="search_div_main" style="padding-top: 15px;">
-                    <form action="{!! url('global_search') !!}" method="post">
-                        {!! csrf_field() !!}
+                    <form action="{!! url('global_search') !!}" method="get">
                         <div class="input-group add-on">
-                            <input type="text" class="form-control" id="search_box" name="search_word"
+                            <input type="text" class="form-control" id="search_box" name="search_term"
                                    placeholder="{!! trans('messages.search_for') !!}"
                                    aria-describedby="basic-addon1"
-                                    @if(\Request::method('post') && \Request::has('search_word')) value="{{\Request::get('search_word')}}" @endif>
+                                    @if(\Request::method('post') && \Request::has('search_term')) value="{{\Request::get('search_term')}}" @endif>
                             <div class="input-group-btn">
                                 <button class="btn btn-default" type="submit" style="background-color:#ccc;">
                                     <i class="glyphicon glyphicon-search"></i>

@@ -36,12 +36,12 @@
         </div>
     </div>--}}
     <div class="row">
-        @if(!empty($unitInfo))
+        @if(!empty($unitInfo) || !empty($taskObj))
             <div class="col-sm-4">
-                @include('units.partials.unit_information_left_table',['unitObj'=>$unitInfo,'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
+                @include('units.partials.unit_information_left_table',['unitObj'=>(!empty($taskObj)?$unitObjForLeftBar:$unitInfo),'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
             </div>
         @endif
-        <div @if(!empty($unitInfo)) class="col-sm-8" @else class="col-sm-12" @endif>
+        <div @if(!empty($unitInfo) || !empty($taskObj)) class="col-sm-8" @else class="col-sm-12" @endif>
             <div class="panel panel-grey panel-default">
                 <div class="panel-heading">
                     @if(empty($unitObj))

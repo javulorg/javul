@@ -217,6 +217,7 @@
             </div>
         </div>
     </div>
+    @include('elements.footer')
 @endsection
 @section('page-scripts')
     <script type="text/javascript">

@@ -158,6 +158,19 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div style="padding:5px 15px;background-color: #f9f9f9;margin-top:0px">
+                            <h4 style="font-weight: 500;">Summary :</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="padding:20px 20px 10px 30px;">
+                        {!! $taskObj->summary!!}
+                    </div>
+                </div>
+
                 @include('forum.element.objective')
 
                 @include('tasks.partials.task_bidders_list',['taskBidders'=>$taskBidders,'taskObj'=>$taskObj])
@@ -189,6 +202,9 @@
     }
 </script>
 <script type="text/javascript">
+    var msg_flag ='{{ $msg_flag }}';
+    var msg_type ='{{ $msg_type }}';
+    var msg_val ='{{ $msg_val }}';
     $(function(){
         $('#tabs').tab();
 
@@ -219,4 +235,5 @@
         });
     })
 </script>
+<script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
 @endsection

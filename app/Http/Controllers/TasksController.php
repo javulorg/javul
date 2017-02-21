@@ -602,7 +602,8 @@ class TasksController extends Controller
             });
 
             $request->session()->flash('msg_val', "Task created successfully!!!");
-            return redirect('tasks');
+
+            return redirect('tasks/'.$task_id.'/'.$slug);
         }
 
         return view('tasks.create');
@@ -729,6 +730,7 @@ class TasksController extends Controller
                     ]);
 
                     $task_id_decoded= $task_id;
+                    $taskObjTemp = Task::find($task_id);
                     $taskIDHashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
                     $task_id = $taskIDHashID->encode($task_id);
 
@@ -885,7 +887,7 @@ class TasksController extends Controller
                     });
 
                     $request->session()->flash('msg_val', "Task updated successfully!!!");
-                    return redirect('tasks');
+                    return redirect('tasks/'.$taskIDHashID->encode($taskObjTemp->id).'/'.$taskObjTemp->slug);
                 }
 
                 $unitsObj = Unit::where('status','active')->lists('name','id');
@@ -930,6 +932,17 @@ class TasksController extends Controller
                 $taskObj->estimated_completion_time_start = date('Y/m/d h:i',strtotime($taskObj->estimated_completion_time_start));
                 $taskObj->estimated_completion_time_end = date('Y/m/d h:i',strtotime($taskObj->estimated_completion_time_end));
                 $exploded_task_list = explode(",",$taskObj->skills);
+
+
+                $availableUnitFunds =Fund::getUnitDonatedFund($taskObj->unit_id);
+                $awardedUnitFunds =Fund::getUnitAwardedFund($taskObj->unit_id);
+                $unitObjForLeftBar = Unit::find($taskObj->unit_id);
+
+                view()->share('availableUnitFunds',$availableUnitFunds );
+                view()->share('awardedUnitFunds',$awardedUnitFunds );
+                view()->share('unit_activity_id',$taskObj->unit_id);
+                view()->share('unitObjForLeftBar',$unitObjForLeftBar);
+
                 view()->share('exploded_task_list',$exploded_task_list );
                 view()->share('editFlag',true);
                 view()->share('actionListFlag',$taskObj->task_action);
@@ -1055,7 +1068,7 @@ class TasksController extends Controller
      * @param $task_id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function view($task_id){
+    public function view($task_id,Request $request){
         if(!empty($task_id)){
             $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
@@ -1069,6 +1082,24 @@ class TasksController extends Controller
                 if(!empty($taskObj->objective))
                     $taskObj->unit = Unit::getUnitWithCategories($taskObj->unit_id);
                 if(!empty($taskObj)){
+
+                    $msg_flag = false;
+                    $msg_val = '';
+                    $msg_type = '';
+                    if($request->session()->has('msg_val')){
+                        $msg_val =  $request->session()->get('msg_val');
+                        $request->session()->forget('msg_val');
+                        $msg_flag = true;
+                        $msg_type = "success";
+                        if($request->session()->has('msg_type')){
+                            $msg_type = $request->session()->get('msg_type');
+                            $request->session()->forget('msg_type');
+                        }
+                    }
+                    view()->share('msg_flag',$msg_flag);
+                    view()->share('msg_val',$msg_val);
+                    view()->share('msg_type',$msg_type);
+
                     view()->share('taskObj',$taskObj );
 
                     // to display listing of bidders to task creator or unit admin of this task.

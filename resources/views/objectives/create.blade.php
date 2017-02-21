@@ -54,12 +54,12 @@
             </div>
         </div>--}}
         <div class="row">
-            @if(!empty($unitInfo))
+            @if(!empty($unitInfo) || !empty($objectiveObj))
                 <div class="col-sm-4">
-                    @include('units.partials.unit_information_left_table',['unitObj'=>$unitInfo,'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
+                    @include('units.partials.unit_information_left_table',['unitObj'=>(!empty($objectiveObj)?$objectiveObj->unit:$unitInfo),'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
                 </div>
             @endif
-            <div @if(!empty($unitInfo)) class="col-sm-8" @else class="col-sm-12" @endif>
+            <div @if(!empty($unitInfo) || (!empty($objectiveObj) && !empty($objectiveObj->unit))) class="col-sm-8" @else class="col-sm-12" @endif>
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
                         @if(empty($objectiveObj))

@@ -550,7 +550,8 @@ class ObjectivesController extends Controller
                     });
 
                     $request->session()->flash('msg_val', "Objective updated successfully!!!");
-                    return redirect('objectives');
+                    return redirect('objectives/'.$objectiveIDHashID->encode($objectiveObj->id).'/'.$objectiveObj->slug);
+
 
                 }
                 elseif(!empty($objectiveObj)){
@@ -560,6 +561,13 @@ class ObjectivesController extends Controller
                     $parentObjectivesObj = Objective::where('id','!=',$objective_id)->lists('name','id');
                     view()->share('parentObjectivesObj',$parentObjectivesObj);
                     view()->share('unitsObj',$unitsObj);
+                    $availableUnitFunds =Fund::getUnitDonatedFund($objectiveObj->unit->id);
+                    $awardedUnitFunds =Fund::getUnitAwardedFund($objectiveObj->unit->id);
+
+                    view()->share('availableUnitFunds',$availableUnitFunds);
+                    view()->share('awardedUnitFunds',$awardedUnitFunds);
+                    view()->share('unit_activity_id',$objectiveObj->unit->id);
+
                     return view('objectives.create');
                 }
             }

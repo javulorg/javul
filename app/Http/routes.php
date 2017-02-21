@@ -13,7 +13,7 @@
 
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
-Route::post('/global_search','HomeController@global_search');
+Route::get('/global_search','HomeController@global_search');
 Route::post('/check_username','HomeController@check_username');
 Route::get('/account', 'AccountController@index');
 Route::get('/account/logout', 'AccountController@logout');

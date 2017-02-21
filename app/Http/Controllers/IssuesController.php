@@ -559,8 +559,8 @@ class IssuesController extends Controller
                             $IssuesRevision->size = (  $bytes - $oldBytes );
                             $IssuesRevision->user_id = $issueObj->user_id;
                             $IssuesRevision->unit_id = $issueObj->unit_id;
-                            $IssuesRevision->objective_id = $issueObj->objective_id;
-                            $IssuesRevision->task_id = $issueObj->task_id;
+                            $IssuesRevision->objective_id = $selected_objective_id;
+                            $IssuesRevision->task_id = $selected_task_id_arr;
                             $IssuesRevision->title = $issueObj->title;
                             $IssuesRevision->description = $issueObj->description;
                             $IssuesRevision->file_attachments = $issueObj->file_attachments;
@@ -635,7 +635,7 @@ class IssuesController extends Controller
 
                         $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
                         $request->session()->flash('msg_val', "Issue updated successfully!!!");
-                        return redirect('issues/'.$unitIDHashID->encode($issueObj->unit_id).'/lists');
+                        return redirect('issues/'.$issueIDHashID->encode($issueObj->id).'/view');
                     }
                     $user_can_change_status = true;
                     $user_can_resolve_issue = true;

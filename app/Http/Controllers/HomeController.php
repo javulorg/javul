@@ -75,12 +75,13 @@ class HomeController extends Controller
     }
 
     public function global_search(Request $request){
-        $search_word = $request->input('search_word');
+
+        $search_word = $request->input('search_term');
         $unitObj = Unit::where('name','like', '%'.$search_word.'%')->get();
         view()->share('unitObj',$unitObj);
 
         $objectiveObj = Objective::where('name','like', '%'.$search_word.'%')->get();
-        view()->share('objectiveObj',$objectiveObj);
+        view()->share('objectivesObj',$objectiveObj);
 
         $taskObj = Task::where('name','like', '%'.$search_word.'%')->get();
         view()->share('taskObj',$taskObj);
@@ -91,6 +92,8 @@ class HomeController extends Controller
         view()->share('site_activity_text','Global Activity Log');
         $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
+
+        view()->share('search_word',$search_word);
         return view('global_search');
     }
  

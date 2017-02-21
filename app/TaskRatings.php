@@ -20,7 +20,7 @@ class TaskRatings extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','task_id','ratings'];
+    protected $fillable = ['user_id','task_id','quality_of_work','timeliness'];
 
 
 

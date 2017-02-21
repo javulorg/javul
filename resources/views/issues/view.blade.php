@@ -121,7 +121,7 @@
                         <div class="list-group-item">
                             <div class="row">
                                 <div class="col-sm-12 file_list" style="padding-left: 0px;">
-                                    @if(!empty($issueObj->issue_documents))
+                                    @if(!empty($issueObj->issue_documents) && count($issueObj->issue_documents) > 0)
                                         <ul style="list-style-type: decimal; padding-left:30px;">
                                             @foreach($issueObj->issue_documents as $index=>$document)
                                                 <?php $extension = pathinfo($document->file_path, PATHINFO_EXTENSION); ?>
@@ -142,6 +142,10 @@
                                                     </a>
                                                 </li>
                                             @endforeach
+                                        </ul>
+                                    @else
+                                        <ul style="list-style-type: none; padding-left:15px;margin-bottom:0px">
+                                            <li>No document found(s).</li>
                                         </ul>
                                     @endif
                                 </div>

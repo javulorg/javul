@@ -23,7 +23,7 @@
 @endsection
 @section('content')
 <div class="container">
-    <div class="row">
+    <div class="row form-group" style="margin-bottom:15px;">
         @include('elements.user-menu',['page'=>'units'])
     </div>
     <div class="row form-group">
@@ -50,6 +50,9 @@
     <form role="form" method="post" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data">
         {!! csrf_field() !!}
         <div class="row">
+            <div class="col-sm-4">
+                @include('elements.site_activities',['ajax'=>false])
+            </div>
             <div class="col-sm-8">
                 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                     <li @if($active =="task_details") class="active" @endif><a href="#task_details" data-toggle="tab">Task Details</a></li>
@@ -135,9 +138,10 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <label class="control-label" style="margin-bottom:0px">Task Completion Ratings: Quality of works :<span
-                                                        class="stars" style="display:inline-block">3.5</span> (3.5/5) Timeliness :<span
-                                                        class="stars"  style="display:inline-block">4.5</span>(4
-                                                .5/5)</label>
+                                                        class="stars" style="display:inline-block">{{$quality_of_work}}</span>
+                                                        ({{$quality_of_work}}/5)
+                                                        Timeliness :<span class="stars"
+                                                                          style="display:inline-block">{{$timeliness}}</span>({{$timeliness}}/5)</label>
                                         </div>
                                     </div>
                                 </div>
@@ -195,9 +199,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                @include('elements.site_activities',['ajax'=>false])
             </div>
         </div>
     </form>

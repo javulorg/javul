@@ -112,6 +112,9 @@ a .fa-plus{margin-right: 10px;}
 .current_unit{background-color: #84b660;}
 .current_unit_heading{border-bottom-color:#84b660 !important}
 
+.search_unit{background-color:#808080}
+.search_unit_heading{border-bottom-color:#808080 !important}
+
 .current_objective{background-color: #d97d43;}
 .current_objective_heading{border-bottom-color:#d97d43 !important}
 
