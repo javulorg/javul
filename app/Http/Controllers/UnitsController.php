@@ -332,11 +332,16 @@ class UnitsController extends Controller
 
             $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->encode($unitID);
+
+            $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+            if(!empty(Auth::user()->username))
+                $user_name =Auth::user()->username;
+
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$unitID,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                    .$user_name.'</a>
                 created
                  unit <a href="'.url('units/'.$unit_id.'/'.$slug).'">'.$request->input('unit_name').'</a>'
             ]);
@@ -483,13 +488,16 @@ class UnitsController extends Controller
                     $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
                     $tempUnitID= $unit_id;
                     $unit_id = $unitIDHashID->encode($unit_id);
+
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$tempUnitID,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name))
-                            .'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name
-                            .'</a>
+                            .'">'.$user_name.'</a>
                         updated unit <a href="'.url('units/'.$unit_id.'/'.$slug).'">'.$request->input('unit_name').'</a>'
                     ]);
 
@@ -673,10 +681,14 @@ class UnitsController extends Controller
                     /*$objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
                     $objectiveId = $objectiveIDHashID->encode($objectiveID);*/
 
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$unitID,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.Auth::user()->first_name.' '.Auth::user()->last_name
+                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.$user_name
                             .'</a>
                         deleted unit '.$unitTemp->name
                     ]);

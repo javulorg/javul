@@ -440,9 +440,14 @@ class HomeController extends Controller
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
+
         $path_text = $request->input('path_text');
+        $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+        if(!empty(Auth::user()->username))
+            $loggedinUsername = Auth::user()->username;
+
         $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> added category <a href="'.url('site_admin').'">'
+            .$loggedinUsername.'</a> added category <a href="'.url('site_admin').'">'
             .$data['name'].'</a>';
         if(!empty($path_text)){
             $html.=' to the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -511,8 +516,11 @@ class HomeController extends Controller
         $skill_id = '';
 
         $path_text = $request->input('path_text');
+        $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+        if(!empty(Auth::user()->username))
+            $loggedinUsername = Auth::user()->username;
         $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> added skill <a href="'.url('site_admin').'">'
+            .$loggedinUsername.'</a> added skill <a href="'.url('site_admin').'">'
             .$data['skill_name'].'</a>';
         if(!empty($path_text)){
             $html.=' to the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -572,8 +580,12 @@ class HomeController extends Controller
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
+        $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+        if(!empty(Auth::user()->username))
+            $loggedinUsername = Auth::user()->username;
+
         $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited skill <a href="'.url('site_admin').'">'
+            .$loggedinUsername.'</a> edited skill <a href="'.url('site_admin').'">'
             .$request->input('skill_name').'</a>';
 
         if(Auth::user()->role == "superadmin") {
@@ -643,8 +655,13 @@ class HomeController extends Controller
                     $data['skill_name']= $request->input('skill_name');
                     $data['skill_hierarchy']=$path_text;
                     $obj->update($data);
+
+                    $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                    if(!empty(Auth::user()->username))
+                        $loggedinUsername = Auth::user()->username;
+
                     $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                        .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited skill <a href="'.url('site_admin').'">'
+                        .$loggedinUsername.'</a> edited skill <a href="'.url('site_admin').'">'
                         .$request->input('skill_name').'</a>';
                     if(!empty($path_text)){
                         $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -670,8 +687,12 @@ class HomeController extends Controller
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
 
+            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+            if(!empty(Auth::user()->username))
+                $loggedinUsername = Auth::user()->username;
+
             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> deleted skill <a href="'.url('site_admin').'">';
+                .$loggedinUsername.'</a> deleted skill <a href="'.url('site_admin').'">';
 
             if(Auth::user()->role == "superadmin"){
                 $job_skill_id= $id;
@@ -783,8 +804,12 @@ class HomeController extends Controller
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
+        $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+        if(!empty(Auth::user()->username))
+            $loggedinUsername = Auth::user()->username;
+
         $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited category <a href="'.url('site_admin').'">'
+            .$loggedinUsername.'</a> edited category <a href="'.url('site_admin').'">'
             .$request->input('category_name').'</a>';
 
         if(Auth::user()->role == "superadmin") {
@@ -856,8 +881,11 @@ class HomeController extends Controller
                     $data['name']= $request->input('category_name');
                     $data['category_hierarchy']=$path_text;
                     $obj->update($data);
+                    $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                    if(!empty(Auth::user()->username))
+                        $loggedinUsername = Auth::user()->username;
                     $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                        .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited category <a href="'.url('site_admin').'">'
+                        .$loggedinUsername.'</a> edited category <a href="'.url('site_admin').'">'
                         .$data['name'].'</a>';
                     if(!empty($path_text)){
                         $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -888,9 +916,12 @@ class HomeController extends Controller
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
+            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+            if(!empty(Auth::user()->username))
+                $loggedinUsername = Auth::user()->username;
 
             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> deleted category <a href="'.url('site_admin').'">';
+                .$loggedinUsername.'</a> deleted category <a href="'.url('site_admin').'">';
 
             if(Auth::user()->role == "superadmin"){
                 $unit_category_id= $id;
@@ -1013,8 +1044,13 @@ class HomeController extends Controller
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
         $path_text = $request->input('path_text');
+
+        $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+        if(!empty(Auth::user()->username))
+            $loggedinUsername = Auth::user()->username;
+
         $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> added area of interest <a href="'.url('site_admin').'">'
+            .$loggedinUsername.'</a> added area of interest <a href="'.url('site_admin').'">'
             .$data['title'].'</a>';
         if(!empty($path_text)){
             $html.=' to the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -1079,8 +1115,12 @@ class HomeController extends Controller
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
+        $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+        if(!empty(Auth::user()->username))
+            $loggedinUsername = Auth::user()->username;
+
         $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited area of interest <a href="'.url('site_admin').'">'
+            .$loggedinUsername.'</a> edited area of interest <a href="'.url('site_admin').'">'
             .$title.'</a>';
 
         if(Auth::user()->role == "superadmin") {
@@ -1158,8 +1198,13 @@ class HomeController extends Controller
                     $data['title']= $request->input('title');
                     $data['area_of_interest_hierarchy']=$path_text;
                     $obj->update($data);
+
+                    $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                    if(!empty(Auth::user()->username))
+                        $loggedinUsername = Auth::user()->username;
+
                     $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                        .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> edited area of interest <a href="'.url('site_admin').'">'
+                        .$loggedinUsername.'</a> edited area of interest <a href="'.url('site_admin').'">'
                         .$data['title'].'</a>';
                     if(!empty($path_text)){
                         $html.=' in the <a href="'.url('site_admin').'">'.$path_text.'</a>';
@@ -1189,9 +1234,12 @@ class HomeController extends Controller
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
+            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+            if(!empty(Auth::user()->username))
+                $loggedinUsername = Auth::user()->username;
 
             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> deleted area of interest <a href="'.url('site_admin').'">';
+                .$loggedinUsername.'</a> deleted area of interest <a href="'.url('site_admin').'">';
 
             if(Auth::user()->role == "superadmin"){
                 $area_of_interest_id= $id;
@@ -1385,8 +1433,12 @@ class HomeController extends Controller
 
                             $jobSkillHistory->delete();
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved addition of skill <a href="'.url('site_admin').'">';
+                                .$loggedinUsername.'</a> approved addition of skill <a href="'.url('site_admin').'">';
 
                             $html.=$jobSkillHistoryTemp->skill_name.'</a>';
                             if(!empty($jobSkillHistoryTemp->skill_hierarchy)){
@@ -1411,8 +1463,12 @@ class HomeController extends Controller
                             $jobSkillHistoryTemp = $jobSkillHistory;
                             $jobSkillHistory->delete();
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved edition of skill <a href="'.url('site_admin').'">';
+                                .$loggedinUsername.'</a> approved edition of skill <a href="'.url('site_admin').'">';
 
                             $html.=$jobSkillHistoryTemp->skill_name.'</a>';
                             if(!empty($jobSkillHistoryTemp->skill_hierarchy)){
@@ -1443,8 +1499,12 @@ class HomeController extends Controller
 
                             $jobSkillHistory->delete();
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved deletion of skill <a href="'.url('site_admin').'">';
+                                .$loggedinUsername.'</a> approved deletion of skill <a href="'.url('site_admin').'">';
 
                             $html.=$jobSkillHistoryTemp->skill_name.'</a>';
                             if(!empty($jobSkillHistoryTemp->skill_hierarchy)){
@@ -1502,8 +1562,12 @@ class HomeController extends Controller
 
                             $unitCategoryHistory->delete();
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved addition of category <a href="'.url
+                                .$loggedinUsername.'</a> approved addition of category <a href="'.url
                                 ('site_admin').'">';
 
                             $html.=$unitCategoryHistoryTemp->name.'</a>';
@@ -1528,8 +1592,12 @@ class HomeController extends Controller
                                 $unitCategoryHistoryTemp = $unitCategoryHistory;
                                 $unitCategoryHistory->delete();
 
+                                $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                                if(!empty(Auth::user()->username))
+                                    $loggedinUsername = Auth::user()->username;
+
                                 $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved edition of category <a href="'.url('site_admin').'">';
+                                    .$loggedinUsername.'</a> approved edition of category <a href="'.url('site_admin').'">';
 
                                 $html.=$unitCategoryHistoryTemp->name.'</a>';
                                 if(!empty($unitCategoryHistoryTemp->category_hierarchy)){
@@ -1564,8 +1632,12 @@ class HomeController extends Controller
 
                             $unitCategoryHistory->delete();
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved deletion of category <a href="'.url
+                                .$loggedinUsername.'</a> approved deletion of category <a href="'.url
                                 ('site_admin').'">';
 
                             $html.=$unitCategoryHistoryTemp->name.'</a>';
@@ -1625,8 +1697,12 @@ class HomeController extends Controller
 
                             $areaOfInterestHistory->delete();
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved addition of area of interest <a href="'.url('site_admin').'">';
+                                .$loggedinUsername.'</a> approved addition of area of interest <a href="'.url('site_admin').'">';
 
                             $html.=$areaOfInterestHistoryTemp->title.'</a>';
                             if(!empty($areaOfInterestHistoryTemp->area_of_interest_hierarchy)){
@@ -1650,8 +1726,12 @@ class HomeController extends Controller
                                 $areaOfInterestHistoryTemp = $areaOfInterestHistory;
                                 $areaOfInterestHistory->delete();
 
+                                $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                                if(!empty(Auth::user()->username))
+                                    $loggedinUsername = Auth::user()->username;
+
                                 $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved edition of area of interest <a href="'.url('site_admin').'">';
+                                    .$loggedinUsername.'</a> approved edition of area of interest <a href="'.url('site_admin').'">';
 
                                 $html.=$areaOfInterestHistoryTemp->title.'</a>';
                                 if(!empty($areaOfInterestHistoryTemp->area_of_interest_hierarchy)){
@@ -1686,8 +1766,12 @@ class HomeController extends Controller
 
                             $areaOfInterestHistory->delete();
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> approved deletion of area of interest <a href="'.url('site_admin').'">';
+                                .$loggedinUsername.'</a> approved deletion of area of interest <a href="'.url('site_admin').'">';
 
                             $html.=$areaOfInterestHistoryTemp->title.'</a>';
                             if(!empty($areaOfInterestHistoryTemp->area_of_interest_hierarchy)){
@@ -1734,8 +1818,12 @@ class HomeController extends Controller
                             elseif($jobSkillHistoryTemp->action_type == "delete")
                                 $op_type ="deletion";
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> rejected '.$op_type.' of skill <a href="'.url
+                                .$loggedinUsername.'</a> rejected '.$op_type.' of skill <a href="'.url
                                 ('site_admin').'">';
 
                             $html.=$jobSkillHistoryTemp->skill_name.'</a>';
@@ -1785,8 +1873,12 @@ class HomeController extends Controller
                             elseif($unitCategoryHistoryTemp->action_type == "delete")
                                 $op_type ="deletion";
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> rejected '.$op_type.' of category <a href="'.url
+                                .$loggedinUsername.'</a> rejected '.$op_type.' of category <a href="'.url
                                 ('site_admin').'">';
 
                             $html.=$unitCategoryHistoryTemp->name.'</a>';
@@ -1836,8 +1928,12 @@ class HomeController extends Controller
                             elseif($areaOfInterestHistoryTemp->action_type == "delete")
                                 $op_type ="deletion";
 
+                            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                            if(!empty(Auth::user()->username))
+                                $loggedinUsername = Auth::user()->username;
+
                             $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> rejected '.$op_type.' of area of interest <a href="'.url('site_admin').'">';
+                                .$loggedinUsername.'</a> rejected '.$op_type.' of area of interest <a href="'.url('site_admin').'">';
 
                             $html.=$areaOfInterestHistoryTemp->title.'</a>';
                             if(!empty($areaOfInterestHistoryTemp->area_of_interest_hierarchy)){

@@ -558,13 +558,17 @@ class TasksController extends Controller
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
+            $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+            if(!empty(Auth::user()->username))
+                $user_name =Auth::user()->username;
+
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$unit_id[0],
                 'objective_id'=>$objective_id[0],
                 'task_id'=>$task_id,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                    .$user_name.'</a>
                         created task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
             ]);
 
@@ -844,14 +848,17 @@ class TasksController extends Controller
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$unit_id[0],
                         'objective_id'=>$objective_id[0],
                         'task_id'=>$task_id_decoded,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name
-                            .'</a>
+                            .$user_name.'</a>
                         updated task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
                     ]);
 
@@ -1201,14 +1208,17 @@ class TasksController extends Controller
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$tasktempObj->unit_id,
                         'objective_id'=>$tasktempObj->objective_id,
                         'task_id'=>$task_id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name
-                            .'</a>
+                            .$user_name.'</a>
                         deleted task '.$tasktempObj->name
                     ]);
 
@@ -1295,13 +1305,17 @@ class TasksController extends Controller
                             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                             $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                            $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                            if(!empty(Auth::user()->username))
+                                $user_name =Auth::user()->username;
+
                             SiteActivity::create([
                                 'user_id'=>Auth::user()->id,
                                 'unit_id'=>$taskObj->unit_id,
                                 'objective_id'=>$taskObj->objective_id,
                                 'task_id'=>$task_id,
                                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                    .Auth::user()->first_name.' '.Auth::user()->last_name
+                                    .$user_name
                                     .'</a> submitted task approval <a href="'.url('tasks/'.$task_id_encoded.'/'.$taskObj->slug).'">'
                                     .$taskObj->name.'</a>'
                             ]);
@@ -1400,13 +1414,17 @@ class TasksController extends Controller
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                         $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                        $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                        if(!empty(Auth::user()->username))
+                            $user_name =Auth::user()->username;
+
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$taskObj->unit_id,
                             'objective_id'=>$taskObj->objective_id,
                             'task_id'=>$task_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name
+                                .$user_name
                                 .'</a> bid <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                                 .$taskObj->name.'</a>'
                         ]);
@@ -1529,13 +1547,17 @@ class TasksController extends Controller
                         $loggedin_user_id = $userIDHashID->encode(Auth::user()->id);
                         $user_id = $userIDHashID->encode($user_id);
 
+                        $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                        if(!empty(Auth::user()->username))
+                            $user_name =Auth::user()->username;
+
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$taskObj->unit_id,
                             'objective_id'=>$taskObj->objective_id,
                             'task_id'=>$task_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$loggedin_user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name
+                                .$user_name
                                 .'</a> assigned <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                                 .$taskObj->name.'</a> to <a href="'.url('userprofiles/'.$user_id .'/'.strtolower($userObj->first_name.'_'.$userObj->last_name)).'">'
                                 .$userObj->first_name.' '.$userObj->last_name
@@ -1628,13 +1650,17 @@ class TasksController extends Controller
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$taskObj->unit_id,
                         'objective_id'=>$taskObj->objective_id,
                         'task_id'=>$task_id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .$user_name
                             .'</a> accept offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
@@ -1699,13 +1725,17 @@ class TasksController extends Controller
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$taskObj->unit_id,
                         'objective_id'=>$taskObj->objective_id,
                         'task_id'=>$task_id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .$user_name
                             .'</a> reject offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
@@ -1886,13 +1916,17 @@ class TasksController extends Controller
                             'type'=>'task'
                         ]);
 
+                        $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                        if(!empty(Auth::user()->username))
+                            $user_name =Auth::user()->username;
+
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$taskObj->unit_id,
                             'objective_id'=>$taskObj->objective_id,
                             'task_id'=>$task_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name
+                                .$user_name
                                 .'</a> complete task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                                 .$taskObj->name.'</a>'
                         ]);
@@ -1988,13 +2022,18 @@ class TasksController extends Controller
 
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
+
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$taskObj->unit_id,
                         'objective_id'=>$taskObj->objective_id,
                         'task_id'=>$taskObj->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .$user_name
                             .'</a> re-assigned task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
@@ -2132,13 +2171,18 @@ class TasksController extends Controller
                             'type'=>'task'
                         ]);
                     }
+
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$taskObj->unit_id,
                         'objective_id'=>$taskObj->objective_id,
                         'task_id'=>$taskObj->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name
+                            .$user_name
                             .'</a> approved completed task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
@@ -2231,13 +2275,17 @@ class TasksController extends Controller
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                         $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
 
+                        $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                        if(!empty(Auth::user()->username))
+                            $user_name =Auth::user()->username;
+
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$taskObj->unit_id,
                             'objective_id'=>$taskObj->objective_id,
                             'task_id'=>$task_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name
+                                .$user_name
                                 .'</a> cancelled task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                                 .$taskObj->name.'</a>'
                         ]);

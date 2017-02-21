@@ -164,9 +164,6 @@ class ObjectivesController extends Controller
             }
         }
         return view('errors.404');
-
-       
-        return view('errors.404');
     }
     
     public function revisonview($objective_id,$revision_id,Request $request)
@@ -396,12 +393,16 @@ class ObjectivesController extends Controller
             $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
             $objectiveId = $objectiveIDHashID->encode($objectiveId);
 
+            $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+            if(!empty(Auth::user()->username))
+                $user_name =Auth::user()->username;
+
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$unitID,
                 'objective_id'=>$objectiveId,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                    .$user_name.'</a>
                         created objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name').'</a>'
             ]);
 
@@ -522,13 +523,16 @@ class ObjectivesController extends Controller
                     $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
                     $objectiveId = $objectiveIDHashID->encode($objective_id);
 
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$unitID,
                         'objective_id'=>$objective_id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name
-                            .'</a>
+                            .$user_name.'</a>
                         updated objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name').'</a>'
                     ]);
 
@@ -773,13 +777,16 @@ class ObjectivesController extends Controller
                     /*$objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
                     $objectiveId = $objectiveIDHashID->encode($objectiveID);*/
 
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$objectiveTemp->unit_id,
                         'objective_id'=>$objectiveID,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name))
-                            .'">'.Auth::user()->first_name.' '.Auth::user()->last_name
-                            .'</a>
+                            .'">'.$user_name.'</a>
                         deleted objective '.$objectiveTemp->name
                     ]);
 

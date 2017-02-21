@@ -160,8 +160,13 @@
                         success: function(data){
                             if(data.success==true){
                                 $("#user_img").attr({src: url+"/assets/images/not-available.png"});
+                                $("#uname").parent('.col-md-12').find(".help-block").remove();
+                                $("#uname").after('<span class="help-block "><strong>The username already exist in system.</strong></span>');
+                                $("#uname").parent('.col-md-12').addClass('has-error');
                             }else{
                                 $("#user_img").attr({src:url+"/assets/images/available.png"});
+                                $("#uname").parent('.col-md-12').find(".help-block").remove();
+                                $("#uname").parent('.col-md-12').removeClass('has-error');
                             }
                         }
                     });

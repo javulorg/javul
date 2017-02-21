@@ -436,12 +436,14 @@ class FundsController extends Controller
                     $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                    if(!empty(Auth::user()->username))
+                        $user_name =Auth::user()->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                                        donate $'.$obj->amount.' to'.$donateTo.' <a href="'.url($controller.'/'
-                                .$hashID->encode($dataObj->id).'/'.$dataObj->slug).'">'.$dataObj->name.'</a>'
+                            .$user_name.'</a> donate $'.$obj->amount.' to'.$donateTo.' <a href="'.url($controller.'/'.$hashID->encode($dataObj->id).'/'.$dataObj->slug).'">'.$dataObj->name.'</a>'
                     ]);
 
                     // store actual paypal transaction details.

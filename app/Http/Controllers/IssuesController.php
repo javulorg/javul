@@ -348,6 +348,9 @@ class IssuesController extends Controller
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                         $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                        $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                        if(!empty(Auth::user()->username))
+                            $user_name =Auth::user()->username;
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$unit_id,
@@ -355,7 +358,7 @@ class IssuesController extends Controller
                             'task_id'=>$task_id,
                             'issue_id'=>$issue_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                                .$user_name.'</a>
                         created issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
                         ]);
 
@@ -487,6 +490,10 @@ class IssuesController extends Controller
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
+            $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+            if(!empty(Auth::user()->username))
+                $user_name =Auth::user()->username;
+
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$unit_id,
@@ -494,7 +501,7 @@ class IssuesController extends Controller
                 'task_id'=>null,
                 'issue_id'=>$issue_id,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                    .$user_name.'</a>
                         created issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
             ]);
 
@@ -624,12 +631,16 @@ class IssuesController extends Controller
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                         $user_id = $userIDHashID->encode(Auth::user()->id);
 
+                        $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                        if(!empty(Auth::user()->username))
+                            $user_name =Auth::user()->username;
+
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$issueObj->unit_id,
                             'issue_id'=>$issueObj->id,
                             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                                .$user_name.'</a>
                         updated issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
                         ]);
 

@@ -283,11 +283,16 @@ class ForumController extends Controller
             $unit_id = $unitIDHashID->encode($inputData['unit_id']);
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
+
+            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+            if(!empty(Auth::user()->username))
+                $loggedinUsername = Auth::user()->username;
+
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$inputData['unit_id'],
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                    .$loggedinUsername.'</a>
                 created forum thread <a href="'. url('forum/post/'.$topicId.'/' .$inputData['slug']) .'">'. $inputData['title'] .'</a> for unit  <a href="'.url('units/'.$unit_id.'/'.$unit->slug).'">'.$unit->name.'</a> '
             ]);
             $json['success'] = "Topic created successfully";
@@ -333,17 +338,26 @@ class ForumController extends Controller
                 $unit_id = $unitIDHashID->encode($unitId);
                 $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                 $user_id = $userIDHashID->encode($unitData['user_id']);
+
+                $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                if(!empty(Auth::user()->username))
+                    $loggedinUsername = Auth::user()->username;
+
+                $unitUsername = strtolower($unitData['first_name'].'_'.$unitData['last_name']);
+                if(!empty($unitData['username']))
+                    $unitUsername = $unitData['username'];
+
                 if($inputData['replay_id'] > 0){
                     $fromuser_id = $userIDHashID->encode($unitData['user_id']);
-                    $commment = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
-                     replied to <a href="'.url('userprofiles/'.$fromuser_id.'/'.strtolower($unitData['first_name'].'_'.$unitData['last_name'])).'">' .$unitData['first_name'].' '.$unitData['last_name'].'</a> 
+                    $commment = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .$loggedinUsername.'</a>
+                     replied to <a href="'.url('userprofiles/'.$fromuser_id.'/'.strtolower($unitData['first_name'].'_'.$unitData['last_name'])).'">' .$unitUsername.'</a>
                      in forum thread <a href="'.url('forum/post/'.$inputData['topic_id'].'/' . $unitData['slug'] ).'"> '. $unitData['title'] .' </a> 
                      for Unit <a href="'.url('units/'.$unit_id.'/'.$unit->slug).'">'.$unit->name.'</a> ';
                 }
                 else
                 {
                     $commment = '
-                        <a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                        <a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .$loggedinUsername.'</a>
                         posted a comment in forum thread  <a href="'.url('forum/post/'.$inputData['topic_id'].'/' . $unitData['slug'] ).'"> '. $unitData['title'] .' </a> 
                         for Unit  
                         <a href="'.url('units/'.$unit_id.'/'.$unit->slug).'">'.$unit->name.'</a> 

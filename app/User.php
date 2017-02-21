@@ -143,10 +143,13 @@ class User extends Authenticatable
                         'comments'=>$taskBidder->amount.' rewards received to complete task '.$taskObj->name
                     ]);
 
+                    $taskCompletedUsername = strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name);
+                    if(!empty($taskCompleterObj->username))
+                        $taskCompletedUsername = $taskCompleterObj->username;
                     SiteActivity::create([
                         'user_id'=>$taskCompleter,
                         'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode($taskCompleter).'/'.strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name)).'">'
-                            .$taskCompleterObj->first_name.' '.$taskCompleterObj->last_name.'</a> received payment $'.$taskBidder->amount.'
+                            .$taskCompletedUsername.'</a> received payment $'.$taskBidder->amount.'
                             to complete task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id).'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
@@ -160,10 +163,14 @@ class User extends Authenticatable
                         'type'=>'task'
                     ]);
 
+                    $taskCompletedUsername = strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name);
+                    if(!empty($taskCompleterObj->username))
+                        $taskCompletedUsername = $taskCompleterObj->username;
+
                     SiteActivity::create([
                         'user_id'=>$taskCompleter,
                         'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode($taskCompleter).'/'.strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name)).'">'
-                            .$taskCompleterObj->first_name.' '.$taskCompleterObj->last_name.'</a> received point'.$taskBidder->amount.'
+                            .$taskCompletedUsername.'</a> received point'.$taskBidder->amount.'
                             to complete task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id).'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
@@ -186,10 +193,14 @@ class User extends Authenticatable
                     'comments'=>$rewards.' rewards received to complete task '.$taskObj->name
                 ]);
 
+                $taskCompletedUsername = strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name);
+                if(!empty($taskCompleterObj->username))
+                    $taskCompletedUsername = $taskCompleterObj->username;
+
                 SiteActivity::create([
                     'user_id'=>$taskCompleter,
                     'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode($taskCompleter).'/'.strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name)).'">'
-                        .$taskCompleterObj->first_name.' '.$taskCompleterObj->last_name.'</a> received rewards $'.$rewards.' to complete
+                        .$taskCompletedUsername.'</a> received rewards $'.$rewards.' to complete
                         task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id).'/'.$taskObj->slug).'">'.$taskObj->name.'</a>'
                 ]);
 
@@ -203,13 +214,21 @@ class User extends Authenticatable
                     'comments'=>$rewards.' rewards given to '.$taskCompleterObj->first_name.' '.$taskCompleterObj->last_name
                 ]);
 
+                $taskCompletedUsername = strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name);
+                if(!empty($taskCompleterObj->username))
+                    $taskCompletedUsername = $taskCompleterObj->username;
+
+                $loggedinUsername = Auth::user()->first_name.' '.Auth::user()->last_name;
+                if(!empty(Auth::user()->username))
+                    $loggedinUsername = Auth::user()->username;
+
                 SiteActivity::create([
                     'user_id'=>Auth::user()->id,
                     'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower
                             (Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                        .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> assigned rewards $'.$rewards.' to <a href="'.url
+                        .$loggedinUsername.'</a> assigned rewards $'.$rewards.' to <a href="'.url
                         ('userprofiles/'.$userIDHashID->encode($taskCompleter).'/'.strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name)).'">'
-                        .$taskCompleterObj->first_name.' '.$taskCompleterObj->last_name.'</a>'
+                        .$taskCompletedUsername.'</a>'
                 ]);
 
                 /**************************** reward given to task completer end *******************************/
@@ -230,10 +249,15 @@ class User extends Authenticatable
                             'trans_type'=>'credit',
                             'comments'=>$percentageReward.' rewards received for task '.$taskObj->name
                         ]);
+
+                        $taskEditorUsername = strtolower($taskEditorObj->first_name.'_'.$taskEditorObj->last_name);
+                        if(!empty($taskEditorObj->username))
+                            $taskEditorUsername = $taskEditorObj->username;
+
                         SiteActivity::create([
                             'user_id'=>$editor->user_id,
                             'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode($editor->user_id).'/'.strtolower($taskEditorObj->first_name.'_'.$taskEditorObj->last_name)).'">'
-                                .$taskEditorObj->first_name.' '.$taskEditorObj->last_name.'</a> received rewards $'.$percentageReward.' to
+                                .$taskEditorUsername.'</a> received rewards $'.$percentageReward.' to
                                  complete
                                 task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id).'/'.$taskObj->slug).'">'.$taskObj->name.'</a>'
                         ]);
@@ -248,11 +272,15 @@ class User extends Authenticatable
                             'comments'=>$percentageReward.' rewards given to '.$taskEditorObj->first_name.' '.$taskEditorObj->last_name
                         ]);
 
+                        $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                        if(!empty(Auth::user()->username))
+                            $loggedinUsername = Auth::user()->username;
+
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower
                                     (Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                                .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> assigned rewards $'.$percentageReward.' to <a
+                                .$loggedinUsername.'</a> assigned rewards $'.$percentageReward.' to <a
                                 href="'.url('userprofiles/'.$userIDHashID->encode($editor->user_id).'/'.strtolower($taskEditorObj->first_name.'_'.$taskEditorObj->last_name)).'">'
                                 .$taskEditorObj->first_name.' '.$taskEditorObj->last_name.'</a>'
                         ]);
@@ -270,10 +298,14 @@ class User extends Authenticatable
                         'comments'=>$percentageReward.' rewards received for task '.$taskObj->name
                     ]);
 
+                    $loggedinUsername = strtolower($taskCreatorObj->first_name.'_'.$taskCreatorObj->last_name);
+                    if(!empty($taskCreatorObj->username))
+                        $loggedinUsername = $taskCreatorObj->username;
+
                     SiteActivity::create([
                         'user_id'=>$taskCreatorID,
                         'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode($taskCreatorID).'/'.strtolower($taskCreatorObj->first_name.'_'.$taskCreatorObj->last_name)).'">'
-                            .$taskCreatorObj->first_name.' '.$taskCreatorObj->last_name.'</a> received rewards $'.$percentageReward.' to
+                            .$loggedinUsername.'</a> received rewards $'.$percentageReward.' to
                             complete task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id).'/'.$taskObj->slug).'">'.$taskObj->name
                             .'</a>'
                     ]);
@@ -287,13 +319,21 @@ class User extends Authenticatable
                         'comments'=>$percentageReward.' rewards given to '.$taskCreatorObj->first_name.' '.$taskCreatorObj->last_name
                     ]);
 
+                    $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+                    if(!empty(Auth::user()->username))
+                        $loggedinUsername = Auth::user()->username;
+
+                    $taskCreatorUsername = strtolower($taskCreatorObj->first_name.'_'.$taskCreatorObj->last_name);
+                    if(!empty($taskCreatorObj->username))
+                        $taskCreatorUsername = $taskCreatorObj->username;
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower
                                 (Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .Auth::user()->first_name.' '.Auth::user()->last_name.'</a> assigned rewards $'.$percentageReward.' to <a
+                            .$loggedinUsername.'</a> assigned rewards $'.$percentageReward.' to <a
                             href="'.url('userprofiles/'.$userIDHashID->encode($taskCreatorID).'/'.strtolower($taskCreatorObj->first_name.'_'.$taskCreatorObj->last_name)).'">'
-                            .$taskCreatorObj->first_name.' '.$taskCreatorObj->last_name.'</a> '
+                            .$taskCreatorUsername.'</a> '
                     ]);
                 }
                 /**************************** reward given to task creator and editor end *******************************/

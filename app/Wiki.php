@@ -496,6 +496,11 @@ class Wiki extends Model
             $user_id = $userIDHashID->encode(Auth::user()->id);
             $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->encode($data['unit_id']);
+
+            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+            if(!empty(Auth::user()->username))
+                $loggedinUsername = Auth::user()->username;
+
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=> $data['unit_id'],
@@ -503,7 +508,7 @@ class Wiki extends Model
                 'task_id'=>0,
                 'issue_id'=>0,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                    .$loggedinUsername.'</a>
             edited wiki page <a href="'.url('wiki/'.$unit_id.'/'.(int)$data['id']).'/'. $data['slug'] .'">'. $data['title'] .'</a>'
             ]);
         }
@@ -522,6 +527,9 @@ class Wiki extends Model
                 'comments'=>'Wiki Create',
                 'type'=>'wiki'
             ]);
+            $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
+            if(!empty(Auth::user()->username))
+                $loggedinUsername = Auth::user()->username;
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=> $data['unit_id'],
@@ -529,7 +537,7 @@ class Wiki extends Model
                 'task_id'=>0,
                 'issue_id'=>0,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                    .Auth::user()->first_name.' '.Auth::user()->last_name.'</a>
+                    .$loggedinUsername.'</a>
                     create wiki page <a href="'.url('wiki/'.$unit_id.'/'.$wiki_page_id.'/'. $data['slug']) .'">'. $data['title'] .'</a>'
             ]);
         }
