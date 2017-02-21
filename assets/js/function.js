@@ -204,18 +204,6 @@ $(function(){
         $(".list-item-main").css('z-index','100');
         var html = '<form class="form-horizontal" role="form" method="post" action="#">'+
             '<div class="form-group">'+
-            '<label for="name" class="col-sm-2 control-label hide">Name</label>'+
-            '<div class="col-sm-10">'+
-            '<input type="hidden" class="form-control" id="name" name="name" placeholder="First & Last Name" value="Javul Admin">'+
-            '</div>'+
-            '                    </div>'+
-            '<div class="form-group">'+
-            '<label for="email" class="col-sm-2 control-label hide">Email</label>'+
-            '<div class="col-sm-10">'+
-            '<input type="hidden" class="form-control" id="email" name="email" value="javul.org@gmail.com">'+
-            '</div>'+
-            '                    </div>'+
-            '<div class="form-group">'+
             '<label for="visited url" class="col-sm-2 control-label paddpop">Visited URL</label>'+
             '<div class="col-sm-10">'+
             '<input type="text" class="form-control" disabled  id="url" name="url" value="'+visited_url+'">'+
@@ -249,8 +237,6 @@ $(function(){
                     callback: function () {
                         $(".errors").html('');
                         var captcha_value=$("#captcha").val();
-                        var name=$('#name').val();
-                        var email=$('#email').val();
                         var visit_url=$('#url').val();
                         var message=$('#message').val();
 
@@ -258,7 +244,7 @@ $(function(){
                             type:'post',
                             url:siteURL+'/reportconc',
                             dataType:'json',
-                            data:{_token:report_concern_token,name:name,email:email,visit_url:visit_url,message:message,captcha_value:captcha_value},
+                            data:{_token:report_concern_token,visit_url:visit_url,message:message,captcha_value:captcha_value},
                             success: function(response){
                                 if(!response.success){
 
@@ -297,7 +283,7 @@ $(function(){
 
         bootbox_dialog.modal('show');
     });
-})
+});
 
 function check_assigned_task(){
     $.ajax({

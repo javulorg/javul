@@ -977,6 +977,19 @@ class IssuesController extends Controller
             return \Response::json(['success'=>false,'errors'=>$validator->messages()->toArray()]);
         }
 
+
+        $email_id=null;
+        if(!Auth::check())
+            $name = "Anonymous";
+        else {
+            $name = Auth::user()->first_name . ' ' . Auth::user()->last_name;
+            if(!empty(Auth::user()->username))
+                $name = Auth::user()->username;
+
+            $email_id = Auth::user()->email;
+        }
+
+
         $answer=(int)$email->get('captcha_value');
         $flag =false;
         if(!\Auth::check()){
@@ -987,18 +1000,16 @@ class IssuesController extends Controller
             $flag=true;
 
         if($flag){
-            $name=$email->get('name');
-            $email_id=$email->get('email');
             $visit_url=$email->get('visit_url');
             $message=$email->get('message');
             $data=array('name' => $name, 'messages' => $message,'email'=>$email_id,'url'=>$visit_url);
-            Mail::send('emails/report_concern', $data, function ($message){
-                $message->to('javul.org@gmail.com','Administrator')->subject('Report a Concern');
+           $mail_sent = Mail::send('emails/report_concern', $data, function ($message){
+                $message->to('javul.org@gmail.com','Administrator')->subject('Webform: Report a concern');
             });
             // re-generate captcha
             Mc::putMcData();
             $question=Mc::getMcQuestion();
-            return \Response::json(['success'=>true,'captcha_value'=>$question]);
+            return \Response::json(['success'=>true,'captcha_value'=>$question,'mail_sent'=>$mail_sent]);
         }
         else
             return \Response::json(['success'=>false,'errors'=>["captcha_value"=>["The captcha is invalid."]]]);
