@@ -110,56 +110,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6 action_list" style="padding-right: 0px;">
-                        <h4 style="padding:10px 15px;background-color: #f9f9f9;margin-top:0px;font-weight: 500;">Action Items</h4>
-                        <div class="list_item_div">
-                            {!! $taskObj->task_action !!}
-                        </div>
-                    </div>
-                    <div class="col-sm-6 file_list" style="padding-left: 0px;">
-                        <h4 style="padding:10px 15px;background-color: #f9f9f9;margin-top:0px;font-weight: 500;">File Attachments</h4>
-                        @if(!empty($taskObj->task_documents))
-                            <ul style="list-style-type: decimal; padding-left:30px;">
-                                @foreach($taskObj->task_documents as $index=>$document)
-                                    <?php $extension = pathinfo($document->file_path, PATHINFO_EXTENSION); ?>
-                                    @if($extension == "pdf") <?php $extension="pdf"; ?>
-                                    @elseif($extension == "doc" || $extension == "docx") <?php $extension="docx"; ?>
-                                    @elseif($extension == "jpg" || $extension == "jpeg") <?php $extension="jpeg"; ?>
-                                    @elseif($extension == "ppt" || $extension == "pptx") <?php $extension="pptx"; ?>
-                                    @else <?php $extension="file"; ?> @endif
-                                    <li>
-                                        <a class="files_image" href="{!! url($document->file_path) !!}" target="_blank">
-                                            <span style="display:block">
-                                                @if(empty($document->file_name))
-                                                    &nbsp;
-                                                @else
-                                                    {{$document->file_name}}
-                                                @endif
-                                            </span>
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div style="padding:5px 15px;background-color: #f9f9f9;margin-top:0px">
-                            <h4 style="font-weight: 500;">Objective: <span class="colorOrange">{{$taskObj->objective->name}}</span></h4>
-                        </div>
-
-                    </div>
-                </div>
-                <!--<div class="row">
-                    <div class="col-sm-12" style="padding:20px 20px 10px 30px;">
-                        {!! $taskObj->objective->description!!}
-                    </div>
-                </div>-->
-                <div style="height: 10px"></div>
-
-                <div class="row">
                     <div class="col-sm-12">
                         <div style="padding:5px 15px;background-color: #f9f9f9;margin-top:0px">
                             <h4 style="font-weight: 500;">Summary :</h4>
@@ -171,6 +121,59 @@
                         {!! $taskObj->summary!!}
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-sm-6 action_list" style="padding-right: 0px;">
+                        <h4 style="padding:10px 15px;background-color: #f9f9f9;margin-top:0px;font-weight: 500;">Action Items</h4>
+                        <div class="list_item_div">
+                            {!! $taskObj->task_action !!}
+                        </div>
+                    </div>
+                    <div class="col-sm-6 file_list" style="padding-left: 0px;">
+                        <h4 style="padding:10px 15px;background-color: #f9f9f9;margin-top:0px;font-weight: 500;">File Attachments</h4>
+                        @if(!empty($taskObj->task_documents))
+                        <ul style="list-style-type: decimal; padding-left:30px;">
+                            @foreach($taskObj->task_documents as $index=>$document)
+                            <?php $extension = pathinfo($document->file_path, PATHINFO_EXTENSION); ?>
+                            @if($extension == "pdf") <?php $extension="pdf"; ?>
+                            @elseif($extension == "doc" || $extension == "docx") <?php $extension="docx"; ?>
+                            @elseif($extension == "jpg" || $extension == "jpeg") <?php $extension="jpeg"; ?>
+                            @elseif($extension == "ppt" || $extension == "pptx") <?php $extension="pptx"; ?>
+                            @else <?php $extension="file"; ?> @endif
+                            <li>
+                                <a class="files_image" href="{!! url($document->file_path) !!}" target="_blank">
+                                            <span style="display:block">
+                                                @if(empty($document->file_name))
+                                                    &nbsp;
+                                                @else
+                                                    {{$document->file_name}}
+                                                @endif
+                                            </span>
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                        @endif
+                    </div>
+                </div>
+
+                <div style="height: 10px"></div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div style="padding:5px 15px;background-color: #f9f9f9;margin-top:0px">
+                            <h4 style="font-weight: 500;">Objective: <span class="colorOrange">{{$taskObj->objective->name}}</span></h4>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div style="height: 10px"></div>
+                <!--<div class="row">
+                    <div class="col-sm-12" style="padding:20px 20px 10px 30px;">
+                        {!! $taskObj->objective->description!!}
+                    </div>
+                </div>-->
 
                 @include('forum.element.objective')
 

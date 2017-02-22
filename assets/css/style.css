@@ -762,6 +762,7 @@ input:disabled, input.disabled {
 @media (max-width: 392px){
     #pay_now{margin-left: 0px;position: relative;top:0px;margin-top: 15px;}
     .user-menu.alert a{font-size:12px;}
+    .right-menu .light_grey_bg a.btn.user-menu-right.widthMenu.pull-right{position: relative;top: -31px}
 }
 
 #unread-message{
