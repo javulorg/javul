@@ -44,7 +44,7 @@
         <div @if(!empty($unitInfo) || !empty($taskObj)) class="col-sm-8" @else class="col-sm-12" @endif>
             <div class="panel panel-grey panel-default">
                 <div class="panel-heading">
-                    @if(empty($unitObj))
+                    @if(empty($taskObj))
                         <h4>Create Task</h4>
                     @else
                         <h4>Update Task</h4>
@@ -247,7 +247,32 @@
                                     </div>
                                 @endif
                             </div>
+
                             <div class="row">
+                                <div class="col-sm-12 form-group">
+                                    <label class="control-label">Summary</label>
+                                    <textarea class="form-control summernote" name="summary">@if(!empty($taskObj)) {{$taskObj->summary}} @endif</textarea>
+                                </div>
+
+                                <div class="col-sm-12 form-group">
+                                    <label class="control-label">Description</label>
+                                    <textarea class="form-control summernote" name="description">@if(!empty($taskObj)) {{$taskObj->description}} @endif</textarea>
+                                </div>
+
+                                <div class="col-sm-12 form-group">
+                                    <label class="control-label">Action Items</label>
+                                    <textarea class="form-control" name="action_items" id="action_items">
+                                        @if(!empty($taskObj))
+                                            {!! $taskObj->task_action !!}
+                                        @endif
+                                    </textarea>
+                                    <!-- insert each task action into task_actions table. -->
+                                    <!--<div class="all_action_items">
+                                        <input type="hidden" name="action_items_array[]" id="action_items_array" class="action_items_class"/>
+                                    </div>-->
+                                </div>
+                            </div>
+                              <div class="row">
                                 <div class="col-sm-12 form-group">
                                     <div class="document_listing_div">
                                         <div class="table-responsive ofhidden">
@@ -281,31 +306,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 form-group">
-                                    <label class="control-label">Action Items</label>
-                                    <textarea class="form-control" name="action_items" id="action_items">
-                                        @if(!empty($taskObj))
-                                            {!! $taskObj->task_action !!}
-                                        @endif
-                                    </textarea>
-                                    <!-- insert each task action into task_actions table. -->
-                                    <!--<div class="all_action_items">
-                                        <input type="hidden" name="action_items_array[]" id="action_items_array" class="action_items_class"/>
-                                    </div>-->
-                                </div>
-                                <div class="col-sm-12 form-group">
-                                    <label class="control-label">Summary</label>
-                                    <textarea class="form-control summernote" name="summary">@if(!empty($taskObj)) {{$taskObj->summary}} @endif</textarea>
-                                </div>
-                                <div class="col-sm-12 form-group">
-                                    <label class="control-label">Description</label>
-                                    <textarea class="form-control summernote" name="description">@if(!empty($taskObj)) {{$taskObj->description}} @endif</textarea>
-                                </div>
-
-                                <div class="col-sm-12 form-group">
                                     <label class="control-label">Comment</label>
                                     <input class="form-control" name="comment">
                                 </div>
-                                
                             </div>
                             <div class="row form-group">
                                 <div class="col-sm-12 ">

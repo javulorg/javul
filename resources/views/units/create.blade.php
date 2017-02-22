@@ -108,23 +108,6 @@
                             </div>
                         </div>
                         <div class="col-sm-4 form-group">
-                            <label class="control-label">{!! trans('messages.unit_credibility') !!}</label>
-                            <div class="input-icon right">
-                                <i class="fa select-error"></i>
-                                <select class="form-control" name="credibility">
-                                    <option value="">{!! trans('messages.select') !!}</option>
-                                    @if(count($unit_credibility_arr) > 0)
-                                        @foreach($unit_credibility_arr as $id=>$val)
-                                            <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->credibility == $id)
-                                            selected=selected @endif>{{$val}}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
                             <label class="control-label">Country</label>
                             <div class="input-icon right">
                                 <i class="fa select-error"></i>
@@ -143,6 +126,8 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-4 form-group">
                             <label class="control-label">State</label>
                             <div class="input-icon right">
@@ -189,6 +174,35 @@
                                 </span>
                             </div>
                         </div>
+                        <div class="col-sm-4 form-group">
+                            <label class="control-label">{!! trans('messages.unit_credibility') !!}</label>
+                            <div class="input-icon right">
+                                <i class="fa select-error"></i>
+                                <select class="form-control" name="credibility">
+                                    <option value="">{!! trans('messages.select') !!}</option>
+                                    @if(count($unit_credibility_arr) > 0)
+                                        @foreach($unit_credibility_arr as $id=>$val)
+                                             <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->credibility == $id)
+                                             selected=selected @endif>{{$val}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 form-group">
+                            <label class="control-label">Unit Description</label>
+                            <textarea class="form-control summernote" name="description">@if(!empty($unitObj)) {!! $unitObj->description !!} @endif</textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 form-group">
+                            <label class="control-label">Comment</label>
+                            <input class="form-control" name="comment" @if(!empty($unitObj) && !empty($unitObj->comment))
+                            value="{{$unitObj->comment}}" @endif>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4 form-group">
@@ -199,7 +213,7 @@
                                     @if(count($relatedUnitsObj) > 0 )
                                         @foreach($relatedUnitsObj as $id=>$relate)
                                             <option value="{{$id}}" @if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) &&
-                        in_array($id,$relatedUnitsofUnitObj)) selected=selected @endif>{{$relate}}</option>
+                        					in_array($id,$relatedUnitsofUnitObj)) selected=selected @endif>{{$relate}}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -224,22 +238,9 @@
                         <div class="col-sm-4 form-group">
                             <label class="control-label" style="width: 100%;">Status</label>
                             <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status" @if(!empty($unitObj) &&
-                $unitObj->status == "active") checked @elseif(empty($unitObj)) checked @endif>
+                            $unitObj->status == "active") checked @elseif(empty($unitObj)) checked @endif>
                         </div>
                         @endif
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 form-group">
-                            <label class="control-label">Unit Description</label>
-                            <textarea class="form-control summernote" name="description">@if(!empty($unitObj)) {!! $unitObj->description !!} @endif</textarea>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 form-group">
-                            <label class="control-label">Comment</label>
-                            <input class="form-control" name="comment" @if(!empty($unitObj) && !empty($unitObj->comment))
-                            value="{{$unitObj->comment}}" @endif>
-                        </div>
                     </div>
                     <div class="row form-group">
                         <div class="col-sm-12 ">

@@ -152,11 +152,12 @@
 
                     </div>
                 </div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-sm-12" style="padding:20px 20px 10px 30px;">
                         {!! $taskObj->objective->description!!}
                     </div>
-                </div>
+                </div>-->
+                <div style="height: 10px"></div>
 
                 <div class="row">
                     <div class="col-sm-12">

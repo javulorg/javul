@@ -74,7 +74,13 @@
                     <li class="top_menu_separator">&nbsp;|&nbsp;</li>
                     <li class="top_menu_li">
                         <a href="{!! url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower(Auth::user()->first_name).'_'.strtolower(Auth::user()->last_name)) !!}">
+                            <!--{{$authUserObj->first_name.' '.$authUserObj->last_name}}-->
+                            @if ($authUserObj->username)
+                            Logged in as: {{$authUserObj->username}}
+                            @elseif($authUserObj->first_name.' '.$authUserObj->last_name)
                             Logged in as: {{$authUserObj->first_name.' '.$authUserObj->last_name}}
+                            @else
+                            @endif
                         </a>
                     </li>
                     <li class="top_menu_separator">&nbsp;|&nbsp;</li>

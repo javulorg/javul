@@ -39,6 +39,8 @@ class UserController extends Controller
                 $tasksObj = Task::where('user_id',$user_id)->get();
 
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
+                User::where('id',$user_id)
+                    ->update(['activity_points'=>$activityPoints]);
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
 
                 $skills = [];
