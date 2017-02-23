@@ -1,31 +1,21 @@
 <div class="grey-bg" style="padding-top:20px;margin-bottom: 20px; ">
         <div class="row">
             <div class="col-sm-4 text-center form-group">
+                <div>
                 @if(!empty($userObj->profile_pic) && file_exists(base_path('uploads/user_profile/'.$userIDHashID->encode($userObj->id).'/'.$userObj->profile_pic)))
                     <img src="{!! url('uploads/user_profile/'.$userIDHashID->encode($userObj->id).'/'.$userObj->profile_pic) !!}" class="img-rounded-circle"/>
                 @else
                     <img src="{!! url('assets/images/user.png')!!}" class="img-rounded-circle"/>
                 @endif
-
-                <div style="display: block">
-                    <ul title="Ratings" class="list-inline ratings text-center">
-                        <li>
-                            <a href="#"><span class="fa fa-star fa-sm"></span></a>
-                        </li>
-                        <li>
-                            <a href="#"><span class="fa fa-star fa-sm"></span></a>
-                        </li>
-                        <li>
-                            <a href="#"><span class="fa fa-star fa-sm"></span></a>
-                        </li>
-                        <li>
-                            <a href="#"><span class="fa fa-star fa-sm"></span></a>
-                        </li>
-                        <li>
-                            <a href="#"><span class="fa fa-star fa-sm"></span></a>
-                        </li>
-                    </ul>
                 </div>
+
+                <label class="control-label" style="margin-bottom:0px">Task Completion Ratings
+                    <input id="input-3" name="input-3" value="{{$rating_points}}" class="rating-loading">
+                    ({{$rating_points}}/5)
+                </label>
+
+
+
             </div>
             <div class="col-sm-8 hidden-xs">
                 <div class="user-header">

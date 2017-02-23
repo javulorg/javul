@@ -1004,7 +1004,9 @@ class IssuesController extends Controller
             $message=$email->get('message');
             $data=array('name' => $name, 'messages' => $message,'email'=>$email_id,'url'=>$visit_url);
            $mail_sent = Mail::send('emails/report_concern', $data, function ($message){
-                $message->to('javul.org@gmail.com','Administrator')->from('javul.org@gmail.com','javul.org')->subject('Webform: Report a concern');
+               $message->from('javul.org@gmail.com','javul.org');
+               $message->to('javul.org@gmail.com','Administrator');
+               $message->subject('Webform:Report a concern');
             });
             // re-generate captcha
             Mc::putMcData();

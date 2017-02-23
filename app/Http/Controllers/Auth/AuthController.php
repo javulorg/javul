@@ -153,9 +153,15 @@ class AuthController extends Controller
 
         \Request::merge([$field => \Request::input('email')]);
 
-        if (\Auth::attempt(\Request::only($field, 'password')))
+        if (\Auth::attempt(\Request::only($field, 'password'))){
             // dd($field);
+            if(!empty(\Auth::user()->timezone))
+                date_default_timezone_set(\Auth::user()->timezone);
+            else
+                date_default_timezone_set( "UTC" );
+
             return redirect('/');
+        }
 
         return redirect('/login')->withErrors([
             'error' => 'These credentials do not match our records.',

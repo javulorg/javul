@@ -9,6 +9,7 @@ use App\Objective;
 use App\SiteActivity;
 use App\Task;
 use App\TaskBidder;
+use App\TaskRatings;
 use App\Unit;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
@@ -35,12 +36,16 @@ class UserController extends Controller
                 $user_id = $user_id [0];
                 $userObj = User::find($user_id);
                 $unitsObj = Unit::with(['objectives','tasks'])->where('units.user_id',$user_id)->get();
+
                 $objectivesObj = Objective::where('user_id',$user_id)->get();
                 $tasksObj = Task::where('user_id',$user_id)->get();
 
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
-                User::where('id',$user_id)
-                    ->update(['activity_points'=>$activityPoints]);
+
+              /*  $userActivityPoint = User::where('id',$user_id);
+                if(!empty($userActivityPoint) && count($userActivityPoint) > 0)
+                    $userActivityPoint->update(['activity_points'=>$activityPoints]);*/
+
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
 
                 $skills = [];
@@ -76,6 +81,18 @@ class UserController extends Controller
                 view()->share('activityPoints_forum',$activityPoints_forum);
 
                 $userWiki[0]->page_content = Wiki::parse($userWiki[0]->page_content);
+
+                $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
+                $total_rating_points = TaskRatings::where('user_id',$user_id)->count();
+                if(is_null($rating_points))
+                    $rating_points = 0;
+                else if($rating_points > 0) {
+                    $rating_points = $rating_points / $total_rating_points;
+                    if(is_float($rating_points))
+                        $rating_points = round($rating_points,1);
+                }
+
+                view()->share('rating_points',$rating_points);
                 view()->share("page_id_hase",$page_id);
 
                 view()->share('userWiki',$userWiki);
