@@ -144,7 +144,7 @@ class AuthController extends Controller
     //Login via Username and Email Address.
     public function login(Request $request)
     {
-        $validator= Validator::make(\Request::all(), [
+        $validator = Validator::make(\Request::all(), [
             'email' => 'required',
             'password' => 'required'
         ]);
@@ -155,13 +155,9 @@ class AuthController extends Controller
 
         if (\Auth::attempt(\Request::only($field, 'password'))){
             // dd($field);
-            if(!empty(\Auth::user()->timezone))
-                date_default_timezone_set(\Auth::user()->timezone);
-            else
-                date_default_timezone_set( "UTC" );
-
             return redirect('/');
         }
+
 
         return redirect('/login')->withErrors([
             'error' => 'These credentials do not match our records.',
