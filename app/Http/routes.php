@@ -17,6 +17,7 @@ Route::get('/global_search','HomeController@global_search');
 Route::post('/check_username','HomeController@check_username');
 Route::get('/account', 'AccountController@index');
 Route::get('/account/logout', 'AccountController@logout');
+Route::get('/account/check_user_login','AccountController@check_user_login');
 Route::post('/account/upload_profile', 'AccountController@upload_profile');
 Route::post('/account/remove_profile_pic', 'AccountController@remove_profile_pic');
 Route::any('/userprofiles/{user_id}','UserController@user_profile');

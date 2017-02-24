@@ -127,6 +127,24 @@ License: You must have a valid license purchased only from themeforest(the above
 
         <script type="text/javascript">
             <?php  if(\Auth::check()){ ?>
+                setTimeout(function() {
+                        check_user_login()
+                    },20000
+                );
+                function check_user_login(){
+                    $.ajax({
+                        type:'get',
+                        url:siteURL  + '/account/check_user_login',
+                        dataType:'json',
+                        success:function(json){
+                            if(json.success){
+                                setTimeout(function(){
+                                    check_user_login()
+                                },20000);
+                            }
+                        }
+                    })
+                }
                 function unreadmsg() {
                     $.ajax({
                         type:'post',

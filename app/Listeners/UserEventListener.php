@@ -11,6 +11,7 @@ class UserEventListener {
      */
     public function onUserLogin($event) {
 
+
         $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode($event->user->id);
 
@@ -22,7 +23,7 @@ class UserEventListener {
                 .'</a> logged in to system'
         ]);*/
 
-        $event->user->loggedin = 1;
+        $event->user->loggedin = time();
         $event->user->save();
     }
 
@@ -40,6 +41,6 @@ class UserEventListener {
                 .$event->user->first_name.' '.$event->user->last_name.'</a> logout from system'
         ]);*/
         $event->user->loggedin = null;
-        $event->user->save();
+        //$event->user->save();
     }
 }

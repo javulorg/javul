@@ -29,7 +29,13 @@
                             </div>
                             <h4>Search Results</h4>
                         </div>
-                        <div class="panel-body current_unit_body" style="padding:0px;">
+                    </div>
+
+                    <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
+                        <div class="panel-heading">
+                            <h4>UNITS</h4>
+                        </div>
+                        <div class="panel-body list-group">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -71,7 +77,6 @@
                             </table>
                         </div>
                     </div>
-
                     <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                         <div class="panel-heading">
                             <h4>OBJECTIVES</h4>

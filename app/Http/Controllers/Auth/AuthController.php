@@ -154,7 +154,7 @@ class AuthController extends Controller
     //Login via Username and Email Address.
     public function login(Request $request)
     {
-        $validator= Validator::make(\Request::all(), [
+        $validator = Validator::make(\Request::all(), [
             'email' => 'required',
             'password' => 'required'
         ]);
@@ -163,9 +163,11 @@ class AuthController extends Controller
 
         \Request::merge([$field => \Request::input('email')]);
 
-        if (\Auth::attempt(\Request::only($field, 'password')))
+        if (\Auth::attempt(\Request::only($field, 'password'))){
             // dd($field);
             return redirect('/');
+        }
+
 
         return redirect('/login')->withErrors([
             'error' => 'These credentials do not match our records.',

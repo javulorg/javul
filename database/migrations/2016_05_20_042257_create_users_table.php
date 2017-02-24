@@ -34,6 +34,7 @@ class CreateUsersTable extends Migration
             $table->string('paypal_email');
             $table->string('stripe_id')->nullable();
             $table->string('stripe_customer_id')->nullable();
+            $table->integer('activity_points')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

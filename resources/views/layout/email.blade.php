@@ -53,6 +53,7 @@
                                     <td>
 
                                         <!-- column 1 -->
+                                        @if(!$report_concern)
                                         <table align="left" style="width:280px;min-width:279px;float:left;">
                                             <tr>
                                                 <td style="padding:15px;">
@@ -70,7 +71,7 @@
                                                 </td>
                                             </tr>
                                         </table><!-- /column 1 -->
-
+                                        @endif
                                         <!-- column 2 -->
                                         <table align="left" style="width:280px;min-width:279px;float:left;">
                                             <tr>

@@ -32,13 +32,18 @@
                         </div>
                         <div class="panel-body list-group">
                             @if(count($site_activity) > 0)
+                                <?php
+                                $timezone = 'UTC';
+                                if(!empty(\Auth::check() && \Auth::user()->timezone))
+                                    $timezone = Auth::user()->timezone;
+                                ?>
                                 @foreach($site_activity as $index=>$activity)
                                     <div class="list-group-item" style="padding: 0px;padding-bottom:4px">
                                         <div class="row" style="padding: 7px 15px">
                                             <div class="col-xs-12" style="display: table">
                                                 <div style="display:table-row">
                                                     <div class="div-table-first-cell">
-                                                        {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
+                                                        <span class="tooltipster" title='{!! $activity->created_at->timezone($timezone)->format('Y-m-d H:i:s') !!}'>{!! \App\Library\Helpers::timetostr($activity->created_at->timezone($timezone)->format('Y-m-d H:i:s')) !!}</span>
                                                     </div>
                                                     <div class="div-table-second-cell">
                                                         <div class="circle activity-refresh">

@@ -204,7 +204,7 @@
                             value="{{$unitObj->comment}}" @endif>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row form-group">
                         <div class="col-sm-4 form-group">
                             <label class="control-label">Related To</label>
                             <div class="input-icon right">

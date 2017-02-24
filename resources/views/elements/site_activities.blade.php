@@ -5,22 +5,27 @@
         </div>
         <div class="panel-body list-group loading_content_hide">
             @if(count($site_activity) > 0)
+                <?php
+                    $timezone = 'UTC';
+                    if(!empty(\Auth::user()->timezone))
+                        $timezone = Auth::user()->timezone;
+                ?>
                 @foreach($site_activity as $index=>$activity)
                     <?php
-                    if(!empty(\Auth::user()->timezone)){
+                    /*if(!empty(\Auth::user()->timezone)){
                         $tz = new DateTimeZone(\Auth::user()->timezone);
                         $date = new DateTime($activity->created_at);
                         $date->setTimezone($tz);
                         $activity->created_at = $date->format('Y-m-d H:i:s');
                     }else
-                        $activity->created_at = date('Y-m-d H:i:s',strtotime($activity->created_at));
+                        $activity->created_at = date('Y-m-d H:i:s',strtotime($activity->created_at));*/
                     ?>
                     <div class="list-group-item" style="padding: 0px;padding-bottom:4px">
                         <div class="row" style="padding: 7px 15px">
                             <div class="col-xs-12" style="display: table">
                                 <div style="display:table-row">
-                                    <div class="div-table-first-cell">
-                                        <span class="tooltipster" title='{!! ($activity->created_at) !!}'>{!! \App\Library\Helpers::timetostr($activity->created_at) !!}</span>
+                                    <div class="div-table-first-cell" data-id="{{$activity->id}}">
+                                        <span class="tooltipster" title='{!! $activity->created_at->timezone($timezone)->format('Y-m-d H:i:s') !!}'>{!! \App\Library\Helpers::timetostr($activity->created_at->timezone($timezone)->format('Y-m-d H:i:s')) !!}</span>
                                     </div>
                                     <div class="div-table-second-cell">
                                         <div class="circle activity-refresh">
