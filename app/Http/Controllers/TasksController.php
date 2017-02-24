@@ -546,7 +546,7 @@ class TasksController extends Controller
 
             ActivityPoint::create([
                 'user_id'=>Auth::user()->id,
-                'task_id'=>$task_id,
+                'task_id'=>$task_id_decoded,
                 'points'=>5,
                 'comments'=>'Task Created',
                 'type'=>'task'

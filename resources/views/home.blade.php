@@ -5,17 +5,7 @@
             @include('elements.user-menu',array('page'=>'home'))
         </div>
         <div class="row">
-            <div class="col-md-4 left">
-                <div class="site_activity_list">
-                    <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    @include('elements.site_activities',['ajax'=>false])
-                </div>
-            </div>
-            <div class="col-md-8 right">
+            <div class="col-md-8 col-md-push-4">
                 <div class="row form-group">
                     <div class="col-sm-12">
                         <div class="panel panel-grey panel-default">
@@ -162,6 +152,16 @@
                         @endif
                         <!--<a class="btn orange-bg" href="{!! url('units/create') !!}">{!! Lang::get('messages.create_units') !!}</a>-->
                     </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-pull-8">
+                <div class="site_activity_list">
+                    <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    @include('elements.site_activities',['ajax'=>false])
                 </div>
             </div>
 

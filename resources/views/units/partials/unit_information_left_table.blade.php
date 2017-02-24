@@ -93,7 +93,7 @@
                     <label class="control-label upper">UNIT CREDIBILITY</label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
-                    <label class="control-label colorLightBlue upper">{{\App\City::getName($unitObj->city_id)}}</label>
+                    <label class="control-label colorLightBlue upper">{{$unitObj->credibility}}</label>
                 </div>
             </div>
         </div>
