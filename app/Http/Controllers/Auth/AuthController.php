@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use App\SiteActivity;
+use Hashids\Hashids;
 
 class AuthController extends Controller
 {
@@ -72,7 +74,7 @@ class AuthController extends Controller
             'city'=>'required',*/
         ]);
 
-        $validator->after(function($validator) use ($data) {
+        /*$validator->after(function($validator) use ($data) {
             if(!isset($data['sckey']) || !isset($data['scvalue'])){
                 $validator->errors()->add('captcha', 'Captcha required.');
             }
@@ -87,7 +89,7 @@ class AuthController extends Controller
             $fetch=User::where('username',$name)->count();
             if($fetch > 0)
                 $validator->errors()->add('username_duplicate', 'The username already exist in system.');
-        }); 
+        }); */
         return $validator;
     }
 
@@ -120,6 +122,14 @@ class AuthController extends Controller
             $message->to($toEmail,$toName)->subject($subject);
             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
         });
+
+        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $user_id = $userIDHashID->encode($userData->id);
+        SiteActivity::create([
+            'user_id'=>$userData->id,
+            'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower($userData->first_name.'_'.$userData->last_name)).'">'
+            .$userData->username.'</a> created an account'
+        ]);
 
         return $userData;
 
