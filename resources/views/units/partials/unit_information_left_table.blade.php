@@ -58,7 +58,7 @@
         </div>
         <div class="list-group-item">
             <div class="row">
-                <div class="col-xs-4 borderRT paddingTB7">
+                <div class="col-xs-4 borderRT paddingTB7 unit_category_left_height">
                     <label class="control-label upper">UNIT CATEGORIES</label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
