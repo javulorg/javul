@@ -94,6 +94,17 @@ class AccountController extends Controller
         //view()->share('expiry_years',$expiry_years);
         return view('users.my_account');
     }
+
+    /**
+     * Check user is logged in or not.
+     */
+    public function check_user_login(Request $request){
+        if($request->ajax() && \Auth::check()){
+            User::find(\Auth::user()->id)->update(['loggedin'=>time()]);
+            return \Response::json(['success'=>true]);
+        }
+        return view('error.404');
+    }
     public function update_personal_info(Request $request){
         if($request->isMethod('post') && $request->ajax()){
             $validator = \Validator::make($request->all(), [

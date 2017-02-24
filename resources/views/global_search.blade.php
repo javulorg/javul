@@ -22,7 +22,7 @@
             </div>
             <div class="col-md-8">
                 @if(!empty($search_word))
-                    <div class="panel panel-grey panel-default" >
+                    <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                         <div class="panel-heading search_unit_heading featured_unit_heading">
                             <div class="featured_unit search_unit">
                                 <i class="fa fa-search "></i>
@@ -31,7 +31,7 @@
                         </div>
                     </div>
 
-                    <div class="panel panel-grey panel-default">
+                    <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                         <div class="panel-heading">
                             <h4>UNITS</h4>
                         </div>

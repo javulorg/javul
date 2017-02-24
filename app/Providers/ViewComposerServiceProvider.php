@@ -42,7 +42,7 @@ class ViewComposerServiceProvider extends ServiceProvider
         $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
 
 
-        $loggedInUser = \App\User::where('loggedin',1)->count();
+        $loggedInUser = \DB::table('users')->whereRaw('unix_timestamp() - loggedin < 30')->count();
         view()->share('totalLoggedinUsers',$loggedInUser);
 
         $totalUsers = \App\User::count();
