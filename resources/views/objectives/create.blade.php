@@ -54,12 +54,7 @@
             </div>
         </div>--}}
         <div class="row">
-            @if(!empty($unitInfo) || !empty($objectiveObj))
-                <div class="col-sm-4">
-                    @include('units.partials.unit_information_left_table',['unitObj'=>(!empty($objectiveObj)?$objectiveObj->unit:$unitInfo),'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
-                </div>
-            @endif
-            <div @if(!empty($unitInfo) || (!empty($objectiveObj) && !empty($objectiveObj->unit))) class="col-sm-8" @else class="col-sm-12" @endif>
+            <div @if(!empty($unitInfo) || (!empty($objectiveObj) && !empty($objectiveObj->unit))) class="col-md-8 col-md-push-4" @else class="col-sm-12" @endif>
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
                         @if(empty($objectiveObj))
@@ -168,6 +163,11 @@
                 </div>
             </div>
             </div>
+            @if(!empty($unitInfo) || !empty($objectiveObj))
+                <div class="col-md-4 col-md-pull-8">
+                    @include('units.partials.unit_information_left_table',['unitObj'=>(!empty($objectiveObj)?$objectiveObj->unit:$unitInfo),'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
+                </div>
+            @endif
         </div>
     </div>
     @include('elements.footer')

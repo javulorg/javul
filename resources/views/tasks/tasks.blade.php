@@ -5,19 +5,7 @@
         @include('elements.user-menu',['page'=>'tasks'])
     </div>
     <div class="row form-group">
-        <div class="col-sm-4">
-            <div class="left">
-                <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <div class="site_activity_list">
-                    @include('elements.site_activities',['ajax'=>false])
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-8">
+        <div class="col-md-8 col-md-push-4">
             <div class="panel panel-default panel-grey">
                 <div class="panel-heading">
                     <h4>Tasks</h4>
@@ -89,6 +77,18 @@
                 </div>
             </div>
 
+        </div>
+        <div class="col-md-4 col-md-pull-8">
+            <div class="left">
+                <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="site_activity_list">
+                    @include('elements.site_activities',['ajax'=>false])
+                </div>
+            </div>
         </div>
     </div>
 </div>

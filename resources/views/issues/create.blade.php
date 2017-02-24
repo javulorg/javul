@@ -31,22 +31,7 @@
         </div>--}}
 
         <div class="row">
-            @if(!empty($site_activity))
-            <div class="col-sm-4">
-                @include('units.partials.unit_information_left_table',['unitObj'=>$unitObj,'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
-                <div class="left" style="position: relative;margin-top: 30px;">
-                    <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <div class="site_activity_list">
-                        @include('elements.site_activities',['ajax'=>false])
-                    </div>
-                </div>
-            </div>
-            @endif
-            <div class="@if(empty($site_activity)) col-sm-12 @else col-sm-8 @endif">
+            <div class="@if(empty($site_activity)) col-sm-12 @else col-md-8 col-md-push-4 @endif">
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
                         @if(empty($issueObj))
@@ -223,6 +208,21 @@
                     </div>
                 </div>
             </div>
+            @if(!empty($site_activity))
+                <div class="col-md-4 col-md-pull-8">
+                    @include('units.partials.unit_information_left_table',['unitObj'=>$unitObj,'availableFunds'=>$availableUnitFunds,'awardedFunds'=>$awardedUnitFunds])
+                    <div class="left" style="position: relative;margin-top: 30px;">
+                        <div class="site_activity_loading loading_dots" style="position: absolute;top:20%;left:43%;z-index: 9999;display: none;">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <div class="site_activity_list">
+                            @include('elements.site_activities',['ajax'=>false])
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
     @include('elements.footer')
