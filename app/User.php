@@ -19,7 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name','last_name', 'username', 'email', 'password','phone','mobile','address','country_id','state_id','city_id','role','job_skills',
-        'area_of_interest','loggedin','stripe_customer_id','credit_card_id','profile_pic','timezone','quality_of_work','timeliness'
+        'area_of_interest','loggedin','credit_card_id','profile_pic','timezone','quality_of_work','timeliness','activity_points'
     ];
 
     /**
@@ -146,6 +146,12 @@ class User extends Authenticatable
                     $taskCompletedUsername = strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name);
                     if(!empty($taskCompleterObj->username))
                         $taskCompletedUsername = $taskCompleterObj->username;
+
+                    // send email and notification
+                    $content = 'Payment of $'.$taskBidder->amount.' received for Task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id).'/'.$taskObj->slug).'>'.$taskObj->name.'</a>';
+                    $email_subject = 'Payment of $'.$taskBidder->amount.' received for Task '.$taskObj->name;
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$taskCompleterObj],$onlyemail=false,'fund_received');
+
                     SiteActivity::create([
                         'user_id'=>$taskCompleter,
                         'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode($taskCompleter).'/'.strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name)).'">'
@@ -166,6 +172,12 @@ class User extends Authenticatable
                     $taskCompletedUsername = strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name);
                     if(!empty($taskCompleterObj->username))
                         $taskCompletedUsername = $taskCompleterObj->username;
+
+                    // send email and notification
+                    $content = 'You have received '.$taskBidder->amount.' points to complete Task <a href="'.url('tasks/'
+                            .$taskIDHashID->encode($task_id).'/'.$taskObj->slug).'>'.$taskObj->name.'</a>';
+                    $email_subject = 'Payment of $'.$taskBidder->amount.' received for Task '.$taskObj->name;
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$taskCompleterObj],$onlyemail=false,'fund_received');
 
                     SiteActivity::create([
                         'user_id'=>$taskCompleter,
@@ -197,6 +209,12 @@ class User extends Authenticatable
                 if(!empty($taskCompleterObj->username))
                     $taskCompletedUsername = $taskCompleterObj->username;
 
+                // send email and notification
+                $content = 'Reward of $'.$taskBidder->amount.' received for Task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id)
+                        .'/'.$taskObj->slug).'>'.$taskObj->name.'</a>';
+                $email_subject = 'Reward of $'.$taskBidder->amount.' received for Task '.$taskObj->name;
+                User::SendEmailAndOnSiteAlert($content,$email_subject,[$taskCompleterObj],$onlyemail=false,'fund_received');
+
                 SiteActivity::create([
                     'user_id'=>$taskCompleter,
                     'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode($taskCompleter).'/'.strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name)).'">'
@@ -221,6 +239,15 @@ class User extends Authenticatable
                 $loggedinUsername = Auth::user()->first_name.' '.Auth::user()->last_name;
                 if(!empty(Auth::user()->username))
                     $loggedinUsername = Auth::user()->username;
+
+                // send email and notification
+                $content = 'Reward of $'.$taskBidder->amount.' assigned to user <a href="'.url
+                        ('userprofiles/'.$userIDHashID->encode($taskCompleter).'/'.strtolower($taskCompleterObj->first_name.'_'.$taskCompleterObj->last_name)).'">'
+                        .$taskCompletedUsername.'</a> for Task <a href="'.url('tasks/'.$taskIDHashID->encode
+                        ($task_id).'/'.$taskObj->slug).'>'.$taskObj->name.'</a>';
+
+                $email_subject = 'Reward of $'.$taskBidder->amount.' assigned to user '.$taskCompletedUsername;
+                User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=false,'fund_received');
 
                 SiteActivity::create([
                     'user_id'=>Auth::user()->id,
@@ -253,6 +280,13 @@ class User extends Authenticatable
                         $taskEditorUsername = strtolower($taskEditorObj->first_name.'_'.$taskEditorObj->last_name);
                         if(!empty($taskEditorObj->username))
                             $taskEditorUsername = $taskEditorObj->username;
+
+                        // send email and notification
+                        $content = 'Rewards of $'.$percentageReward.' received for Task <a href="'.url('tasks/'.$taskIDHashID->encode
+                                ($taskObj->id).'/'.$taskObj->slug).'>'.$taskObj->name.'</a>';
+
+                        $email_subject = 'Reward of $'.$percentageReward.' received for Task '.$taskObj->name;
+                        User::SendEmailAndOnSiteAlert($content,$email_subject,[$editor],$onlyemail=false,'fund_received');
 
                         SiteActivity::create([
                             'user_id'=>$editor->user_id,
@@ -302,6 +336,12 @@ class User extends Authenticatable
                     if(!empty($taskCreatorObj->username))
                         $loggedinUsername = $taskCreatorObj->username;
 
+                    $content = 'Rewards of $'.$percentageReward.' received for Task <a href="'.url('tasks/'.$taskIDHashID->encode
+                            ($taskObj->id).'/'.$taskObj->slug).'>'.$taskObj->name.'</a>';
+
+                    $email_subject = 'Reward of $'.$percentageReward.' received for Task '.$taskObj->name;
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$taskCreatorObj],$onlyemail=false,'fund_received');
+
                     SiteActivity::create([
                         'user_id'=>$taskCreatorID,
                         'comment'=>'<a href="'.url('userprofiles/'.$userIDHashID->encode($taskCreatorID).'/'.strtolower($taskCreatorObj->first_name.'_'.$taskCreatorObj->last_name)).'">'
@@ -326,6 +366,13 @@ class User extends Authenticatable
                     $taskCreatorUsername = strtolower($taskCreatorObj->first_name.'_'.$taskCreatorObj->last_name);
                     if(!empty($taskCreatorObj->username))
                         $taskCreatorUsername = $taskCreatorObj->username;
+
+                    // send email and notification
+                    $content = 'Reward of $'.$percentageReward.' assigned to user <a href="'.url('userprofiles/'.$userIDHashID->encode($taskCreatorObj->id).'/'.strtolower($taskCreatorUsername)).'">'
+                        .$taskCreatorUsername.'</a> for Task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id).'/'.$taskObj->slug).'</a>';
+
+                    $email_subject = 'Reward of $'.$percentageReward.' assigned to user '.$taskCreatorUsername;
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=false,'fund_received');
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
@@ -356,5 +403,37 @@ class User extends Authenticatable
         else
             return ['success'=>false,'error_msg'=>$paymentResponse['error']];
 
+    }
+
+    public static function SendEmailAndOnSiteAlert($content,$email_subject,$usersObj,$onlyemail=false,$email_field){
+        if(!empty($usersObj)){
+            foreach($usersObj as $user){
+
+                // add notification for user
+                /*UserNotification::create([
+                    'user_id' => $user->id,
+                    'content' => $content
+                ]);*/
+
+                // send email for user if user has email field = 1
+                // where email_field like : account_creation,forum_replies,watched_items,inbox,fund_received,task_management
+
+                $userTempObj = User::find($user->id);
+                if(!empty($userTempObj)){
+                    $alertObj = Alerts::where('user_id',$user->id)->where($email_field,'=',1)->first();
+
+                    if(!empty($alertObj) && count($alertObj) > 0){
+                        $toEmail = $userTempObj->email;
+                        $toName= $userTempObj->first_name.' '.$userTempObj->last_name;
+                        $subject = $email_subject;
+
+                        \Mail::send('emails.alerts_email', ['userObj' => Auth::user(), 'content'=>$content,'report_concern'=>false], function($message) use($toEmail,$toName,$subject) {
+                            $message->to($toEmail, $toName)->subject($subject);
+                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        });
+                    }
+                }
+            }
+        }
     }
 }

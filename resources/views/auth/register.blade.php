@@ -121,13 +121,13 @@
                         @endif
                     </div>
                 </div>
-                <div class="row form-group{{ $errors->has('captcha') ? ' has-error' : '' }}">
+                <div class="row form-group{{ $errors->has('g-recaptcha-response') ? ' has-error' : '' }}">
                     <div class="col-sm-7">
-                    {!! $sweetcaptcha->get_html() !!}
+                        {!! \Recaptcha::render() !!}
                     </div>
                     <div class="col-sm-5">
-                        @if( $errors->has('captcha'))
-                            <span style="color:#a94442">{{ $errors->first('captcha')}}</span>
+                        @if( $errors->has('g-recaptcha-response'))
+                            <span style="color:#a94442">{{ $errors->first('g-recaptcha-response')}}</span>
                         @endif
                     </div>
                 </div>

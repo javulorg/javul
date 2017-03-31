@@ -348,4 +348,16 @@ class Forum extends Model
         }
     	return true;
     }
+
+    public static function getUserOfReply($replay_id){
+        $data =  DB::table("forum_post")
+            ->select(['users.first_name','users.last_name','users.email','users.id'])
+            ->join("users", "users.id" ,"=", "forum_post.user_id" )
+            ->where("forum_post.post_id","=",$replay_id)
+            ->get();
+        if(!empty($data)){
+            return $data[0];
+        }
+        return  0;
+    }
 }

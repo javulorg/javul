@@ -18,6 +18,7 @@ use App\Unit;
 use App\UnitRevision;
 use App\UnitCategory;
 use App\User;
+use App\Watchlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -301,7 +302,7 @@ class UnitsController extends Controller
             $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
             $subject="Unit Created";
 
-            \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+            \Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
             {
                 $message->to($toEmail,$toName)->subject($subject);
                 if(!empty($siteAdminemails))
@@ -501,6 +502,19 @@ class UnitsController extends Controller
                         updated unit <a href="'.url('units/'.$unit_id.'/'.$slug).'">'.$request->input('unit_name').'</a>'
                     ]);
 
+                    // send alert to user(s) who has this unit in his/her watchlist
+                    $watchlistUserObj = \DB::table('my_watchlist')
+                                        ->join('users','my_watchlist.user_id','=','users.id')
+                                        ->where('my_watchlist.user_id','!=',Auth::user()->id)
+                                        ->where('unit_id',$tempUnitID)
+                                        ->get();
+
+                    $content = 'User <a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.$user_name.'</a>' .
+                        ' edited Unit <a href="'.url('units/'.$unit_id.'/'.$slug).'">'.$request->input('unit_name').'</a>';
+
+                    $email_subject  ='User '.Auth::user()->first_name.' '.Auth::user()->last_name.' edited Unit '.$request->input('unit_name');
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
+
                     // After Created Unit send mail to site admin
                     $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
                     $unitCreator = User::find(Auth::user()->id);
@@ -509,7 +523,7 @@ class UnitsController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Unit Updated";
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))
@@ -701,7 +715,7 @@ class UnitsController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Unit Deleted";
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))

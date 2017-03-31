@@ -338,6 +338,7 @@ class ObjectivesController extends Controller
             $status = "in-progress";
 
             $unitID = $request->input('unit');
+            $unitIDEncoded = $unitID;
             $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
             $unitID = $unitIDHashID->decode($unitID);
             if(empty($unitID))
@@ -370,6 +371,8 @@ class ObjectivesController extends Controller
                 'parent_id'=>$parent_id
             ])->id;
 
+            $unitObj = Unit::find($unitID);
+
             ImportanceLevel::create([
                 'user_id'=>Auth::user()->id,
                 'objective_id'=>$objectiveId,
@@ -386,6 +389,8 @@ class ObjectivesController extends Controller
                 'type'=>'objective'
             ]);
 
+
+
             // add site activity record for global statistics.
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
@@ -396,6 +401,19 @@ class ObjectivesController extends Controller
             $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
             if(!empty(Auth::user()->username))
                 $user_name =Auth::user()->username;
+
+            // send alert to user(s) who has this unit in his/her watchlist
+            $watchlistUserObj = \DB::table('my_watchlist')
+                ->join('users','my_watchlist.user_id','=','users.id')
+                ->where('my_watchlist.user_id','!=',Auth::user()->id)
+                ->where('unit_id',$unitID)
+                ->get();
+
+            $content = 'User <a href="'.url('userprofiles/'.Auth::user()->id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name).'</a>' .
+                ' created Objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name').'</a> in Unit <a href="'.url('units/'.$unitIDEncoded.'/'.$unitObj->slug).'">'.$unitObj->name.'</a>';
+
+            $email_subject  ='User '.Auth::user()->first_name.' '.Auth::user()->last_name.' created Objective '.$request->input('objective_name').' in Unit '.$unitObj->name;
+            User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
@@ -455,6 +473,7 @@ class ObjectivesController extends Controller
                         return redirect()->back()->withErrors($validator)->withInput();
 
                     $unitID = $request->input('unit');
+                    $unitIDEncoded = $unitID;
                     $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
                     $unitID = $unitIDHashID->decode($unitID);
                     if(empty($unitID))
@@ -526,6 +545,22 @@ class ObjectivesController extends Controller
                     $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
                     if(!empty(Auth::user()->username))
                         $user_name =Auth::user()->username;
+
+                    // send alert to user(s) who has this unit in his/her watchlist
+                    $watchlistUserObj = \DB::table('my_watchlist')
+                        ->join('users','my_watchlist.user_id','=','users.id')
+                        ->where('my_watchlist.user_id','!=',Auth::user()->id)
+                        ->where('unit_id',$unitID)
+                        ->get();
+
+                    $unitObj = Unit::find($unitID);
+
+                    $content = 'User <a href="'.url('userprofiles/'.Auth::user()->id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name).'</a>' .
+                        ' updated Objective <a href="'.url('objectives/'.$objectiveId.'/'.$slug).'">'.$request->input('objective_name')
+                        .'</a> in Unit <a href="'.url('units/'.$unitIDEncoded.'/'.$unitObj->slug).'">'.$unitObj->name.'</a>';
+
+                    $email_subject  ='User '.Auth::user()->first_name.' '.Auth::user()->last_name.' edited Objective '.$request->input('objective_name').' in Unit '.$unitObj->name;
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,

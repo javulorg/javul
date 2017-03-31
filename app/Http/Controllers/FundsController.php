@@ -19,6 +19,7 @@ use App\SiteConfigs;
 use App\State;
 use App\Task;
 use App\TaskBidder;
+use App\TaskRatings;
 use App\Transaction;
 use App\Unit;
 use App\UnitCategory;
@@ -33,7 +34,7 @@ use Illuminate\Support\Facades\URL;
 class FundsController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth');
+        $this->middleware('auth',['except'=>['donate_to_unit_objective_task','donate_amount','success','cancel']]);
     }
 
     public function index(Request $request){
@@ -61,23 +62,24 @@ class FundsController extends Controller
 
         if(!empty($id)){
             $type = $request->segment(3);
-            $exists = false;
+            //$exists = false;
             $obj = [];
             $donateTo = '';
-            $hashID='';
-            $controller = '';
-            $addFunds = [];
+            //$hashID='';
+            //$controller = '';
+            //$addFunds = [];
             $availableFunds =0;
             $awardedFunds =0;
+            $rating_points='';
             switch($type){
                 case 'unit':
                     $exists = Unit::checkUnitExist($id,true);
                     if($exists){
                         $obj= Unit::getObj($id);
                         $donateTo =" unit ";
-                        $controller="units";
-                        $addFunds=['unit_id'=>$obj->id];
-                        $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                        //$controller="units";
+                        //$addFunds=['unit_id'=>$obj->id];
+                        //$hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
                         $availableFunds =Fund::getUnitDonatedFund($obj->id);
                         $awardedFunds =Fund::getUnitAwardedFund($obj->id);
                     }
@@ -87,9 +89,9 @@ class FundsController extends Controller
                     if($exists){
                         $obj= Objective::getObj($id);
                         $donateTo =" objective ";
-                        $controller="objectives";
-                        $addFunds=['objective_id'=>$obj->id];
-                        $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                        //$controller="objectives";
+                        //$addFunds=['objective_id'=>$obj->id];
+                        //$hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
                         $availableFunds =Fund::getObjectiveDonatedFund($obj->id);
                         $awardedFunds =Fund::getObjectiveAwardedFund($obj->id);
                     }
@@ -99,9 +101,9 @@ class FundsController extends Controller
                     if($exists){
                         $obj= Task::getObj($id);
                         $donateTo =" task ";
-                        $controller="tasks";
-                        $addFunds=['task_id'=>$obj->id];
-                        $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                        //$controller="tasks";
+                        //$addFunds=['task_id'=>$obj->id];
+                        //$hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
                         $availableFunds =Fund::getTaskDonatedFund($obj->id);
                         $awardedFunds =Fund::getTaskAwardedFund($obj->id);
                     }
@@ -113,11 +115,23 @@ class FundsController extends Controller
                         $obj->name=$obj->first_name.' '.$obj->last_name;
                         $obj->slug=strtolower($obj->first_name.'_'.$obj->last_name);
                         $donateTo =" user ";
-                        $controller="userprofiles";
-                        $addFunds=['task_id'=>$obj->id];
-                        $hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        //$controller="userprofiles";
+                        //$addFunds=['task_id'=>$obj->id];
+                        //$hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                         $availableFunds =Fund::getUserDonatedFund($obj->id);
                         $awardedFunds =Fund::getUserAwardedFund($obj->id);
+
+                        $rating_points = TaskRatings::where('user_id',$obj->id)->sum('quality_of_work');
+                        $total_rating_points = TaskRatings::where('user_id',$obj->id)->count();
+                        if(is_null($rating_points))
+                            $rating_points = 0;
+                        else if($rating_points > 0) {
+                            $rating_points = $rating_points / $total_rating_points;
+                            if(is_float($rating_points))
+                                $rating_points = round($rating_points,1);
+                        }
+
+
 
                         $skills = [];
                         if(!empty($obj->job_skills))
@@ -137,9 +151,10 @@ class FundsController extends Controller
             }
 
             if($exists){
-                $creditedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit')->sum('amount');
-                $debitedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit')->sum('amount');
-                $availableBalance = $creditedBalance - $debitedBalance;
+                //$creditedBalance = 50;//Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit')->sum('amount');
+                //$debitedBalance = 10;//Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit')->sum('amount');
+                //$availableBalance = $creditedBalance - $debitedBalance;
+                $availableBalance = 0;
                 view()->share('availableBalance',$availableBalance);
 
                 $expiry_years = SiteConfigs::getCardExpiryYear();
@@ -173,6 +188,7 @@ class FundsController extends Controller
                 view()->share('awardedFunds',$awardedFunds);
                 view()->share('obj',$obj);
                 view()->share('donateTo',$donateTo);
+                view()->share('rating_points',$rating_points);
                 return view('funds.donation');
             }
         }
@@ -199,6 +215,7 @@ class FundsController extends Controller
             $controller = '';
             $addFunds = [];
 
+            $donateToLink='';
             switch($type){
                 case 'unit':
                     $exists = Unit::checkUnitExist($id,true);
@@ -208,6 +225,7 @@ class FundsController extends Controller
                         $controller="units";
                         $addFunds=['unit_id'=>$obj->id];
                         $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                        $donateToLink='<a href="'.url('units/'.$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>';
                     }
                     break;
                 case 'objective':
@@ -218,6 +236,7 @@ class FundsController extends Controller
                         $controller="objectives";
                         $addFunds=['objective_id'=>$obj->id];
                         $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                        $donateToLink='<a href="'.url('objectives/'.$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>';
                     }
                     break;
                 case 'task':
@@ -228,6 +247,7 @@ class FundsController extends Controller
                         $controller="tasks";
                         $addFunds=['task_id'=>$obj->id];
                         $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                        $donateToLink='<a href="'.url('tasks/'.$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>';
                     }
                     break;
                 case 'user':
@@ -240,6 +260,7 @@ class FundsController extends Controller
                         $controller="userprofiles";
                         $addFunds=['task_id'=>$obj->id];
                         $hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        $donateToLink='<a href="'.url('userprofiles/'.$hashID->encode($obj->id).'/'.strtolower($obj->name)).'">'.$obj->name.'</a>';
                     }
                     break;
                 default:
@@ -266,7 +287,8 @@ class FundsController extends Controller
                 $amount = $request->input('donate_amount');
                 $paypalFees = (($amount * 2.9)/100) + 0.3;
                 $amount = $amount - $paypalFees ;
-                $message = Auth::user()->first_name.' '.Auth::user()->last_name. " donate $".$amount.' to'.$donateTo.$obj->name;
+                //$message = Auth::user()->first_name.' '.Auth::user()->last_name. " donate $".$amount.' to'.$donateTo.$obj->name;
+                $message = "  $".$amount.' donate to'.$donateTo.$obj->name;
 
                 $inputData['message']=$message;
 
@@ -274,10 +296,11 @@ class FundsController extends Controller
                 $fundID = null;
                 $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
                 if($type == "user"){
-                    $transactionData['created_by'] =Auth::user()->id;
+                    $transactionData['created_by'] =1;//Auth::user()->id;
                     $transactionData['user_id'] =$obj->id;
                     $transactionData['amount'] =$amount;
-                    $transactionData['comments']='$'.$amount.' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name;
+                    //$transactionData['comments']='$'.$amount.' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name;
+                    $transactionData['comments']='$'.$amount.' donation received';
 
                     if(!empty($obj->paypal_email))
                         $transactionData['trans_type'] ='paypal';
@@ -290,12 +313,14 @@ class FundsController extends Controller
                     $inputData['cancelURL'] = url('funds/cancel?type='.$type.'&orderID='.$orderIDHashID->encode($transactionID));
                 }
                 else{
-                    $addFunds['user_id']=Auth::user()->id;
+                    $addFunds['user_id']=1;//Auth::user()->id;
                     $addFunds['amount']=$amount;
                     $addFunds['transaction_type']='donated';
                     $addFunds['fund_type']=$donateTo;
 
                     $fundID = Fund::create($addFunds)->id;
+
+
 
                     $inputData['returnURL'] = url('funds/success?type='.$type.'&orderID='.$orderIDHashID->encode($fundID) );
                     $inputData['cancelURL'] = url('funds/cancel?type='.$type.'&orderID='.$orderIDHashID->encode($fundID));
@@ -317,6 +342,18 @@ class FundsController extends Controller
                 {
                     // update payment id field to respective tables.
                     if($type == "user"){
+                        // send email and notification
+                        $content = 'You have donated $'.$amount.' to '.$donateTo.' '.$donateToLink;
+                        $email_subject = 'You have donated $'.$amount.' to '.$donateTo.' '.$obj->name;
+                        User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=falsem,'fund_received');
+
+                        $donateToLink= '<a href="'.url('userprofiles/'.$hashID->encode(Auth::user()->id).'/'.strtolower(Auth::user()
+                                    ->first_name.'_'.Auth::user()->last_name)).'">'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name).'</a>';
+
+                        $content = 'You have received a payment of $'.$amount.' to '.$donateTo.' '.$donateToLink;
+                        $email_subject  = 'You have received a payment of $'.$amount.' to '.$donateTo.' '.$obj->name;
+                        User::SendEmailAndOnSiteAlert($content,$email_subject,[$obj],$onlyemail=false,'fund_received');
+
                         $transactionObj = Transaction::find($transactionID);
                         if(count($transactionObj) > 0 && !empty($transactionObj)){
                             if(!empty($obj->paypal_email))
@@ -326,6 +363,13 @@ class FundsController extends Controller
                         }
                     }
                     else{
+
+                        // send email and notification
+                        $content = 'You have donated $'.$amount.' to '.$donateTo.' '.$donateToLink;
+
+                        $email_subject  ='You have donated $'.$amount.' to '.$donateTo.' '.$obj->name;
+                        User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=false,'fund_received');
+
                         $fundObj = Fund::find($fundID);
                         if(count($fundObj ) > 0 && !empty($fundObj)){
                             $fundObj->update(['payment_id'=>$response['payment_id'],'status'=>strtolower($response['status'])]);
@@ -433,7 +477,7 @@ class FundsController extends Controller
                     }
 
                     //insert into site activity table for log.
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    /*$userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
                     $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -444,7 +488,7 @@ class FundsController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .$user_name.'</a> donate $'.$obj->amount.' to'.$donateTo.' <a href="'.url($controller.'/'.$hashID->encode($dataObj->id).'/'.$dataObj->slug).'">'.$dataObj->name.'</a>'
-                    ]);
+                    ]);*/
 
                     // store actual paypal transaction details.
                     PaypalTransaction::create($data);

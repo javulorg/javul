@@ -1,5 +1,8 @@
 <?php
 namespace App\Http\Controllers;
+use App\Alerts;
+use App\User;
+use App\UserNotification;
 use Illuminate\Http\Request;
 use App\Forum;
 use App\Http\Requests;
@@ -359,15 +362,49 @@ class ForumController extends Controller
                     $commment = '
                         <a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .$loggedinUsername.'</a>
                         posted a comment in forum thread  <a href="'.url('forum/post/'.$inputData['topic_id'].'/' . $unitData['slug'] ).'"> '. $unitData['title'] .' </a> 
-                        for Unit  
-                        <a href="'.url('units/'.$unit_id.'/'.$unit->slug).'">'.$unit->name.'</a> 
-                            ';
+                        for Unit <a href="'.url('units/'.$unit_id.'/'.$unit->slug).'">'.$unit->name.'</a>';
                 }
+
+                // if someone reply to forum then add record in alert_notification table for creator
+                if(Auth::user()->id != $unitData['user_id']) {
+                    $thread_creator_obj = User::find($unitData['user_id']);
+                    $unit_link = '<b><a style="text-decoration:none;" href="' . url('units/' . $unit_id . '/' . $unit->slug) . '">' . $unit->name . '</a></b>';
+
+                    $content = 'User <b><a style="text-decoration:none;" href="' . url('userprofiles/' . $user_id . '/' . strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . $loggedinUsername . '</a></b> ' .
+                        'replied to your forum thread <b><a style="text-decoration:none;" href="' . url('forum/post/' . $inputData['topic_id'] . '/' . $unitData['slug']) . '">' . $unitData['title'] . ' </a>' .
+                        '</b>(Unit:' . $unit_link . ')';
+
+                    $email_subject = 'User ' . Auth::user()->first_name . ' ' .Auth::user()->last_name . ' replied to your forum thread '.$unitData['title'];
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$thread_creator_obj],$onlyemail=false,'forum_replies');
+
+                }
+
+
                 SiteActivity::create([
                     'user_id'=>Auth::user()->id,
                     'unit_id'=>$unitId,
                     'comment'=> $commment
                 ]);
+
+                if(Auth::user()->id == $unitData['user_id']){
+                    if($inputData['replay_id'] > 0){
+
+                        $userReplyObj = Forum::getUserOfReply($inputData['replay_id']);
+                        if(!empty($userReplyObj)) {
+
+                            $content = 'User <b><a style="text-decoration:none;" href="' . url('userprofiles/' . $user_id . '/' . strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . $loggedinUsername . '</a></b>' .
+                                'replied to your comment <b><a style="text-decoration:none;" href="' . url('forum/post/' . $inputData['topic_id'] . '/' . $unitData['slug']) . '">' . $unitData['title'] . ' </a></b>';
+
+                            $email_subject = 'User ' . Auth::user()->first_name . ' ' .Auth::user()->last_name . ' replied to your comment
+                             under thread '.$unitData['title'];
+
+                            User::SendEmailAndOnSiteAlert($content,$email_subject,[$userReplyObj],$onlyemail=false,'forum_replies');
+
+                        }
+
+                    }
+                }
+
             /* Add Site Activity */
             
         }

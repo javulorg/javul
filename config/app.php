@@ -165,7 +165,8 @@ return [
         Laravel\Cashier\CashierServiceProvider::class,
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
 		Netshell\Paypal\PaypalServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+		Greggilbert\Recaptcha\RecaptchaServiceProvider::class
 
     ],
 
@@ -214,7 +215,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
 		'Paypal' => Netshell\Paypal\Facades\Paypal::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+		'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
 
     ],
 

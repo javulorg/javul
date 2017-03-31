@@ -429,6 +429,7 @@ class TasksController extends Controller
 
             // check unit id exist in db
             $unit_id = $request->input('unit');
+            $unitIDEncoded = $unit_id;
             $flag =Unit::checkUnitExist($unit_id ,true);
             if(!$flag)
                 return redirect()->back()->withErrors(['unit'=>'Unit doesn\'t exist in database.'])->withInput();
@@ -436,6 +437,7 @@ class TasksController extends Controller
 
             // check objective id exist in db
             $objective_id = $request->input('objective');
+            $objectiveIDEncoded = $objective_id;
             $flag =Objective::checkObjectiveExist($objective_id ,true); // pass objective_id and true for decode the string
             if(!$flag)
                 return redirect()->back()->withErrors(['objective'=>'Objective doesn\'t exist in database.'])->withInput();
@@ -562,6 +564,25 @@ class TasksController extends Controller
             if(!empty(Auth::user()->username))
                 $user_name =Auth::user()->username;
 
+            // send alert to user(s) who has this unit in his/her watchlist
+            $watchlistUserObj = \DB::table('my_watchlist')
+                ->join('users','my_watchlist.user_id','=','users.id')
+                ->where('my_watchlist.user_id','!=',Auth::user()->id)
+                ->where(function ($query) use($objective_id,$unit_id) {
+                    $query->where('objective_id',$objective_id)->orWhere('unit_id',$unit_id);
+                })
+                ->get();
+
+            $objectiveObj = Objective::find($objective_id);
+
+            $content = 'User <a href="'.url('userprofiles/'.Auth::user()->id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name).'</a>' .
+                ' created Task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name')
+                .'</a> in Objective <a href="'.url('objectives/'.$objectiveIDEncoded.'/'.$objectiveObj->slug).'">'.$objectiveObj->name.'</a>';
+
+            $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' created task '.$request->input('task_name').
+                ' in objective '.$objectiveObj->name;
+            User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
+
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
                 'unit_id'=>$unit_id[0],
@@ -651,6 +672,7 @@ class TasksController extends Controller
 
                     // check unit id exist in db
                     $unit_id = $request->input('unit');
+                    $unitIDEncoded = $unit_id;
                     $flag =Unit::checkUnitExist($unit_id ,true);
                     if(!$flag)
                         return redirect()->back()->withErrors(['unit'=>'Unit doesn\'t exist in database.'])->withInput();
@@ -658,6 +680,7 @@ class TasksController extends Controller
 
                     // check objective id exist in db
                     $objective_id = $request->input('objective');
+                    $objectiveIDEncoded=$objective_id;
                     $flag =Objective::checkObjectiveExist($objective_id ,true); // pass objective_id and true for decode the string
                     if(!$flag)
                         return redirect()->back()->withErrors(['objective'=>'Objective doesn\'t exist in database.'])->withInput();
@@ -852,6 +875,26 @@ class TasksController extends Controller
                     if(!empty(Auth::user()->username))
                         $user_name =Auth::user()->username;
 
+                    // send alert to user(s) who has this unit in his/her watchlist
+                    $watchlistUserObj = \DB::table('my_watchlist')
+                        ->join('users','my_watchlist.user_id','=','users.id')
+                        ->where('my_watchlist.user_id','!=',Auth::user()->id)
+                        ->where(function ($query) use($objective_id,$unit_id) {
+                            $query->where('objective_id',$objective_id)->orWhere('unit_id',$unit_id);
+                        })
+                        ->get();
+
+                    $objectiveObj = Objective::find($objective_id);
+
+                    $content = 'User <a href="'.url('userprofiles/'.Auth::user()->id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name).'</a>' .
+                        ' edited Task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name')
+                        .'</a> in Objective <a href="'.url('objectives/'.$objectiveIDEncoded.'/'.$objectiveObj->slug).'">'.$objectiveObj->name.'</a>';
+
+                    $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' edited task '.$request->input('task_name').
+                        ' in objective '.$objectiveObj->name;
+
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$unit_id[0],
@@ -863,7 +906,7 @@ class TasksController extends Controller
                     ]);
 
                     // mail send
-                    $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                   /* $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                     if(!empty($alertObj) && $alertObj->task_management == 1) {
                         $toEmail = Auth::user()->email;
                         $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -873,7 +916,7 @@ class TasksController extends Controller
                             $message->to($toEmail, $toName)->subject($subject);
                             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                         });
-                    }
+                    }*/
 
 
                     // After Created Unit send mail to site admin
@@ -1223,7 +1266,7 @@ class TasksController extends Controller
                     ]);
 
                     // mail send
-                    $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                    /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                     if(!empty($alertObj) && $alertObj->task_management == 1) {
                         $toEmail = Auth::user()->email;
                         $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -1233,9 +1276,9 @@ class TasksController extends Controller
                             $message->to($toEmail, $toName)->subject($subject);
                             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                         });
-                    }
+                    }*/
 
-                    // After Created Unit send mail to site admin
+                    // After deleted task send mail to unit creator
                     $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
                     $unitCreator = User::find(Auth::user()->id);
 
@@ -1243,7 +1286,9 @@ class TasksController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Task Deleted";
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use ($toEmail,
+                        $toName,$subject,
+                        $siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))
@@ -1321,7 +1366,7 @@ class TasksController extends Controller
                             ]);
 
                             // mail send
-                            $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                            /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                             if(!empty($alertObj) && $alertObj->task_management == 1) {
                                 $toEmail = Auth::user()->email;
                                 $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -1331,7 +1376,7 @@ class TasksController extends Controller
                                     $message->to($toEmail, $toName)->subject($subject);
                                     $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                                 });
-                            }
+                            }*/
 
                             // After Created Unit send mail to site admin
                             $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
@@ -1341,7 +1386,9 @@ class TasksController extends Controller
                             $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                             $subject="Task approval submitted by".Auth::user()->first_name.' '.Auth::user()->last_name;
 
-                            \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                            \Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use
+                            ($toEmail,$toName,
+                                $subject,$siteAdminemails)
                             {
                                 $message->to($toEmail,$toName)->subject($subject);
                                 if(!empty($siteAdminemails))
@@ -1418,6 +1465,18 @@ class TasksController extends Controller
                         if(!empty(Auth::user()->username))
                             $user_name =Auth::user()->username;
 
+
+                        // send email and notification
+                        $unitObj = Unit::find($taskObj->unit_id);
+                        $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+
+                        $content = 'You have bid Task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'.$taskObj->name.'</a>
+                         at Unit <a href="'.url('units/'.$unitIDHashID->encode($unitObj->id).'/'.$unitObj->slug).'">'.$unitObj->name.'</a>';
+
+                        $email_subject = 'You have bid Task '.$taskObj->name.' at Unit '.$unitObj->name;
+
+                        User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=false,'task_management');
+
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$taskObj->unit_id,
@@ -1433,7 +1492,7 @@ class TasksController extends Controller
                         $unitCreator = User::find(Auth::user()->id);
 
                         // mail send
-                        $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                        /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                         if(!empty($alertObj) && $alertObj->task_management == 1) {
                             $toEmail = Auth::user()->email;
                             $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -1443,7 +1502,7 @@ class TasksController extends Controller
                                 $message->to($toEmail, $toName)->subject($subject);
                                 $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                             });
-                        }
+                        }*/
 
 
                         $toEmail = $unitCreator->email;
@@ -1534,14 +1593,17 @@ class TasksController extends Controller
                         $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                         $subject="Task assigned to ".$unitCreator->first_name.' '.$unitCreator->last_name;
 
-                        \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
-                        {
-                            $message->to($toEmail,$toName)->subject($subject);
-                            if(!empty($siteAdminemails))
-                                $message->bcc($siteAdminemails,"Admin")->subject($subject);
+                        // send email and notification
+                        $unitObj = Unit::find($taskObj->unit_id);
+                        $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
 
-                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
-                        });
+                        $content = 'Task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'.$taskObj->name.'</a> at Unit' .
+                            '<a href="'.url('units/'.$unitIDHashID->encode($unitObj->id).'/'.$unitObj->slug).'">'.$unitObj->name.'</a> has
+                             been assigned to you';
+
+                        $email_subject = 'Task '.$taskObj->name.' has been assigned to you';
+
+                        User::SendEmailAndOnSiteAlert($content,$email_subject,[$unitCreator],$onlyemail=false,'task_management');
 
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                         $loggedin_user_id = $userIDHashID->encode(Auth::user()->id);
@@ -1565,7 +1627,7 @@ class TasksController extends Controller
                         ]);
 
                         // mail send
-                        $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                        /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                         if(!empty($alertObj) && $alertObj->task_management == 1) {
                             $toEmail = Auth::user()->email;
                             $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -1575,7 +1637,7 @@ class TasksController extends Controller
                                 $message->to($toEmail, $toName)->subject($subject);
                                 $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                             });
-                        }
+                        }*/
 
 
                     }
@@ -1667,7 +1729,7 @@ class TasksController extends Controller
 
 
                     // mail send
-                    $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                    /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                     if(!empty($alertObj) && $alertObj->task_management == 1) {
                         $toEmail = Auth::user()->email;
                         $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -1677,7 +1739,7 @@ class TasksController extends Controller
                             $message->to($toEmail, $toName)->subject($subject);
                             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                         });
-                    }
+                    }*/
 
 
                     $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
@@ -1741,7 +1803,7 @@ class TasksController extends Controller
                     ]);
 
                     // mail send
-                    $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                   /* $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                     if(!empty($alertObj) && $alertObj->task_management == 1) {
                         $toEmail = Auth::user()->email;
                         $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -1751,7 +1813,7 @@ class TasksController extends Controller
                             $message->to($toEmail, $toName)->subject($subject);
                             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                         });
-                    }
+                    }*/
 
                     $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
                     $unitCreator = User::find(Auth::user()->id);
@@ -1932,7 +1994,7 @@ class TasksController extends Controller
                         ]);
 
                         // mail send
-                        $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                        /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                         if(!empty($alertObj) && $alertObj->task_management == 1) {
                             $toEmail = Auth::user()->email;
                             $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -1942,7 +2004,7 @@ class TasksController extends Controller
                                 $message->to($toEmail, $toName)->subject($subject);
                                 $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                             });
-                        }
+                        }*/
 
 
                         $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
@@ -1952,7 +2014,10 @@ class TasksController extends Controller
                         $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                         $subject="Task completed by ".$unitCreator->first_name.' '.$unitCreator->last_name;
 
-                        \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                        \Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use
+                        ($toEmail,
+                            $toName,
+                            $subject,$siteAdminemails)
                         {
                             $message->to($toEmail,$toName)->subject($subject);
                             if(!empty($siteAdminemails))
@@ -2038,9 +2103,18 @@ class TasksController extends Controller
                             .$taskObj->name.'</a>'
                     ]);
 
+                    /*$content = '<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                        .$user_name
+                        .'</a> re-assigned task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                        .$taskObj->name.'</a>';
+
+                    $email_subject = 'Task '.$taskObj->name.' has been re-assigned to you';
+
+                    $taskAssigneeObj = User::find($taskObj->assign_to);
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$taskAssigneeObj],$onlyemail=false);*/
 
                     // mail send
-                    $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                    /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                     if(!empty($alertObj) && $alertObj->task_management == 1) {
                         $toEmail = Auth::user()->email;
                         $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -2050,7 +2124,7 @@ class TasksController extends Controller
                             $message->to($toEmail, $toName)->subject($subject);
                             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                         });
-                    }
+                    }*/
 
 
                     $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
@@ -2176,6 +2250,19 @@ class TasksController extends Controller
                     if(!empty(Auth::user()->username))
                         $user_name =Auth::user()->username;
 
+                    $userObj = User::find($taskObj->assign_to);
+                    // send email and notification
+                    $unitObj = Unit::find($taskObj->unit_id);
+                    $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+
+                    $content = 'Task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'.$taskObj->name.'</a>
+                         at Unit <a href="'.url('units/'.$unitIDHashID->encode($unitObj->id).'/'.$unitObj->slug).'">'.$unitObj->name.'</a>
+                          has been mark as complete';
+
+                    $email_subject = 'Task '.$taskObj->name.' at Unit '.$unitObj->name.' has been mark as complete';
+
+                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$userObj],$onlyemail=false,'task_management');
+
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$taskObj->unit_id,
@@ -2189,7 +2276,7 @@ class TasksController extends Controller
 
 
                     // mail send
-                    $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                    /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                     if(!empty($alertObj) && $alertObj->task_management == 1) {
                         $toEmail = Auth::user()->email;
                         $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -2199,7 +2286,7 @@ class TasksController extends Controller
                             $message->to($toEmail, $toName)->subject($subject);
                             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                         });
-                    }
+                    }*/
 
                     $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
                     $unitCreator = User::find($taskObj->assign_to);
@@ -2208,7 +2295,9 @@ class TasksController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Task completed by supperadmin ";
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use ($toEmail,
+                        $toName,$subject,
+                        $siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))
@@ -2291,7 +2380,7 @@ class TasksController extends Controller
                         ]);
 
                         // mail send
-                        $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
+                        /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
                         if(!empty($alertObj) && $alertObj->task_management == 1) {
                             $toEmail = Auth::user()->email;
                             $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -2301,7 +2390,7 @@ class TasksController extends Controller
                                 $message->to($toEmail, $toName)->subject($subject);
                                 $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
                             });
-                        }
+                        }*/
 
                         $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
                         $unitCreator = User::find(Auth::user()->id);
@@ -2310,7 +2399,9 @@ class TasksController extends Controller
                         $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                         $subject="Task cancelled by ".$toName;
 
-                        \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                        \Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use
+                        ($toEmail,$toName,
+                            $subject,$siteAdminemails)
                         {
                             $message->to($toEmail,$toName)->subject($subject);
                             if(!empty($siteAdminemails))

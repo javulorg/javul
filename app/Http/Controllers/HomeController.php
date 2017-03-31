@@ -15,6 +15,7 @@ use App\Unit;
 use App\UnitCategory;
 use App\UnitCategoryHistory;
 use App\User;
+use App\UserNotification;
 use App\Watchlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,7 +72,7 @@ class HomeController extends Controller
         $activities = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.global_site_activity_page'));
         view()->share('site_activity',$activities);
         view()->share('site_activity_text','Global Activity Log');
-        return view('global_activities');
+        return view('global_activities',['type'=>'activities']);
     }
 
     public function global_search(Request $request){
@@ -203,6 +204,7 @@ class HomeController extends Controller
                             'user_id'=>Auth::user()->id,
                             strtolower($type).'_id'=>$id
                         ]);
+
                         return \Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
                     }
                     else
@@ -236,6 +238,14 @@ class HomeController extends Controller
         //view()->share('watchedIssues',$watchedIssues);
         return view('users.my_watchlist');
     }
+
+    public function my_alerts(Request $request){
+        $notifications= UserNotification::where('user_id',Auth::user()->id)->orderBy('message_read')->orderBy('created_at','desc')->paginate(\Config::get('app.global_site_activity_page'));
+        view()->share('site_activity',$notifications);
+        view()->share('site_activity_text','Notifications');
+        return view('global_activities',['type'=>'notifications']);
+    }
+
     public function paypal(Request $request){
 
     }

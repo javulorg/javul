@@ -20,6 +20,7 @@ use App\Task;
 use App\Transaction;
 use App\Unit;
 use App\User;
+use App\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
@@ -95,6 +96,27 @@ class AccountController extends Controller
         return view('users.my_account');
     }
 
+    /*
+     * Get notification alert of user
+     *
+     */
+    public function get_notifications(){
+        if(Auth::check()){
+            $notifications= UserNotification::where('user_id',Auth::user()->id)->where('message_read','=',0)->get();
+            return view('users.notification_popup',['notifications'=>$notifications]);
+        }
+        return '<div>No notification found..';
+
+    }
+
+    public function update_notifications(Request $request){
+        $id = $request->input('id');
+        $notificationObj = UserNotification::where('user_id',Auth::user()->id)->where('message_read','=',0)->where('id',$id)->first();
+        if(!empty($notificationObj) && count($notificationObj) > 0){
+            UserNotification::find($id)->update(['message_read'=>1]);
+        }
+        return \Response::json(['success'=>true]);
+    }
     /**
      * Check user is logged in or not.
      */
@@ -185,13 +207,11 @@ class AccountController extends Controller
 
     }
     /**
-     * Function will transfer money from seller account to user accout (paypal only).
+     * Function will transfer money from seller account to user account (paypal only).
      * @param Request $request
      * @return $this
      */
     public function withdraw(Request $request){
-
-
         if(empty(Auth::user()->paypal_email)){
             $validator = \Validator::make($request->all(), [
                 'paypal_email'=> 'required|email'
@@ -364,7 +384,7 @@ class AccountController extends Controller
 
                         $logo_path = $destinationPath . '/' . $fileName;
                         $logo = Image::make($logo_path);
-                        $logo->resize(null, 198, function ($constraint) {
+                        $logo->resize(150, null, function ($constraint) {
                             $constraint->aspectRatio();
                         });
                         $logo->save($destinationPath . '/'.$fileName);

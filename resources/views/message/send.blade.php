@@ -37,7 +37,7 @@
             <div class="panel panel-grey panel-default">
                 <div class="panel-heading">
                     New Message
-                </h4></div>
+                </div>
                 <div class="panel-body list-group">
                     <div class="col-md-2">
                         @include('message.menu',array())

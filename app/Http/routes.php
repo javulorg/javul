@@ -26,6 +26,9 @@ Route::get('/my_tasks','UserController@my_tasks');
 Route::get('/my_contributions','UserController@my_contribution');
 Route::post('/account/withdraw','AccountController@withdraw');
 Route::post('/account/paypal_email_check','AccountController@paypal_email_check');
+Route::get('/account/get_notifications','AccountController@get_notifications');
+Route::post('/account/update_notifications','AccountController@update_notifications');
+
 Route::post('/account/update-creditcard','AccountController@update_creditcard');
 Route::any('/notification/success','NotificationController@success_payment');
 Route::post('/account/update_personal_info','AccountController@update_personal_info');
@@ -38,6 +41,7 @@ Route::get('/get_site_activity_paginate','HomeController@get_site_activity_pagin
 Route::get('/add_to_watchlist','HomeController@add_to_watchlist');
 Route::get('/remove_from_watchlist','HomeController@remove_from_watchlist');
 Route::get('/my_watchlist','HomeController@my_watchlist');
+Route::get('/my_alerts','HomeController@my_alerts');
 Route::any('/site_admin','HomeController@site_admin');
 Route::any('/skills/get_skill_paginate','HomeController@get_skill_paginate');
 Route::any('/category/get_category_paginate','HomeController@get_category_paginate');

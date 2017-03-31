@@ -56,6 +56,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="icon" type="image/png" sizes="32x32" href="{!! url('assets/images/favicon-32x32.png') !!}">
     <link rel="icon" type="image/png" sizes="96x96" href="{!! url('assets/images/favicon-96x96.png') !!}">
     <link rel="icon" type="image/png" sizes="16x16" href="{!! url('assets/images/favicon-16x16.png') !!}">
+    <script src='//www.google.com/recaptcha/api.js'></script>
     @yield('page-css')
     <!--<script type="text/javascript" src="//js.stripe.com/v2/"></script>
     <script type="text/javascript">Stripe.setPublishableKey('{{env("STRIPE_SECRET")}}');</script>-->
@@ -96,11 +97,53 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{!! url('assets/plugins/select2/js/select2.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/bootstrap-toastr/toastr.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/bootbox/bootbox.min.js') !!}" type="text/javascript"></script>
+
+
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/function.js') !!}" type="text/javascript"></script>
         <script>
-
             $(function(){
+                $('[data-toggle="popover"]').popover({
+                    placement:'bottom',
+                    html:true,
+                    container: 'body',
+                    title:'Notification',
+                    content: function() {
+                        return $.ajax({url: '{!! url('account/get_notifications') !!}',
+                            dataType: 'html',
+                            async: false}).responseText;
+                    }
+                }).data('bs.popover')
+                        .tip()
+                        .addClass('notification-popover');
+
+                $('[data-toggle="popover"]').on('shown.bs.popover', function () {
+                    // do something…
+                    $(".popover-content").find('.list-group').find(".list-group-item").each(function(){
+                        if($(this).is(':visible') == true){
+                            var id=$(this).data('id');
+                            if($.trim(id) != "") {
+                                $.ajax({
+                                    url: '{!! url('account/update_notifications') !!}',
+                                    data: {id: id, _token: '{{csrf_token()}}'},
+                                    type: 'post',
+                                    async: false,
+                                    success: function (resp) {
+
+                                    }
+                                })
+                            }
+                        }
+                    });
+                    $(".div-table-second-cell").css('z-index','100');
+                    $(".list-item-main").css('z-index','100');
+                });
+                $('[data-toggle="popover"]').on('hidden.bs.popover', function () {
+                    // do something…
+                    $(".div-table-second-cell").css('z-index','99999');
+                    $(".list-item-main").css('z-index','99999');
+                });
+
                 $('span.tooltipster').tooltipster({ //find more options on the tooltipster page
                     position: 'right'
                 });
@@ -129,7 +172,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <?php  if(\Auth::check()){ ?>
                 setTimeout(function() {
                         check_user_login()
-                    },20000
+                    },30000
                 );
                 function check_user_login(){
                     $.ajax({
@@ -140,7 +183,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             if(json.success){
                                 setTimeout(function(){
                                     check_user_login()
-                                },20000);
+                                },30000);
                             }
                         }
                     })

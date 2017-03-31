@@ -10,6 +10,7 @@
             .border-main{left:94px;}
             .list-item-main{width: 94px;}
         }
+        .list-group-item:nth-last-child(2) .border-main div{height:50px;}
     </style>
 @endsection
 @section('content')
@@ -51,8 +52,11 @@
                                                         </div>
                                                     </div>
                                                     <div class="div-table-third-cell">
-                                                        {!! $activity->comment !!}
-
+                                                        @if($type=="activities")
+                                                            {!! $activity->comment !!}
+                                                        @else
+                                                            {!! $activity->content !!}
+                                                        @endif
                                                     </div>
                                                     <div class="border-main child_{{$index}}">
                                                         <div></div>
@@ -69,6 +73,9 @@
                                            data-url="{{$site_activity->url($site_activity->currentPage()+1) }}"
                                            type="button"><span class="more_dots">...</span>MORE ACTIVITY
                                         </a>
+                                    </div>
+                                @else
+                                    <div class="list-group-item text-right more-btn" style="border-top:0px;">
                                     </div>
                                 @endif
                             @else

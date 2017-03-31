@@ -29,7 +29,7 @@
                     </li>
                 @else
                     <li class="top_menu_li">
-                        <a href="#">
+                        <a href="#" data-toggle="popover" class="notification_popover">
                             Alerts <i class="fa fa-bell" aria-hidden="true"></i>
                         </a>
                     </li>
@@ -161,7 +161,9 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-<script>
+<script type="text/javascript">
+
     var captcha_code ='{{$report_question}}';
     var report_concern_token='{{csrf_token()}}';
+
 </script>

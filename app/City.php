@@ -39,6 +39,13 @@ class City extends Model
 
     public static function getName($city_id){
         if(!empty($city_id))
-            return self::find($city_id)->name;
+        {
+
+            if($city_id == 247)
+                return 'GLOBAL';
+            else
+                return self::find($city_id)->name;
+        }
+        return '-';
     }
 }

@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use App\Alerts;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Message;
@@ -92,6 +93,13 @@ class MessageController extends Controller
 	        $messageId = Message::send($inputData);
 	        $json = array();
 	        if($messageId){
+                // send actual message to user as per said in https://github.com/javulorg/javul/issues/4
+                $receiverObj = User::find($inputData['user_id']);
+                $content = 'User <a style="text-decoration:none;" href="' . url('userprofiles/' . Auth::user()->id . '/' .
+                        strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . Auth::user()->first_name . ' ' . Auth::user()->last_name . '</a> ' .
+                    ' sent you message';
+                $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' sent you message';
+                User::SendEmailAndOnSiteAlert($content,$email_subject,[$receiverObj],$onlyemail = true,'inbox');
 	            $json['success'] = "Message Send successfully";
 	        }
 	        else
@@ -102,7 +110,7 @@ class MessageController extends Controller
     	}
     	else {
             $user = Message::users();
-             
+
             view()->share("user_id",$user_id);
             view()->share("page",'new');
     		view()->share("user",$user);

@@ -397,7 +397,7 @@ class Paypal extends Model{
         }catch(PPConnectionException $e){
             $error = $e->getMessage();
             $timeoutError = true;
-        }catch(Exception $e){
+        }catch(\Exception $e){
             $error = $e->getMessage();
         }
         if(!empty($error))

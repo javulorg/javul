@@ -140,7 +140,7 @@
                 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                     <li @if(count($errors) == 0 || ($errors->has('active') && $errors->first('active')=="personal_info"))
                     class="active" @endif><a href="#personal_info" data-toggle="tab">Personal Info</a></li>
-                    @if(!empty($availableBalance) && $availableBalance >= 20)
+                    @if(!empty($availableBalance) && $availableBalance > 0)
                     <li @if($errors->has('active') && $errors->first('active')=="withdraw") class="active" @endif>
                         <a href="#withdraw_amount" data-toggle="tab">Withdraw</a>
                     </li>

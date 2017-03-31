@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\ActivityPoint;
 use App\Objective;
 use App\sweetcaptcha;
 use App\Task;
@@ -68,28 +69,19 @@ class AuthController extends Controller
             'last_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
-            'user_name' => 'required|min:6'
+            'user_name' => 'required|min:6',
+            'g-recaptcha-response' => 'required|recaptcha',
             /*'country'=>'required',
             'state'=>'required',
             'city'=>'required',*/
         ]);
 
-        /*$validator->after(function($validator) use ($data) {
-            if(!isset($data['sckey']) || !isset($data['scvalue'])){
-                $validator->errors()->add('captcha', 'Captcha required.');
-            }
-
-            if (isset($data['sckey']) and isset($data['scvalue']) and
-                $this->sweetcaptcha->check(array('sckey' => $data['sckey'], 'scvalue' => $data['scvalue'])) !== "true")
-            {
-                $validator->errors()->add('captcha', 'Captcha is wrong. Please try again.');
-            }
-
+        $validator->after(function($validator) use ($data) {
             $name=$data['user_name'];
             $fetch=User::where('username',$name)->count();
             if($fetch > 0)
                 $validator->errors()->add('username_duplicate', 'The username already exist in system.');
-        }); */
+        });
         return $validator;
     }
 
@@ -115,7 +107,7 @@ class AuthController extends Controller
 
         $toEmail = $data['email'];
         $toName= $data['first_name'].' '.$data['last_name'];
-        $subject="Welcome To Javul.org";
+        $subject="Welcome to Javul.org";
 
         \Mail::send('emails.registration', ['userObj'=> $userData ], function($message) use ($toEmail,$toName,$subject)
         {
