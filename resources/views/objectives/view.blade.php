@@ -52,7 +52,9 @@
                                     <div class="col-xs-4">
                                         <label class="control-label upper" style="width: 100%;">
                                             <span class="fund_icon">FUNDS</span>
-                                            <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus plus"></i></div></span>
+                                            <span class="text-right pull-right">
+                                                <a href="{!! url('funds/donate/objective/'.$objectiveIDHashID->encode($objectiveObj->id))!!}"><div class="fund_paid"><i class="fa fa-plus plus"></i></div></a>
+                                            </span>
                                         </label>
                                     </div>
                                     <div class="col-xs-8 text-left borderLFT" style="padding-top:3px; ">

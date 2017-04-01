@@ -8,6 +8,7 @@ use App\City;
 use App\Country;
 use App\CreditCards;
 use App\Fund;
+use App\Issue;
 use App\JobSkill;
 use App\Library\Helpers;
 use App\Objective;
@@ -106,6 +107,21 @@ class FundsController extends Controller
                         //$hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
                         $availableFunds =Fund::getTaskDonatedFund($obj->id);
                         $awardedFunds =Fund::getTaskAwardedFund($obj->id);
+                    }
+                    break;
+                case 'issue':
+                    $exists = Issue::checkIssueExist($id,true);
+
+                    if($exists){
+                        $obj= Issue::getObj($id);
+                        $obj->name = $obj->title;
+                        $donateTo =" issue ";
+
+                        //$controller="tasks";
+                        //$addFunds=['task_id'=>$obj->id];
+                        //$hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                        $availableFunds =Fund::getIssueDonatedFund($obj->id);
+                        $awardedFunds =Fund::getIssueAwardedFund($obj->id);
                     }
                     break;
                 case 'user':
@@ -248,6 +264,17 @@ class FundsController extends Controller
                         $addFunds=['task_id'=>$obj->id];
                         $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
                         $donateToLink='<a href="'.url('tasks/'.$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>';
+                    }
+                    break;
+                case 'issue':
+                    $exists = Issue::checkIssueExist($id,true);
+                    if($exists){
+                        $obj= Issue::getObj($id);
+                        $donateTo =" issue ";
+                        $controller="issues";
+                        $addFunds=['issue_id'=>$obj->id];
+                        $hashID= new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+                        $donateToLink='<a href="'.url('issues/'.$hashID->encode($obj->id).'/'.strtolower(substr($obj->title,0,4))).'">'.$obj->title.'</a>';
                     }
                     break;
                 case 'user':

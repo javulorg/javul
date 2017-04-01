@@ -410,10 +410,10 @@ class User extends Authenticatable
             foreach($usersObj as $user){
 
                 // add notification for user
-                /*UserNotification::create([
+                UserNotification::create([
                     'user_id' => $user->id,
                     'content' => $content
-                ]);*/
+                ]);
 
                 // send email for user if user has email field = 1
                 // where email_field like : account_creation,forum_replies,watched_items,inbox,fund_received,task_management

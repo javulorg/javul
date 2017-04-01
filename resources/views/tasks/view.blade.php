@@ -22,6 +22,7 @@
                 </div>
                 <div style="padding: 0px;" class="panel-body current_unit_body list-group form-group">
                     <div class="list-group-item" style="padding-top:0px;padding-bottom:0px;">
+
                         <div class="row" style="border-bottom:1px solid #ddd;">
                             <div class="col-sm-7 featured_heading">
                                 <h4 class="colorLightGreen">{{$taskObj->name}}</h4>
@@ -49,7 +50,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-7 featured_heading" style="min-height: 156px">
+                            <div class="col-xs-7 featured_heading" style="min-height: 200px">
                                 {!! $taskObj->description !!}
                             </div>
                             <div class="col-xs-5 featured_heading text-right colorLightBlue" style="margin-top:0px;padding-top:0px;
@@ -76,6 +77,7 @@
                                         @endif
                                     </div>
                                 </div>
+
                                 <div class="row borderBTM lnht30">
                                     <div class="col-xs-4 text-left">
                                         <label class="control-label upper">Award</label>
@@ -84,12 +86,36 @@
                                         <label class="control-label">$60</label>
                                     </div>
                                 </div>
-                                <div class="row lnht30">
+                                <div class="row borderBTM lnht30">
                                     <div class="col-xs-4 text-left">
                                         <label class="control-label upper">Completion</label>
                                     </div>
                                     <div class="col-xs-8 borderLFT text-left">
                                         <label class="control-label">30 days</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label class="control-label upper" style="width: 100%;">
+                                            <span class="fund_icon">FUNDS</span>
+                                            <span class="text-right pull-right">
+                                                <a href="{!! url('funds/donate/task/'.$taskIDHashID->encode($taskObj->id))!!}"><div class="fund_paid"><i class="fa fa-plus plus"></i></div></a>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-8 text-left borderLFT" style="padding-top:3px; ">
+                                        <div>
+                                            <label class="control-label">
+                                                Available
+                                            </label>
+                                            <label class="control-label label-value pull-right">{{number_format($availableFunds,2)}} $</label>
+                                        </div>
+                                        <div>
+                                            <label class="control-label">
+                                                Awarded
+                                            </label>
+                                            <label class="control-label label-value pull-right">{{number_format($availableFunds,2)}} $</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

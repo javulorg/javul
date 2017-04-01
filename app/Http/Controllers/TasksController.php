@@ -459,7 +459,9 @@ class TasksController extends Controller
             $end_date  = $end_date->getTimestamp();
 
             // create task
+
             $slug=substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
+
 
             $task_skills =$request->input('task_skills');
             if(!empty($task_skills))
@@ -565,23 +567,25 @@ class TasksController extends Controller
                 $user_name =Auth::user()->username;
 
             // send alert to user(s) who has this unit in his/her watchlist
+
+            $unit_id=$unit_id[0];
+            $objective_id = $objective_id[0];
             $watchlistUserObj = \DB::table('my_watchlist')
                 ->join('users','my_watchlist.user_id','=','users.id')
                 ->where('my_watchlist.user_id','!=',Auth::user()->id)
-                ->where(function ($query) use($objective_id,$unit_id) {
+                ->where(function ($query) use($objective_id,$unit_id)  {
                     $query->where('objective_id',$objective_id)->orWhere('unit_id',$unit_id);
-                })
-                ->get();
+                })->get();
 
             $objectiveObj = Objective::find($objective_id);
 
-            $content = 'User <a href="'.url('userprofiles/'.Auth::user()->id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name).'</a>' .
+            $content = 'User <a href="'.url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.strtolower(Auth::user()->first_name.' '.Auth::user()->last_name).'</a>' .
                 ' created Task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name')
                 .'</a> in Objective <a href="'.url('objectives/'.$objectiveIDEncoded.'/'.$objectiveObj->slug).'">'.$objectiveObj->name.'</a>';
 
             $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' created task '.$request->input('task_name').
                 ' in objective '.$objectiveObj->name;
-            User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
+            \App\User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
@@ -875,6 +879,8 @@ class TasksController extends Controller
                     if(!empty(Auth::user()->username))
                         $user_name =Auth::user()->username;
 
+                    $objective_id = $objective_id[0];
+                    $unit_id = $unit_id[0];
                     // send alert to user(s) who has this unit in his/her watchlist
                     $watchlistUserObj = \DB::table('my_watchlist')
                         ->join('users','my_watchlist.user_id','=','users.id')
@@ -893,7 +899,7 @@ class TasksController extends Controller
                     $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' edited task '.$request->input('task_name').
                         ' in objective '.$objectiveObj->name;
 
-                    User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
+                    \App\User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
@@ -1475,7 +1481,7 @@ class TasksController extends Controller
 
                         $email_subject = 'You have bid Task '.$taskObj->name.' at Unit '.$unitObj->name;
 
-                        User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=false,'task_management');
+                        \App\User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=false,'task_management');
 
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
@@ -1603,7 +1609,7 @@ class TasksController extends Controller
 
                         $email_subject = 'Task '.$taskObj->name.' has been assigned to you';
 
-                        User::SendEmailAndOnSiteAlert($content,$email_subject,[$unitCreator],$onlyemail=false,'task_management');
+                        \App\User::SendEmailAndOnSiteAlert($content,$email_subject,[$unitCreator],$onlyemail=false,'task_management');
 
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
                         $loggedin_user_id = $userIDHashID->encode(Auth::user()->id);
@@ -2261,7 +2267,7 @@ class TasksController extends Controller
 
                     $email_subject = 'Task '.$taskObj->name.' at Unit '.$unitObj->name.' has been mark as complete';
 
-                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$userObj],$onlyemail=false,'task_management');
+                    \App\User::SendEmailAndOnSiteAlert($content,$email_subject,[$userObj],$onlyemail=false,'task_management');
 
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,

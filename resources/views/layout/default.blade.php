@@ -102,47 +102,52 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/function.js') !!}" type="text/javascript"></script>
         <script>
+            var logged_in ='{{Auth::check()?true:false}}';
             $(function(){
-                $('[data-toggle="popover"]').popover({
-                    placement:'bottom',
-                    html:true,
-                    container: 'body',
-                    title:'Notification',
-                    content: function() {
-                        return $.ajax({url: '{!! url('account/get_notifications') !!}',
-                            dataType: 'html',
-                            async: false}).responseText;
-                    }
-                }).data('bs.popover')
-                        .tip()
-                        .addClass('notification-popover');
-
-                $('[data-toggle="popover"]').on('shown.bs.popover', function () {
-                    // do something…
-                    $(".popover-content").find('.list-group').find(".list-group-item").each(function(){
-                        if($(this).is(':visible') == true){
-                            var id=$(this).data('id');
-                            if($.trim(id) != "") {
-                                $.ajax({
-                                    url: '{!! url('account/update_notifications') !!}',
-                                    data: {id: id, _token: '{{csrf_token()}}'},
-                                    type: 'post',
-                                    async: false,
-                                    success: function (resp) {
-
-                                    }
-                                })
-                            }
+                if(logged_in) {
+                    $('[data-toggle="popover"]').popover({
+                        placement: 'bottom',
+                        html: true,
+                        container: 'body',
+                        title: 'Notification',
+                        content: function () {
+                            return $.ajax({
+                                url: '{!! url('account/get_notifications') !!}',
+                                dataType: 'html',
+                                async: false
+                            }).responseText;
                         }
+                    }).data('bs.popover')
+                            .tip()
+                            .addClass('notification-popover');
+
+                    $('[data-toggle="popover"]').on('shown.bs.popover', function () {
+                        // do something…
+                        $(".popover-content").find('.list-group').find(".list-group-item").each(function () {
+                            if ($(this).is(':visible') == true) {
+                                var id = $(this).data('id');
+                                if ($.trim(id) != "") {
+                                    $.ajax({
+                                        url: '{!! url('account/update_notifications') !!}',
+                                        data: {id: id, _token: '{{csrf_token()}}'},
+                                        type: 'post',
+                                        async: false,
+                                        success: function (resp) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        });
+                        $(".div-table-second-cell").css('z-index', '100');
+                        $(".list-item-main").css('z-index', '100');
                     });
-                    $(".div-table-second-cell").css('z-index','100');
-                    $(".list-item-main").css('z-index','100');
-                });
-                $('[data-toggle="popover"]').on('hidden.bs.popover', function () {
-                    // do something…
-                    $(".div-table-second-cell").css('z-index','99999');
-                    $(".list-item-main").css('z-index','99999');
-                });
+                    $('[data-toggle="popover"]').on('hidden.bs.popover', function () {
+                        // do something…
+                        $(".div-table-second-cell").css('z-index', '99999');
+                        $(".list-item-main").css('z-index', '99999');
+                    });
+                }
 
                 $('span.tooltipster').tooltipster({ //find more options on the tooltipster page
                     position: 'right'

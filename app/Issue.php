@@ -35,6 +35,36 @@ class Issue extends Model
         return $selected_objective_id;
     }
 
+    public static function checkIssueExist($issue_id,$needToDecode=false)
+    {
+        if($needToDecode){
+            $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+            $issue_id = $issueIDHashID->decode($issue_id);
+
+            if(empty($issue_id))
+                return false;
+            $issue_id = $issue_id[0];
+
+            if(self::find($issue_id)->count() == 0)
+                return false;
+            return true;
+        }
+
+    }
+
+    public static function getObj($issue_id){
+        $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+        $issue_id = $issueIDHashID->decode($issue_id );
+
+        if(empty($issue_id))
+            return [];
+        $issue_id = $issue_id[0];
+
+        if(self::find($issue_id)->count() > 0)
+            return self::find($issue_id);
+        return [];
+    }
+
     public static function getSelectedTask($request){
         $selected_task_id_arr = null;
         $selected_task_ids= $request->input('task_id');

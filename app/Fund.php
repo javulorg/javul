@@ -11,7 +11,8 @@ class Fund extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','unit_id','objective_id','task_id','amount','transaction_type','payment_id','status','fund_type'];
+    protected $fillable = ['user_id','unit_id','objective_id','task_id','issue_id','amount','transaction_type','payment_id','status',
+'fund_type'];
 
 
     /**
@@ -49,6 +50,20 @@ class Fund extends Model
     public static function getTaskDonatedFund($task_id=''){
         if(!empty($task_id)){
             return self::where('task_id','=',$task_id)->where('transaction_type','=','donated')->where('status',
+                'approved')->sum('amount');
+        }
+        return 0;
+    }
+
+    /**
+     * Function will return total donated funds to issue.
+     * @param $issue_id
+     * @return int
+     */
+
+    public static function getIssueDonatedFund($issue_id=''){
+        if(!empty($issue_id)){
+            return self::where('issue_id','=',$issue_id)->where('transaction_type','=','donated')->where('status',
                 'approved')->sum('amount');
         }
         return 0;
@@ -93,6 +108,21 @@ class Fund extends Model
         }
         return 0;
     }
+
+    /**
+     * Function will return total awarded funds to task.
+     * @param $issue_id
+     * @return int
+     */
+
+    public static function getIssueAwardedFund($issue_id=''){
+        if(!empty($issue_id)){
+            return self::where('issue_id','=',$issue_id)->where('transaction_type','=','awarded')->where('status',
+                'approved')->sum('amount');
+        }
+        return 0;
+    }
+
 
     public static function getUserDonatedFund($user_id=''){
         if(!empty($user_id)){

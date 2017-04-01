@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Alerts;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Message;

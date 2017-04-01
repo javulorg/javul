@@ -108,7 +108,8 @@
                 <div class="col-xs-4 borderRT paddingTB7">
                     <label class="control-label upper" style="width: 100%;">
                         <span class="fund_icon">FUND</span>
-                        <span class="text-right pull-right"> <div class="fund_paid"><i class="fa fa-plus"></i></div></span>
+                        <span class="text-right pull-right">
+                            <a href={!! url('funds/donate/unit/'.$unitIDHashID->encode($unitObj->id)) !!}><div class="fund_paid"><i class="fa fa-plus"></i></div></a></span>
                     </label>
                 </div>
                 <div class="col-xs-8 paddingTB7" style="padding-bottom: 2px;padding-top:5px">

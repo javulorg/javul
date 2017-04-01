@@ -47,9 +47,11 @@
                                             <label class="control-label upper" style="width: 100%;">
                                                 <span class="fund_icon">FUNDS</span>
                                                 <span class="text-right pull-right">
+                                                    <a href="{!! url('funds/donate/issue/'.$issueIDHashID->encode($issueObj->id)) !!}">
                                                     <div class="fund_paid">
                                                         <i class="fa fa-plus plus"></i>
                                                     </div>
+                                                    </a>
                                                 </span>
                                             </label>
                                         </div>

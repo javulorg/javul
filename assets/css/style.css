@@ -104,11 +104,11 @@ footer .container{padding-top:15px;padding-bottom:15px;}
 .borderRT{border-right:1px solid #ddd;}
 .paddingTB7{padding-bottom: 7px;padding-top: 7px;}
 .upper{text-transform: uppercase;}
-.fund_paid{padding:0 0 4px 15px;border-radius: 25px;background-color: #3f3f3f;position: relative;top:3px;}
+.fund_paid{padding:0 0 4px 5px;border-radius: 25px;background-color: #3f3f3f;position: relative;top:3px;}
 .plus.fa{font-size: 10px;}
 .plus_text{position: relative;top:1px;}
 a .fa-plus{margin-right: 10px;}
-.fund_paid .fa{color:#fff;position: relative;left:-7px;top:1px;font-size: 10px;}
+.fund_paid .fa{color:#fff;position: relative;left:2px;top:0px;font-size: 10px;}
 .current_unit{background-color: #84b660;}
 .current_unit_heading{border-bottom-color:#84b660 !important}
 
