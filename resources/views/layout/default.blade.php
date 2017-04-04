@@ -133,7 +133,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         type: 'post',
                                         async: false,
                                         success: function (resp) {
-
+                                            $(".notification_popover").find('i').removeClass('colorOrange ');
                                         }
                                     })
                                 }

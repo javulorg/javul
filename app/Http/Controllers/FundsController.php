@@ -372,7 +372,7 @@ class FundsController extends Controller
                         // send email and notification
                         $content = 'You have donated $'.$amount.' to '.$donateTo.' '.$donateToLink;
                         $email_subject = 'You have donated $'.$amount.' to '.$donateTo.' '.$obj->name;
-                        User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=falsem,'fund_received');
+                        User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=false,'fund_received');
 
                         $donateToLink= '<a href="'.url('userprofiles/'.$hashID->encode(Auth::user()->id).'/'.strtolower(Auth::user()
                                     ->first_name.'_'.Auth::user()->last_name)).'">'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name).'</a>';

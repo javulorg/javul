@@ -550,7 +550,9 @@ class ObjectivesController extends Controller
                     $watchlistUserObj = \DB::table('my_watchlist')
                         ->join('users','my_watchlist.user_id','=','users.id')
                         ->where('my_watchlist.user_id','!=',Auth::user()->id)
-                        ->where('unit_id',$unitID)
+                        ->where(function ($query) use($objective_id,$unitID) {
+                            $query->where('objective_id',$objective_id)->orWhere('unit_id',$unitID);
+                        })
                         ->get();
 
                     $unitObj = Unit::find($unitID);

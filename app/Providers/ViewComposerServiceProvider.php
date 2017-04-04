@@ -8,6 +8,7 @@ use App\Objective;
 use App\SiteActivity;
 use App\Task;
 use App\Unit;
+use App\UserNotification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
 use Hashids\Hashids;
@@ -62,6 +63,12 @@ class ViewComposerServiceProvider extends ServiceProvider
 			Mc::putMcData();
             $question=Mc::getMcQuestion();
             $view->with('report_question',$question);
+
+            $notificationCount = 0;
+            if(auth()->check()) {
+                $notificationCount = UserNotification::where('user_id',auth()->user()->id)->where('message_read',0)->count();
+            }
+            $view->with('notificationCount',$notificationCount);
         });
 
         /*view()->composer('elements.site_activities',function($view){

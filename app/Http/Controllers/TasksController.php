@@ -885,8 +885,8 @@ class TasksController extends Controller
                     $watchlistUserObj = \DB::table('my_watchlist')
                         ->join('users','my_watchlist.user_id','=','users.id')
                         ->where('my_watchlist.user_id','!=',Auth::user()->id)
-                        ->where(function ($query) use($objective_id,$unit_id) {
-                            $query->where('objective_id',$objective_id)->orWhere('unit_id',$unit_id);
+                        ->where(function ($query) use($objective_id,$unit_id,$task_id_decoded) {
+                            $query->where('objective_id',$objective_id)->orWhere('unit_id',$unit_id)->orWhere('task_id',$task_id_decoded);
                         })
                         ->get();
 

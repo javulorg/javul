@@ -210,9 +210,9 @@ class User extends Authenticatable
                     $taskCompletedUsername = $taskCompleterObj->username;
 
                 // send email and notification
-                $content = 'Reward of $'.$taskBidder->amount.' received for Task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id)
+                $content = 'Reward of $'.$rewards.' received for Task <a href="'.url('tasks/'.$taskIDHashID->encode($task_id)
                         .'/'.$taskObj->slug).'>'.$taskObj->name.'</a>';
-                $email_subject = 'Reward of $'.$taskBidder->amount.' received for Task '.$taskObj->name;
+                $email_subject = 'Reward of $'.$rewards.' received for Task '.$taskObj->name;
                 User::SendEmailAndOnSiteAlert($content,$email_subject,[$taskCompleterObj],$onlyemail=false,'fund_received');
 
                 SiteActivity::create([
