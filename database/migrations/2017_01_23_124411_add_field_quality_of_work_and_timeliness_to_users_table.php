@@ -13,8 +13,8 @@ class AddFieldQualityOfWorkAndTimelinessToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->decimal('quality_of_work')->nullable();
-            $table->decimal('timeliness')->nullable();
+//            $table->decimal('quality_of_work')->nullable();
+//            $table->decimal('timeliness')->nullable();
         });
     }
 
