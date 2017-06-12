@@ -109,7 +109,7 @@ class AuthController extends Controller
         $toName= $data['first_name'].' '.$data['last_name'];
         $subject="Welcome to Javul.org";
 
-        \Mail::send('emails.registration', ['userObj'=> $userData ], function($message) use ($toEmail,$toName,$subject)
+        \Mail::send('emails.registration', ['userObj'=> $userData, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
             $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));

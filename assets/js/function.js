@@ -181,19 +181,22 @@ $(function(){
             "hideMethod": "fadeOut"
         };
 
-        if($.trim(type) != "" && $.trim(id) != ''){
-            $.ajax({
-                type:'get',
-                url:siteURL+'/add_to_watchlist',
-                data:{type:type,id:id},
-                dataType:'json',
-                success:function(resp){
-                    if(!resp.success)
-                        toastr['error'](resp.msg, '');
-                    else
-                        toastr['success'](resp.msg, '');
-                }
-            })
+        if(!$('#toast-container').length) {
+            if ($.trim(type) != "" && $.trim(id) != '') {
+                $.ajax({
+                    type: 'get',
+                    url: siteURL + '/add_to_watchlist',
+                    data: {type: type, id: id},
+                    dataType: 'json',
+                    success: function (resp) {
+                        if (!resp.success) {
+                            toastr['error'](resp.msg, '');
+                        } else {
+                            toastr['success'](resp.msg, '');
+                        }
+                    }
+                })
+            }
         }
     });
 
