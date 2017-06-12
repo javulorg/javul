@@ -162,6 +162,7 @@ $(function(){
 
 
     //add item to watchlist
+    var flag = false;
     $(".add_to_my_watchlist").on('click',function(){
         var type=$(this).data('type');
         var id = $(this).data('id');
@@ -181,7 +182,8 @@ $(function(){
             "hideMethod": "fadeOut"
         };
 
-        if(!$('#toast-container').length) {
+        if(!flag && !$('#toast-container').length) {
+            flag = true;
             if ($.trim(type) != "" && $.trim(id) != '') {
                 $.ajax({
                     type: 'get',
@@ -189,6 +191,7 @@ $(function(){
                     data: {type: type, id: id},
                     dataType: 'json',
                     success: function (resp) {
+                        flag = false;
                         if (!resp.success) {
                             toastr['error'](resp.msg, '');
                         } else {
