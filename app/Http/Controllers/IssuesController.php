@@ -11,6 +11,7 @@ use App\Objective;
 use App\SiteActivity;
 use App\Task;
 use App\Unit;
+use App\User;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
