@@ -203,25 +203,28 @@
                 	$.each(json['errors'],function(i,j){
                 		$("[name='"+ i +"']").after("<div class='alert alert-danger'> "+ j +" </div>");
                 	})
-                }
-                if($this.attr("id") != "form_topic_form") {
-                    var html = renderHtml(json['post']['items'],$this.serializeArray(),$(".loader"),$this.parents("li:first"),false);
-                    $(".loader"),$this.parents("li:first").append(html);
-                }
-                else{
-                    var html = renderHtml(json['post']['items'],$this.serializeArray(),$(".loader"),$(".post-placeholder"),true);
-                    $(".loader"),$(".post-placeholder").append(html);
-                }
-                if(json['success']){
-                	toastr['success'](json['success'], '');
-                    if(Number(json['post']['items'][0]['replay_id'])){
-                       $this.remove();
+                } else {
+                    if ($this.attr("id") != "form_topic_form") {
+                        var html = renderHtml(json['post']['items'], $this.serializeArray(), $(".loader"), $this.parents("li:first"), false);
+                        $(".loader"), $this.parents("li:first").append(html);
                     }
-                    $(".summernote").summernote("reset");
+                    else {
+                        var html = renderHtml(json['post']['items'], $this.serializeArray(), $(".loader"), $(".post-placeholder"), true);
+                        $(".loader"), $(".post-placeholder").append(html);
+                    }
+                    if (json['success']) {
+                        toastr['success'](json['success'], '');
+                        if (Number(json['post']['items'][0]['replay_id'])) {
+                            $this.remove();
+                        }
+                        $(".summernote").summernote("reset");
+                    }
+                    if (json['error']) {
+                        toastr['error'](json['error'], '');
+                    }
                 }
-                if(json['error']){
-                	toastr['error'](json['error'], '');
-                }
+
+                $this.find("button[type=submit]").button("reset");
             }
         });
         return false;
