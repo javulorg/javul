@@ -354,7 +354,7 @@ class WikiController extends Controller
     }
     public function edit(  Request $request ,$unit_id , $slug , $wiki_page_id = 0 )
     {
-        
+
         view()->share("wiki_page_id",$wiki_page_id);
         view()->share("unit_id",$unit_id);
         view()->share("slug",$slug);
@@ -366,13 +366,12 @@ class WikiController extends Controller
             $unit_id = $unit_id[0];
             if($request->isMethod('post')){
                 $inputData = $request->all();
-                $velidation[] = array('description'=> 'required');
+                $velidation = [];
+                $velidation['description'] = 'required';
                 if($inputData['is_wikihome'] == 0){
-                    $velidation[] = array('title'=> 'required');
+                    $velidation['title'] = 'required';
                 }
-                $validator = \Validator::make($inputData, [
-                    $velidation
-                ]);
+                $validator = \Validator::make($inputData, $velidation);
                 if ($validator->fails()){
                     return json_encode(array(
                         'errors' => $validator->getMessageBag()->toArray()
