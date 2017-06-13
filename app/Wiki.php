@@ -538,7 +538,7 @@ class Wiki extends Model
                 'issue_id'=>0,
                 'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                     .$loggedinUsername.'</a>
-                    create wiki page <a href="'.url('wiki/'.$unit_id.'/'.$wiki_page_id.'/'. $data['slug']) .'">'. $data['title'] .'</a>'
+                    created wiki page <a href="'.url('wiki/'.$unit_id.'/'.$wiki_page_id.'/'. $data['slug']) .'">'. $data['title'] .'</a>'
             ]);
         }
         
