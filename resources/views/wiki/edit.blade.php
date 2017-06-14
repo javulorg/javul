@@ -69,7 +69,7 @@
                         <input type="hidden" name="wiki_page_rev_id" value="<?=  isset($wiki_page_rev_id) ? $wiki_page_rev_id : '0' ?>">
                         {!! csrf_field() !!}
                         <div class=" col-sm-12 form-group">
-                            <input type="button" class="btn pull-left black-btn cancel-edit" value="Cancel Edit">
+                            <input type="button" class="btn pull-left black-btn cancel-edit" value="Cancel">
                             <button class="btn pull-right black-btn">Save Page</button>
                         </div>
                         <div class="clearfix"></div><br>
