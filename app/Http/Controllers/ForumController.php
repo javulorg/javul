@@ -393,7 +393,7 @@ class ForumController extends Controller
                         if(!empty($userReplyObj)) {
 
                             $content = 'User <b><a style="text-decoration:none;" href="' . url('userprofiles/' . $user_id . '/' . strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . $loggedinUsername . '</a></b>' .
-                                'replied to your comment <b><a style="text-decoration:none;" href="' . url('forum/post/' . $inputData['topic_id'] . '/' . $unitData['slug']) . '">' . $unitData['title'] . ' </a></b>';
+                                ' replied to your comment <b><a style="text-decoration:none;" href="' . url('forum/post/' . $inputData['topic_id'] . '/' . $unitData['slug']) . '">' . $unitData['title'] . ' </a></b>';
 
                             $email_subject = 'User ' . Auth::user()->first_name . ' ' .Auth::user()->last_name . ' replied to your comment under thread '.$unitData['title'];
 
