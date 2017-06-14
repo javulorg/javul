@@ -135,9 +135,11 @@
                                                     @endforeach
                                                 @endif
                                             </td>
-                                            <td><div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
-                                            ($unit->description)!!}"><span
-                                                        class="ellipsis_text">{!!trim($unit->description)!!}</span></div></td>
+                                            <td>
+                                                <div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{{ trim(strip_tags($unit->description)) }}">
+                                                    <span class="ellipsis_text">{!!trim($unit->description)!!}</span>
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @else
