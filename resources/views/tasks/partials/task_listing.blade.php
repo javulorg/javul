@@ -28,7 +28,7 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
     <td width="11%">
         @if($task->status == "approval")
             @if(\App\TaskBidder::checkBid($task->id))
-                <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)) !!}" class="btn btn-xs btn-primary">
+                <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)).'#bid_now' !!}" class="btn btn-xs btn-primary">
                     <!--<span><img src="{!! url('assets/images/bid_small.png') !!}"/></span>-->
                     Bid now
                 </a>
