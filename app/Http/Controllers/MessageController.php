@@ -73,6 +73,9 @@ class MessageController extends Controller
         if($user_id == Auth::user()->id){
             return view("errors.404");
         }
+
+        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $hashed_user_id = $userIDHashID->encode(Auth::user()->id);
         
     	if ($request->isMethod('post')) {
     		 $inputData = $request->all();
@@ -96,7 +99,7 @@ class MessageController extends Controller
 	        if($messageId){
                 // send actual message to user as per said in https://github.com/javulorg/javul/issues/4
                 $receiverObj = User::find($inputData['user_id']);
-                $content = 'User <a style="text-decoration:none;" href="' . url('userprofiles/' . Auth::user()->id . '/' .
+                $content = 'User <a style="text-decoration:none;" href="' . url('userprofiles/' . $hashed_user_id . '/' .
                         strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . Auth::user()->first_name . ' ' . Auth::user()->last_name . '</a> ' .
                     ' sent you message';
                 $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' sent you message';
