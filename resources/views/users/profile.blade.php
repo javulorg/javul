@@ -118,8 +118,8 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(!empty($taskObj))
-                                @foreach($taskObj as $task)
+                            @if(!empty($tasksObj))
+                                @foreach($tasksObj as $task)
                                     <tr>
                                         <td>
                                             <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}">
