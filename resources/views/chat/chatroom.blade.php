@@ -101,12 +101,17 @@
             showMenu(event,$(this));
         });
         function showMenu(event,$this){
+            var html = '\
+            <li><a href="'+ $this.attr("data-profile") +'" > Profile </a></li>\
+            <li><a href="{!! url("message/send") !!}/'+ $this.attr("data-id") +'" > Private Message </a></li>';
+
+            if($this.attr("data-id") == {{ Auth::user()->id }}) {
+                html = '<li><a href="'+ $this.attr("data-profile") +'" > My Profile </a></li>';
+            }
             $(".custom-menu").finish().toggle(100).css({
                 top: event.pageY + "px",
                 left: event.pageX + "px"
-            }).html('\
-            <li><a href="'+ $this.attr("data-profile") +'" > Profile </a></li>\
-            <li><a href="{!! url("message/send") !!}/'+ $this.attr("data-id") +'" > Private Message </a></li>');
+            }).html(html);
         }
         $(document).bind("mousedown", function (e) {
             if (!$(e.target).parents(".custom-menu").length > 0) {
