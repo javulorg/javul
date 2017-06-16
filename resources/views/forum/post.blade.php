@@ -227,6 +227,10 @@
                 $this.find("button[type=submit]").button("reset");
             }
         });
+
+        var replay_id = $(this).find('[name=replay_id]').val();
+        $('.tool').find('[data-replay=' + replay_id + ']').show();
+
         return false;
     });
     function loadTopic(data,$input,$placeholder){
@@ -303,6 +307,7 @@
     }
     
     $(".post-placeholder").delegate(".cancel-replay","click",function(){
+        $(this).parents(".tool").find('[data-replay]').show();
         $(this).parents("form").remove();
     });
     $(".post-placeholder").delegate(".up-down-vote","click",function(){
@@ -400,6 +405,8 @@
             ],
             height:100
         });
+
+        $(this).hide();
     });
     $(".post-placeholder").delegate(".loadmore","click",function(){
         $this = $(this);
