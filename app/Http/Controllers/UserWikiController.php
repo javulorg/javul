@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use App\TaskRatings;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
@@ -35,6 +36,7 @@ class UserWikiController extends Controller
                 $tasksObj = Task::where('user_id',$user_id)->get();
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
+                $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
                 
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
@@ -66,6 +68,7 @@ class UserWikiController extends Controller
 		                view()->share('activityPoints_forum',$activityPoints_forum);
 		                view()->share('userObj',$userObj);
 		                view()->share('unitsObj',$unitsObj);
+                        view()->share('rating_points',$rating_points);
 		                return view('users.wiki.wiki_page_history');
 	                	
 	                }
@@ -234,6 +237,7 @@ class UserWikiController extends Controller
                 $tasksObj = Task::where('user_id',$user_id)->get();
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
+                $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
                 
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
@@ -259,7 +263,6 @@ class UserWikiController extends Controller
 	                }
                	}
 
-
                 view()->share('objectivesObj',$objectivesObj);
                 view()->share('tasksObj',$tasksObj);
                 view()->share('interestObj',$interestObj);
@@ -269,6 +272,7 @@ class UserWikiController extends Controller
                 view()->share('activityPoints_forum',$activityPoints_forum);
                 view()->share('userObj',$userObj);
                 view()->share('unitsObj',$unitsObj);
+                view()->share('rating_points',$rating_points);
                 return view('users.wiki.wiki_form');
             }
         }
