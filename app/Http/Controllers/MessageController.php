@@ -41,7 +41,7 @@ class MessageController extends Controller
     	$message = Message::getMsg($filter);
         if(!empty($message['message'])){
             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
-            $user_id = $userIDHashID->encode($message['message'][0]['to']);
+            $user_id = $userIDHashID->encode($message['message'][0]['from']);
 
             $message['message'][0]['link'] = url('userprofiles/'. $user_id .'/'.strtolower($message['message'][0]['first_name'].'_'.$message['message'][0]['last_name']));
 
