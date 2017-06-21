@@ -36,7 +36,7 @@
                             ($objective->first_name.'_'.$objective->last_name))!!}">
                                     {{$objective->first_name.' '.$objective->last_name}}
                                 </a></td>
-                            <td>{{$objective->status}}</td>
+                            <td>{{ \App\Objective::objectiveStatus()[$objective->status]}}</td>
                         </tr>
                         @endforeach
                         @else

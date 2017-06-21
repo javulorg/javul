@@ -335,7 +335,7 @@ class ObjectivesController extends Controller
             if ($validator->fails())
                 return redirect()->back()->withErrors($validator)->withInput();
 
-            $status = "in-progress";
+            $status = "new";
 
             $unitID = $request->input('unit');
             $unitIDEncoded = $unitID;
@@ -519,6 +519,7 @@ class ObjectivesController extends Controller
                             'name'=>$request->input('objective_name'),
                             'comment'=>$request->input('comment'),
                             'slug'=>$slug,
+                            'status'=>$request->input('status'),
                             'description'=>$request->input('description'),
                             'parent_id'=>$parent_id
                         ]);
@@ -581,7 +582,7 @@ class ObjectivesController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Objective Updated";
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))

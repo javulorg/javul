@@ -79,7 +79,7 @@
                                         <label class="control-label upper">Status</label>
                                     </div>
                                     <div class="col-xs-8 borderLFT text-left">
-                                        <label class="control-label">In Progress</label>
+                                        <label class="control-label">{{ \App\Objective::objectiveStatus()[$objectiveObj->status] }}</label>
                                     </div>
                                 </div>
                                 @if(\Auth::check())

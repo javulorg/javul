@@ -137,7 +137,7 @@ Route::get('objectives/{objectiveid}/revisions/{revision_id}', 'ObjectivesContro
 Route::get('objectives/{objectiveid}/diff/{rev1}/{rev2}', 'ObjectivesController@diff')->name('objectives_revison_cmp');
 
 Route::any('objectives/{unitid}/add', 'ObjectivesController@create');
-Route::any('objectives/{objectiveid}/edit', 'ObjectivesController@edit');
+Route::any('objectives/{objectiveid}/edit', 'ObjectivesController@edit')->name('objectives_edit');
 Route::post('objectives/importance', 'ObjectivesController@add_importance');
 Route::get('objectives/delete_objective', 'ObjectivesController@delete_objective');
 Route::get('objectives/{unitid}/lists', 'ObjectivesController@lists');

@@ -120,18 +120,20 @@
                                 </div>
                             </div>-->
 
-                                    <div class="col-sm-4 form-group">
-                                        <label class="control-label">Status</label>
-                                        <select class="form-control" name="status">
-                                        @foreach(\App\Objective::objectiveStatus() as $index=>$status)
-                                            <option value="{{$index}}"
-                                                    @if(!empty($objectiveObj) && $objectiveObj->status == $index) selected=selected
-                                                    @elseif(empty($objectiveObj) && $index != "in-progress") disabled="disabled" @endif>
-                                                {{$status}}
-                                            </option>
-                                        @endforeach
+                                @if(Request::route()->getName() == 'objectives_edit')
+                                <div class="col-sm-4 form-group">
+                                    <label class="control-label">Status</label>
+                                    <select class="form-control" name="status">
+                                    @foreach(\App\Objective::objectiveStatus() as $index=>$status)
+                                        <option value="{{$index}}"
+                                                @if(!empty($objectiveObj) && $objectiveObj->status == $index) selected=selected
+                                                @elseif(empty($objectiveObj) && $index != "in-progress") disabled="disabled" @endif>
+                                            {{$status}}
+                                        </option>
+                                    @endforeach
                                     </select>
                                 </div>
+                                @endif
 
                                 <div class="col-sm-12 form-group">
                                     <label class="control-label">Objective Description</label>

@@ -112,7 +112,7 @@ class Objective extends Model
             'in-progress'=>'In-Progress',
             'completed'=>'Completed',
             'archived'=>'Archived',
-            'created'=>'Created'
+            'new'=>'New'
         ];
     }
 }
