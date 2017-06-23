@@ -84,7 +84,7 @@
 
             <div class="panel panel-grey panel-default">
                 <div class="panel-heading">
-                    <h4>Forum</h4>
+                    <h4><i class="fa fa-quote-right"></i> Forum</h4>
                 </div>
                 <div class="panel-body list-group" style="    padding: 10px 7px;">
                     <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
