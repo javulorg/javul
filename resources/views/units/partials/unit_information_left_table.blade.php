@@ -83,7 +83,7 @@
                     <label class="control-label upper">UNIT LOCATION</label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
-                    <label class="control-label colorLightBlue upper">
+                    <label class="control-label upper">
                         @if($unitObj->country_id != "247")
                             {{\App\City::getName($unitObj->city_id)}}
                         @else
@@ -99,7 +99,7 @@
                     <label class="control-label upper">UNIT CREDIBILITY</label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
-                    <label class="control-label colorLightBlue upper">{{$unitObj->credibility}}</label>
+                    <label class="control-label upper">{{$unitObj->credibility}}</label>
                 </div>
             </div>
         </div>
