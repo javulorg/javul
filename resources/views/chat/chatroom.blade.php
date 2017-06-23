@@ -63,9 +63,9 @@
                     <div class="write  ">
                         <textarea id="emoji" class="hide"   ></textarea>
                         <div id="container_emoji" class="hide"  ></div>
-                        <input type="text"  />
-                        <a href="javascript:;"  class="write-link smiley"></a>
-                        <a href="javascript:;" class="write-link send"></a>
+                        <input id="chat-message" type="text"  />
+                        <a href="javascript:;"  class="write-link smiley"><i class="fa fa-smile-o" aria-hidden="true"></i></a>
+                        <a id="send-message" href="javascript:;" class="write-link send disabled"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></a>
                         <div class="emoji">
                             <?php foreach ($smily as $key => $value) { ?>
                                 <?= $value ?>
@@ -91,7 +91,14 @@
 @section('page-scripts')
 <script type="text/javascript"></script>
 <script type="text/javascript">
-       
+        $('#chat-message').on('keyup', function() {
+            if($(this).val() != '') {
+                $('#send-message').removeClass('disabled');
+            } else {
+                $('#send-message').addClass('disabled');
+            }
+        });
+
         $(".chat-room").delegate('[contextmenu]',"contextmenu", function (event) {
             event.preventDefault();
             showMenu(event,$(this));
