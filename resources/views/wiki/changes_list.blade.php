@@ -52,7 +52,7 @@
                             <tbody>
                                 <?php if(empty($changes['changes'])){ ?>
                                     <tr>
-                                        <td colspan="100%" class="text-center"> <h4>No any changes Created yet..  </h4> </td>
+                                        <td colspan="5" class="text-center"> <h4>No any changes Created yet..  </h4> </td>
                                     </tr>
                                 <?php  } ?>
                                 <?php foreach ($changes['changes'] as $key => $page) { ?>
