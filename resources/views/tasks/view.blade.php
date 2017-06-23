@@ -50,7 +50,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-7 featured_heading" style="min-height: 200px">
+                            <div class="col-xs-7 featured_heading" style="min-height: 233px">
                                 {!! $taskObj->description !!}
                             </div>
                             <div class="col-xs-5 featured_heading text-right colorLightBlue" style="margin-top:0px;padding-top:0px;
@@ -96,12 +96,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4">
-                                        <label class="control-label upper" style="width: 100%;">
-                                            <span class="fund_icon">FUNDS</span>
-                                            <span class="text-right pull-right">
-                                                <a href="{!! url('funds/donate/task/'.$taskIDHashID->encode($taskObj->id))!!}"><div class="fund_paid"><i class="fa fa-plus plus"></i></div></a>
-                                            </span>
-                                        </label>
+                                        {{--<label class="control-label upper" style="width: 100%;">--}}
+                                            {{--<span class="fund_icon">FUNDS</span>--}}
+                                            {{--<span class="text-right pull-right">--}}
+                                                {{--<a href="{!! url('funds/donate/task/'.$taskIDHashID->encode($taskObj->id))!!}"><div class="fund_paid"><i class="fa fa-plus plus"></i></div></a>--}}
+                                            {{--</span>--}}
+                                        {{--</label>--}}
                                     </div>
                                     <div class="col-xs-8 text-left borderLFT" style="padding-top:3px; ">
                                         <div>
