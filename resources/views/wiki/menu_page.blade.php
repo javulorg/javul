@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="panel-body list-group">
-                    <div class="col-md-12 wiki-page-desc">{!! $wiki_page['page_content'] !!}</div>
+                    <div class="col-md-12 wiki-page-desc">@if($wiki_page['page_content'] === 'Edit these links <br/>') <a href="{!! url('wiki/edit') !!}/{!! $unit_id !!}/{!! $slug !!}/{!! $wiki_page['wiki_page_id'] !!}"><i class="fa fa-pencil"></i></a> @else {!! $wiki_page['page_content'] !!} @endif</div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="clearfix"></div>
