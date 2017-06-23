@@ -67,7 +67,7 @@
                                     <a href="#" data-url="{{$tasks->url($tasks->currentPage()+1) }}" class="btn more-black-btn more-tasks"
                                        id="add_unit_btn"
                                        type="button">
-                                        <span class="more_dots">...</span> MORE TASKS
+                                        MORE TASKS <span class="more_dots">...</span>
                                     </a>
                                 @endif
                             </td>

@@ -33,7 +33,7 @@
             <a href="#" data-url="{{$objectives->url($objectives->currentPage()+1) }}" data-from_page="{{$from_page}}"
                @if(!empty($unit_id)) data-unit_id="{{$unitIDHashID->encode($unit_id)}}" @endif
                class="btn more-black-btn more-objectives" type="button">
-                <span class="more_dots">...</span> MORE OBJECTIVES
+                MORE OBJECTIVES <span class="more_dots">...</span>
             </a>
         @endif
         </td>

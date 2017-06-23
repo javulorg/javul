@@ -61,7 +61,7 @@
                                         <a href="#" data-url="{{$issues->url($issues->currentPage()+1) }}" class="btn more-black-btn
                                         more-issues" id="add_unit_btn"
                                            type="button">
-                                            <span class="more_dots">...</span> MORE ISSUES
+                                            MORE ISSUES <span class="more_dots">...</span>
                                         </a>
                                     @endif
                                 </td>

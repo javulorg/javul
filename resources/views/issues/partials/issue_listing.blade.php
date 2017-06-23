@@ -68,7 +68,7 @@
                     @if($issuesObj->lastPage() > 1 && $issuesObj->lastPage() != $issuesObj->currentPage())
                         <a href="#" data-url="{{$issuesObj->url($issuesObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" class="btn
                                     more-black-btn more-objectives" data-from_page="unit_view" type="button">
-                            <span class="more_dots">...</span> MORE ISSUES
+                            MORE ISSUES <span class="more_dots">...</span>
                         </a>
                     @endif
                 </td>

@@ -30,7 +30,7 @@
             @if($units->lastPage() > 1 && $units->lastPage() != $units->currentPage())
                 <a href="#" data-url="{{$units->url($units->currentPage()+1) }}" class="btn
                                     more-black-btn more-units" type="button">
-                    <span class="more_dots">...</span> MORE UNITS
+                    MORE UNITS <span class="more_dots">...</span>
                 </a>
             @endif
         </td>

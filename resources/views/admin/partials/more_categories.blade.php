@@ -24,7 +24,7 @@
             @if($categoryObj->lastPage() > 1 && $categoryObj->lastPage() != $categoryObj->currentPage())
                 <a href="#" data-url="{{$categoryObj->url($jobSkillObj->currentPage()+1) }}"
                    class="btn more-black-btn more-category" type="button">
-                    <span class="more_dots">...</span> MORE CATEGORIES
+                    MORE CATEGORIES <span class="more_dots">...</span>
                 </a>
             @endif
         </td>

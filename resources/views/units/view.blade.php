@@ -95,7 +95,7 @@
                                 @if($objectivesObj->lastPage() > 1 && $objectivesObj->lastPage() != $objectivesObj->currentPage())
                                     <a href="#" data-url="{{$objectivesObj->url($objectivesObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unitObj->id)}}" class="btn
                                     more-black-btn more-objectives" data-from_page="unit_view" type="button">
-                                        <span class="more_dots">...</span> MORE OBJECTIVES
+                                        MORE OBJECTIVES <span class="more_dots">...</span>
                                     </a>
                                 @endif
                             </td>
@@ -160,7 +160,7 @@
                                     <a href="#" data-url="{{$taskObj->url($taskObj->currentPage()+1) }}" data-unit_id="{{$unitIDHashID->encode($unitObj->id)}}"
                                        class="btn
                                     more-black-btn more-tasks" data-from_page="unit_view" type="button">
-                                        <span class="more_dots">...</span> MORE TASKS
+                                        MORE TASKS <span class="more_dots">...</span>
                                     </a>
                                 @endif
                             </td>

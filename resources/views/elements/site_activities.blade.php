@@ -59,7 +59,7 @@
                     @else more_unit_site_activity_btn @endif"
                            data-url="{{$site_activity->url($site_activity->currentPage()+1) }}" @if($site_activity_text == 'Unit Activity Log')
                            data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" @endif
-                           type="button"><span class="more_dots">...</span>MORE ACTIVITY
+                           type="button">MORE ACTIVITY <span class="more_dots">...</span>
                         </a>
                     </div>
                 @endif
@@ -110,7 +110,7 @@
                     @else more_unit_site_activity_btn @endif"
                    data-url="{{$site_activity->url($site_activity->currentPage()+1) }}" @if($site_activity_text == 'Unit Activity Log')
                    data-unit_id="{{$unitIDHashID->encode($unit_activity_id)}}" @else data-from_page="global" @endif
-                   type="button"><span class="more_dots">...</span>MORE ACTIVITY
+                   type="button">MORE ACTIVITY <span class="more_dots">...</span>
                 </a>
             </div>
         @endif

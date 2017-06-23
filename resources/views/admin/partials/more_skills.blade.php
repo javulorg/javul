@@ -26,7 +26,7 @@
             @if($jobSkillObj->lastPage() > 1 && $jobSkillObj->lastPage() != $jobSkillObj->currentPage())
                 <a href="#" data-url="{{$jobSkillObj->url($jobSkillObj->currentPage()+1) }}"
                    class="btn more-black-btn more-skills" type="button">
-                    <span class="more_dots">...</span> MORE SKILLs
+                    MORE SKILLS <span class="more_dots">...</span>
                 </a>
             @endif
         </td>

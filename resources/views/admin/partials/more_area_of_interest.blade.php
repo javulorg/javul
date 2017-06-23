@@ -26,7 +26,7 @@
             @if($areaOfInterestObj->lastPage() > 1 && $areaOfInterestObj->lastPage() != $areaOfInterestObj->currentPage())
                 <a href="#" data-url="{{$areaOfInterestObj->url($areaOfInterestObj->currentPage()+1) }}"
                    class="btn more-black-btn more-area-of-interest" type="button">
-                    <span class="more_dots">...</span> MORE AREA OF INTEREST
+                    MORE AREA OF INTEREST <span class="more_dots">...</span>
                 </a>
             @endif
         </td>

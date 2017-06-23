@@ -76,7 +76,7 @@
                        @if(!empty($objective_id)) data-objective_id="{{$objectiveIDHashID->encode($objective_id)}}" @endif
                        @if(!empty($unit_id)) data-unit_id="{{$unitIDHashID->encode($unit_id)}}" @endif
                        class="btn more-black-btn more-tasks" type="button">
-                        <span class="more_dots">...</span> MORE TASKS
+                        MORE TASKS <span class="more_dots">...</span>
                     </a>
                 @endif
             @endif

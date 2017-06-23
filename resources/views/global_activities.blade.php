@@ -71,7 +71,7 @@
                                     <div class="list-group-item text-right more-btn">
                                         <a href="#"class="btn black-btn more_site_activity_btn" data-from_page='global'
                                            data-url="{{$site_activity->url($site_activity->currentPage()+1) }}"
-                                           type="button"><span class="more_dots">...</span>MORE ACTIVITY
+                                           type="button">MORE ACTIVITY <span class="more_dots">...</span>
                                         </a>
                                     </div>
                                 @else

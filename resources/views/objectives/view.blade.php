@@ -156,7 +156,7 @@
                                     <a href="#" data-url="{{$objectiveObj->tasks->url($objectiveObj->tasks->currentPage()+1) }}"
                                        data-objective_id="{{$objectiveIDHashID->encode($objectiveObj->id)}}" class="btn
                                     more-black-btn more-tasks" data-from_page="unit_view" type="button">
-                                        <span class="more_dots">...</span> MORE TASKS
+                                        MORE TASKS <span class="more_dots">...</span>
                                     </a>
                                 @endif
                             </td>
