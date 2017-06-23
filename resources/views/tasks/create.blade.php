@@ -207,11 +207,16 @@
                                 </div>-->
                                 <div class="col-sm-4 form-group">
                                     <label class="control-label">Compensation</label>
-                                    <div class="input-icon right">
-                                        <i class="fa"></i>
-                                        <input type="text" name="compensation" value="{{ (!empty($taskObj))? $taskObj->compensation : old('compensation') }}"
-                                               class="form-control onlyDigits"
-                                               placeholder="Compensation"/>
+                                    <div class="input-group">
+                                        <div class="input-icon right">
+                                            <i class="fa"></i>
+                                            <input type="text" name="compensation" value="{{ (!empty($taskObj))? $taskObj->compensation : old('compensation') }}"
+                                                   class="form-control border-radius-0 onlyDigits"
+                                                   placeholder="Compensation"/>
+                                        </div>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-usd"></span>
+                                        </span>
                                     </div>
                                 </div>
                                 @if(!empty($taskObj))
