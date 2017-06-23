@@ -188,7 +188,7 @@ class ForumController extends Controller
         ]);
         if ($validator->fails()){
             return json_encode(array(
-                'error' => 'something wrong try again'
+                'error' => 'Something wrong try again'
             ), 200);
         }
         $forumID =  Forum::checkTopic(array(
@@ -233,7 +233,7 @@ class ForumController extends Controller
             }
             else
             {
-                $json['erorr'] = "something wrong try again..";
+                $json['error'] = "Something wrong try again..";
             }
         }
         else
@@ -249,16 +249,16 @@ class ForumController extends Controller
             );
             $commmentId = Forum::postSubmit($commmentData);
             if($commmentId){
-                $json['success'] = true;
+                $json['success'] = 'Comment submitted';
             }
             else
             {
-                $json['erorr'] = "something wrong try again..";
+                $json['error'] = "Something wrong try again..";
             }
         }
         else
         {
-            $json['erorr'] = "something wrong try again..";
+            $json['error'] = "Something wrong try again..";
         }
         
         echo json_encode($json);die;
