@@ -113,6 +113,7 @@ Route::get('users/{slug}/{page_id}/wiki/{page_slug}', 'UserWikiController@view')
 
 // unit controller route
 Route::any('units/add', 'UnitsController@create');
+Route::get('units/category={type}', 'UnitsController@categoryView');
 Route::get('units/{unitid}/revisions', 'UnitsController@revison')->name('unit_revison');
 Route::get('units/{unitid}/revisions/{revision_id}', 'UnitsController@revisonview')->name('unit_revison_view');
 Route::get('units/{unitid}/diff/{rev1}/{rev2}', 'UnitsController@diff')->name('unit_revison_cmp');

@@ -46,7 +46,7 @@
                                                         <select class="form-control" name="unit_category[]" id="unit_category" multiple="multiple">
                                                             @if(count($unit_category_arr) > 0)
                                                                 @foreach($unit_category_arr as $id=>$val)
-                                                                    <option value="{{$id}}" @if(!empty($edit_unit_category) && in_array($id,$edit_unit_category)) selected=selected @endif>{{$val}}</option>
+                                                                    <option @if(isset($category_search) && $category_search->id == $id) selected @endif value="{{$id}}" @if(!empty($edit_unit_category) && in_array($id,$edit_unit_category)) selected=selected @endif>{{$val}}</option>
                                                                 @endforeach
                                                             @endif
                                                         </select>
@@ -128,7 +128,7 @@
                                             <td>
                                                 @if(count($category_ids) > 0 )
                                                     @foreach($category_ids as $index=>$category)
-                                                        <a href="{!! url('units/category/'.$unitCategoryIDHashID->encode($category)) !!}">{{$category_names[$index]}}</a>
+                                                        <a href="{!! url('units/category='.strtolower($category_names[$index])) !!}">{{$category_names[$index]}}</a>
                                                         @if(count($category_ids) > 1 && $index != count($category_ids) -1)
                                                             <span>&#44;</span>
                                                         @endif

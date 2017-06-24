@@ -165,7 +165,7 @@ class UnitsController extends Controller
     }
 
 
-    public function index(Request $request){
+    public function index(Request $request, $category_search = false) {
         $msg_flag = false;
         $msg_val = '';
         $msg_type = '';
@@ -180,7 +180,11 @@ class UnitsController extends Controller
         view()->share('msg_type',$msg_type);
 
         // get all units for listing
-        $units = Unit::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+        if($category_search) {
+            $units = Unit::where('category_id', $category_search->id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+        } else {
+            $units = Unit::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+        }
 
         view()->share('units',$units );
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
@@ -192,6 +196,10 @@ class UnitsController extends Controller
 
         $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
         view()->share('unit_category_arr',$unit_category_arr);
+
+        if($category_search) {
+            view()->share('category_search', $category_search);
+        }
 
         return view('units.units');
     }
@@ -942,5 +950,12 @@ class UnitsController extends Controller
     public function show()
     {
 
+    }
+
+    public function categoryView(Request $request, $type)
+    {
+        $category = UnitCategory::where('name', $type)->first();
+
+        return $this->index($request, $category);
     }
 }
