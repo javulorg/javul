@@ -181,7 +181,7 @@ class UnitsController extends Controller
 
         // get all units for listing
         if($category_search) {
-            $units = Unit::where('category_id', $category_search->id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+            $units = Unit::whereRaw('FIND_IN_SET(?, category_id)', [$category_search->id])->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
         } else {
             $units = Unit::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
         }
