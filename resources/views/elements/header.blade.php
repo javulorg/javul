@@ -30,7 +30,7 @@
                 @else
                     <li class="top_menu_li">
                         <a href="#" data-toggle="popover" class="notification_popover">
-                            Alerts <i class="fa fa-bell @if($notificationCount > 0) colorOrange @endif" aria-hidden="true"></i>
+                            Alerts <i id="alerts-notification" class="fa fa-bell @if($notificationCount > 0) colorOrange @endif" aria-hidden="true"></i>
                         </a>
                     </li>
                     <li class="top_menu_separator">&nbsp;|&nbsp;</li>

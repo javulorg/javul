@@ -207,6 +207,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         success:function(json){
                             if(parseInt( json['count'] ) > 0){
                                 $("#unread-message").html(json['count']).fadeIn();
+                                $('#alerts-notification').addClass('colorOrange');
                             }
                             else
                             {
