@@ -30,7 +30,7 @@ class UnitsController extends Controller
 {
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view','get_units_paginate','search_by_category','search_units','get_state',
-            'get_city']]);
+            'get_city', 'categoryView']]);
         view()->share('site_activity_text','Unit Activity Log');
     }
 
