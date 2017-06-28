@@ -16,6 +16,8 @@ return [
     'env' => env('APP_ENV', 'production'),
     'encode_chars'=>'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
 	'support_email'=>'aadhyatechnologies34@gmail.com',
+    'notification_email'=>'notifications@javul.org',
+    'notification_reply_to' => 'no-reply@javul.org',
     'site_name'=>'Javul.org',
 	'site_activity_page_limit'=>5,
 	'global_site_activity_page'=>20,

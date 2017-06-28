@@ -428,8 +428,9 @@ class User extends Authenticatable
                         $subject = $email_subject;
 
                         \Mail::send('emails.alerts_email', ['userObj' => Auth::user(), 'content'=>$content,'report_concern'=>false], function($message) use($toEmail,$toName,$subject) {
+                            $message->replyTo(config('app.notification_reply_to'));
                             $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                            $message->from(config('app.notification_email'), config('app.site_name'));
                         });
                     }
                 }
