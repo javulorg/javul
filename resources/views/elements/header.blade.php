@@ -103,7 +103,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{!! url('') !!}" style="margin-top:5px;color:#3f3f3f; ">
+            <a class="navbar-brand" href="{!! url('') !!}">
                 <img class="logo" src="{!! url('assets/images/logo.png') !!}" />JAVUL
             </a>
         </div>

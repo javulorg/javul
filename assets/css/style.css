@@ -3,11 +3,15 @@ body, h1, h2, h3, h4, h5, h6{
     font-family: "Roboto",sans-serif;
 }
 .navbar-brand {
-    padding: 5px;
+    padding: 3px;
+    height: 61px;
+    margin-top:-4px;
+    margin-bottom: 5px;
+    color:#3f3f3f;
 }
 .navbar-brand>img {
     height: 100%;
-    padding: 5px;
+    margin: 5px 10px 5px 5px;
     width: auto;
     display:inline; 
 }
@@ -85,7 +89,7 @@ footer .container{padding-top:15px;padding-bottom:15px;}
 .obj_info_div .row:first-child{border-bottom:1px solid #ddd;}
 .obj_info_div .row:first-child .col-xs-4:first-child{padding-top:10px;padding-bottom: 10px}
 
-.search-navbar{width: 46%;}
+.search-navbar{width: 44%;}
 .search_div_main{line-height:0px;display:block;position:relative;vertical-align:middle;width: 100%}
 .search_div_main #search_box{border-radius: 0px;}
 .search_div_main .input-group-btn,.search_div_main .input-group-btn .btn{border-radius: 0px;border-left: 0px;}
