@@ -53,8 +53,8 @@ class ForumController extends Controller
     			foreach ($topics as $keyTop => $valueTop) {
 	    			foreach ($valueTop as $key => $value) {
 	                    $user_id = $userIDHashID->encode($value->user_id);
-	                    $lastReplay = substr($value->lastReplay, 0, strpos($value->lastReplay, ':'));
-	                    $reuser_id = $userIDHashID->encode(substr($value->lastReplay,  (strpos($value->lastReplay, ':') + 1) ));
+	                    $lastReply = substr($value->lastReply, 0, strpos($value->lastReply, ':'));
+	                    $reuser_id = $userIDHashID->encode(substr($value->lastReply,  (strpos($value->lastReply, ':') + 1) ));
 	    				$allTopics[$keyTop][] = array(
 		    				'topic_id' => $value->topic_id,
 				            'title' => $value->title,
@@ -65,10 +65,10 @@ class ForumController extends Controller
 				            'last_name' => $value->last_name ,
 				            'created_time' => Carbon::createFromFormat('Y-m-d H:i:s', $value->created_time)->diffForHumans(),
 	                        'link_user' => url('userprofiles/'. $user_id .'/'.strtolower($value->first_name.'_'.$value->last_name)),
-	                        'link_replay' => url('userprofiles/'. $reuser_id .'/'.str_replace(' ', '_', $lastReplay)),
+	                        'link_reply' => url('userprofiles/'. $reuser_id .'/'.str_replace(' ', '_', $lastReply)),
 	                        'post' => $value->post,
 	                        'updownstatus' => $value->updownstatus,
-	                        'lastReplay' => substr($value->lastReplay, 0, strpos($value->lastReplay, ':')),
+	                        'lastReply' => substr($value->lastReply, 0, strpos($value->lastReply, ':')),
 				            'votecount' => (int)$value->votecount,
 				        );
 	    			}
@@ -126,8 +126,8 @@ class ForumController extends Controller
                 $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
     			foreach ($topics->items() as $key => $value) {
                     $user_id = $userIDHashID->encode($value->user_id);
-                    $lastReplay = substr($value->lastReplay, 0, strpos($value->lastReplay, ':'));
-                    $reuser_id = $userIDHashID->encode(substr($value->lastReplay,  (strpos($value->lastReplay, ':') + 1) ));
+                    $lastReply = substr($value->lastReply, 0, strpos($value->lastReply, ':'));
+                    $reuser_id = $userIDHashID->encode(substr($value->lastReply,  (strpos($value->lastReply, ':') + 1) ));
     				$allTopics[] = array(
 	    				'topic_id' => $value->topic_id,
 			            'title' => $value->title,
@@ -138,10 +138,10 @@ class ForumController extends Controller
 			            'last_name' => $value->last_name ,
 			            'created_time' => Carbon::createFromFormat('Y-m-d H:i:s', $value->created_time)->diffForHumans(),
                         'link_user' => url('userprofiles/'. $user_id .'/'.strtolower($value->first_name.'_'.$value->last_name)),
-                        'link_replay' => url('userprofiles/'. $reuser_id .'/'.str_replace(' ', '_', $lastReplay)),
+                        'link_reply' => url('userprofiles/'. $reuser_id .'/'.str_replace(' ', '_', $lastReply)),
                         'post' => $value->post,
                         'updownstatus' => $value->updownstatus,
-                        'lastReplay' => substr($value->lastReplay, 0, strpos($value->lastReplay, ':')),
+                        'lastReply' => substr($value->lastReply, 0, strpos($value->lastReply, ':')),
 			            'votecount' => (int)$value->votecount,
 			        );
     			}
@@ -245,7 +245,7 @@ class ForumController extends Controller
             $commmentData = array(
                 'post' => $inputData['desc'],
                 'topic_id' => $forumID,
-                'replay_id' => 0,
+                'reply_id' => 0,
             );
             $commmentId = Forum::postSubmit($commmentData);
             if($commmentId){
@@ -325,7 +325,7 @@ class ForumController extends Controller
         if($postId){
             $json['success'] = "Post created successfully";
             $filter = array(
-                'parent' => $inputData['replay_id'],
+                'parent' => $inputData['reply_id'],
                 'page' => 0,
                 'limit' => 15,
                 'postId' => $postId,
@@ -350,7 +350,7 @@ class ForumController extends Controller
                 if(!empty($unitData['username']))
                     $unitUsername = $unitData['username'];
 
-                if($inputData['replay_id'] > 0){
+                if($inputData['reply_id'] > 0){
                     $fromuser_id = $userIDHashID->encode($unitData['user_id']);
                     $commment = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .$loggedinUsername.'</a>
                      replied to <a href="'.url('userprofiles/'.$fromuser_id.'/'.strtolower($unitData['first_name'].'_'.$unitData['last_name'])).'">' .$unitUsername.'</a>
@@ -387,9 +387,9 @@ class ForumController extends Controller
                 ]);
 
                 if(Auth::user()->id == $unitData['user_id']){
-                    if($inputData['replay_id'] > 0){
+                    if($inputData['reply_id'] > 0){
 
-                        $userReplyObj = Forum::getUserOfReply($inputData['replay_id']);
+                        $userReplyObj = Forum::getUserOfReply($inputData['reply_id']);
                         if(!empty($userReplyObj)) {
 
                             $content = 'User <b><a style="text-decoration:none;" href="' . url('userprofiles/' . $user_id . '/' . strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . $loggedinUsername . '</a></b>' .

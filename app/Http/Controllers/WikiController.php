@@ -366,12 +366,12 @@ class WikiController extends Controller
             $unit_id = $unit_id[0];
             if($request->isMethod('post')){
                 $inputData = $request->all();
-                $velidation = [];
-                $velidation['description'] = 'required';
+                $validation = [];
+                $validation['description'] = 'required';
                 if($inputData['is_wikihome'] == 0){
-                    $velidation['title'] = 'required';
+                    $validation['title'] = 'required';
                 }
-                $validator = \Validator::make($inputData, $velidation);
+                $validator = \Validator::make($inputData, $validation);
                 if ($validator->fails()){
                     return json_encode(array(
                         'errors' => $validator->getMessageBag()->toArray()

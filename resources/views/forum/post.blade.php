@@ -76,7 +76,7 @@
                             <div class="form-group">
                                 <textarea class="form-control summernote" name="post"></textarea>
                             </div>
-                            <input type="hidden" name="replay_id" value="0">
+                            <input type="hidden" name="reply_id" value="0">
                             <input type="hidden" name="topic_id" value="{!! $topic_id !!}">
  
                             <div class="col-sm-12 form-group">
@@ -214,7 +214,7 @@
                     }
                     if (json['success']) {
                         toastr['success'](json['success'], '');
-                        if (Number(json['post']['items'][0]['replay_id'])) {
+                        if (Number(json['post']['items'][0]['reply_id'])) {
                             $this.remove();
                         }
                         $(".summernote").summernote("reset");
@@ -228,8 +228,8 @@
             }
         });
 
-        var replay_id = $(this).find('[name=replay_id]').val();
-        $('.tool').find('[data-replay=' + replay_id + ']').show();
+        var reply_id = $(this).find('[name=reply_id]').val();
+        $('.tool').find('[data-reply=' + reply_id + ']').show();
 
         return false;
     });
@@ -279,10 +279,10 @@
                     html += '    <div class="post-body">';
                     html +=          j['post'];
                     html += '       <div class="tool">';
-                    html += '           <a href="javascript:void(0)" data-replay="'+ j['post_id'] +'" > Reply </a>';
+                    html += '           <a href="javascript:void(0)" data-reply="'+ j['post_id'] +'" > Reply </a>';
                     html += '       </div>';
                     html += '    </div>';
-                    if(j['replay']){
+                    if(j['reply']){
                         html += renderHtml(j['child']['items'],data,$input,$placeholder,IsPrepend);
                     }
                     html += '</li>';
@@ -306,8 +306,8 @@
         return html;
     }
     
-    $(".post-placeholder").delegate(".cancel-replay","click",function(){
-        $(this).parents(".tool").find('[data-replay]').show();
+    $(".post-placeholder").delegate(".cancel-reply","click",function(){
+        $(this).parents(".tool").find('[data-reply]').show();
         $(this).parents("form").remove();
     });
     $(".post-placeholder").delegate(".up-down-vote","click",function(){
@@ -372,27 +372,27 @@
             }
         });
     });
-    $(".post-placeholder").delegate("[data-replay]","click",function(){
+    $(".post-placeholder").delegate("[data-reply]","click",function(){
         $this = $(this);
-        var id  = $this.attr("data-replay");
+        var id  = $this.attr("data-reply");
         html =  '';
-        html += '<form role="form" class="post-form" method="post" id="replay-'+ id +'" enctype="multipart/form-data">';
+        html += '<form role="form" class="post-form" method="post" id="reply-'+ id +'" enctype="multipart/form-data">';
         html += '    {!! csrf_field() !!}';
         html += '    ';
         html += '    <div class="form-group">';
         html += '        <textarea class="form-control summernote" name="post"></textarea>';
         html += '    </div>';
         html += '    <input type="hidden" name="topic_id" value="{!! $topic_id !!}">';
-        html += '    <input type="hidden" name="replay_id" value="'+ id +'">';
+        html += '    <input type="hidden" name="reply_id" value="'+ id +'">';
         html += '    <div class="pull-right form-group">';
         html += '        <button type="submit" class="btn black-btn">Submit Reply</button>';
-        html += '        <button type="button" class="btn black-btn cancel-replay">Cancel</button>';
+        html += '        <button type="button" class="btn black-btn cancel-reply">Cancel</button>';
         html += '    </div>';
         html += '    <div class="clearfix"></div>';
         html += '</form>';
-        $("#replay-" + id).remove();
+        $("#reply-" + id).remove();
         $this.before(html);
-        $("#replay-" + id + " .summernote" ).summernote({
+        $("#reply-" + id + " .summernote" ).summernote({
             toolbar: [
                 ['style', ['bold', 'italic', 'underline']],
                 ['font', []],

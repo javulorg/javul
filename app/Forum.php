@@ -27,7 +27,7 @@ class Forum extends Model
     					"users.last_name",
                         DB::raw("(SELECT count(*) FROM forum_post as temp WHERE forum_topic.topic_id=temp.topic_id ) as post"),
                         DB::raw("(SELECT sum(value) FROM forum_topic_updown as tempud WHERE tempud.topic_id = forum_topic.topic_id AND tempud.user_id = ". Auth::user()->id ." ) as votecount"),
-						DB::raw("(SELECT CONCAT(users.first_name, ' ' ,users.last_name,':',id) FROM users WHERE users.id = (SELECT user_id FROM forum_post as temp_forum_post WHERE temp_forum_post.topic_id =  forum_topic.topic_id ORDER BY post_id DESC LIMIT 1  ) ) as lastReplay"),
+						DB::raw("(SELECT CONCAT(users.first_name, ' ' ,users.last_name,':',id) FROM users WHERE users.id = (SELECT user_id FROM forum_post as temp_forum_post WHERE temp_forum_post.topic_id =  forum_topic.topic_id ORDER BY post_id DESC LIMIT 1  ) ) as lastReply"),
                         
     				])
                     ->join('users', 'users.id', '=', 'forum_topic.user_id')
@@ -130,12 +130,12 @@ class Forum extends Model
             $extraWhere[] = array("forum_post.topic_id","=",$filter['topic_id']);
         }
         if(isset($filter['parent'])){
-            $extraWhere[] = array("forum_post.replay_id","=",$filter['parent']);
+            $extraWhere[] = array("forum_post.reply_id","=",$filter['parent']);
         }
 
     	$topics = DB::table("forum_post")
     				->select(["forum_ideapoint.value as ideapoint","forum_updown.value as updown","forum_post.*","users.first_name","users.last_name",
-    					DB::raw("(SELECT count(*) FROM forum_post as temp WHERE forum_post.post_id=temp.replay_id ) as replay"),
+    					DB::raw("(SELECT count(*) FROM forum_post as temp WHERE forum_post.post_id=temp.reply_id ) as reply"),
     					DB::raw("(SELECT count(*) FROM forum_ideapoint as tempip WHERE forum_post.post_id=tempip.post_id ) as ideascore"),
     					DB::raw("IFNULL((SELECT sum(value) FROM forum_updown as tempfup WHERE  tempfup.post_id = forum_post.post_id ),0) as updownpoint")
     				])
@@ -176,14 +176,14 @@ class Forum extends Model
                 'modify_time'   => $post->modify_time,
                 'first_name'    => $post->first_name,
                 'last_name'     => $post->last_name,
-                'replay'        => $post->replay,
+                'reply'        => $post->reply,
                 'updown'        => $post->updown,
                 'updownpoint'   => $post->updownpoint,
-                'replay_id'     => $post->replay_id,
+                'reply_id'     => $post->reply_id,
                 'ideapoint'     => $post->ideapoint,
                 'ideascore'     => $post->ideascore,
                 'link'          => url('userprofiles/'. $user_id .'/'.strtolower($post->first_name.'_'.$post->last_name)),
-                'child' =>   isset($filter['noChild']) ? '' : ($post->replay ? Forum::getPost($filter,true) : array()),
+                'child' =>   isset($filter['noChild']) ? '' : ($post->reply ? Forum::getPost($filter,true) : array()),
             );
         }
     	
@@ -191,7 +191,7 @@ class Forum extends Model
     }
     public static function getPostCount($filter){
     	return  DB::table("forum_post")
-    				->where("forum_post.replay_id","=",$filter['parent'])
+    				->where("forum_post.reply_id","=",$filter['parent'])
     				->where("forum_post.topic_id","=",$filter['topic_id'])
     				->count();
     }
@@ -230,7 +230,7 @@ class Forum extends Model
 		    'post' => $data['post'],
 		    'user_id' => Auth::user()->id,
 		    'topic_id' => $data['topic_id'],
-		    'replay_id' => $data['replay_id'],
+		    'reply_id' => $data['reply_id'],
 		    'created_time' => date("Y-m-d H:i:s"),
 		    'modify_time' => date("Y-m-d H:i:s"),
     	);
@@ -349,11 +349,11 @@ class Forum extends Model
     	return true;
     }
 
-    public static function getUserOfReply($replay_id){
+    public static function getUserOfReply($reply_id){
         $data =  DB::table("forum_post")
             ->select(['users.first_name','users.last_name','users.email','users.id'])
             ->join("users", "users.id" ,"=", "forum_post.user_id" )
-            ->where("forum_post.post_id","=",$replay_id)
+            ->where("forum_post.post_id","=",$reply_id)
             ->get();
         if(!empty($data)){
             return $data[0];

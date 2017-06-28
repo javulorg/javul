@@ -285,11 +285,11 @@ class UserWikiController extends Controller
     		$wikipage = UserWiki::find($inputData['id']);
     		if($wikipage->user_id == Auth::user()->id ){
                 if($wikipage->page_type == 1){
-        			$velidation_rule['description'] = 'required';
-    		    	$velidation_rule['title'] = 'required';
-    		    	$velidation_rule['id'] = 'required';
+        			$validation_rule['description'] = 'required';
+    		    	$validation_rule['title'] = 'required';
+    		    	$validation_rule['id'] = 'required';
 
-    		    	$validator = \Validator::make($inputData, $velidation_rule );
+    		    	$validator = \Validator::make($inputData, $validation_rule );
     		    	if ($validator->fails()){
     		            return json_encode(array(
     			            'errors' => $validator->getMessageBag()->toArray()
@@ -323,9 +323,9 @@ class UserWikiController extends Controller
                     $json['location'] = route("user_wiki_view",[$inputData['slug'],$page_id,$wikipage->slug]);
                 }
                 else if($wikipage->page_type == 2){
-                    $velidation_rule['description'] = 'required';
-                    $velidation_rule['id'] = 'required';
-                    $validator = \Validator::make($inputData, $velidation_rule );
+                    $validation_rule['description'] = 'required';
+                    $validation_rule['id'] = 'required';
+                    $validator = \Validator::make($inputData, $validation_rule );
                     if ($validator->fails()){
                         return json_encode(array(
                             'errors' => $validator->getMessageBag()->toArray()
@@ -346,9 +346,9 @@ class UserWikiController extends Controller
     		}
     	}
     	else {
-	    	$velidation_rule['description'] = 'required';
-	    	$velidation_rule['title'] = 'required';
-	    	$validator = \Validator::make($inputData, $velidation_rule );
+	    	$validation_rule['description'] = 'required';
+	    	$validation_rule['title'] = 'required';
+	    	$validator = \Validator::make($inputData, $validation_rule );
 	    	if ($validator->fails()){
 	            return json_encode(array(
 		            'errors' => $validator->getMessageBag()->toArray()

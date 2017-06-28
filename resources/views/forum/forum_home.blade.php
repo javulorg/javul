@@ -113,7 +113,7 @@
                                             <b>Submitted by</b> <a href="{!! $topic['link_user'] !!}"> <?= $topic['first_name'] ." ". $topic['last_name'] ?> </a>  <?= $topic['created_time'] ?> hour ago. <?= $topic['post']   ?> 
                                                 replies.
                                             <?php if($topic['post']) { ?>
-                                                 (<b>last reply</b> by <a href="{!! $topic['link_replay'] !!}"> <?= $topic['lastReplay'] ?> </a>)
+                                                 (<b>last reply</b> by <a href="{!! $topic['link_reply'] !!}"> <?= $topic['lastReply'] ?> </a>)
                                             <?php } ?>
                                         </div>
                                     </li>
@@ -147,7 +147,7 @@
                                             <b>Submitted by</b> <a href="{!! $topic['link_user'] !!}"> <?= $topic['first_name'] ." ". $topic['last_name'] ?> </a>  <?= $topic['created_time'] ?> hour ago. <?= $topic['post']   ?> 
                                                 replies.
                                             <?php if($topic['post']) { ?>
-                                                 (<b>last reply</b> by <a href="{!! $topic['link_replay'] !!}"> <?= $topic['lastReplay'] ?> </a>)
+                                                 (<b>last reply</b> by <a href="{!! $topic['link_reply'] !!}"> <?= $topic['lastReply'] ?> </a>)
                                             <?php } ?>
                                         </div>
                                     </li>
@@ -182,7 +182,7 @@
                                             <b>Submitted by</b> <a href="{!! $topic['link_user'] !!}"> <?= $topic['first_name'] ." ". $topic['last_name'] ?> </a>  <?= $topic['created_time'] ?> hour ago. <?= $topic['post']   ?> 
                                                 replies.
                                             <?php if($topic['post']) { ?>
-                                                 (<b>last reply</b> by <a href="{!! $topic['link_replay'] !!}"> <?= $topic['lastReplay'] ?> </a>)
+                                                 (<b>last reply</b> by <a href="{!! $topic['link_reply'] !!}"> <?= $topic['lastReply'] ?> </a>)
                                             <?php } ?>
                                         </div>
                                     </li>
@@ -217,7 +217,7 @@
                                             <b>Submitted by</b> <a href="{!! $topic['link_user'] !!}"> <?= $topic['first_name'] ." ". $topic['last_name'] ?> </a>  <?= $topic['created_time'] ?> hour ago. <?= $topic['post']   ?> 
                                                 replies.
                                             <?php if($topic['post']) { ?>
-                                                 (<b>last reply</b> by <a href="{!! $topic['link_replay'] !!}"> <?= $topic['lastReplay'] ?> </a>)
+                                                 (<b>last reply</b> by <a href="{!! $topic['link_reply'] !!}"> <?= $topic['lastReply'] ?> </a>)
                                             <?php } ?>
                                         </div>
                                     </li>
