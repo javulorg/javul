@@ -589,12 +589,19 @@ class IssuesController extends Controller
                     if($request->isMethod('post')) {
                         $validator = \Validator::make($request->all(), [
                             'title' => 'required',
-                            'description' => 'required'
+                            'description' => 'required',
+                            'objective_id' => 'required',
+                            'task_id' => 'required'
                         ]);
 
                         if ($validator->fails())
                             return redirect()->back()->withErrors($validator)->withInput();
 
+                        foreach($issueObj->getAttributes() as $key => $value) {
+                            if(!$value) {
+                                $issueObj->$key = '';
+                            }
+                        }
 
                         // get selected objective_id
                         $selected_objective_id = Issue::getSelectedObjective($request);
@@ -609,7 +616,7 @@ class IssuesController extends Controller
                         /* Store old data Start */
                             $bytes = IssuesRevision::strBytes( str_replace(' ', '', strip_tags($request->input('description'))) );
                             $oldBytes = IssuesRevision::strBytes( str_replace(' ', '', strip_tags($issueObj->description)) );
-                            
+
                             $IssuesRevision = new IssuesRevision;
                             $IssuesRevision->modified_by = Auth::user()->id;
                             $IssuesRevision->size = (  $bytes - $oldBytes );
