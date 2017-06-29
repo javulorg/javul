@@ -117,15 +117,12 @@ $(document).ready(function() {
         $('.summernote').summernote({
             toolbar: [
                 // [groupName, [list of button]]
+                ['para', ['style']],
                 ['style', ['bold', 'italic', 'underline']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', ['ul', 'ol']],
-                ['height', []],
+                ['para', ['ul', 'ol', 'paragraph']],
                 ['fullscreen', ['fullscreen']],
                 ['codeview', ['codeview']],
-                ['insert', ['link']]
+                ['insert', ['link', 'table', 'picture']]
             ],
             height: 100
         });
@@ -133,14 +130,12 @@ $(document).ready(function() {
         $('.summernote').summernote({
             toolbar: [
                 // [groupName, [list of button]]
+                ['para', ['style']],
                 ['style', ['bold', 'italic', 'underline']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', ['ul', 'ol']],
-                ['height', []],
+                ['para', ['ul', 'ol', 'paragraph']],
                 ['fullscreen', ['fullscreen']],
-                ['codeview', ['codeview']]
+                ['codeview', ['codeview']],
+                ['insert', ['link', 'table', 'picture']]
             ],
             height: 100
         });

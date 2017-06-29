@@ -181,30 +181,24 @@ $(document).ready(function() {
             $("#action_items").summernote({
                 toolbar: [
                     // [groupName, [list of button]]
+                    ['para', ['style']],
                     ['style', ['bold', 'italic', 'underline']],
-                    ['font', []],
-                    ['fontsize', []],
-                    ['color', []],
-                    ['para', []],
-                    ['height', []],
-                    ['fullscreen',['fullscreen']],
-                    ['codeview',['codeview']],
-                    ['insert', ['link']]
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['fullscreen', ['fullscreen']],
+                    ['codeview', ['codeview']],
+                    ['insert', ['link', 'table', 'picture']]
                 ]
             });
 
             $('.summernote').summernote({
                 toolbar: [
                     // [groupName, [list of button]]
+                    ['para', ['style']],
                     ['style', ['bold', 'italic', 'underline']],
-                    ['font', []],
-                    ['fontsize', []],
-                    ['color', []],
-                    ['para', ['ul', 'ol']],
-                    ['height', []],
-                    ['fullscreen',['fullscreen']],
-                    ['codeview',['codeview']],
-                    ['insert', ['link']]
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['fullscreen', ['fullscreen']],
+                    ['codeview', ['codeview']],
+                    ['insert', ['link', 'table', 'picture']]
                 ],
                 height:100
             });
@@ -213,28 +207,24 @@ $(document).ready(function() {
             $("#action_items").summernote({
                 toolbar: [
                     // [groupName, [list of button]]
+                    ['para', ['style']],
                     ['style', ['bold', 'italic', 'underline']],
-                    ['font', []],
-                    ['fontsize', []],
-                    ['color', []],
-                    ['para', []],
-                    ['height', []],
-                    ['fullscreen',['fullscreen']],
-                    ['codeview',['codeview']]
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['fullscreen', ['fullscreen']],
+                    ['codeview', ['codeview']],
+                    ['insert', ['link', 'table', 'picture']]
                 ]
             });
 
             $('.summernote').summernote({
                 toolbar: [
                     // [groupName, [list of button]]
+                    ['para', ['style']],
                     ['style', ['bold', 'italic', 'underline']],
-                    ['font', []],
-                    ['fontsize', []],
-                    ['color', []],
-                    ['para', ['ul', 'ol']],
-                    ['height', []],
-                    ['fullscreen',['fullscreen']],
-                    ['codeview',['codeview']]
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['fullscreen', ['fullscreen']],
+                    ['codeview', ['codeview']],
+                    ['insert', ['link', 'table', 'picture']]
                 ],
                 height:100
             });

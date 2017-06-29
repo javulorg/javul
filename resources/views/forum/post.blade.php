@@ -166,14 +166,13 @@
 <script type="text/javascript">
 	$('.summernote').summernote({
         toolbar: [
+            // [groupName, [list of button]]
+            ['para', ['style']],
             ['style', ['bold', 'italic', 'underline']],
-            ['font', []],
-            ['fontsize', []],
-            ['color', []],
-            ['para', ['ul', 'ol']],
-            ['height', []],
-            ['fullscreen',['fullscreen']],
-            ['codeview',['codeview']]
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['fullscreen', ['fullscreen']],
+            ['codeview', ['codeview']],
+            ['insert', ['link', 'table', 'picture']]
         ],
         height:110
     });
@@ -394,14 +393,13 @@
         $this.before(html);
         $("#reply-" + id + " .summernote" ).summernote({
             toolbar: [
+                // [groupName, [list of button]]
+                ['para', ['style']],
                 ['style', ['bold', 'italic', 'underline']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', ['ul', 'ol']],
-                ['height', []],
-                ['fullscreen',['fullscreen']],
-                ['codeview',['codeview']]
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['fullscreen', ['fullscreen']],
+                ['codeview', ['codeview']],
+                ['insert', ['link', 'table', 'picture']]
             ],
             height:100
         });

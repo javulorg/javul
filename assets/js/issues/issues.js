@@ -130,18 +130,16 @@ $(document).ready(function() {
     $('.summernote,.summernote_resolution').summernote({
         toolbar: [
             // [groupName, [list of button]]
+            ['para', ['style']],
             ['style', ['bold', 'italic', 'underline']],
-            ['font', []],
-            ['fontsize', []],
-            ['color', []],
-            ['para', ['ul', 'ol']],
-            ['height', []],
-            ['fullscreen',['fullscreen']],
-            ['codeview',['codeview']],
-            ['insert', ['link']]
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['fullscreen', ['fullscreen']],
+            ['codeview', ['codeview']],
+            ['insert', ['link', 'table', 'picture']]
         ],
-        height:100
+        height: 100
     });
+
     if(issue_status != "resolved")
         $('.summernote_resolution').summernote('disable');
     $("[name='status']").on('change',function(){

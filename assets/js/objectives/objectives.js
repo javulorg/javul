@@ -71,38 +71,18 @@ var FormValidation = function () {
 
 $(document).ready(function() {
     FormValidation.init();
-    if(typeof edit_objective_flag !== typeof undefined && edit_objective_flag) {
-        $('.summernote').summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', ['ul', 'ol']],
-                ['height', []],
-                ['fullscreen',['fullscreen']],
-                ['codeview',['codeview']],
-                ['insert', ['link']]
-            ],
-            height:100
-        });
-    }else{
-        $('.summernote').summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', []],
-                ['fontsize', []],
-                ['color', []],
-                ['para', ['ul', 'ol']],
-                ['height', []],
-                ['fullscreen',['fullscreen']],
-                ['codeview',['codeview']]
-            ],
-            height:100
-        });
-    }
+    $('.summernote').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['para', ['style']],
+            ['style', ['bold', 'italic', 'underline']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['fullscreen', ['fullscreen']],
+            ['codeview', ['codeview']],
+            ['insert', ['link', 'table', 'picture']]
+        ],
+        height: 100
+    });
 });
 
 

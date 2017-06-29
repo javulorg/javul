@@ -95,38 +95,22 @@
 </div>
 @endsection
 @section('page-scripts')
-<link rel="stylesheet" type="text/css" href="{!! url('assets/plugins/editor/skins/markitup/style.css') !!}">
+<link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="{!! url('assets/plugins/editor/sets/wiki/style.css') !!}">
-<script type="text/javascript" src="{!! url('assets/plugins/editor/jquery.markitup.js') !!}"></script>
+<script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script type="text/javascript" src="{!! url('assets/plugins/editor/sets/wiki/set.js') !!}"></script>
 <script type="text/javascript">
-    $('.summernote').markItUp({
-        nameSpace:          "wiki", // Useful to prevent multi-instances CSS conflict
-        previewParserPath:  "~/sets/wiki/preview.php",
-        onShiftEnter:       {keepDefault:false, replaceWith:'\n\n'},
-        markupSet:  [
-            {name:'Heading 1', key:'1', openWith:'== ', closeWith:' ==', placeHolder:'Your title here...' },
-            {name:'Heading 2', key:'2', openWith:'=== ', closeWith:' ===', placeHolder:'Your title here...' },
-            {name:'Heading 3', key:'3', openWith:'==== ', closeWith:' ====', placeHolder:'Your title here...' },
-            {name:'Heading 4', key:'4', openWith:'===== ', closeWith:' =====', placeHolder:'Your title here...' },
-            {name:'Heading 5', key:'5', openWith:'====== ', closeWith:' ======', placeHolder:'Your title here...' },
-            {separator:'---------------' },        
-            {name:'Bold', key:'B', openWith:"'''", closeWith:"'''"}, 
-            {name:'Italic', key:'I', openWith:"''", closeWith:"''"}, 
-            {name:'Stroke through', key:'S', openWith:'<s>', closeWith:'</s>'},
-            {name:'Underline', key:'U', openWith:'<u>', closeWith:'</u>'},
-            {separator:'---------------' },
-            {name:'Bulleted list', openWith:'(!(* |!|*)!)'}, 
-            {name:'Numeric list', openWith:'(!(# |!|#)!)'}, 
-            {separator:'---------------' },
-            {name:'Picture', key:'P', replaceWith:'[[Image:[![Url:!:http://]!]|[![name]!]]]'}, 
-            {name:'Link', key:'L', openWith:'[[![Link]!] ', closeWith:']', placeHolder:'Your text to link here...' },
-            {name:'Url', openWith:'[[![Url:!:http://]!] ', closeWith:']', placeHolder:'Your text to link here...' },
-            {separator:'---------------' },
-            {name:'Quotes', openWith:'(!(> |!|>)!)'},
-            {separator:'---------------' },
-            {name:'Preview', call:'preview', className:'preview'}
-        ]
+    $('.summernote').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['para', ['style']],
+            ['style', ['bold', 'italic', 'underline']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['fullscreen', ['fullscreen']],
+            ['codeview', ['codeview']],
+            ['insert', ['link', 'table', 'picture']]
+        ],
+        height:300
     });
     $(".cancel-edit").click(function(){
         var oldValue = $(".old_value").val();
