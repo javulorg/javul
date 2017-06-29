@@ -839,3 +839,15 @@ input:disabled, input.disabled {
     font-weight: bold;
     margin: 5px;
 }
+
+.under-construction-block {
+    font-size: 17px;
+    padding-bottom: 10px;
+    padding-top: 3px;
+}
+
+.under-construction-image {
+    vertical-align: top;
+    padding-top: 2px;
+    padding-right: 5px;
+}

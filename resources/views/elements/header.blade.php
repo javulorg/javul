@@ -1,4 +1,8 @@
 <nav class="navbar navbar-grey" style="margin-bottom: 0px;min-height: 35px;">
+    <div class="text-center under-construction-block">
+        <img class="under-construction-image" src="{!! url('assets/images/construction.png') !!}">This site is under construction. Some links and functionalities may not work. <a target="_blank" href="https://github.com/javulorg/javul/wiki/Under-Construction-Notice">(details)</a>
+    </div>
+
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
