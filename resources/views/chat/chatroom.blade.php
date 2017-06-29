@@ -78,6 +78,7 @@
                         <input type="text" name="search" placeholder="User Search.." />
                         <i class="search-icon fa fa-search"></i>
                     </div>
+                    <div class="filter-message" id="filterMessage"></div>
                     <ul class="people">
                                               
                     </ul>
@@ -176,10 +177,12 @@
             loaduserHtml:function(json){
                 var html = '';
                 $.each(json,function(i,j){
-                    html += '<li class="person" data-id="'+ j['user_id'] +'" data-profile="'+ j['link'] +'" contextmenu data-chat="person1">';
-                    html += '    <div class="img"  >'+ j['name'].charAt(0) +'</div>';
-                    html += '    <span class="name">'+ j['name'] +'</span>';
-                    html += '</li>';
+                    if(j['name'].toUpperCase().indexOf($(".chat-room input[name=search]").val().toUpperCase()) != -1){
+                        html += '<li class="person" data-id="'+ j['user_id'] +'" data-profile="'+ j['link'] +'" contextmenu data-chat="person1">';
+                        html += '    <div class="img"  >'+ j['name'].charAt(0) +'</div>';
+                        html += '    <span class="name">'+ j['name'] +'</span>';
+                        html += '</li>';
+                    }
                 });
                 $(".left .people").html(html);
             },
@@ -308,6 +311,13 @@
         });  
         $(".chat-room .left input[name=search]").keyup(function(){
             var txt = $(".chat-room input[name=search]").val();
+
+            if(txt.length > 0) {
+                $('#filterMessage').text('Filtered by name: ' + txt);
+            } else {
+                $('#filterMessage').text('');
+            }
+
             $("ul.people").find("li").each(function(){
                 if($(this).text().toUpperCase().indexOf(txt.toUpperCase()) != -1){
                     $(this).show();

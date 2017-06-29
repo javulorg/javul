@@ -833,3 +833,9 @@ input:disabled, input.disabled {
 .notification-popover .popover-content{padding:0px;max-height:377px;height: auto;overflow-y: auto;}
 .notification-popover.bottom > .arrow::after{border-bottom-color:#f7f7f7 !important;}
 .border-radius-0 {border-radius: 0 !important;}
+
+.filter-message {
+    font-size: 15px;
+    font-weight: bold;
+    margin: 5px;
+}
