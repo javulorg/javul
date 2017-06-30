@@ -933,7 +933,7 @@ class TasksController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Task Updated";
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))
@@ -1515,7 +1515,7 @@ class TasksController extends Controller
                         $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                         $subject="Task bid by".Auth::user()->first_name.' '.Auth::user()->last_name;
 
-                        \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                        \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
                         {
                             $message->to($toEmail,$toName)->subject($subject);
                             if(!empty($siteAdminemails))
@@ -1755,7 +1755,7 @@ class TasksController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Task accepted by ".$unitCreator->first_name.' '.$unitCreator->last_name;
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))
@@ -1828,7 +1828,7 @@ class TasksController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Task rejected by ".$unitCreator->first_name.' '.$unitCreator->last_name;
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))
@@ -2140,7 +2140,7 @@ class TasksController extends Controller
                     $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
                     $subject="Task re-assigned to ".$unitCreator->first_name.' '.$unitCreator->last_name;
 
-                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+                    \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
                     {
                         $message->to($toEmail,$toName)->subject($subject);
                         if(!empty($siteAdminemails))
