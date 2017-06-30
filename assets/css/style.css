@@ -841,13 +841,18 @@ input:disabled, input.disabled {
 }
 
 .under-construction-block {
-    font-size: 17px;
-    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 12px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 3px;
     padding-top: 3px;
+    width: 1170px;
 }
 
 .under-construction-image {
-    vertical-align: top;
-    padding-top: 2px;
+    height: 16px;
     padding-right: 5px;
+    padding-top: 0;
+    vertical-align: top;
 }
