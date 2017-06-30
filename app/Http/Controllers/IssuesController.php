@@ -589,9 +589,7 @@ class IssuesController extends Controller
                     if($request->isMethod('post')) {
                         $validator = \Validator::make($request->all(), [
                             'title' => 'required',
-                            'description' => 'required',
-                            'objective_id' => 'required',
-                            'task_id' => 'required'
+                            'description' => 'required'
                         ]);
 
                         if ($validator->fails())
@@ -622,8 +620,15 @@ class IssuesController extends Controller
                             $IssuesRevision->size = (  $bytes - $oldBytes );
                             $IssuesRevision->user_id = $issueObj->user_id;
                             $IssuesRevision->unit_id = $issueObj->unit_id;
-                            $IssuesRevision->objective_id = $selected_objective_id;
-                            $IssuesRevision->task_id = $selected_task_id_arr;
+
+                            if($selected_objective_id) {
+                                $IssuesRevision->objective_id = $selected_objective_id;
+                            }
+
+                            if(!empty($selected_task_id_arr)) {
+                                $IssuesRevision->task_id = $selected_task_id_arr;
+                            }
+
                             $IssuesRevision->title = $issueObj->title;
                             $IssuesRevision->description = $issueObj->description;
                             $IssuesRevision->file_attachments = $issueObj->file_attachments;
