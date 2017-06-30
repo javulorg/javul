@@ -83,9 +83,4 @@ class Issue extends Model
         else
             return null;
     }
-
-    public function setTaskId($value)
-    {
-        dd('ok');
-    }
 }
