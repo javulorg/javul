@@ -113,35 +113,7 @@ var FormValidation = function () {
 $(document).ready(function() {
     FormValidation.init();
 
-    if(typeof edit_unit_flag !== typeof undefined && edit_unit_flag) {
-        $('.summernote').summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['para', ['style']],
-                ['style', ['bold', 'italic', 'underline']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['fullscreen', ['fullscreen']],
-                ['codeview', ['codeview']],
-                ['insert', ['link', 'table', 'picture']]
-            ],
-            height: 100
-        });
-    }else{
-        $('.summernote').summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['para', ['style']],
-                ['style', ['bold', 'italic', 'underline']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['fullscreen', ['fullscreen']],
-                ['codeview', ['codeview']],
-                ['insert', ['link', 'table', 'picture']]
-            ],
-            height: 100
-        });
-    }
-
-
+    $('.summernote').ckeditor();
 
     function formatSkills (repo) {
         if (repo.loading) return repo.text;

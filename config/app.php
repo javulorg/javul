@@ -168,8 +168,8 @@ return [
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
 		Netshell\Paypal\PaypalServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-		Greggilbert\Recaptcha\RecaptchaServiceProvider::class
-
+		Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
+        Barryvdh\Elfinder\ElfinderServiceProvider::class
     ],
 
     /*

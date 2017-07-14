@@ -12,7 +12,8 @@
         "intervention/image": "^2.3",
         "giggsey/libphonenumber-for-php": "^7.7",
         "doctrine/dbal": "^2.5",
-        "greggilbert/recaptcha": "^2.1"
+        "greggilbert/recaptcha": "^2.1",
+        "barryvdh/laravel-elfinder": "^0.3.10"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -54,7 +55,8 @@
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
+            "php artisan optimize",
+            "php artisan elfinder:publish"
         ]
     },
     "config": {

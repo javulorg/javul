@@ -263,3 +263,6 @@ Route::resource('/alerts','AlertsController');
 
 Route::post('reportconc','IssuesController@report_concern_email');
 Route::get('close_report','IssuesController@reset_captcha_after_close');
+
+Route::get('elfinder/connectorex', 'ElfinderController@showConnector')->name("elfinder.connectorex")->middleware('auth');
+Route::post('elfinder/connectorex', 'ElfinderController@showConnector')->name("elfinder.connectorex")->middleware('auth');

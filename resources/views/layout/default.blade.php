@@ -97,6 +97,8 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{!! url('assets/plugins/select2/js/select2.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/bootstrap-toastr/toastr.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/plugins/bootbox/bootbox.min.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/ckeditor/ckeditor.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/plugins/ckeditor/adapters/jquery.js') !!}" type="text/javascript"></script>
 
 
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
