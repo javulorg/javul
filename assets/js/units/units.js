@@ -115,6 +115,15 @@ $(document).ready(function() {
 
     $('.summernote').ckeditor();
 
+    CKEDITOR.on('instanceReady', function(){
+        $.each( CKEDITOR.instances, function(instance) {
+            CKEDITOR.instances[instance].on("change", function(e) {
+                for ( instance in CKEDITOR.instances )
+                    CKEDITOR.instances[instance].updateElement();
+            });
+        });
+    });
+
     function formatSkills (repo) {
         if (repo.loading) return repo.text;
 
