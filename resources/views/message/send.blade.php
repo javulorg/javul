@@ -86,19 +86,16 @@
 <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script type="text/javascript">
-   $('.summernote').summernote({
-        toolbar: [
-            ['style', ['bold', 'italic', 'underline']],
-            ['font', []],
-            ['fontsize', []],
-            ['color', []],
-            ['para', ['ul', 'ol']],
-            ['height', []],
-            ['fullscreen',['fullscreen']],
-            ['codeview',['codeview']]
-        ],
-        height:110
-    });
+   $('.summernote').ckeditor();
+
+   CKEDITOR.on('instanceReady', function(){
+       $.each( CKEDITOR.instances, function(instance) {
+           CKEDITOR.instances[instance].on("change", function(e) {
+               for ( instance in CKEDITOR.instances )
+                   CKEDITOR.instances[instance].updateElement();
+           });
+       });
+   });
 </script>
 <script type="text/javascript">
     var xhr;

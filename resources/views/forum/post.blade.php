@@ -164,18 +164,23 @@
     });
 </script>
 <script type="text/javascript">
-	$('.summernote').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['para', ['style']],
-            ['style', ['bold', 'italic', 'underline']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['fullscreen', ['fullscreen']],
-            ['codeview', ['codeview']],
-            ['insert', ['link', 'table', 'picture']]
-        ],
-        height:110
+	$('.summernote').ckeditor();
+
+    CKEDITOR.on('instanceReady', function(){
+        $.each( CKEDITOR.instances, function(instance) {
+            CKEDITOR.instances[instance].on("change", function(e) {
+                for ( instance in CKEDITOR.instances )
+                    CKEDITOR.instances[instance].updateElement();
+            });
+        });
     });
+
+    function CKupdate(){
+        for ( instance in CKEDITOR.instances ){
+            CKEDITOR.instances[instance].setData('');
+        }
+    }
+
     var xhr;
     $(".panel-body").delegate(".post-form","submit",function(){
         $this = $(this);
@@ -216,7 +221,7 @@
                         if (Number(json['post']['items'][0]['reply_id'])) {
                             $this.remove();
                         }
-                        $(".summernote").summernote("reset");
+                        CKupdate();
                     }
                     if (json['error']) {
                         toastr['error'](json['error'], '');
@@ -391,18 +396,8 @@
         html += '</form>';
         $("#reply-" + id).remove();
         $this.before(html);
-        $("#reply-" + id + " .summernote" ).summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['para', ['style']],
-                ['style', ['bold', 'italic', 'underline']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['fullscreen', ['fullscreen']],
-                ['codeview', ['codeview']],
-                ['insert', ['link', 'table', 'picture']]
-            ],
-            height:100
-        });
+
+        $("#reply-" + id + " .summernote" ).ckeditor();
 
         $(this).hide();
     });

@@ -127,28 +127,28 @@ $(document).ready(function() {
         placeholder: "Select Task"
     });
 
-    $('.summernote,.summernote_resolution').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['para', ['style']],
-            ['style', ['bold', 'italic', 'underline']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['fullscreen', ['fullscreen']],
-            ['codeview', ['codeview']],
-            ['insert', ['link', 'table', 'picture']]
-        ],
-        height: 100
+    $('.summernote,.summernote_resolution').ckeditor(function(textarea) {
+        if(issue_status != "resolved") {
+            CKEDITOR.instances['resolution'].setReadOnly(true);
+        }
     });
 
-    if(issue_status != "resolved")
-        $('.summernote_resolution').summernote('disable');
+    CKEDITOR.on('instanceReady', function(){
+        $.each( CKEDITOR.instances, function(instance) {
+            CKEDITOR.instances[instance].on("change", function(e) {
+                for ( instance in CKEDITOR.instances )
+                    CKEDITOR.instances[instance].updateElement();
+            });
+        });
+    });
+
     $("[name='status']").on('change',function(){
         if($(this).val() == "resolved"){
 
-                $('.summernote_resolution').summernote('enable');
+            CKEDITOR.instances['resolution'].setReadOnly(false);
         }
         else
-            $('.summernote_resolution').summernote('disable');
+            CKEDITOR.instances['resolution'].setReadOnly(true);
     })
     /**/
 

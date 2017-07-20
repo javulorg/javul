@@ -94,18 +94,17 @@
 
 <script type="text/javascript">
 
-    $('.summernote').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['para', ['style']],
-            ['style', ['bold', 'italic', 'underline']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['fullscreen', ['fullscreen']],
-            ['codeview', ['codeview']],
-            ['insert', ['link', 'table', 'picture']]
-        ],
-        height: 300
+    $('.summernote').ckeditor();
+
+    CKEDITOR.on('instanceReady', function(){
+        $.each( CKEDITOR.instances, function(instance) {
+            CKEDITOR.instances[instance].on("change", function(e) {
+                for ( instance in CKEDITOR.instances )
+                    CKEDITOR.instances[instance].updateElement();
+            });
+        });
     });
+
     $(".cancel-edit").click(function(){
         var oldValue = $(".old_value").val();
         var newValue = $(".summernote").val();

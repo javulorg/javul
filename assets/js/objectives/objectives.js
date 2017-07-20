@@ -71,17 +71,15 @@ var FormValidation = function () {
 
 $(document).ready(function() {
     FormValidation.init();
-    $('.summernote').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['para', ['style']],
-            ['style', ['bold', 'italic', 'underline']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['fullscreen', ['fullscreen']],
-            ['codeview', ['codeview']],
-            ['insert', ['link', 'table', 'picture']]
-        ],
-        height: 100
+    $('.summernote').ckeditor();
+
+    CKEDITOR.on('instanceReady', function(){
+        $.each( CKEDITOR.instances, function(instance) {
+            CKEDITOR.instances[instance].on("change", function(e) {
+                for ( instance in CKEDITOR.instances )
+                    CKEDITOR.instances[instance].updateElement();
+            });
+        });
     });
 });
 

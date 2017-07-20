@@ -58,18 +58,17 @@
 <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script type="text/javascript">
-	$('.summernote').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['para', ['style']],
-            ['style', ['bold', 'italic', 'underline']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['fullscreen', ['fullscreen']],
-            ['codeview', ['codeview']],
-            ['insert', ['link', 'table', 'picture']]
-        ],
-        height:200
+	$('.summernote').ckeditor();
+
+    CKEDITOR.on('instanceReady', function(){
+        $.each( CKEDITOR.instances, function(instance) {
+            CKEDITOR.instances[instance].on("change", function(e) {
+                for ( instance in CKEDITOR.instances )
+                    CKEDITOR.instances[instance].updateElement();
+            });
+        });
     });
+
     var xhr;
     $("#form_topic_form").submit(function(){
     	if(xhr && xhr.readyState != 4){

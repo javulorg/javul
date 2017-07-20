@@ -150,17 +150,15 @@ var FormValidation = function () {
 $(document).ready(function() {
     FormValidation.init();
     $(function(){
-        $("#comment").summernote({
-            toolbar: [
-                // [groupName, [list of button]]
-                ['para', ['style']],
-                ['style', ['bold', 'italic', 'underline']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['fullscreen', ['fullscreen']],
-                ['codeview', ['codeview']],
-                ['insert', ['link', 'table', 'picture']]
-            ],
-            height:100
+        $("#comment").ckeditor();
+
+        CKEDITOR.on('instanceReady', function(){
+            $.each( CKEDITOR.instances, function(instance) {
+                CKEDITOR.instances[instance].on("change", function(e) {
+                    for ( instance in CKEDITOR.instances )
+                        CKEDITOR.instances[instance].updateElement();
+                });
+            });
         });
 
         $("#input-id").fileinput({'showUpload':false, 'previewFileType':'any'});
@@ -223,7 +221,7 @@ $(document).ready(function() {
     });
 
     $("#ok_reassign").on('click',function(){
-        var code = $('#comment').summernote('code'),
+        var code = CKEDITOR.instances['comment'].getData(),
             filteredContent = $(code).text().replace(/\s+/g, '');
 
         if(filteredContent.length == 0) {
