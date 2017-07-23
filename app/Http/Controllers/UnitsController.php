@@ -316,7 +316,7 @@ class UnitsController extends Controller
                 if(!empty($siteAdminemails))
                     $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
             });
 
             //if user selected related to unit then insert record to related_units table
@@ -537,7 +537,7 @@ class UnitsController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
                     $request->session()->flash('msg_val', "Unit updated successfully!!!");
@@ -729,7 +729,7 @@ class UnitsController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
                     return \Response::json(['success'=>true]);

@@ -38,7 +38,7 @@ class NotificationController extends Controller
         \Mail::send('emails.print', ['data'=> $request->all()], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
-            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
         });
     }
 
@@ -49,7 +49,7 @@ class NotificationController extends Controller
         \Mail::send('emails.print', ['data'=> $request->all()], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
-            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
         });
     }
 
@@ -70,7 +70,7 @@ class NotificationController extends Controller
         \Mail::send('emails.print', ['data'=> $myPost], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
-            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
         });
     }
 

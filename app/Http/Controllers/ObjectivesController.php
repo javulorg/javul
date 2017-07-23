@@ -438,7 +438,7 @@ class ObjectivesController extends Controller
                 if(!empty($siteAdminemails))
                     $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
             });
 
             $request->session()->flash('msg_val', "Objective created successfully!!!");
@@ -588,7 +588,7 @@ class ObjectivesController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
                     $request->session()->flash('msg_val', "Objective updated successfully!!!");
@@ -842,7 +842,7 @@ class ObjectivesController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
                     return \Response::json(['success'=>true]);

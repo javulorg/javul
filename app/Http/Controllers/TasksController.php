@@ -608,7 +608,7 @@ class TasksController extends Controller
 
                 \Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
                     $message->to($toEmail, $toName)->subject($subject);
-                    $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                    $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                 });
             }
 
@@ -627,7 +627,7 @@ class TasksController extends Controller
                 if(!empty($siteAdminemails))
                     $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
             });
 
             $request->session()->flash('msg_val', "Task created successfully!!!");
@@ -939,7 +939,7 @@ class TasksController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
                     $request->session()->flash('msg_val', "Task updated successfully!!!");
@@ -1300,7 +1300,7 @@ class TasksController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
                 }
                 return \Response::json(['success'=>true]);
@@ -1400,7 +1400,7 @@ class TasksController extends Controller
                                 if(!empty($siteAdminemails))
                                     $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                                $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                             });
 
                             return \Response::json(['success'=>true,'status'=>'awaiting_approval']);
@@ -1521,7 +1521,7 @@ class TasksController extends Controller
                             if(!empty($siteAdminemails))
                                 $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
                         $request->session()->flash('msg_val', "Task bid successfully!!!");
@@ -1761,7 +1761,7 @@ class TasksController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
                     return \Response::json(['success'=>true]);
                 }
@@ -1834,7 +1834,7 @@ class TasksController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
                     return \Response::json(['success'=>true]);
@@ -2029,7 +2029,7 @@ class TasksController extends Controller
                             if(!empty($siteAdminemails))
                                 $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
                         $request->session()->flash('msg_val', "Task Completed successfully!!!");
@@ -2146,7 +2146,7 @@ class TasksController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
                     $request->session()->flash('msg_val', "Task assigned successfully!!!");
                     return redirect('tasks');
@@ -2309,7 +2309,7 @@ class TasksController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
                     $request->session()->flash('msg_val', "Task completed successfully!!!");
@@ -2413,7 +2413,7 @@ class TasksController extends Controller
                             if(!empty($siteAdminemails))
                                 $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+                            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
                         $request->session()->flash('msg_val', "Task Cancelled successfully!!!");
