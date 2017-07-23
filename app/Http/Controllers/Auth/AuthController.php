@@ -112,7 +112,7 @@ class AuthController extends Controller
         \Mail::send('emails.registration', ['userObj'=> $userData, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
-            $message->from(\Config::get("app.support_email"), \Config::get("app.site_name"));
+            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
         });
 
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
