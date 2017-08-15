@@ -462,8 +462,8 @@ class IssuesController extends Controller
             $validator = \Validator::make($request->all(), [
                 'title' => 'required',
                 'unit_id'=>'required',
-                'objective_id'=>'required',
-                'task_id'=>'required',
+//                'objective_id'=>'required',
+//                'task_id'=>'required',
                 'description' => 'required'
             ]);
 
