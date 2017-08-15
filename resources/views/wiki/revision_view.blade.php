@@ -31,7 +31,7 @@
                     <h4> {!! $wiki_page['wiki_page_title'] !!}</h4>
                     <div class="button pull-right small-a">
                         <a href="{!! url('wiki/edit') !!}/{!! $unit_id !!}/{!! $slug !!}">+ New Page</a> | 
-                        <a href="{!! url('wiki/all_pages') !!}/{!! $unit_id !!}/{!! $slug !!}">List All Page</a>
+                        <a href="{!! url('wiki/all_pages') !!}/{!! $unit_id !!}/{!! $slug !!}">List All Pages</a>
                     </div>
                 </div>
                 <div class="panel-body list-group">
