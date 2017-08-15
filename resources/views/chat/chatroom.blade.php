@@ -299,6 +299,8 @@
                     this.value += myValue;
                     this.focus();
                 }
+
+                $('#send-message').removeClass('disabled');
             })
         }
         $(".write input").keypress(function (e) {
