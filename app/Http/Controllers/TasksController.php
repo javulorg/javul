@@ -621,14 +621,14 @@ class TasksController extends Controller
             $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
             $subject="Task Created";
 
-            \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
-            {
-                $message->to($toEmail,$toName)->subject($subject);
-                if(!empty($siteAdminemails))
-                    $message->bcc($siteAdminemails,"Admin")->subject($subject);
-
-                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
-            });
+//            \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+//            {
+//                $message->to($toEmail,$toName)->subject($subject);
+//                if(!empty($siteAdminemails))
+//                    $message->bcc($siteAdminemails,"Admin")->subject($subject);
+//
+//                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+//            });
 
             $request->session()->flash('msg_val', "Task created successfully!!!");
 
