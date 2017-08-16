@@ -1,6 +1,6 @@
 @extends('layout.email')
 @section('content')
-    <h3>Hi {{$userObj->first_name.' '.$userObj->last_name}},</h3>
+    <h3>Hi @if($userObj->first_name && $userObj->last_name){{$userObj->first_name.' '.$userObj->last_name.','}}@else{{ $userObj->username.',' }}@endif</h3>
     <p>{!! $content !!}</p>
     <br/>
     <p style="display: inline-block;text-align: center;width:100%;font-size: 13px;">

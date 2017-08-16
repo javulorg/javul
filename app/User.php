@@ -427,7 +427,7 @@ class User extends Authenticatable
                         $toName= $userTempObj->first_name.' '.$userTempObj->last_name;
                         $subject = $email_subject;
 
-                        \Mail::send('emails.alerts_email', ['userObj' => Auth::user(), 'content'=>$content,'report_concern'=>false], function($message) use($toEmail,$toName,$subject) {
+                        \Mail::send('emails.alerts_email', ['userObj' => $user, 'content'=>$content,'report_concern'=>false], function($message) use($toEmail,$toName,$subject) {
                             $message->replyTo(config('app.notification_reply_to'));
                             $message->to($toEmail, $toName)->subject($subject);
                             $message->from(config('app.notification_email'), config('app.site_name'));
