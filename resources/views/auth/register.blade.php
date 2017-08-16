@@ -29,7 +29,7 @@
                 </div>
                 <div class="row form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                     <div class="col-md-12">
-                        <input type="text" class="form-control" required="" name="first_name" value="{{ old('first_name') }}"  placeholder="{!!
+                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}"  placeholder="{!!
                         Lang::get('messages.enter_firstname') !!}">
                         @if ($errors->has('first_name'))
                             <span class="help-block">
@@ -41,7 +41,7 @@
 
                 <div class="row form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
                     <div class="col-md-12">
-                        <input name="last_name" type="text" required="" id="last_name" value="{{ old('last_name') }}" class="form-control"
+                        <input name="last_name" type="text" id="last_name" value="{{ old('last_name') }}" class="form-control"
                                placeholder="{!! Lang::get('messages.enter_lastname') !!}"/>
                         @if ($errors->has('last_name'))
                             <span class="help-block">
