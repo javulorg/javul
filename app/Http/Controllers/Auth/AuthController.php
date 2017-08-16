@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\ActivityPoint;
+use App\Alerts;
 use App\Objective;
 use App\sweetcaptcha;
 use App\Task;
@@ -121,6 +122,18 @@ class AuthController extends Controller
             'user_id'=>$userData->id,
             'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower($userData->first_name.'_'.$userData->last_name)).'">'
             .$userData->username.'</a> created an account'
+        ]);
+
+        Alerts::create([
+            'user_id' => $userData->id,
+            'all' => 0,
+            'account_creation' => 0,
+            'confirmation_email' => 0,
+            'forum_replies' => 0,
+            'watched_items' => 1,
+            'inbox' => 1,
+            'fund_received' => 0,
+            'task_management' => 0,
         ]);
 
         return $userData;

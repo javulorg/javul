@@ -145,7 +145,7 @@
                         <a href="#withdraw_amount" data-toggle="tab">Withdraw</a>
                     </li>
                     @endif
-                    <li><a href="#account_settings" data-toggle="tab">Settings</a></li>
+                    <li><a href="#account_settings" data-toggle="tab">Alert Settings</a></li>
                 </ul>
                 <div id="my-tab-content" class="tab-content">
                     <div class="list-group tab-pane @if(count($errors) == 0 || ($errors->has('active') && $errors->first('active')
@@ -358,7 +358,6 @@
                                 <tr>
                                     <th>Alert Name</th>
                                     <th>Email Alert</th>
-                                    <th>On-site Alert</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -368,24 +367,21 @@
                                     <input @if(!empty($alertsObj) && $alertsObj->all == 1) checked  @endif data-toggle="toggle" type="checkbox" name="alert_all"
                                            id="alert_all" class="alerts" value="all">
                                 </td>
-                                <td>-</td>
                             </tr>
                                 <tr>
                                     <td width="40%" style="width: 40%;">Account Creation</td>
                                     <td>
-                                        <input checked disabled  data-toggle="toggle" type="checkbox" name="alert_account_creation"
+                                        <input data-toggle="toggle" type="checkbox" name="alert_account_creation"
                                                id="alert_account_creation" class="alerts" value="account_creation">
                                     </td>
-                                    <td>-</td>
                                 </tr>
 
                                 <tr>
                                     <td width="40%" style="width: 40%;">Confirmation Email</td>
                                     <td>
-                                        <input checked disabled  data-toggle="toggle" type="checkbox" name="alert_confirmation_email"
+                                        <input  data-toggle="toggle" type="checkbox" name="alert_confirmation_email"
                                                id="alert_confirmation_email" class="alerts" value="confirmation_email">
                                     </td>
-                                    <td>-</td>
                                 </tr>
 
                                 <tr>
@@ -395,9 +391,6 @@
                                                type="checkbox"
                                                name="alert_forum_replies"
                                                id="alert_forum_replies" class="alerts dynamic_alert" value="forum_replies">
-                                    </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
                                     </td>
                                 </tr>
 
@@ -409,9 +402,6 @@
                                                name="alert_watched_items"
                                                id="alert_watched_items" class="alerts dynamic_alert" value="watched_items">
                                     </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
-                                    </td>
                                 </tr>
 
                                 <tr>
@@ -421,9 +411,6 @@
                                                type="checkbox"
                                                name="alert_inbox"
                                                id="alert_inbox" class="alerts dynamic_alert" value="inbox">
-                                    </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
                                     </td>
                                 </tr>
 
@@ -435,9 +422,6 @@
                                                name="alert_fund_received"
                                                id="alert_fund_received" class="alerts dynamic_alert" value="fund_received">
                                     </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
-                                    </td>
                                 </tr>
 
                                 <tr>
@@ -448,13 +432,11 @@
                                                name="alert_task_management"
                                                id="alert_task_management" class="alerts dynamic_alert" value="task_management">
                                     </td>
-                                    <td>
-                                        <input checked disabled data-toggle="toggle" type="checkbox">
-                                        <input type="hidden" name="changed_by" id="changed_by" value=""/>
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        On-site alerts will always be generated for the above activities.
                     </div>
                 </div>
             </div>
