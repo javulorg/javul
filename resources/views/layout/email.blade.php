@@ -19,7 +19,7 @@
                 <tr>
                     <td>
                         <a href="{{ url('/') }}" style="display:block; width:407px; height:100px; margin:0 auto 30px;">
-                            <img src="/assets/images/logo-email.png" width="407" height="100" alt="Pixelbuddha" style="display:block; border:0; margin:0;">
+                            <img src="{{ url('/assets/images/logo-email.png') }}" width="407" height="100" alt="Pixelbuddha" style="display:block; border:0; margin:0;">
                         </a>
                         <!-- begin wrapper -->
                         <table cellpadding="0" cellspacing="0" border="0" width="100%">
