@@ -231,7 +231,8 @@ Route::get('funds/donate/task/{task_id}','FundsController@donate_to_unit_objecti
 Route::get('funds/donate/issue/{issue_id}','FundsController@donate_to_unit_objective_task');
 Route::get('funds/donate/user/{user_id}','FundsController@donate_to_unit_objective_task');
 Route::get('funds/get-card-name','FundsController@get_card_name');
-Route::post('funds/donate-amount','FundsController@donate_amount');
+//Route::post('funds/donate-amount','FundsController@donate_amount');
+Route::post('funds/donate-bitcoin','FundsController@donate_bitcoin');
 Route::get('funds/success','FundsController@success');
 Route::get('funds/cancel','FundsController@cancel');
 

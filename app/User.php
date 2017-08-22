@@ -410,6 +410,10 @@ class User extends Authenticatable
             foreach($usersObj as $user){
 
                 // add notification for user
+                if(!$user) {
+                    $user = new User();
+                    $user->id = 0;
+                }
                 UserNotification::create([
                     'user_id' => $user->id,
                     'content' => $content

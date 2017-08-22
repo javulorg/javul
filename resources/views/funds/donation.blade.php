@@ -81,7 +81,7 @@
     </div>-->
     @endif
 
-    <form accept-charset="UTF-8" action="{!! url('funds/donate-amount') !!}" class="simple_form form-horizontal" method="post"
+    <form accept-charset="UTF-8" action="{!! url('funds/donate-bitcoin') !!}" class="simple_form form-horizontal" method="post"
           novalidate="novalidate" id="donate_amount_form">
         {{ csrf_field() }}
         @if(count($errors->all()) > 0)
@@ -96,6 +96,24 @@
             </div>
 
         @endif
+
+        <div>
+            Donate as:<br>
+            <input type="radio" name="donate_as" value="0" @if(!Auth::user()) checked @endif> Anonymous<br>
+            @if(Auth::user())
+                <input type="radio" name="donate_as" value="{{ Auth::user()->id }}" checked> {{ Auth::user()->username }}
+            @else
+                You can donate as an anonymous user or <a href="{{ url('login') }}">Login</a> if you have an account
+            @endif
+        </div>
+        <div class="row form-group donationDiv credit_card"  >
+            <div class="col-sm-4">
+                <label for="address" class="control-label">Your Bitcoin E-mail or Wallet</label>
+                <input type="text" value="" name="address" id="address"
+                       placeholder="Amount" class="form-control" required>
+            </div>
+        </div>
+
         <div class="row form-group donationDiv credit_card"  >
             <div class="col-sm-4">
                 <label for="amount" class="control-label">Amount to Donate</label>
