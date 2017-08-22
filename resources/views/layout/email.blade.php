@@ -1,104 +1,107 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html>
 <head>
-    <!-- If you delete this meta tag, Half Life 3 will never be released. -->
     <meta name="viewport" content="width=device-width" />
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Javul.org</title>
-
 </head>
 
-<body bgcolor="#FFFFFF" style="font-family: verdana;">
+<body style="font-family:Gotham, 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color:#f0f2ea; margin:0; padding:0; color:#333333;">
 
-<!-- HEADER -->
-<table width="100%" bgcolor="#E1672C">
+<table width="100%" bgcolor="#f0f2ea" cellpadding="0" cellspacing="0" border="0">
+    <tbody>
     <tr>
-        <td></td>
-        <td style="margin:0 auto;max-width:600px;" >
-
-            <div style="max-width:600px;margin:0 auto;padding:15px;">
-                <table bgcolor="#E1672C">
-                    <tr>
-                        <td width="100%" style="width:100%;">
-                            <a href="{!! url('') !!}">
-                                <img src="{!! url('assets/images/logo.png') !!}" style="height: 60px;" height="60"/>
-                            </a>
-                        </td>
-                        <td align="right"><h6 style="margin: 0;text-transform: uppercase;color:#fff">Javul.org</h6></td>
-                    </tr>
-                </table>
-            </div>
-
-        </td>
-        <td></td>
-    </tr>
-</table><!-- /HEADER -->
-
-
-<!-- BODY -->
-<table width="100%">
-    <tr>
-        <td></td>
-        <td bgcolor="#FFFFFF">
-
-            <div style="display: block;margin: 0 auto;max-width: 600px;padding: 15px;">
-                <table width="100%">
-                    <tr>
-                        <td>
-                            @yield('content')
-                            <!-- social & contact -->
-                            <table width="100%" style="background-color:#ebebeb;margin-top: 20px;">
-                                <tr>
-                                    <td>
-
-                                        <!-- column 1 -->
-                                        @if(!$report_concern)
-                                        <table align="left" style="width:280px;min-width:279px;float:left;">
+        <td style="padding:40px 0;">
+            <!-- begin main block -->
+            <table cellpadding="0" cellspacing="0" width="50%" border="0" align="center">
+                <tbody>
+                <tr>
+                    <td>
+                        <a href="{{ url('/') }}" style="display:block; width:407px; height:100px; margin:0 auto 30px;">
+                            <img src="/assets/images/logo-email.png" width="407" height="100" alt="Pixelbuddha" style="display:block; border:0; margin:0;">
+                        </a>
+                        <!-- begin wrapper -->
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            <tbody>
+                            <tr>
+                                <td width="4" height="4"><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                <td colspan="3" rowspan="3" bgcolor="#FFFFFF" style="padding:0 0 30px;">
+                                    <!-- begin content -->
+                                    <p style="margin:10px 30px 33px;; text-align:center; text-transform:uppercase; font-size:24px; line-height:30px; font-weight:bold; color:#484a42;">
+                                        JAVUL.ORG
+                                    </p>
+                                    <!-- begin articles -->
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
                                             <tr>
-                                                <td style="padding:15px;">
-                                                    <h5 class="">Connect with Us:</h5>
-                                                    <p class="">
-                                                        <a href="#" style="color: #fff;font-size: 12px;font-weight: bold;padding: 3px 7px;
-                                                        text-decoration: none;background-color:#3b5998;display:block;margin-bottom:10px;text-align:center
-                                                        ">Facebook</a>
-                                                        <a href="#" style="color: #fff;font-size: 12px;font-weight: bold;padding: 3px 7px;
-                                                        text-decoration: none;background-color: #1daced;display:block;margin-bottom:10px;text-align:center
-                                                        ">Twitter</a>
-                                                        <a href="#" style="color: #fff;font-size: 12px;font-weight: bold;padding: 3px 7px;
-                                                        text-decoration: none;background-color:#db4a39;display:block;text-align:center">Google+</a>
-                                                    </p>
+                                                <td width="30"></td>
+                                                <td style="font-size:14px; line-height:22px; color:#333333; margin:0 0 5px;">
+                                                    @yield('content')
                                                 </td>
+                                                <td width="30"></td>
                                             </tr>
-                                        </table><!-- /column 1 -->
-                                        @endif
-                                        <!-- column 2 -->
-                                        <table align="left" style="width:280px;min-width:279px;float:left;">
-                                            <tr>
-                                                <td style="padding:15px;">
-                                                    <h5 class="">Contact Info:</h5>
-                                                    <p>Phone: <strong>XXX-XXX-XXXX</strong><br/>
-                                                        Email: <strong><a href="emailto:hseldon@trantor.com">info@javul.org</a></strong></p>
-                                                </td>
-                                            </tr>
-                                        </table><!-- /column 2 -->
+                                        </tbody>
+                                    </table>
 
-                                        <span class="clear"></span>
+                                    <!-- /end articles -->
+                                    <p style="margin:0; border-top:2px solid #e5e5e5; font-size:5px; line-height:5px; margin:0 30px 29px;">&nbsp;</p>
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                        <tr valign="top">
+                                            <td width="30"><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                            <td>
+                                                <p style="margin:0 0 4px; font-weight:bold; color:#333333; font-size:14px; line-height:22px;">Contact Info</p>
+                                                <p style="margin:0; color:#333333; font-size:11px; line-height:18px;">
+                                                    Phone: <strong>XXX-XXX-XXXX</strong><br/>
+                                                    Email: <strong><a href="mailto:info@javul.org">info@javul.org</a></strong>
+                                                </p>
+                                            </td>
+                                            <td width="30"><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                            <td width="120">
 
-                                    </td>
-                                </tr>
-                            </table><!-- /social & contact -->
+                                            </td>
+                                            <td width="30"><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- end content -->
+                                </td>
+                                <td width="4" height="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                            </tr>
 
-                        </td>
-                    </tr>
-                </table>
-            </div><!-- /content -->
 
+                            <tr>
+                                <td width="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                <td width="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                            </tr>
+
+                            <tr>
+                                <td width="4" height="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                <td width="4" height="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                            </tr>
+
+                            <tr>
+                                <td width="4" height="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                <td width="4" height="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                <td height="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                <td width="4" height="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                                <td width="4" height="4" style=""><p style="margin:0; font-size:1px; line-height:1px;">&nbsp;</p></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- end wrapper-->
+                        <p style="margin:0; padding:34px 0 0; text-align:center; font-size:11px; line-height:13px; color:#333333;">
+
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- end main block -->
         </td>
-        <td></td>
     </tr>
-</table><!-- /BODY -->
-
-
+    </tbody>
+</table>
 </body>
 </html>
