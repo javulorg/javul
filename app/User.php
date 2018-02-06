@@ -408,30 +408,31 @@ class User extends Authenticatable
     public static function SendEmailAndOnSiteAlert($content,$email_subject,$usersObj,$onlyemail=false,$email_field){
         if(!empty($usersObj)){
             foreach($usersObj as $user){
+                if($user) {
+                    // add notification for user
+                    UserNotification::create([
+                        'user_id' => $user->id,
+                        'content' => $content
+                    ]);
 
-                // add notification for user
-                UserNotification::create([
-                    'user_id' => $user->id,
-                    'content' => $content
-                ]);
+                    // send email for user if user has email field = 1
+                    // where email_field like : account_creation,forum_replies,watched_items,inbox,fund_received,task_management
 
-                // send email for user if user has email field = 1
-                // where email_field like : account_creation,forum_replies,watched_items,inbox,fund_received,task_management
+                    $userTempObj = User::find($user->id);
+                    if (!empty($userTempObj)) {
+                        $alertObj = Alerts::where('user_id', $user->id)->where($email_field, '=', 1)->first();
 
-                $userTempObj = User::find($user->id);
-                if(!empty($userTempObj)){
-                    $alertObj = Alerts::where('user_id',$user->id)->where($email_field,'=',1)->first();
+                        if (!empty($alertObj) && count($alertObj) > 0) {
+                            $toEmail = $userTempObj->email;
+                            $toName = $userTempObj->first_name . ' ' . $userTempObj->last_name;
+                            $subject = $email_subject;
 
-                    if(!empty($alertObj) && count($alertObj) > 0){
-                        $toEmail = $userTempObj->email;
-                        $toName= $userTempObj->first_name.' '.$userTempObj->last_name;
-                        $subject = $email_subject;
-
-                        \Mail::send('emails.alerts_email', ['userObj' => $user, 'content'=>$content,'report_concern'=>false], function($message) use($toEmail,$toName,$subject) {
-                            $message->replyTo(config('app.notification_reply_to'));
-                            $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(config('app.notification_email'), config('app.site_name'));
-                        });
+                            \Mail::send('emails.alerts_email', ['userObj' => $user, 'content' => $content, 'report_concern' => false], function ($message) use ($toEmail, $toName, $subject) {
+                                $message->replyTo(config('app.notification_reply_to'));
+                                $message->to($toEmail, $toName)->subject($subject);
+                                $message->from(config('app.notification_email'), config('app.site_name'));
+                            });
+                        }
                     }
                 }
             }
