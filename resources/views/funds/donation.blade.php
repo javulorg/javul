@@ -100,7 +100,9 @@
             <div class="col-sm-4">
                 <label for="amount" class="control-label">Amount to Donate</label>
                 <input type="text" value="" name="donate_amount" id="donate_amount" data-numeric
-                       placeholder="Amount" class="form-control" required>
+                       placeholder="Amount" class="form-control" required autocomplete="off">
+
+                <label id="paypal-fees" class="control-label"></label>
             </div>
         </div>
         <div class="row form-group donationDiv credit_card"  >
@@ -141,6 +143,18 @@
     var msg_flag ='{{ $msg_flag }}';
     var msg_type ='{{ $msg_type }}';
     var msg_val ='{{ $msg_val }}';
+
+    $('#donate_amount').on('input propertychange', function() {
+        var value = Number($(this).val());
+        var comission = (value * 2.9) / 100 + 0.3;
+        var result = value - comission;
+
+        if($(this).val().length == 0 || value == 0) {
+            $('#paypal-fees').text('');
+        } else {
+            $('#paypal-fees').text('Subtotal with PayPal fees: ' + result.toFixed(2));
+        }
+    });
 </script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>
 <script type="text/javascript" src="{!! url('assets/js/jquery.payment.js') !!}"></script>
