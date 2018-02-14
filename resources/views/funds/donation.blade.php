@@ -146,8 +146,7 @@
 
     $('#donate_amount').on('input propertychange', function() {
         var value = Number($(this).val());
-        var comission = (value * 2.9) / 100 + 0.3;
-        var result = value - comission;
+        var result = (value + 0.30) / (1 - 0.029);
 
         if($(this).val().length == 0 || value == 0) {
             $('#paypal-fees').text('');

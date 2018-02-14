@@ -312,8 +312,6 @@ class FundsController extends Controller
                     return redirect()->back()->withErrors(['error'=>'Something goes wrong. Please try again.'])->withInput();
 
                 $amount = $request->input('donate_amount');
-                $paypalFees = (($amount * 2.9)/100) + 0.3;
-                $amount = $amount - $paypalFees ;
                 //$message = Auth::user()->first_name.' '.Auth::user()->last_name. " donate $".$amount.' to'.$donateTo.$obj->name;
                 $message = "  $".$amount.' donate to'.$donateTo.$obj->name;
 
@@ -353,6 +351,8 @@ class FundsController extends Controller
                     $inputData['cancelURL'] = url('funds/cancel?type='.$type.'&orderID='.$orderIDHashID->encode($fundID));
                 }
 
+                $inputData['donate_amount'] += 0.30;
+                $inputData['donate_amount'] = $inputData['donate_amount'] / (1 - 0.029);
                 if($type == "user" && !empty($obj->paypal_email)){
                     $inputData['cc-amount'] = $request->input('donate_amount');
                     $inputData['paypal_email'] = $obj->paypal_email;
