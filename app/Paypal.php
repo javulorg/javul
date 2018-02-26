@@ -421,13 +421,12 @@ class Paypal extends Model{
         $receiverList = new ReceiverList($receiver);
         $payRequest->receiverList = $receiverList;
         if(isset($data['ajax']) && $data['ajax'])
-            $payRequest->senderEmail = "selleracc@paypalsandbox.com";
+            $payRequest->senderEmail = env('PAYPAL_MASTER_ACCOUNT');
 
         //$payRequest->feesPayer = "SENDER";
 
 
-        $requestEnvelope = new RequestEnvelope("en_US");
-        $payRequest->requestEnvelope = $requestEnvelope;
+        $payRequest->requestEnvelope = 'en_US';
         $payRequest->actionType = "PAY";
         $payRequest->cancelUrl = $data['cancelURL'];
         $payRequest->returnUrl = $data['returnURL'];

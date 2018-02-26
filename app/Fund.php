@@ -133,7 +133,7 @@ class Fund extends Model
 
     public static function getUserAwardedFund($user_id=''){
         if(!empty($user_id)){
-            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','debit')->where('status','approved')->sum('amount');
+            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','debit')->where('status','approved')->orWhere('status', 'completed')->sum('amount');
         }
         return 0;
     }
