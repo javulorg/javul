@@ -223,7 +223,7 @@ class FundsController extends Controller
             $url = URL::previous();
             $url =explode("/",$url );
             $type = $url[5]; // for local 6. for live 5
-            $id = $url[6]; // for localhost 7. for live 6
+            $id = $url[count($url) - 1]; // for localhost 7. for live 6
             $exists = false;
             $obj = [];
             $donateTo = '';
