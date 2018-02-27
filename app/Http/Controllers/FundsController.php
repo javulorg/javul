@@ -353,15 +353,15 @@ class FundsController extends Controller
 
                 $inputData['donate_amount'] += 0.30;
                 $inputData['donate_amount'] = $inputData['donate_amount'] / (1 - 0.029);
-                if($type == "user" && !empty($obj->paypal_email)){
-                    $inputData['cc-amount'] = $request->input('donate_amount');
-                    $inputData['paypal_email'] = $obj->paypal_email;
-                    $response = Paypal::transferAmountToUser($inputData);
-                    if($response['success'])
-                        $response['url'] =env('ADAPTIVE_PAYMENT_URL').$response['paykey'];
-                }
-                else
-                    $response = User::donateAmount($inputData);
+//                if($type == "user" && !empty($obj->paypal_email)){
+//                    $inputData['cc-amount'] = $request->input('donate_amount');
+//                    $inputData['paypal_email'] = $obj->paypal_email;
+//                    $response = Paypal::transferAmountToUser($inputData);
+//                    if($response['success'])
+//                        $response['url'] =env('ADAPTIVE_PAYMENT_URL').$response['paykey'];
+//                }
+//                else
+                $response = User::donateAmount($inputData);
 
                 // Donate amount to Unit/Objective/Task/User
                 //dd($response);
@@ -383,9 +383,9 @@ class FundsController extends Controller
 
                         $transactionObj = Transaction::find($transactionID);
                         if(count($transactionObj) > 0 && !empty($transactionObj)){
-                            if(!empty($obj->paypal_email))
-                                $transactionObj->update(['pay_key'=>$response['paykey'],'status'=>strtolower($response['status'])]);
-                            else
+//                            if(!empty($obj->paypal_email))
+//                                $transactionObj->update(['pay_key'=>$response['paykey'],'status'=>strtolower($response['status'])]);
+//                            else
                                 $transactionObj->update(['pay_key'=>$response['payment_id'],'status'=>strtolower($response['status'])]);
                         }
                     }
