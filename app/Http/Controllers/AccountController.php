@@ -132,7 +132,8 @@ class AccountController extends Controller
             $validator = \Validator::make($request->all(), [
 //                'first_name' => 'required',
 //                'last_name' => 'required',
-                'email' => 'required|unique:users,email,'.Auth::user()->id
+                'email' => 'required|unique:users,email,'.Auth::user()->id,
+                'paypal_email' => 'email'
                 /*'phone'=>'required|numeric',
                 'mobile'=>'required|numeric',
                 'country'=>'required',
@@ -201,6 +202,7 @@ class AccountController extends Controller
             Auth::user()->job_skills=$job_skills;
             Auth::user()->area_of_interest=$area_of_interest;
             Auth::user()->timezone=$request->input('timezone');
+            Auth::user()->paypal_email=$request->input('paypal_email');
             Auth::user()->save();
             return \Response::json(['success'=>true]);
         }

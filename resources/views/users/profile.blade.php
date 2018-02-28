@@ -30,11 +30,13 @@
         </div>
         <div class="col-sm-8">
             <h3 style="display: inline-block;width: 70%;">Total Activity Points : {{$activityPoints}} | Idea Points : {{$activityPoints_forum}}</h3>
+            @if($userObj->paypal_email)
             <a class="btn black-btn btn-sm" id="add_funds_btn" href="{!! url('funds/donate/user/'.$userIDHashID->encode($userObj->id)) !!}"
                style="display: inline-block;float:right;margin-top:10px">
                 <i class="fa fa-plus plus"></i>
                 {!! trans('messages.add_funds')!!}
             </a>
+            @endif
             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                 <li class="active"><a href="#unit_details" data-toggle="tab">Units Details</a></li>
                 <li><a href="#objectives_details" data-toggle="tab">Objectives Details</a></li>

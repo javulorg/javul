@@ -128,6 +128,9 @@ class FundsController extends Controller
                     $exists = User::checkUserExist($id,true);
                     if($exists){
                         $obj= User::getObj($id);
+                        if(!$obj->paypal_email) {
+                            return redirect()->back();
+                        }
                         $obj->name=$obj->first_name.' '.$obj->last_name;
                         $obj->slug=strtolower($obj->first_name.'_'.$obj->last_name);
                         $donateTo =" user ";
@@ -295,6 +298,7 @@ class FundsController extends Controller
                     break;
             }
             if($exists){
+                $response = null;
                 $inputData = $request->all();
                 $validator = \Validator::make($inputData, [
                     'donate_amount'=> 'required|numeric'
@@ -352,7 +356,7 @@ class FundsController extends Controller
                 }
 
                 $inputData['donate_amount'] += 0.30;
-                $inputData['donate_amount'] = $inputData['donate_amount'] / (1 - 0.029);
+                $inputData['donate_amount'] = round($inputData['donate_amount'] / (1 - 0.029), 2);
 //                if($type == "user" && !empty($obj->paypal_email)){
 //                    $inputData['cc-amount'] = $request->input('donate_amount');
 //                    $inputData['paypal_email'] = $obj->paypal_email;
@@ -361,11 +365,21 @@ class FundsController extends Controller
 //                        $response['url'] =env('ADAPTIVE_PAYMENT_URL').$response['paykey'];
 //                }
 //                else
-                $response = User::donateAmount($inputData);
+//                if($type == "user" && !empty($obj->paypal_email)) {
+//                    $response = User::donateAmount($inputData);
+//                }
+
+                if($type == "user" && !empty($obj->paypal_email)){
+                    $inputData['cc-amount'] = $inputData['donate_amount'];
+                    $inputData['paypal_email'] = $obj->paypal_email;
+                    $response = Paypal::transferAmountToUser($inputData);
+                    if($response['success'])
+                        $response['url'] =env('ADAPTIVE_PAYMENT_URL').$response['paykey'];
+                }
 
                 // Donate amount to Unit/Objective/Task/User
                 //dd($response);
-                if($response['success'])
+                if($response && $response['success'])
                 {
                     // update payment id field to respective tables.
                     if($type == "user"){
@@ -384,9 +398,9 @@ class FundsController extends Controller
                         $transactionObj = Transaction::find($transactionID);
                         if(count($transactionObj) > 0 && !empty($transactionObj)){
 //                            if(!empty($obj->paypal_email))
-//                                $transactionObj->update(['pay_key'=>$response['paykey'],'status'=>strtolower($response['status'])]);
+                                $transactionObj->update(['pay_key'=>$response['paykey'],'status'=>strtolower($response['status'])]);
 //                            else
-                                $transactionObj->update(['pay_key'=>$response['payment_id'],'status'=>strtolower($response['status'])]);
+//                                $transactionObj->update(['pay_key'=>$response['payment_id'],'status'=>strtolower($response['status'])]);
                         }
                     }
                     else{

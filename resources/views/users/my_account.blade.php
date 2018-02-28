@@ -265,7 +265,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row form-group">
+                                <div class="row">
                                     <div class="col-sm-4 form-group">
                                         <label class="control-label" for="textinput">Address</label>
                                         <textarea name="address" id="address" @if(!empty(old('address'))) value="{{old('address')}}" @else value="{{Auth::user()->address}}"
@@ -305,6 +305,15 @@
                                             </div>
                                             <span class="help-block"></span>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-sm-4 form-group">
+                                        <label class="control-label" for="textinput">PayPal Email ID</label>
+                                        <input id="paypal_email" name="paypal_email" placeholder="PayPal Email ID" class="form-control input-md" type="text"
+                                               @if(!empty(old('paypal_email'))) value="{{old('paypal_email')}}" @else value="{{Auth::user()->paypal_email}}"
+                                                @endif>
+                                        <span class="help-block"></span>
                                     </div>
                                 </div>
                                 <div class="row">
