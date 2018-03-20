@@ -11,7 +11,7 @@
 </style>
 @endsection
 @section('content')
-
+@php $obj_identifier = get_class($obj); @endphp
 <div class="container">
     <div class="row form-group" style="margin-bottom:15px;">
         @include('elements.user-menu',array('page'=>'home'))
@@ -81,6 +81,7 @@
     </div>-->
     @endif
 
+    @if($obj_identifier != 'App\Objective')
     <form accept-charset="UTF-8" action="{!! url('funds/donate-amount') !!}" class="simple_form form-horizontal" method="post"
           novalidate="novalidate" id="donate_amount_form">
         {{ csrf_field() }}
@@ -111,6 +112,41 @@
             </div>
         </div>
     </form>
+    @else
+        <form accept-charset="UTF-8" action="{!! url('funds/transfer-from-unit') !!}" class="simple_form form-horizontal" method="post"
+              novalidate="novalidate" id="donate_amount_form">
+            {{ csrf_field() }}
+            @if(count($errors->all()) > 0)
+                <?php $err_msg ='';?>
+                @foreach($errors->all() as $err)
+                    <?php $err_msg.='<span>'.$err.'</span>';?>
+                @endforeach
+
+                <div class="alert alert-danger">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Error!</strong> {!!$err_msg!!}
+                </div>
+
+            @endif
+            <div class="row form-group donationDiv credit_card"  >
+                <div class="col-sm-4">
+                    <label for="amount" class="control-label">Amount to Donate</label>
+                    <input type="text" value="" name="donate_amount" id="donate_amount" data-numeric
+                           placeholder="Amount" class="form-control" required autocomplete="off">
+
+                    <label id="paypal-fees" class="control-label"></label>
+                </div>
+            </div>
+            <div class="row form-group donationDiv credit_card"  >
+                <div class="col-sm-2 col-xs-12">
+                    <input type="image" id="submit_donate"  src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif"/>
+                </div>
+                <div class="col-sm-2 col-xs-12">
+                    <button class="btn btn-primary">Transfer from Unit</button>
+                </div>
+            </div>
+        </form>
+    @endif
 </div>
 
 @include('elements.footer')
@@ -153,6 +189,12 @@
         } else {
             $('#paypal-fees').text('Subtotal with PayPal fees: ' + result.toFixed(2));
         }
+    });
+
+    $('#transferFromUnit').on('click', function(e) {
+        e.preventDefault();
+
+        $('#donate_amount_form').attr('action', '{!! url('funds/transfer-from-unit') !!}');
     });
 </script>
 <script src="{!! url('assets/js/custom_tostr.js') !!}" type="text/javascript"></script>

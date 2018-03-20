@@ -13,6 +13,7 @@ $(function(){
         e.preventDefault();
         $(".remove-alert ").remove();
         var $form = $('#donate_amount_form');
+        $($form).attr('action', '/funds/donate-amount');
         $("#donate_amount").toggleInputError(!$.payment.validateAmount($('#donate_amount').val()));
         if($('.has-error').length == 0){
             $("#donate_amount").attr('readonly','readonly');

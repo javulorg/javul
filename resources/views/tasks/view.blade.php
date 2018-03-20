@@ -83,7 +83,7 @@
                                         <label class="control-label upper">Award</label>
                                     </div>
                                     <div class="col-xs-8 borderLFT text-left">
-                                        <label class="control-label">$60</label>
+                                        <label class="control-label">${{ $taskObj->compensation }}</label>
                                     </div>
                                 </div>
                                 <div class="row borderBTM lnht30">

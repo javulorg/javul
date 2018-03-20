@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\URL;
 class FundsController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth',['except'=>['donate_to_unit_objective_task','donate_amount','success','cancel']]);
+        $this->middleware('auth',['except'=>['donate_to_unit_objective_task','donate_amount','transfer_from_unit','success','cancel']]);
     }
 
     public function index(Request $request){
@@ -375,6 +375,8 @@ class FundsController extends Controller
                     $response = Paypal::transferAmountToUser($inputData);
                     if($response['success'])
                         $response['url'] =env('ADAPTIVE_PAYMENT_URL').$response['paykey'];
+                } else {
+                    $response = User::donateAmount($inputData);
                 }
 
                 // Donate amount to Unit/Objective/Task/User
@@ -420,6 +422,70 @@ class FundsController extends Controller
                 }
                 else
                     return redirect()->back()->withErrors(['error'=>'Something goes wrong. Please try again later.'])->withInput();
+            }
+        }
+    }
+
+    public function transfer_from_unit(Request $request)
+    {
+        if($request->isMethod('post')) {
+
+            //check payment from new credit card or old?
+            /* $fromType = $request->input('frmTyp');
+             $fromType = Helpers::encrypt_decrypt('decrypt',$fromType);
+             if($fromType != "new" && $fromType != "old")
+                 return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again.']]);*/
+
+            $url = URL::previous();
+            $url = explode("/", $url);
+            $type = $url[5]; // for local 6. for live 5
+            $id = $url[count($url) - 1]; // for localhost 7. for live 6
+            $exists = false;
+            $obj = [];
+            $donateTo = '';
+            $hashID = '';
+            $controller = '';
+            $addFunds = [];
+
+            $donateToLink = '';
+
+            if($type == 'objective') {
+                $exists = Objective::checkObjectiveExist($id, true);
+                if ($exists) {
+                    $obj = Objective::getObj($id);
+                    $donateTo = " objective ";
+                    $controller = "objectives";
+                    $addFunds = ['objective_id' => $obj->id];
+                    $hashID = new Hashids('objective id hash', 10, \Config::get('app.encode_chars'));
+                    $donateToLink = '<a href="' . url('objectives/' . $hashID->encode($obj->id) . '/' . $obj->slug) . '">' . $obj->name . '</a>';
+
+                    $response = null;
+                    $inputData = $request->all();
+                    $validator = \Validator::make($inputData, [
+                        'donate_amount' => 'required|numeric'
+                    ], [
+                        'donate_amount.required' => 'Please enter amount to donate',
+                        'donate_amount.numeric' => 'Amount must be numeric'
+                    ]);
+
+
+                    if ($validator->fails()) {
+                        return redirect()->back()->withErrors($validator)->withInput();
+                    }
+
+                    if (empty($obj) || count($obj) == 0)
+                        return redirect()->back()->withErrors(['error' => 'Something goes wrong. Please try again.'])->withInput();
+
+                    $amount = $request->input('donate_amount');
+
+                    $transfer = Fund::transferFromUnit($obj, $amount);
+
+                    if(isset($transfer['success'])) {
+                        return view('funds.success', ['messageType' => true, 'payment_id' => 'Inner Transaction', 'amount' => $amount]);
+                    } else {
+                        return view('funds.success', ['messageType' => false, 'payment_id' => 'Inner Transaction', 'amount' => $amount]);
+                    }
+                }
             }
         }
     }

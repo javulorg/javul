@@ -45,7 +45,7 @@
                     <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6 col-xs-6">{!! trans('messages.funds_available') !!}</div>
-                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">43612</div>
+                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">{{ $totalFundsAvailable }}</div>
                         </div>
                     </div>
                 </div>

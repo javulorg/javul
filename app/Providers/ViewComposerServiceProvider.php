@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Fund;
 use App\Http\Controllers\Mc;
 use App\Issue;
 use App\Objective;
@@ -28,6 +29,7 @@ class ViewComposerServiceProvider extends ServiceProvider
             $view->with('totalObjectives',Objective::count());
             $view->with('totalTasks',Task::count());
             $view->with('totalIssues',Issue::count());
+            $view->with('totalFundsAvailable',Fund::where('status', 'approved')->where('transaction_type', 'donated')->sum('amount'));
         });
 
         //----------------- for footer ---------------------------

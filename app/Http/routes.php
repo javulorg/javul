@@ -232,6 +232,7 @@ Route::get('funds/donate/issue/{issue_id}','FundsController@donate_to_unit_objec
 Route::get('funds/donate/user/{user_id}','FundsController@donate_to_unit_objective_task');
 Route::get('funds/get-card-name','FundsController@get_card_name');
 Route::post('funds/donate-amount','FundsController@donate_amount');
+Route::post('funds/transfer-from-unit','FundsController@transfer_from_unit');
 Route::get('funds/success','FundsController@success');
 Route::get('funds/cancel','FundsController@cancel');
 

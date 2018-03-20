@@ -30,7 +30,7 @@
                         </div>
                         <div class="col-sm-6">
                             <label for="Result"  class="control-lable">Amount :</label>
-                            <lable>{{$obj->amount}}</lable>
+                            <lable>@if(isset($obj)) {{$obj->amount}} @else {{ $amount }} @endif</lable>
                         </div>
                     </div>
                     <div class="row from-group">
@@ -56,11 +56,11 @@
                     <div class="row from-group">
                         <div class="col-sm-6 text-right">
                             <label for="payment_id"  class="control-lable">Payment ID : </label>
-                            <lable>{{$obj->payment_id}}</lable>
+                            <lable>@if(isset($obj)) {{$obj->payment_id}} @else {{ $payment_id }} @endif</lable>
                         </div>
                         <div class="col-sm-6">
                             <label for="Result"  class="control-lable">Amount :</label>
-                            <lable>{{$obj->amount}}</lable>
+                            <lable>@if(isset($obj)) {{$obj->amount}} @else {{ $amount }} @endif</lable>
                         </div>
                     </div>
                     <div class="row from-group">

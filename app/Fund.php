@@ -138,4 +138,34 @@ class Fund extends Model
         return 0;
     }
 
+    public static function transferFromUnit($obj, $amount)
+    {
+        $unit = $obj->unit;
+
+        $availableFunds = Fund::getUnitDonatedFund($unit->id);
+
+        if($availableFunds >= $amount) {
+            Fund::create([
+                'user_id' => \Auth::user()->id,
+                'unit_id' => $unit->id,
+                'amount' => $amount * -1,
+                'transaction_type' => 'donated',
+                'status' => 'approved',
+                'fund_type' => 'unit'
+            ]);
+
+            Fund::create([
+                'user_id' => \Auth::user()->id,
+                'objective_id' => $obj->id,
+                'amount' => $amount,
+                'transaction_type' => 'donated',
+                'status' => 'approved',
+                'fund_type' => 'objective'
+            ]);
+            return ['success' => true];
+        } else {
+            return ['error' => 'Unit has no that amount of funds available'];
+        }
+    }
+
 }
