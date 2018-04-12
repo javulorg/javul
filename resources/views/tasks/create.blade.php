@@ -234,9 +234,7 @@
                                                             {{"Time left for editing: ".$availableDays." days."}})
                                                         @endif
                                                     @endif
-                                                    @if($taskObj->status == "editable")
-                                                        (<a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a>)
-                                                    @endif
+                                                    (<a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a>)
 
                                                 @elseif($taskObj->status == "editable" && count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted")
                                                     ( You changed this task status to "Awaiting Approval". Waiting for {{count($otherRemainEditors)}}
