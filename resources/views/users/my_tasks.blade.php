@@ -77,7 +77,7 @@
                                 @foreach($myAssignedTask as $assigned_task)
                                     <tr>
                                         <td>
-                                            <a href="{!! url('tasks/'.$taskIDHashID->encode($assigned_task->task_id).'/'.$assigned_task->slug)!!}">
+                                            <a href="{!! url('tasks/'.$taskIDHashID->encode($assigned_task->id).'/'.$assigned_task->slug)!!}">
                                                 {{$assigned_task->name}}
                                             </a>
                                         </td>
