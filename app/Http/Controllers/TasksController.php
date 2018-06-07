@@ -1152,6 +1152,16 @@ class TasksController extends Controller
                             $request->session()->forget('msg_type');
                         }
                     }
+
+                    //calculate date for task completion time
+                    $completion_time_start = date_create($taskObj->estimated_completion_time_start);
+                    $completion_time_end = date_create($taskObj->estimated_completion_time_end);
+                    $dateDifferent = date_diff($completion_time_start,$completion_time_end);
+                    $taskObj->completionTime = $dateDifferent->format("%a days");
+                    if($dateDifferent->format("%h") > 0)
+                        $taskObj->completionTime = $taskObj->completionTime." ".$dateDifferent->format("%h hours");
+                    //calculation end here
+
                     view()->share('msg_flag',$msg_flag);
                     view()->share('msg_val',$msg_val);
                     view()->share('msg_type',$msg_type);

@@ -91,7 +91,7 @@
                                         <label class="control-label upper">Completion</label>
                                     </div>
                                     <div class="col-xs-8 borderLFT text-left">
-                                        <label class="control-label">30 days</label>
+                                        <label class="control-label">{{ $taskObj->completionTime }}</label>
                                     </div>
                                 </div>
                                 <div class="row">
