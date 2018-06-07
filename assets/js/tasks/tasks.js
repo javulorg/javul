@@ -393,6 +393,9 @@ $(document).ready(function() {
                         toastr['success']('Request submitted successfully.', '');
                         if($.trim(resp.status) != "" && resp.status == "awaiting_approval")
                             window.location.reload(true);
+                        //more than 1 editors edit the task
+						if(resp.status == "")
+							window.location.reload(true);
                     }
                     else
                         toastr['error']('Something goes wrong. please try again later.', '');
