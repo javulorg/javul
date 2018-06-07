@@ -1167,12 +1167,14 @@ class TasksController extends Controller
                     $flag =Task::isUnitAdminOfTask($task_id); // right now considered only unit admin can assigned task to bidder if they
                     // want task creator can also assign task to bidder then remove this and uncomment above lines
                     $taskBidders = [];
-                    if($flag){
+                    //show bid to all users 05-06-2018 if only UnitAdminOfTask can see bid then remove comments
+                    //if($flag){
                         $taskBidders = TaskBidder::join('users','task_bidders.user_id','=','users.id')
                                         ->select(['users.first_name','users.last_name','users.id as user_id','task_bidders.*'])
                                         ->where('task_id',$task_id)->get();
-                    }
+                    //}
                     view()->share('taskBidders',$taskBidders);
+                    view()->share('isUnitAdminOfTask',$flag);
                     // end display listing of bidders
 
                     $availableFunds =Fund::getTaskDonatedFund($task_id);
