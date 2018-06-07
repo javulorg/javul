@@ -27,15 +27,20 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
     <td>{{\App\SiteConfigs::task_status($task->status)}}</td>
     <td width="11%">
         @if($task->status == "approval")
-            @if(\App\TaskBidder::checkBid($task->id))
-                <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)).'#bid_now' !!}" class="btn btn-xs btn-primary">
-                    <!--<span><img src="{!! url('assets/images/bid_small.png') !!}"/></span>-->
-                    Bid now
-                </a>
+           <!-- User cannot bid on their task -->
+            @if(isset($authUserObj->id) && $authUserObj->id != $task->user_id)
+                @if(\App\TaskBidder::checkBid($task->id))
+                    <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)).'#bid_now' !!}" class="btn btn-xs btn-primary">
+                        <!--<span><img src="{!! url('assets/images/bid_small.png') !!}"/></span>-->
+                        Bid now
+                    </a>
+                @else
+                    <a title="applied bid" class="btn btn-xs btn-warning">
+                        Applied Bid
+                    </a>
+                @endif
             @else
-                <a title="applied bid" class="btn btn-xs btn-warning">
-                    Applied Bid
-                </a>
+                -
             @endif
         @else
             -
