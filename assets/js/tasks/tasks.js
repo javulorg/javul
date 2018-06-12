@@ -173,6 +173,26 @@ $(document).ready(function() {
         }
 
 
+        $("#taskSummary").ckeditor();
+        var taskSummary = $('#taskSummary');
+        taskSummary.ckeditor({ 
+        extraPlugins: 'charcount', 
+        maxLength: 1000, 
+        toolbar: 'TinyBare', 
+        toolbar_TinyBare: [
+             ['Bold','Italic','Underline'],
+             ['Undo','Redo'],['Cut','Copy','Paste'],
+             ['NumberedList','BulletedList','Table'],['CharCount']
+        ] 
+        }).ckeditor().editor.on('key', function(obj) {
+            if (obj.data.keyCode === 8 || obj.data.keyCode === 46 || obj.data.keyCode === 37 || obj.data.keyCode === 38 || obj.data.keyCode === 39 || obj.data.keyCode === 40 || obj.data.keyCode === 27 || obj.data.keyCode === 16 ) {
+                return true;
+            }
+            if (taskSummary.ckeditor().editor.document.getBody().getText().length >= 1000) {
+                toastr['error']('Task summary can accept maximum 1000 character.', '');
+                return false;
+            }else { return true; }
+        });
 
 
 

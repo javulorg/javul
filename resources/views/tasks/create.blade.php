@@ -249,7 +249,7 @@
                             <div class="row">
                                 <div class="col-sm-12 form-group">
                                     <label class="control-label">Summary</label>
-                                    <textarea class="form-control summernote" name="summary">@if(!empty($taskObj)) {{$taskObj->summary}} @endif</textarea>
+                                    <textarea class="form-control" id="taskSummary" name="summary">@if(!empty($taskObj)) {{$taskObj->summary}} @endif</textarea>
                                 </div>
 
                                 <div class="col-sm-12 form-group">
