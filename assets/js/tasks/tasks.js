@@ -172,6 +172,20 @@ $(document).ready(function() {
             });
         }
 
+        //check user can change task status or not
+        if($("#task_status").length > 0 && $("#task_status").val() != "editable"){
+            $("#unit").attr("disabled","disabled");
+            $("#objective").attr("disabled","disabled");
+            $("#task_name").attr("disabled","disabled");
+            $("#task_skills").attr("disabled","disabled");
+            $("#estimated_completion_time_start").attr("disabled","disabled");
+            $("#estimated_completion_time_end").attr("disabled","disabled");
+            $("#compensation").attr("disabled","disabled");
+            $("#taskSummary").attr("disabled","disabled");
+            $("#action_items").attr("disabled","disabled");
+            $(".summernote").attr("disabled","disabled");
+            $("#create_objective").removeAttr('disabled').addClass('black-btn').css('background-color','none');
+        }
 
         $("#taskSummary").ckeditor();
         var taskSummary = $('#taskSummary');
@@ -194,6 +208,12 @@ $(document).ready(function() {
             }else { return true; }
         });
 
+        //disabled submit button
+        $("#form_sample_2").submit(function (e) {
+            //disable the submit button
+            $("#create_objective").attr("disabled", true);
+            return true;
+        });
 
 
         if(typeof editTask !== typeof undefined && editTask) {

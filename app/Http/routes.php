@@ -214,6 +214,7 @@ Route::any('tasks/re_assign/{task_id}','TasksController@re_assign');
 Route::post('tasks/mark_task_complete/{task_id}','TasksController@mark_as_complete');
 Route::any('tasks/{taskid}/edit', 'TasksController@edit');
 Route::any('tasks/bid_now/{task_id}','TasksController@bid_now');
+Route::any('tasks/{taskid}/edit/{task_status}','TasksController@edit');
 Route::get('tasks/{unitid}/lists', 'TasksController@lists');
 Route::any('tasks/{taskid}/{slug}', 'TasksController@view');
 Route::get('tasks/get_tasks_paginate', 'TasksController@get_tasks_paginate');

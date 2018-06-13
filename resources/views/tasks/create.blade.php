@@ -114,7 +114,7 @@
                                     <label class="control-label">Task Name</label>
                                     <div class="input-icon right">
                                         <i class="fa"></i>
-                                        <input type="text" name="task_name" value="{{ (!empty($taskObj))? $taskObj->name : old('task_name') }}"
+                                        <input type="text" name="task_name" id="task_name" value="{{ (!empty($taskObj))? $taskObj->name : old('task_name') }}"
                                                class="form-control"
                                                placeholder="Task Name"/>
                                         @if ($errors->has('task_name'))
@@ -210,7 +210,7 @@
                                     <div class="input-group">
                                         <div class="input-icon right">
                                             <i class="fa"></i>
-                                            <input type="text" name="compensation" value="{{ (!empty($taskObj))? $taskObj->compensation : old('compensation') }}"
+                                            <input type="text" id="compensation" name="compensation" value="{{ (!empty($taskObj))? $taskObj->compensation : old('compensation') }}"
                                                    class="form-control border-radius-0 onlyDigits"
                                                    placeholder="Compensation"/>
                                         </div>
@@ -223,6 +223,13 @@
                                     <div class="col-sm-4 form-group">
                                         <label class="control-label">Status</label>
                                         <div class="input-icon right">
+                                            @if(!empty($change_task_status) || \App\Task::isUnitAdminOfTask($taskObj->id))
+                                                <select name="task_status" class="form-control" id="task_status">
+                                                    @foreach(\App\SiteConfigs::task_status() as $index=>$status)
+                                                        <option @if($taskObj->status == $index) selected=selected @endif value="{{$index}}">{{ $status }}</option>                                                        
+                                                    @endforeach
+                                                </select>
+                                            @else
                                             <!--<span class="label label-default" style="line-height: 33px;padding:7px 6px;">-->
                                             <span>
                                                 {{\App\SiteConfigs::task_status($taskObj->status)}}
@@ -240,6 +247,7 @@
                                                     ( You changed this task status to "Awaiting Approval". Waiting for {{count($otherRemainEditors)}}
                                                     other editors to do the same)
                                                 @endif
+                                            @endif
                                             </span>
                                         </div>
                                     </div>

@@ -644,7 +644,7 @@ class TasksController extends Controller
      * @param $task_id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Request $request,$task_id){
+    public function edit(Request $request,$task_id,$change_status = false){
         if(!empty($task_id))
         {
             $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
@@ -655,6 +655,15 @@ class TasksController extends Controller
 
                 // if user submit the form then update the data.
                 if($request->isMethod('post') && !empty($task)){
+                    //change task status if user unitAdmin
+                    if($change_status){
+                        Task::where('id',$task_id)->update([
+                            'status'=> $request->task_status
+                        ]);
+                        $request->session()->flash('msg_val', "Task status updated successfully!!!");
+                        return redirect('tasks/'.$taskIDHashID->encode($task_id).'/'.$task->slug);
+                    }
+                    //end here
                     if($task->status == "awaiting_approval" || $task->status == "approval"){
                         return redirect()->back()->withErrors(['unit'=>'You can\'t edit task.'])->withInput();
                     }
@@ -1002,6 +1011,7 @@ class TasksController extends Controller
                 view()->share('exploded_task_list',$exploded_task_list );
                 view()->share('editFlag',true);
                 view()->share('actionListFlag',$taskObj->task_action);
+                view()->share('change_task_status',$change_status);
                 /*if(count($taskDocumentsObj) > 0)
                     view()->share('actionListFlag',true);
                 else
@@ -1352,7 +1362,9 @@ class TasksController extends Controller
                         //$taskObj = Task::find($task_id);
                         if(!empty($taskObj)){
                             //$taskObj->update(['status'=>'awaiting_approval']);
-                            $taskObj->update(['status'=>'approval']);
+                            //$taskObj->update(['status'=>'approval']);
+                            //update task status if only on editor of an task
+                            $taskObj->update(['status'=>'open_for_bidding']);
 
 
 
@@ -1436,8 +1448,9 @@ class TasksController extends Controller
             if(!empty($task_id)){
                 $task_id = $task_id[0];
                 $taskObj = Task::find($task_id);
-                if($taskObj->status != "approval")
+                if($taskObj->status != "open_for_bidding"){
                     return \Redirect::to('/tasks');
+                }
                 if(!empty($taskObj)){
                     if($request->isMethod('post')){
 

@@ -47,17 +47,29 @@
                 </td>
                 <td>{{\App\SiteConfigs::task_status($task->status)}}</td>
                 <td width="11%">
-                    @if($task->status == "approval")
-                        @if(\App\TaskBidder::checkBid($task->id))
-                            <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)) !!}" class="btn btn-xs btn-primary">
-                                <!--<span><img src="{!! url('assets/images/bid_small.png') !!}"/></span>-->
-                                Bid now
-                            </a>
-                        @else
-                            <a title="applied bid" class="btn btn-xs btn-warning">
-                                Applied Bid
-                            </a>
+                    @if(\App\Task::isUnitAdminOfTask($task->id))
+                        <a title="Change Task Status" href="{!! url('tasks/'.$taskIDHashID->encode($task->id)).'/edit/change_status' !!}" class="btn btn-xs btn-primary">
+                            Change Status
+                        </a>
+                    @endif
+                    @if($task->status == "approval" || $task->status == "open_for_bidding")
+                    <!-- User cannot bid on their task -->
+                        @if(isset($authUserObj->id) && $authUserObj->id != $task->user_id)
+                            @if(\App\TaskBidder::checkBid($task->id))
+                                <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($task->id)).'#bid_now' !!}" class="btn btn-xs btn-primary">
+                                    <!--<span><img src="{!! url('assets/images/bid_small.png') !!}"/></span>-->
+                                    Bid now
+                                </a>
+                            @else
+                                <a title="applied bid" class="btn btn-xs btn-warning">
+                                    Applied Bid
+                                </a>
+                            @endif
+                        @elseif(!\App\Task::isUnitAdminOfTask($task->id))
+                            -
                         @endif
+                    @elseif(!\App\Task::isUnitAdminOfTask($task->id))
+                        -
                     @endif
                 </td>
             </tr>

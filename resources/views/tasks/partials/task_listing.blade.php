@@ -26,7 +26,12 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
     </td>
     <td>{{\App\SiteConfigs::task_status($task->status)}}</td>
     <td width="11%">
-        @if($task->status == "approval")
+        @if(\App\Task::isUnitAdminOfTask($task->id))
+            <a title="Change Task Status" href="{!! url('tasks/'.$taskIDHashID->encode($task->id)).'/edit/change_status' !!}" class="btn btn-xs btn-primary">
+                Change Status
+            </a>
+        @endif
+        @if($task->status == "approval" || $task->status == "open_for_bidding")
            <!-- User cannot bid on their task -->
             @if(isset($authUserObj->id) && $authUserObj->id != $task->user_id)
                 @if(\App\TaskBidder::checkBid($task->id))
@@ -39,10 +44,10 @@ $objectiveSlug = \App\Objective::getSlug($task->objective_id);?>
                         Applied Bid
                     </a>
                 @endif
-            @else
+            @elseif(!\App\Task::isUnitAdminOfTask($task->id))
                 -
             @endif
-        @else
+        @elseif(!\App\Task::isUnitAdminOfTask($task->id))
             -
         @endif
     </td>
