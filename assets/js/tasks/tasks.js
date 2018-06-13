@@ -211,8 +211,10 @@ $(document).ready(function() {
         //disabled submit button
         $("#form_sample_2").submit(function (e) {
             //disable the submit button
-            $("#create_objective").attr("disabled", true);
-            return true;
+            if($("#form_sample_2").valid()){
+                $("#create_objective").attr("disabled", true);
+                return true;
+            }
         });
 
 
@@ -394,6 +396,8 @@ $(document).ready(function() {
                         toastr['success']('Document deleted successfully.', '');
                         if ($("table.documents tbody tr").length > 1)
                             $that.parents('tr:eq(0)').remove();
+                        if ($("table.documents tbody tr").length < 10)
+                            cloneTR(true);
 
                         $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
                     }
@@ -468,16 +472,39 @@ $(document).ready(function() {
     }
 
 });
-function cloneTR(){
+function cloneTR(addnew = false){
     var last = $("table.documents tbody tr:last").clone();
-    last.find(".remove-row").attr('data-id','').removeClass('hide');
-    $("table.documents tbody tr:last").find(".addMoreDocument").addClass("hide");
-    $("table.documents tbody tr:last").after("<tr>" + last.html() + "</tr>");
-    $("table.documents tbody tr:last").find(".fileinput").find("a.input-group-addon").trigger('click');
-    $("table.documents tbody tr:last").find('.fileinput').fileinput();
-    // reset all values
-    $("table.documents tbody tr:last :input:not(:checked)").val("").removeAttr('selected');
-    return false;
+    var UploadDocumentTR = '<td style="width:90%;">'+
+        '<div class="fileinput fileinput-new input-group" data-provides="fileinput"><div class="form-control" data-trigger="fileinput">'+
+        '<i class="glyphicon glyphicon-file fileinput-exists"></i>'+
+        '<span class="fileinput-filename"></span></div><span class="input-group-addon btn btn-default btn-file" style="line-height: 1;border-radius:0;">'+
+        '<span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input type="file" name="documents[]">'+
+        '</span><a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput" style="line-height: 1;border-radius:0;">Remove</a>'+
+        '</div></td>'+
+        '<td><span><a href="#" class="remove-row text-danger hide" ><i class="fa fa-remove"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;'+
+        '<a href="#" class="addMoreDocument"><i class="fa fa-plus plus"></i></a></span></td>';
+    //after document delete
+    if(addnew){
+        $("table.documents tbody tr:last").after("<tr>" + UploadDocumentTR + "</tr>");
+        $("table.documents tbody tr:last").find(".fileinput").find("a.input-group-addon").trigger('click');
+        $("table.documents tbody tr:last").find('.fileinput').fileinput();
+        // reset all values
+        $("table.documents tbody tr:last :input:not(:checked)").val("").removeAttr('selected');
+        if($("table.documents tbody tr").length == 10)
+            $("table.documents tbody tr:last").find(".addMoreDocument").addClass("hide");
+        return false;
+    }else if($("table.documents tbody tr").length < 10){
+        last.find(".remove-row").attr('data-id','').removeClass('hide');
+        $("table.documents tbody tr:last").find(".addMoreDocument").addClass("hide");
+        $("table.documents tbody tr:last").after("<tr>" + last.html() + "</tr>");
+        $("table.documents tbody tr:last").find(".fileinput").find("a.input-group-addon").trigger('click');
+        $("table.documents tbody tr:last").find('.fileinput').fileinput();
+        // reset all values
+        $("table.documents tbody tr:last :input:not(:checked)").val("").removeAttr('selected');
+        if($("table.documents tbody tr").length == 10)
+            $("table.documents tbody tr:last").find(".addMoreDocument").addClass("hide");
+        return false;
+    }
 }
 
 function addEditedFieldName(field_name){
