@@ -768,6 +768,12 @@ class TasksController extends Controller
                         'compensation'=>$request->input('compensation'),
                         'status'=>'editable'
                     ]);
+                    //Task admin can change task status
+                    if(Task::isUnitAdminOfTask($task_id)){
+                        Task::where('id',$task_id)->update([
+                            'status'=> $request->input('task_status')
+                        ]);
+                    }
 
                     $task_id_decoded= $task_id;
                     $taskObjTemp = Task::find($task_id);

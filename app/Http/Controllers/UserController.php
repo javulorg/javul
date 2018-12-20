@@ -16,7 +16,7 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use App\UserWiki;
 use App\Wiki;
-
+use App\ZcashWithdrawRequest;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 
@@ -124,6 +124,7 @@ class UserController extends Controller
 
         $myEvaluationTask =[];
         $myCancelledTask = [];
+        $zcashTransferList = [];
 
         if(Auth::user()->role == "superadmin"){
             $myEvaluationTask = Task::join('task_complete','tasks.id','=','task_complete.task_id')
@@ -142,6 +143,11 @@ class UserController extends Controller
                 ->groupBy('task_cancel.task_id')
                 ->get();
 
+            $zcashTransferList = ZcashWithdrawRequest::join('users','users.id','=','zcash_withdraw_request.user_id')
+            ->select('users.first_name','users.last_name','users.id as user_id','zcash_withdraw_request.*')
+            ->where('zcash_withdraw_request.status','withdrawal')
+            ->get();
+
 
             /*$myEvaluationTask = Task::with(['task_complete','task_complete.users'])
                     ->where('status','completion_evaluation')
@@ -158,6 +164,7 @@ class UserController extends Controller
         view()->share('myEvaluationTask',$myEvaluationTask);
         view()->share('myBids',$myBids);
         view()->share('myAssignedTask',$myAssignedTask);
+        view()->share('zcashTransferList',$zcashTransferList);
 
         return view('users.my_tasks');
     }

@@ -438,4 +438,16 @@ class User extends Authenticatable
             }
         }
     }
+
+    public static function SendWithdrawalRequestEmail($user_message,$subject,$userObj,$zcashTransaction){
+        if(count($userObj) > 0 && count($zcashTransaction) > 0){
+            $toEmail = $userObj->email;
+            $toName = $userObj->first_name.' '.$userObj->last_name;
+
+            \Mail::send('emails.donation_request', ['user_message'=>$user_message,'userObj'=> $userObj,'zcashTransaction'=>$zcashTransaction, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject){
+                $message->to($toEmail,$toName)->subject($subject);
+                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+            });
+        }
+    }
 }

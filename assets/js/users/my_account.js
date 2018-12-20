@@ -4,28 +4,53 @@ $(document).ready(function() {
         $(".remove-alert").remove();
         $that = $(this);
         var $form = $("#withdraw-amount");
-        if($('#paypal_email').length > 0){
+        //validate email address for pay
+        if($('#paypal_email').length > 0 && $("#payment_method").val() == "PAYPAL"){
             var Emailflag = validateEmail();
             if(!Emailflag){
                 e.preventDefault();
                 return false;
             }
+        }else if($("#payment_method").val() == "Zcash"){
+            //show error message when zcash address field is empty
+            var zcash_address = $("#zcash_address").val();
+            if($.trim(zcash_address) == ""){
+                if($.trim(zcash_address) == ""){
+                    $("#zcash_address").closest('.col-sm-4').addClass('has-error');
+                    var icon = $("#zcash_address").parent('.input-icon').children('i');
+                    icon.removeClass('fa-check').addClass("fa-warning");
+                    icon.attr("data-original-title", 'Please enter Zcash address').tooltip({'container': 'body'});
+
+                    e.preventDefault();
+                    return false;
+                }
+            }
         }
         $(this).prop('disabled', true);
+        var modal_title = "Transfer amount to Paypal account";
         var text = "Transfer all your balance of $"+$(".donation_received").html()+" to your Paypal account?";
+        if($("#payment_method").val() == "Zcash"){
+            modal_title = "Request to transfer amount to Zcash account";
+            text = "Transfer all your balance of "+$(".donation_received").html()+" to your Zcash account?";
+        }
+
         bootbox.dialog({
             message: text,
-            title: "Transfer amount to Paypal account",
+            title: modal_title,
             buttons: {
                 success: {
                     label: "Yes",
                     className: "btn-success",
                     callback: function() {
-                        $(".withdraw-submit").html('<span class="saving">Transferring amount<span>.</span><span>.</span><span>.</span></span>');
+                        if($("#payment_method").val() == "Zcash"){
+                            $(".withdraw-submit").html('<span class="saving">Sending request<span>.</span><span>.</span><span>.</span></span>');
+                        }else{
+                            $(".withdraw-submit").html('<span class="saving">Transferring amount<span>.</span><span>.</span><span>.</span></span>');
+                        }
                         $.ajax({
                             type:'post',
                             data:$form.serialize(),
-                            url:siteURL+'/account/withdraw',
+                            url:$('#withdraw-amount').attr('action'),
                             success:function(resp){
                                 if(!resp.success){
                                     var html = '';
@@ -37,20 +62,30 @@ $(document).ready(function() {
                                     '</div>';
                                     $form.prepend(errorHTML);
                                     $that.prop('disabled', false);
-                                    $(".withdraw-submit").html('<span class="withdraw-text">Transfer my full balance to my Paypal account</span>');
+                                    if($("#payment_method").val() == "Zcash"){
+                                        $(".withdraw-submit").html('<span class="withdraw-text">Send transfer request</span>');
+                                    }else{
+                                        $(".withdraw-submit").html('<span class="withdraw-text">Transfer my full balance to my Paypal account</span>');
+                                    }
                                 }
                                 else
                                 {
+                                    var message = "Amount transfered successfully.";
+                                    var buttonText = "Transfer my full balance to my Paypal account";
+                                    if($("#payment_method").val() == "Zcash"){
+                                        message = "Request send successfully.";
+                                        buttonText = "Send transfer request";
+                                    }
                                     $form.find("input,select").val('');
                                     var errorHTML = '<div class="remove-alert alert alert-success">'+
                                         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
-                                        '<strong>Success!!!</strong> Amount transfered successfully.'+
+                                        '<strong>Success!!!</strong>'+message+
                                         '</div>';
                                     $form.prepend(errorHTML);
                                     $that.prop('disabled', false);
                                     $(".amount-field").hide();
                                     $(".donation_received").html(resp.availableBalance);
-                                    $(".withdraw-submit").html('<span class="withdraw-text">Transfer my full balance to my Paypal account</span>');
+                                    $(".withdraw-submit").html('<span class="withdraw-text">'+buttonText+'</span>');
                                 }
                             }
                         });
@@ -63,6 +98,9 @@ $(document).ready(function() {
                         $that.prop('disabled', false);
                     }
                 }
+            },
+            onEscape: function() {
+                $that.prop('disabled', false);
             }
         });
         return false;
@@ -515,4 +553,43 @@ function format(country) {
     else
         return country.text;
 }
+
+//cancel button at zcash withdrawal list
+$(document).on('click',".zcash-cancel",function(e){
+    e.preventDefault();
+    var url = $(this).attr('href');
+    var transaction_id = $(this).attr('data-id');
+    let confirmMessage = bootbox.confirm({ 
+        size: "small",
+        message: "Are you sure you want to cancel this request?", 
+        callback: function(action){
+            if(action){
+                $.ajax({
+                    type:'get',
+                    data:{'cancel_request':true,'transaction_id':transaction_id},
+                    success:function(response){
+                        if(response.success){
+                            toastr['success'](response.message, '');
+                            setTimeout(() => {
+                                window.location.reload(true);    
+                            }, 300);                            
+                        }
+                    }
+                });
+            }
+        }
+      });
+
+    //change z-index of site activity bar content
+    $(".div-table-second-cell").css('z-index','100');
+    $(".list-item-main").css('z-index','100');
+
+    confirmMessage.on("hidden.bs.modal", function (e) {
+        if(!$("#loadingDiv").is(":visible")){
+            $(".list-item-main").css('z-index','99999');
+            $(".div-table-second-cell").css('z-index','99999');
+        }
+    });
+    return false;
+});
 

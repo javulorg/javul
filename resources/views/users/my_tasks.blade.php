@@ -222,10 +222,65 @@
             </div>
         </div>
     </div>
+    <!-- Showing Zcash Withdrawal Request List -->
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <div class="panel panel-default panel-grey">
+                <div class="panel-heading">
+                    <h4>Withdrawal Request</h4>
+                </div>
+                <div class="panel-body table-inner table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if(count($zcashTransferList) > 0)
+                        @foreach($zcashTransferList as $transfer)
+                        <tr>
+                            <td>
+                                <a href="{!! url('userprofiles/'.$userIDHashID->encode($transfer->user_id).'/'.strtolower
+                                ($transfer->first_name.'_'.$transfer->last_name)) !!}">
+                                    {{$transfer->first_name.' '.$transfer->last_name}}
+                                </a>
+                            </td>
+                            <td>{{$transfer->amount}}</td>
+                            <td>{{$transfer->status}}</td>
+                            <td>
+                                <a href="{!! url('zcash/proceed/'.$btcTransactionIDHashID->encode($transfer->id)) !!}"
+                                   class="btn btn-xs btn-success cb-proceed" >
+                                   Proceed
+                                </a>
+                                <a href="{!! url('zcash/cancel/'.$btcTransactionIDHashID->encode($transfer->id)) !!}"
+                                   class="btn btn-xs btn-danger cb-cancel" >
+                                   Cancel
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                        @else
+                        <tr>
+                            <td colspan="4">
+                                No record found.
+                            </td>
+                        </tr>
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 @endif
 </div>
 @endsection
 @section('page-scripts')
+<script src="{!! url('assets/js/zcash-payment.js') !!}" type="text/javascript"></script>
 <script type="text/javascript">
     $(function(){
         $('.show_bid_details').on('click',function(){

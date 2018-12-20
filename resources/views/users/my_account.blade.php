@@ -121,7 +121,11 @@
                                     Donations Received:
                                 </div>
                                 <div class="col-xs-5 text-right">
-                                    <span class="donation_received">{{number_format($availableBalance,2)}}</span> $
+                                    @if($payment_method == "Zcash")
+                                        <span class="donation_received">{{number_format($availableBalance,2)}} <img src="{!! url('assets/images/small-zcash-icon.png') !!}" style="width: 15px;padding-bottom: 2px;"/></span>
+                                    @else
+                                        <span class="donation_received">{{number_format($availableBalance,2)}}</span> $
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -144,6 +148,9 @@
                     <li @if($errors->has('active') && $errors->first('active')=="withdraw") class="active" @endif>
                         <a href="#withdraw_amount" data-toggle="tab">Withdraw</a>
                     </li>
+                    @endif
+                    @if(!empty($withdrawal_list) && count($withdrawal_list) > 0)
+                    <li><a href="#withdrawal_list" data-toggle="tab">Withdrawal List</a></li>
                     @endif
                     <li><a href="#account_settings" data-toggle="tab">Alert Settings</a></li>
                 </ul>
@@ -328,7 +335,7 @@
                     </div>
 
                     <div class="list-group tab-pane @if($errors->has('active') && $errors->first('active')=='withdraw') active @endif" id="withdraw_amount">
-                        <form role="form" method="post" id="withdraw-amount"  novalidate="novalidate" action="{!! url('account/withdraw') !!}">
+                        <form role="form" method="post" id="withdraw-amount"  novalidate="novalidate" @if($payment_method == "Zcash") action="{!! url('account/request-to-transfer-zcash') !!}" @else action="{!! url('account/withdraw') !!}" @endif>
                             {!! csrf_field() !!}
                             @if($errors->has('error'))
                             <div class="alert alert-danger">
@@ -343,7 +350,7 @@
                                 <strong>Error!</strong> {{$errors->first('paypal_email')}}.
                             </div>
                             @endif
-                            @if(empty(Auth::user()->paypal_email))
+                            @if(empty(Auth::user()->paypal_email) && $payment_method == "PAYPAL")
                             <div class="row form-group">
                                 <div class="col-sm-4">
                                     <label for="paypal_email" class="control-label">Paypal Email ID</label>
@@ -356,11 +363,81 @@
                                 </div>
                             </div>
                             @endif
+                            @if($payment_method == "Zcash")
+                            <div class="row form-group">
+                                <div class="col-sm-4">
+                                    <label for="zcash_address" class="control-label">Enter your address</label>
+                                    <div class="input-icon right">
+                                        <i class="fa"></i>
+                                        <input id="zcash_address" type="text" class="form-control" value="{{old('zcash_address')}}" placeholder="Please enter Zcash address" name="zcash_address" autocomplete="off" required>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                             <button type="button" class="btn orange-bg withdraw-submit">
-                                <span class="withdraw-text">Transfer my full balance to my Paypal account</span>
+                                @if($payment_method == "Zcash")
+                                    <span class="withdraw-text">Send Transfer Request</span>
+                                @else
+                                    <span class="withdraw-text">Transfer my full balance to my Paypal account</span>
+                                @endif
                             </button>
+                            <!--Hidden falg for payment-->
+                            <input type="hidden" value="{{ $payment_method }}" id="payment_method" name="payment_method"/>
                         </form>
                     </div>
+                    <!-- Withdrawal List -->
+                    <div class="list-group tab-pane " id="withdrawal_list">
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <div class="panel panel-default panel-grey">
+                                    <div class="panel-heading">
+                                        <h4>Withdrawal Request</h4>
+                                    </div>
+                                    <div class="panel-body table-inner table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(count($withdrawal_list) > 0)
+                                                    @foreach($withdrawal_list as $withdraw)
+                                                        <tr>
+                                                            <td>{{ date('d-m-Y',strtotime($withdraw->created_at)) }}</td>
+                                                            <td>{{$withdraw->amount}}</td>
+                                                            <td style="text-transform:capitalize">{{$withdraw->status}}</td>
+                                                            <td>
+                                                                @if($withdraw->withdrawal_status == "withdrawal")
+                                                                    <a class="btn btn-xs btn-danger zcash-cancel" data-id="{{$withdraw->id}}" href="">Cancel</a>
+                                                                @elseif($withdraw->withdrawal_status == "rejected")
+                                                                    <a class="btn btn-xs btn-danger" href="javascript:void(0);">Rejected by Admin</a>
+                                                                @elseif($withdraw->withdrawal_status == "approved")
+                                                                    <a class="btn btn-xs btn-success" herf="javascript:void(0);">Approved</a>
+                                                                @elseif($withdraw->withdrawal_status == "cancel")
+                                                                    <a class="btn btn-xs btn-danger" herf="javascript:void(0);">Cancelled by You</a>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @else
+                                                <tr>
+                                                    <td colspan="4">
+                                                        No record found.
+                                                    </td>
+                                                </tr>
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Withdrawal End Here -->
                     <div class="list-group tab-pane " id="account_settings">
                         <table class="table table-striped">
                             <thead>

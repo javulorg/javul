@@ -45,7 +45,13 @@
                     <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6 col-xs-6">{!! trans('messages.funds_available') !!}</div>
-                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">{{ $totalFundsAvailable }}</div>
+                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">
+                                @if(env('PAYMENT_METHOD') == "Zcash")
+                                    <img src="{!! url('assets/images') !!}/small-zcash-icon.png" style="width:20px;" /> {{ number_format($totalFundsAvailable,8) }}
+                                @else
+                                    <i class="fa fa-dollar"></i> {{ number_format($totalFundsAvailable,2) }}
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

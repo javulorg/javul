@@ -43,6 +43,7 @@ class ViewComposerServiceProvider extends ServiceProvider
         $issueDocumentIDHashID = new Hashids('issue document id hash',10,\Config::get('app.encode_chars'));
         $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
         $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
+        $btcTransactionIDHashID = new Hashids('btc transaction id hash',10,\Config::get('app.encode_chars'));
 
 
         $loggedInUser = \DB::table('users')->whereRaw('unix_timestamp() - loggedin < 30')->count();
@@ -60,6 +61,7 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('issueDocumentIDHashID',$issueDocumentIDHashID);
         view()->share('jobSkillIDHashID',$jobSkillIDHashID);
         view()->share('areaOfInterestIDHashID',$areaOfInterestIDHashID);
+        view()->share('btcTransactionIDHashID',$btcTransactionIDHashID);
 
         view()->composer('elements.header',function($view){
 			Mc::putMcData();

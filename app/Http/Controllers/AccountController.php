@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
 use Image;
+use App\ZcashWithdrawRequest;
 
 class AccountController extends Controller
 {
@@ -57,6 +58,19 @@ class AccountController extends Controller
         view()->share('msg_flag',$msg_flag);
         view()->share('msg_val',$msg_val);
         view()->share('msg_type',$msg_type);
+        view()->share('payment_method',env('PAYMENT_METHOD'));
+
+        //Cancel Zcash withdrawal request
+        if($request->has('cancel_request') && !empty($request->transaction_id)){
+            //update zcash and transaction details with cancel status
+            $zcash_transaction = ZcashWithdrawRequest::where('id',$request->transaction_id)->first();
+            $zcash_transaction->status = "cancel";
+            $zcash_transaction->save();
+            $transaction = Transaction::where('id',$zcash_transaction->user_transaction_id)->first();
+            $transaction->status = "cancel";
+            $transaction->save();
+            return \Response::json(['success'=>true,'message'=>'Your withdrawal request successfully cancelled.']);
+        }
 
 
         $countries = Unit::getAllCountryWithFrequent();
@@ -91,8 +105,15 @@ class AccountController extends Controller
 
         //expiry years of card
         //$expiry_years = SiteConfigs::getCardExpiryYear();
-
         //view()->share('expiry_years',$expiry_years);
+
+        //Get user withdrawal request list
+        $withdrawal_list = Transaction::join('zcash_withdraw_request','zcash_withdraw_request.user_transaction_id','=','transactions.id')
+        ->select('zcash_withdraw_request.status as withdrawal_status','zcash_withdraw_request.*')
+        ->where('transactions.user_id','=',\Auth::user()->id)
+        ->get();
+        view()->share('withdrawal_list',$withdrawal_list);
+
         return view('users.my_account');
     }
 
@@ -410,6 +431,69 @@ class AccountController extends Controller
         Auth::user()->save();
         return \Response::json(['success'=>true]);
 
+    }
+
+    public function request_to_transfer_zcash(Request $request){
+        $validator = \Validator::make($request->all(), [
+            'zcash_address'=>'required'
+        ],[
+            'zcash_address.required'=>'Please enter Zcash address ',
+        ]);
+
+        if ($validator->fails())
+            return \Response::json(['success'=>false,'errors'=>$validator->errors()]);
+        
+        // $creditedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit_zcash')->sum('amount');
+		// $debitedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit_zcash')->where('status','!=','rejected')->sum('amount');
+        // $availableBalance = $creditedBalance - $debitedBalance;
+        $creditedBalance = Fund::getUserDonatedFund(Auth::user()->id);
+        $debitedBalance = Fund::getUserAwardedFund(Auth::user()->id);
+        $availableBalance = $creditedBalance - $debitedBalance;
+
+        $zcash_address = $request->zcash_address;
+
+		$transactionData['created_by'] = Auth::user()->id;
+		$transactionData['user_id'] = Auth::user()->id;
+		$transactionData['amount'] = $availableBalance;
+		$transactionData['comments']= "Request for transfer ".$availableBalance." my Zcash amount to this ".$zcash_address." address";
+		$transactionData['trans_type'] = 'debit_zcash';
+		$transactionData['status'] = 'withdrawal';
+        $transactionID = Transaction::create($transactionData)->id;
+        
+        $send_request = ZcashWithdrawRequest::create([
+            'user_id' => Auth::user()->id,
+            'user_transaction_id' => $transactionID,
+            'amount' => $availableBalance,
+            'zcash_address' => $zcash_address,
+            'status' => 'withdrawal',
+        ])->id;
+
+        //Sending email user
+        $userObj = User::where('id',Auth::user()->id)->first();
+        $zcashTransaction = ZcashWithdrawRequest::where('user_transaction_id',$transactionID)->first();
+        $subject="Request For Transfer Money";
+        $message = "We have received request to transfer money from your account to below details. We will process soon.";
+        User::SendWithdrawalRequestEmail($message,$subject,$userObj,$zcashTransaction);
+        //Sending email to site admin
+        $useremail = $userObj->email;
+        $userObj = User::where('id','1')->first();
+        $subject= "User Requested To Transfer Money From His Account.";
+        $message = $useremail." has requested to transfer money from their account to below details.";
+        User::SendWithdrawalRequestEmail($message,$subject,$userObj,$zcashTransaction);
+        //Email sending end here
+
+        // $creditedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit_zcash')->sum('amount');
+        // $debitedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit_zcash')->where('status','!=','rejected')->sum('amount');
+        // $availableBalance = $creditedBalance - $debitedBalance;
+        $creditedBalance = Fund::getUserDonatedFund(Auth::user()->id);
+        $debitedBalance = Fund::getUserAwardedFund(Auth::user()->id);
+        $availableBalance = $creditedBalance - $debitedBalance;
+
+		if(!empty($send_request)){
+			return \Response::json(['success'=>true,'message'=>"Request send successfully",'availableBalance'=>$availableBalance]);
+		}else{
+			return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again later.']]);
+		}
     }
 
 

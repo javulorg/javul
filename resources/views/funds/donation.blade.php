@@ -97,6 +97,7 @@
             </div>
 
         @endif
+        @if($current_payment_method == "PAYPAL")
         <div class="row form-group donationDiv credit_card"  >
             <div class="col-sm-4">
                 <label for="amount" class="control-label">Amount to Donate</label>
@@ -106,9 +107,15 @@
                 <label id="paypal-fees" class="control-label"></label>
             </div>
         </div>
+        @endif
         <div class="row form-group donationDiv credit_card"  >
             <div class="col-sm-4">
-                <input type="image" id="submit_donate"  src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif"/>
+                @if($current_payment_method == "Zcash")
+                    <button id="submit_donate" class="btn black-btn">Donate With Zcash</button>
+                @else
+                    <input type="image" id="submit_donate"  src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif"/>
+                @endif
+                <input type="hidden" id="paymentMethod" name="paymentMethod" value="{{ $current_payment_method }}"/>
             </div>
         </div>
     </form>
@@ -130,7 +137,7 @@
             @endif
             <div class="row form-group donationDiv credit_card"  >
                 <div class="col-sm-4">
-                    <label for="amount" class="control-label">Amount to Donate</label>
+                    <label for="amount" class="control-label">Amount to Donate For User</label>
                     <input type="text" value="" name="donate_amount" id="donate_amount" data-numeric
                            placeholder="Amount" class="form-control" required autocomplete="off">
 

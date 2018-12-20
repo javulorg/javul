@@ -11,8 +11,7 @@ class Fund extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','unit_id','objective_id','task_id','issue_id','amount','transaction_type','payment_id','status',
-'fund_type'];
+    protected $fillable = ['user_id','donated_by_user_id','unit_id','objective_id','task_id','issue_id','amount','transaction_type','payment_method','payment_id','status','fund_type'];
 
 
     /**
@@ -126,14 +125,20 @@ class Fund extends Model
 
     public static function getUserDonatedFund($user_id=''){
         if(!empty($user_id)){
-            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','credit')->where('status','approved')->sum('amount');
+            if(env('PAYMENT_METHOD') == "Zcash")
+                return Transaction::where('user_id','=',$user_id)->where('trans_type','=','credit_zcash')->where('status','approved')->sum('amount');
+            else
+                return Transaction::where('user_id','=',$user_id)->where('trans_type','=','credit')->where('status','approved')->sum('amount');
         }
         return 0;
     }
 
     public static function getUserAwardedFund($user_id=''){
         if(!empty($user_id)){
-            return Transaction::where('user_id','=',$user_id)->where('trans_type','=','debit')->where('status','approved')->orWhere('status', 'completed')->sum('amount');
+            if(env('PAYMENT_METHOD') == "Zcash")
+                return Transaction::where('user_id','=',$user_id)->where('trans_type','=','debit_zcash')->where('status','=','withdrawal')->sum('amount');
+            else
+                return Transaction::where('user_id','=',$user_id)->where('trans_type','=','debit')->where('status','approved')->orWhere('status', 'completed')->sum('amount');
         }
         return 0;
     }

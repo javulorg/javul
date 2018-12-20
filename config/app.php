@@ -169,7 +169,13 @@ return [
 		Netshell\Paypal\PaypalServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 		Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
-        Barryvdh\Elfinder\ElfinderServiceProvider::class
+        Barryvdh\Elfinder\ElfinderServiceProvider::class,
+
+        /*
+        * For generate qr code image and Curl service
+        */
+        Ixudra\Curl\CurlServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ],
 
     /*
@@ -218,7 +224,9 @@ return [
         'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
 		'Paypal' => Netshell\Paypal\Facades\Paypal::class,
         'Image' => Intervention\Image\Facades\Image::class,
-		'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
+        'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
+        'Curl'   => Ixudra\Curl\Facades\Curl::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
 
     ],
 

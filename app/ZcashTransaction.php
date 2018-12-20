@@ -4,18 +4,22 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model
+class ZcashTransaction extends Model
 {
-	 /**
+
+    /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'transactions';
+    protected $table = 'zcash_transaction';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['created_by','user_id','donated_by_user_id','amount','trans_type','pay_key','status','comments'];
+    protected $fillable = ['fund_id','user_transaction_id','transaction_id','amount','zcash_address','status','qr_code'];
+
+    
 }

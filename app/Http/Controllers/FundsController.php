@@ -30,6 +30,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use Hashids\Hashids;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Session;
+use App\Zcash;
+use App\ZcashTransaction;
+use App\ZcashWithdrawRequest;
 
 
 class FundsController extends Controller
@@ -63,6 +67,9 @@ class FundsController extends Controller
 
         if(!empty($id)){
             $type = $request->segment(3);
+            //sharing current payment method flag
+            $current_payment_method = env("PAYMENT_METHOD");
+            view()->share("current_payment_method",$current_payment_method);
             //$exists = false;
             $obj = [];
             $donateTo = '';
@@ -233,6 +240,7 @@ class FundsController extends Controller
             $hashID='';
             $controller = '';
             $addFunds = [];
+            $current_payment_method = env("PAYMENT_METHOD");
 
             $donateToLink='';
             switch($type){
@@ -300,16 +308,18 @@ class FundsController extends Controller
             if($exists){
                 $response = null;
                 $inputData = $request->all();
-                $validator = \Validator::make($inputData, [
-                    'donate_amount'=> 'required|numeric'
-                ],[
-                    'donate_amount.required'=>'Please enter amount to donate',
-                    'donate_amount.numeric'=>'Amount must be numeric'
-                ]);
+                if($current_payment_method == "PAYPAL"){
+                    $validator = \Validator::make($inputData, [
+                        'donate_amount'=> 'required|numeric'
+                    ],[
+                        'donate_amount.required'=>'Please enter amount to donate',
+                        'donate_amount.numeric'=>'Amount must be numeric'
+                    ]);
 
 
-                if ($validator->fails()){
-                    return redirect()->back()->withErrors($validator)->withInput();
+                    if ($validator->fails()){
+                        return redirect()->back()->withErrors($validator)->withInput();
+                    }
                 }
 
                 if(empty($obj) || count($obj) == 0)
@@ -327,16 +337,27 @@ class FundsController extends Controller
                 if($type == "user"){
                     $transactionData['created_by'] =1;//Auth::user()->id;
                     $transactionData['user_id'] =$obj->id;
-                    $transactionData['amount'] =$amount;
-                    //$transactionData['comments']='$'.$amount.' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name;
-                    $transactionData['comments']='$'.$amount.' donation received';
+                    if(Auth::check())
+                        $transactionData['donated_by_user_id'] = Auth::user()->id;
+                    if($current_payment_method == "Zcash"){
+                        $transactionData['trans_type'] = 'credit_zcash';
+                    }else{
+                        $transactionData['amount'] =$amount;
+                        //$transactionData['comments']='$'.$amount.' donation received from '.Auth::user()->first_name.' '.Auth::user()->last_name;
+                        $transactionData['comments']='$'.$amount.' donation received';
 
-                    if(!empty($obj->paypal_email))
-                        $transactionData['trans_type'] ='paypal';
-                    else
-                        $transactionData['trans_type'] ='credit';
+                        if(!empty($obj->paypal_email))
+                            $transactionData['trans_type'] ='paypal';
+                        else
+                            $transactionData['trans_type'] ='credit';
+                    }
 
                     $transactionID = Transaction::create($transactionData)->id;
+                    if($current_payment_method == "Zcash"){
+                        $inputData['transaction_id'] = $transactionID;
+                        $response =  Zcash::received_donation($inputData);
+                        return $response;
+                    }
 
                     $inputData['returnURL'] = url('funds/success?type='.$type.'&orderID='.$orderIDHashID->encode($transactionID));
                     $inputData['cancelURL'] = url('funds/cancel?type='.$type.'&orderID='.$orderIDHashID->encode($transactionID));
@@ -345,7 +366,10 @@ class FundsController extends Controller
                     $addFunds['user_id']=1;//Auth::user()->id;
                     $addFunds['amount']=$amount;
                     $addFunds['transaction_type']='donated';
+                    $addFunds['payment_method']= $current_payment_method;
                     $addFunds['fund_type']=$donateTo;
+                    if(Auth::check())
+                        $addFunds['donated_by_user_id'] = Auth::user()->id;
 
                     $fundID = Fund::create($addFunds)->id;
 
@@ -355,8 +379,10 @@ class FundsController extends Controller
                     $inputData['cancelURL'] = url('funds/cancel?type='.$type.'&orderID='.$orderIDHashID->encode($fundID));
                 }
 
-                $inputData['donate_amount'] += 0.30;
-                $inputData['donate_amount'] = round($inputData['donate_amount'] / (1 - 0.029), 2);
+                if($current_payment_method == "PAYPAL"){
+                    $inputData['donate_amount'] += 0.30;
+                    $inputData['donate_amount'] = round($inputData['donate_amount'] / (1 - 0.029), 2);
+                }
 //                if($type == "user" && !empty($obj->paypal_email)){
 //                    $inputData['cc-amount'] = $request->input('donate_amount');
 //                    $inputData['paypal_email'] = $obj->paypal_email;
@@ -376,7 +402,13 @@ class FundsController extends Controller
                     if($response['success'])
                         $response['url'] =env('ADAPTIVE_PAYMENT_URL').$response['paykey'];
                 } else {
-                    $response = User::donateAmount($inputData);
+                    if($current_payment_method == "Zcash"){
+                        $inputData['fundID'] = $fundID;
+                        $response =  Zcash::received_donation($inputData);
+                        return $response;
+                    }else{
+                        $response = User::donateAmount($inputData);
+                    }                    
                 }
 
                 // Donate amount to Unit/Objective/Task/User
@@ -496,6 +528,7 @@ class FundsController extends Controller
         $payerID =$request->input('PayerID');
         $type = $request->input('type');
         $orderID = $request->input('orderID');
+        $payment_method = $request->input('payment_method');
 
         $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
         $orderID = $orderIDHashID->decode($orderID);
@@ -512,98 +545,125 @@ class FundsController extends Controller
                 $obj = Fund::find($orderID);
 
             // if user refresh the page then redirect to unit home page.
-            if($obj->status == "approved")
+            if($obj->status == "approved" && $payment_method != "Zcash")
                 return redirect('units');
 
 
-            if(!empty($obj) && $obj->status != "approved"){
-                $db_payment_id = $obj->payment_id;
-                $flag = false;
-                if($type == "user")
-                {
+            if(!empty($payment_method) && $payment_method == "Zcash"){
+                    $payment_id = $request->input('paymentId');
                     $obj->update(['status'=>'approved']);
-
-                    $donateToObj = User::find($obj->user_id);
-                    if(!empty($donateToObj))
-                    {
-                        $db_payment_id = $obj->pay_key;
-                        if(empty($donateToObj->paypal_email))
-                            $payment = Paypal::executePayment($db_payment_id ,$payerID);
-                        else
-                            $payment['success']= true;
-                        $flag = true;
-                    }
-                }
-                else{
-                    $payment = Paypal::executePayment($db_payment_id ,$payerID);
-                    if(!empty($payment['payment']))
-                        $flag = true;
-
-                }
-
-                if($payment['success'] && $flag ){
-                    $controller = '';
-                    $hashID='';
-                    $donateTo ='';
-                    $dataObj = '';
-                    if($type == "user"){
-                        $payment_id = $obj->pay_key;
-                        $data['pay_key'] = $obj->pay_key;
-                        $data['transaction_id'] = $orderID;
-                        $donateTo = ' user ';
-                        $controller = 'userprofiles';
-                        $dataObj = User::find($obj->user_id);
-                        $dataObj->name=$dataObj->first_name.' '.$dataObj->last_name;
-                        $dataObj->slug=strtolower($dataObj->first_name.'_'.$dataObj->last_name);
-                        $hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
-                    }
-                    else{
-                        $payment_id = $obj->payment_id;
-                        $data['donate_paypal_id'] = $paymentID;
-                        $data['fund_id'] = $orderID;
-                        $obj->update(['status'=>$payment['payment']->getState()]);
-
-                        if(!empty($obj->unit_id)){
-                            $controller = "units";
-                            $donateTo = ' unit ';
-                            $dataObj = Unit::find($obj->unit_id);
-                            $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
-                        }
-                        if(!empty($obj->task_id)){
-                            $controller = "tasks";
-                            $donateTo = ' task ';
-                            $dataObj = Task::find($obj->task_id);
-                            $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
-                        }
-                        if(!empty($obj->objective_id)){
-                            $controller = "objectives";
-                            $donateTo = ' objective ';
-                            $dataObj = Objective::find($obj->objective_id);
-                            $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
-                        }
-                    }
-
-                    //insert into site activity table for log.
-                    /*$userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
-                    $user_id = $userIDHashID->encode(Auth::user()->id);
-
-                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
-                    if(!empty(Auth::user()->username))
-                        $user_name =Auth::user()->username;
-
-                    SiteActivity::create([
-                        'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .$user_name.'</a> donate $'.$obj->amount.' to'.$donateTo.' <a href="'.url($controller.'/'.$hashID->encode($dataObj->id).'/'.$dataObj->slug).'">'.$dataObj->name.'</a>'
-                    ]);*/
-
-                    // store actual paypal transaction details.
-                    PaypalTransaction::create($data);
                     $message="Thank you for your payment.";
                     $messageType =true;
+                    // $request->session()->set('has_seen',true);
+                    // $request->session()->save();
+            }else{
+                //this will use for payemnt method = PAYPAL
+                if(!empty($obj) && $obj->status != "approved"){
+                    $db_payment_id = $obj->payment_id;
+                    $flag = false;
+                    if($type == "user")
+                    {
+                        $obj->update(['status'=>'approved']);
+
+                        $donateToObj = User::find($obj->user_id);
+                        if(!empty($donateToObj))
+                        {
+                            $db_payment_id = $obj->pay_key;
+                            if(empty($donateToObj->paypal_email))
+                                $payment = Paypal::executePayment($db_payment_id ,$payerID);
+                            else
+                                $payment['success']= true;
+                            $flag = true;
+                        }
+                    }
+                    else{
+                        $payment = Paypal::executePayment($db_payment_id ,$payerID);
+                        if(!empty($payment['payment']))
+                            $flag = true;
+
+                    }
+
+                    if($payment['success'] && $flag ){
+                        $controller = '';
+                        $hashID='';
+                        $donateTo ='';
+                        $dataObj = '';
+                        if($type == "user"){
+                            $payment_id = $obj->pay_key;
+                            $data['pay_key'] = $obj->pay_key;
+                            $data['transaction_id'] = $orderID;
+                            $donateTo = ' user ';
+                            $controller = 'userprofiles';
+                            $dataObj = User::find($obj->user_id);
+                            $dataObj->name=$dataObj->first_name.' '.$dataObj->last_name;
+                            $dataObj->slug=strtolower($dataObj->first_name.'_'.$dataObj->last_name);
+                            $hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        }
+                        else{
+                            $payment_id = $obj->payment_id;
+                            $data['donate_paypal_id'] = $paymentID;
+                            $data['fund_id'] = $orderID;
+                            $obj->update(['status'=>$payment['payment']->getState()]);
+
+                            if(!empty($obj->unit_id)){
+                                $controller = "units";
+                                $donateTo = ' unit ';
+                                $dataObj = Unit::find($obj->unit_id);
+                                $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                            }
+                            if(!empty($obj->task_id)){
+                                $controller = "tasks";
+                                $donateTo = ' task ';
+                                $dataObj = Task::find($obj->task_id);
+                                $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                            }
+                            if(!empty($obj->objective_id)){
+                                $controller = "objectives";
+                                $donateTo = ' objective ';
+                                $dataObj = Objective::find($obj->objective_id);
+                                $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                            }
+                        }
+
+                        //insert into site activity table for log.
+                        /*$userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        $user_id = $userIDHashID->encode(Auth::user()->id);
+
+                        $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                        if(!empty(Auth::user()->username))
+                            $user_name =Auth::user()->username;
+
+                        SiteActivity::create([
+                            'user_id'=>Auth::user()->id,
+                            'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                                .$user_name.'</a> donate $'.$obj->amount.' to'.$donateTo.' <a href="'.url($controller.'/'.$hashID->encode($dataObj->id).'/'.$dataObj->slug).'">'.$dataObj->name.'</a>'
+                        ]);*/
+
+                        // store actual paypal transaction details.
+                        PaypalTransaction::create($data);
+                        $message="Thank you for your payment.";
+                        $messageType =true;
+
+                        //Send transaction details via email and send thank you message
+                        if(!empty($obj->donated_by_user_id)){
+                            $userObj = User::where('id',$obj->donated_by_user_id)->first();
+                            //view()->share('userObj',$userObj);
+                            $paypalTransaction = PaypalTransaction::where('fund_id',$obj->id)->first();
+                            //view()->share('paypalTransaction',$paypalTransaction);
+                            $toEmail = $userObj->email;
+                            $toName= $userObj->first_name.' '.$userObj->last_name;
+                            $subject="Thank You";
+
+                            //return view('emails.thankyou_for_donation');
+                            \Mail::send('emails.thankyou_for_donation', ['mailFrom'=>'PAYPAL','fundObj'=>$obj,'userObj'=> $userObj,'paypalTransaction'=>$paypalTransaction, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject){
+                                $message->to($toEmail,$toName)->subject($subject);
+                                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+                            });
+                        }
+                    }
+                    else
+                        $obj->update(['status'=>'cancelled']);
                 }
-                else
-                    $obj->update(['status'=>'cancelled']);
             }
         }
         view()->share('payment_id',$payment_id);

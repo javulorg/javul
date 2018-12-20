@@ -268,3 +268,14 @@ Route::get('close_report','IssuesController@reset_captcha_after_close');
 
 Route::get('elfinder/connectorex', 'ElfinderController@showConnector')->name("elfinder.connectorex")->middleware('auth');
 Route::post('elfinder/connectorex', 'ElfinderController@showConnector')->name("elfinder.connectorex")->middleware('auth');
+
+/**
+ * Zcash Routes
+ */
+Route::any('zcash/check_zcash_payment','ZcashController@check_zcash_payment'); // it will check payment has been done or not for donation
+Route::any('zcash/webhook','ZcashController@webhook_notification');
+//Perform action to Proceed and Cancel Request
+Route::any('zcash/proceed/{zcash_transaction_id}','ZcashController@transfer_zcash');
+Route::any('zcash/cancel/{zcash_transaction_id}','ZcashController@cancel_transfer_request');
+
+Route::post('/account/request-to-transfer-zcash','AccountController@request_to_transfer_zcash');

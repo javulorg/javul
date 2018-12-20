@@ -13,7 +13,12 @@ $(function(){
         e.preventDefault();
         $(".remove-alert ").remove();
         var $form = $('#donate_amount_form');
-        $($form).attr('action', '/funds/donate-amount');
+        if($("#paymentMethod").val() == "Zcash"){
+            zcashPayment($form);
+            return false;
+        }
+        //$($form).attr('action', siteURL+'/funds/donate-amount');
+        $($form).attr('action', siteURL+'/funds/donate-amount');
         $("#donate_amount").toggleInputError(!$.payment.validateAmount($('#donate_amount').val()));
         if($('.has-error').length == 0){
             $("#donate_amount").attr('readonly','readonly');
@@ -22,6 +27,65 @@ $(function(){
         }
     })
 
+    /**
+     * Zcash Receive Donation
+     */
+    function zcashPayment($form){
+        $(".div-table-second-cell").css('z-index','100');
+        $(".list-item-main").css('z-index','100');
+        $("#loadingDiv").show();
+
+        $.ajax({
+            type:'post',
+            data:$form.serialize(),
+            url:siteURL+'/funds/donate-amount',
+            success:function(resp){
+                $(".list-item-main").css('z-index','99999');
+                $(".div-table-second-cell").css('z-index','99999');
+                $("#loadingDiv").hide();
+                //$("#qrCode").attr('src',resp.qrcode);
+                if(resp.success){
+                    bootbox.alert({
+                        title : 'To pay send Zcash to the address below',
+                        message: '<div><div>To pay send Zcash to the address below</div><div class="form-control"><label id="zcash_address_info" data-address="'+resp.address+'" data-fundID="'+resp.fundID+'" data-user_transaction_id="'+resp.user_transaction_id+'">'+resp.address+'</label></div><div style="text-align:center;padding-top:15px;"><img src="'+resp.qrcode+'" /></div></div>',
+                        className: 'bb-alternate-modal',
+                        callback: function(){ 
+                            window.location.reload(true);
+                        }
+                    });
+                    check_zcash_payment();
+                }else{
+                    console.log("Error Response  -> ",resp);
+                }
+            }
+        });
+    }
+
+    /**
+     * Checking for received donation to above Zcash address
+     * If payment made in above address then 
+     * Checking payment notification recived or not
+     * Zcash
+     */
+    function check_zcash_payment(){
+        $.ajax({
+            type:'get',
+            data:{'zcash_address':$("#zcash_address_info").attr('data-address'),'fundID':$("#zcash_address_info").attr('data-fundID'),'user_transaction_id':$("#zcash_address_info").attr('data-user_transaction_id')},
+            url:siteURL+'/zcash/check_zcash_payment',
+            dataType:'json',
+            success:function(resp){
+                if(resp.success){
+                    if(resp.success_url){
+                        window.location.href = resp.success_url;
+                    }
+                }else{
+                    setTimeout(function(){
+                        check_zcash_payment();
+                    },1000)
+                }
+            }
+        })
+    }
 
     /*$('.new_cc_submit').on('click',function(e) {
         e.preventDefault();
