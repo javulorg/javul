@@ -34,10 +34,10 @@ $(function(){
                                             that.parents('tr').html('<td colspan="5">No record(s) found.</td>');
                                         else
                                             that.parents('tr').remove();
-                                        toastr['success']('Objective deleted successfully!!!', '') ;
+                                        showToastMessage('OBJECTIVE_DELETED');
                                     }
                                     else{
-                                        toastr['error']('Something goes wrong. please try again.', '') ;
+                                        showToastMessage('SOMETHING_GOES_WRONG');
                                         //enable click event if result is false.
                                         that.removeClass('prevent-click');
                                     }

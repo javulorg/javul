@@ -71,7 +71,7 @@
                             });
                         }
                         else{
-                            toastr['error']('Something goes wrong. Please try again later.', '');
+                            showToastMessage('SOMETHING_GOES_WRONG');
                         }
                     }
                 })

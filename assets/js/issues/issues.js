@@ -110,7 +110,7 @@ $(document).ready(function() {
                             $("#objective_id").html(html).select2({allowClear:true,placeholder:"Select Objective"});
                         }
                         else {
-                            toastr['error']('Objectives not found.', '') ;
+                            showToastMessage('OBJECTIVE_NOT_FOUND');
                         }
                     }
                 });
@@ -205,14 +205,14 @@ $(document).ready(function() {
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Document deleted successfully.', '');
+                        showToastMessage('DOCUMENT_DELETED');
                         if ($("table.documents tbody tr").length > 1)
                             $that.parents('tr:eq(0)').remove();
 
                         $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
                     }
                     else
-                        toastr['error']('Something goes wrong. please try again later.', '');
+                        showToastMessage('SOMETHING_GOES_WRONG');
                 }
             })
         }

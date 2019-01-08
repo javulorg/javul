@@ -21,11 +21,14 @@ use App\IssuesRevision;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Mc;
+use App\UserMessages;
 
 class IssuesController extends Controller
 {
+    public $user_messages;
     public function __construct(){
         $this->middleware('auth',['except'=>['index','lists','view','report_concern_email','reset_captcha_after_close']]);
+        $this->user_messages = new UserMessages();
     }
 
     public function revison($issue_id ,Request $request){
@@ -387,7 +390,7 @@ class IssuesController extends Controller
                         created issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
                         ]);
 
-                        $request->session()->flash('msg_val', "Issue created successfully!!!");
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_CREATED'));
                         return redirect('issues/'.$unitIDHashID->encode($unitObj->id).'/lists');
                     }
                     $availableUnitFunds =Fund::getUnitDonatedFund($unit_id);
@@ -553,7 +556,7 @@ class IssuesController extends Controller
                         created issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
             ]);
 
-            $request->session()->flash('msg_val', "Issue created successfully!!!");
+            $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_CREATED'));
             return redirect('issues');
         }
         view()->share('site_activity',[]);
@@ -725,7 +728,7 @@ class IssuesController extends Controller
                         ]);
 
                         $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
-                        $request->session()->flash('msg_val', "Issue updated successfully!!!");
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_UPDATED'));
                         return redirect('issues/'.$issueIDHashID->encode($issueObj->id).'/view');
                     }
                     $user_can_change_status = true;

@@ -74,6 +74,8 @@ License: You must have a valid license purchased only from themeforest(the above
         <script>
             var siteURL = '{!! url('') !!}';
             var login = '{{ \Auth::check() }}';
+            // comes from app/providers/ViewComposerServiceProvider.php Line no:- 53 to 57
+            var user_messages = JSON.parse('{!! $user_messages !!}');
 
         </script>
         <!--[if lt IE 9]>
@@ -103,6 +105,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
         <script src="{!! url('assets/js/app.min.js') !!}" type="text/javascript"></script>
         <script src="{!! url('assets/js/function.js') !!}" type="text/javascript"></script>
+        <script src="{!! url('assets/js/user_messages.js') !!}" type="text/javascript"></script>
         <script>
             var logged_in ='{{Auth::check()?true:false}}';
             $(function(){
@@ -243,7 +246,7 @@ License: You must have a valid license purchased only from themeforest(the above
                        location = resp.location;
                     }
                     else{
-                        toastr['error']('Something goes wrong. Please try again later.', '');
+                        showToastMessage('SOMETHING_GOES_WRONG');
                     }
                 }
             })

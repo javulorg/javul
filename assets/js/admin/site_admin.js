@@ -113,7 +113,7 @@ $(function(){
                                 success: function (resp) {
                                     if (resp.success) {
                                         bootbox.hideAll();
-                                        toastr['success']('Job skill added successfully!!!', '');
+                                        showToastMessage('JOB_SKILL_ADDED');
 
                                         if(box_number == "last"){
                                             var total_box = $(".all_levels").find(".hierarchy_parent").length;
@@ -251,7 +251,7 @@ $(function(){
                                 success: function (resp) {
                                     if (resp.success) {
                                         bootbox.hideAll();
-                                        toastr['success']('Job skill deleted successfully!!!', '');
+                                        showToastMessage('JOB_SKILL_DELETED');
 
                                         var total_div = $(".all_levels").find('.hierarchy_parent').length - 1;
                                         if(total_div == 0){
@@ -412,7 +412,7 @@ $(function(){
                             success:function(resp){
                                 if(resp.success){
                                     bootbox.hideAll();
-                                    toastr['success']('Job skill updated successfully!!!', '') ;
+                                    showToastMessage('JOB_SKILL_UPDATED');
                                     if(box_number == 1 || $(".all_levels").find(".hierarchy_parent").length == 1){
                                         $('#skill_firstbox option:selected').text(resp.skill_name+' >');
                                         $('#skill_firstbox option:selected').attr('data-type',resp.type);
@@ -475,7 +475,7 @@ $(function(){
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Job skill approved successfully!!!', '') ;
+                        showToastMessage('JOB_SKILL_APPROVED');
                         that.parents('tr').remove();
                     }
                     else
@@ -498,7 +498,7 @@ $(function(){
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Job skill changes discarded successfully!!!', '') ;
+                        showToastMessage('JOB_SKILL_CHANGES_DISCARDED');
                         if(that.parents('tbody').find('tr').length > 1)
                             that.parents('tr').remove();
                         else
@@ -526,7 +526,7 @@ $(function(){
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Unit category approved successfully!!!', '') ;
+                        showToastMessage('UNIT_CATEGORY_APPROVED');
                         that.parents('tr').remove();
                     }
                     else
@@ -549,7 +549,7 @@ $(function(){
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Job skill changes discarded successfully!!!', '') ;
+                        showToastMessage('JOB_SKILL_CHANGES_DISCARDED');
                         if(that.parents('tbody').find('tr').length > 1)
                             that.parents('tr').remove();
                         else
@@ -576,7 +576,7 @@ $(function(){
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Area of interest approved successfully!!!', '') ;
+                        showToastMessage('AREA_OF_INTEREST_APPROVED');
                         that.parents('tr').remove();
                     }
                     else
@@ -599,7 +599,7 @@ $(function(){
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Job skill changes discarded successfully!!!', '') ;
+                        showToastMessage('JOB_SKILL_CHANGES_DISCARDED');
                         if(that.parents('tbody').find('tr').length > 1)
                             that.parents('tr').remove();
                         else
@@ -655,7 +655,7 @@ $(function(){
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Featured unit set successfully!!!', '') ;
+                        showToastMessage('FEATURED_UNIT_SET_SUCCESSFULLY');
                     }
                     else {
                         toastr['error'](resp.msg, '') ;
@@ -671,7 +671,7 @@ $(function(){
             dataType:'json',
             success:function(resp){
                 if(resp.success){
-                    toastr['success']('Featured unit removed successfully!!!', '') ;
+                    showToastMessage('FEATURED_UNIT_REMOVED_SUCCESSFULLY');
                 }
                 else {
                     toastr['error'](resp.msg, '') ;

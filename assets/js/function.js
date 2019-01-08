@@ -290,7 +290,7 @@ $(function(){
 
                                 }
                                 else{
-                                    toastr['success']('Thank you! Your message was sent to the Javul.org admin.', '');
+                                    showToastMessage('THANK_YOU_YOUR_MESSAGE_WAS_SENT_TO_JAVUL');
                                     captcha_code=response.captcha_value;
                                     bootbox.hideAll();
                                 }

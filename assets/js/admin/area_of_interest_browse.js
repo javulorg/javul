@@ -138,7 +138,7 @@ $(function(){
                                         $("#area_of_interest").select2('val',selected_area_of_interest_id);
                                     }
                                     else {
-                                        toastr['error']('Please select area of interest', '');
+                                        showToastMessage('PLEASE_SELECT_AREA_OF_INTEREST');
                                         return false;
                                     }
                                 }

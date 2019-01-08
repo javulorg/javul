@@ -13,6 +13,7 @@ use App\UserNotification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
 use Hashids\Hashids;
+use App\UserMessages;
 
 class ViewComposerServiceProvider extends ServiceProvider
 {
@@ -48,6 +49,12 @@ class ViewComposerServiceProvider extends ServiceProvider
 
         $loggedInUser = \DB::table('users')->whereRaw('unix_timestamp() - loggedin < 30')->count();
         view()->share('totalLoggedinUsers',$loggedInUser);
+		
+		//Get all system messages
+		$user_msg = new UserMessages;
+        $user_messages = $user_msg->getAllMessages();
+		view()->share('user_messages',json_encode($user_messages));
+		//end
 
         $totalUsers = \App\User::count();
         view()->share('totalRegisteredUsers',$totalUsers );

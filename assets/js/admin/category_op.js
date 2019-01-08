@@ -91,7 +91,7 @@ $(document).off("click",".add_category").on("click",".add_category",function(){
                                 success: function (resp) {
                                     if (resp.success) {
                                         bootbox.hideAll();
-                                        toastr['success']('Unit category added successfully!!!', '');
+                                        showToastMessage('UNIT_CATEGORY_ADDED');
 
                                         if(box_number == "last"){
                                             var total_box = $(".all_levels_category").find(".hierarchy_parent").length;
@@ -229,7 +229,7 @@ $(document).off("click",".add_category").on("click",".add_category",function(){
                                 success: function (resp) {
                                     if (resp.success) {
                                         bootbox.hideAll();
-                                        toastr['success']('Unit category deleted successfully!!!', '');
+                                        showToastMessage('UNIT_CATEGORY_DELETED');
 
                                         var total_div = $(".all_levels_category").find('.hierarchy_parent').length - 1;
                                         if(total_div == 0){
@@ -390,7 +390,7 @@ $(document).off("click",".add_category").on("click",".add_category",function(){
                             success:function(resp){
                                 if(resp.success){
                                     bootbox.hideAll();
-                                    toastr['success']('Job category updated successfully!!!', '') ;
+                                    showToastMessage('JOB_CATEGORY_UPDATED');
                                     if(box_number == 1 || $(".all_levels_category").find(".hierarchy_parent").length == 1){
                                         $('#category_firstbox option:selected').text(resp.name+' >');
                                         $('#category_firstbox option:selected').attr('data-type',resp.type);

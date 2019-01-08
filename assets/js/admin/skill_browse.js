@@ -137,7 +137,7 @@ $(function(){
                                         $("#task_skills").select2('val',selected_skill_id);
                                     }
                                     else {
-                                        toastr['error']('Please select skill', '');
+                                        showToastMessage('PLEASE_SELECT_SKILL');
                                         return false;
                                     }
                                 }

@@ -91,7 +91,7 @@ $(document).off("click",".add_area_of_interest").on("click",".add_area_of_intere
                                 success: function (resp) {
                                     if (resp.success) {
                                         bootbox.hideAll();
-                                        toastr['success']('Area of interest added successfully!!!', '');
+                                        showToastMessage('AREA_OF_INTEREST_ADDED');
 
                                         if(box_number == "last"){
                                             var total_box = $(".all_levels_area_of_interest").find(".hierarchy_parent").length;
@@ -229,7 +229,7 @@ $(document).off("click",".add_area_of_interest").on("click",".add_area_of_intere
                                 success: function (resp) {
                                     if (resp.success) {
                                         bootbox.hideAll();
-                                        toastr['success']('Area of interest deleted successfully!!!', '');
+                                        showToastMessage('AREA_OF_INTEREST_DELETED');
 
                                         var total_div = $(".all_levels_area_of_interest").find('.hierarchy_parent').length - 1;
                                         if(total_div == 0){
@@ -390,7 +390,7 @@ $(document).off("click",".add_area_of_interest").on("click",".add_area_of_intere
                             success:function(resp){
                                 if(resp.success){
                                     bootbox.hideAll();
-                                    toastr['success']('Area of interest updated successfully!!!', '') ;
+                                    showToastMessage('AREA_OF_INTEREST_UPDATED');
                                     if(box_number == 1 || $(".all_levels_area_of_interest").find(".hierarchy_parent").length == 1){
                                         $('#area_of_interest_firstbox option:selected').text(resp.title+' >');
                                         $('#area_of_interest_firstbox option:selected').attr('data-type',resp.type);

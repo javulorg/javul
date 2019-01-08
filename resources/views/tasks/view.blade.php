@@ -256,7 +256,7 @@
                     dataType:'json',
                     success:function(resp){
                         if(resp.success){
-                            toastr['success']('Task assign successfully', '');
+                            showToastMessage('TASK_ASSIGN_SUCCESSFULLY');
                             window.location.reload(true);
                         }
                     }

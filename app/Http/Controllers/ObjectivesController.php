@@ -17,12 +17,15 @@ use Hashids\Hashids;
 use App\Forum;
 use App\ObjectiveRevision;
 use Carbon\Carbon;
+use App\UserMessages;
 
 class ObjectivesController extends Controller
 {
+    public $user_messages;
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view','get_objectives_paginate','lists']]);
         view()->share('site_activity_text','Unit Activity Log');
+        $this->user_messages = new UserMessages();
     }
 
     public function diff($objective_id,$rev1,$rev2,Request $request){
@@ -441,7 +444,7 @@ class ObjectivesController extends Controller
 //                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
 //            });
 
-            $request->session()->flash('msg_val', "Objective created successfully!!!");
+            $request->session()->flash('msg_val', $this->user_messages->getMessage('OBJECTIVE_CREATED'));
             return redirect('objectives');
 
         }
@@ -591,7 +594,7 @@ class ObjectivesController extends Controller
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', "Objective updated successfully!!!");
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('OBJECTIVE_UPDATED'));
                     return redirect('objectives/'.$objectiveIDHashID->encode($objectiveObj->id).'/'.$objectiveObj->slug);
 
 

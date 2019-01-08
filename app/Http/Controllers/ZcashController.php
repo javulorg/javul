@@ -73,10 +73,11 @@ class ZcashController extends Controller
         $api_url = env('ZCASH_API_URL');
         //$accessToken = "v2xd906ab6b1c780d80e92b9bf3320bfdf3d7e16cfadfe5a135c54a684d552decf2";
         $accessToken = env('ZCASH_ACCESS_TOKEN');
+        $coin = "zec";//"tzec";
         $transaction_exits = ZcashWebhookData::where("transaction_id",$notification_data['hash'])->first();
 
 
-        if(count($notification_data) > 0 && isset($notification_data['coin']) && $notification_data['coin'] == "tzec"){
+        if(count($notification_data) > 0 && isset($notification_data['coin']) && $notification_data['coin'] == $coin){
             if($notification_data['state'] == "confirmed" && count($transaction_exits) > 0){
                 //ZcashWebhookData::where("transaction_id",$notification_data['hash'])->update(['notification_status'=>$notification_data['state']]);
                 $transaction_exits->notification_status = $notification_data['state'];
@@ -85,7 +86,7 @@ class ZcashController extends Controller
                 if(count($transaction_exits) == 0){
 
                     $wallet_id = $notification_data['wallet'];
-                    $transfer_list = Curl::to($api_url."tzec/wallet/".$wallet_id."/transfer")
+                    $transfer_list = Curl::to($api_url.$coin."/wallet/".$wallet_id."/transfer")
                     ->withHeader('Content-Type: application/json')
                     ->withHeader('Authorization: Bearer '.$accessToken.'')
                     ->asJsonResponse()
@@ -189,8 +190,8 @@ class ZcashController extends Controller
             $user_id = $zcash_transaction_detail->user_id;
 
             //Wallet configuration
-            $wallet_id = "5bf27c22f00302a903cbf9b3bc068182";
-            $coin = "tzec";
+            $wallet_id = env('ZCASH_WALLET_ID');
+            $coin = "zec";//"tzec";
             $wallet_pass = env('ZCASH_WALLET_PASSWORD');
             
             

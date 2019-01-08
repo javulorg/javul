@@ -646,13 +646,13 @@
                                     if (field_name == "all") {
                                         $('.dynamic_alert').bootstrapToggle('on');
                                     }
-                                    toastr['success'](field_name + ' enabled successfully.', '');
+                                    toastr[getToastMessage('ENABLED_SUCCESSFULLY')['type']](field_name + getToastMessage('ENABLED_SUCCESSFULLY')['text'], '');
                                 }
                                 else {
                                     if (field_name == "all") {
                                         $('.dynamic_alert').bootstrapToggle('off');
                                     }
-                                    toastr['success'](field_name + ' disabled successfully.', '');
+                                    toastr[getToastMessage('ENABLED_SUCCESSFULLY')['type']](field_name + getToastMessage('DISABLED_SUCCESSFULLY')['text'], '');
                                 }
                                 $("#changed_by").val('');
                             }

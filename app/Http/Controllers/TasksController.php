@@ -30,13 +30,16 @@ use Illuminate\Support\Facades\Input;
 use App\Forum;
 use App\TasksRevision;
 use Carbon\Carbon;
+use App\UserMessages;
 
 class TasksController extends Controller
 {
+    public $user_messages;
     public function __construct(){
         $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists']]);
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
         view()->share('site_activity_text','Unit Activity Log');
+        $this->user_messages = new UserMessages;
     }
 
     public function revison($task_id){
@@ -630,7 +633,7 @@ class TasksController extends Controller
 //                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
 //            });
 
-            $request->session()->flash('msg_val', "Task created successfully!!!");
+            $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_CREATED'));
 
             return redirect('tasks/'.$task_id.'/'.$slug);
         }
@@ -660,7 +663,7 @@ class TasksController extends Controller
                         Task::where('id',$task_id)->update([
                             'status'=> $request->task_status
                         ]);
-                        $request->session()->flash('msg_val', "Task status updated successfully!!!");
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_UPDATED'));
                         return redirect('tasks/'.$taskIDHashID->encode($task_id).'/'.$task->slug);
                     }
                     //end here
@@ -957,7 +960,7 @@ class TasksController extends Controller
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', "Task updated successfully!!!");
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_UPDATED'));
                     return redirect('tasks/'.$taskIDHashID->encode($taskObjTemp->id).'/'.$taskObjTemp->slug);
                 }
 
@@ -1555,7 +1558,7 @@ class TasksController extends Controller
                             $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
-                        $request->session()->flash('msg_val', "Task bid successfully!!!");
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_BID'));
                         return redirect('tasks');
                     }
                     else{
@@ -2063,7 +2066,7 @@ class TasksController extends Controller
                             $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
-                        $request->session()->flash('msg_val', "Task Completed successfully!!!");
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_COMPLETED'));
                         return redirect('tasks');
                     }
                     else{
@@ -2179,12 +2182,12 @@ class TasksController extends Controller
 
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
-                    $request->session()->flash('msg_val', "Task assigned successfully!!!");
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_ASSIGNED'));
                     return redirect('tasks');
                 }
             }
         }
-        $request->session()->flash('msg_val', "Task were not found. Please again later.");
+        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_WHERE_NOT_FOUND'));
         $request->session()->flash('msg_type', "danger");
 
         return redirect('tasks');
@@ -2343,7 +2346,7 @@ class TasksController extends Controller
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', "Task completed successfully!!!");
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_COMPLETED'));
                     return redirect('tasks');
                 }
             }
@@ -2447,7 +2450,7 @@ class TasksController extends Controller
                             $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
-                        $request->session()->flash('msg_val', "Task Cancelled successfully!!!");
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_CANCELLED'));
                         return redirect('tasks');
                     }
                     else{

@@ -70,10 +70,10 @@ $(document).ready(function() {
                                 }
                                 else
                                 {
-                                    var message = "Amount transfered successfully.";
+                                    var message = getToastMessage('AMOUNT_TRANSFERED_SUCCESSFULLY')['text'];
                                     var buttonText = "Transfer my full balance to my Paypal account";
                                     if($("#payment_method").val() == "Zcash"){
-                                        message = "Request send successfully.";
+                                        message = getToastMessage(' REQUEST_SEND_SUCCESSFULLY')['text'];
                                         buttonText = "Send transfer request";
                                     }
                                     $form.find("input,select").val('');
@@ -141,7 +141,7 @@ $(document).ready(function() {
                     $form.find("input,select").val('');
                     var errorHTML = '<div class="remove-alert alert alert-success">'+
                         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
-                        '<strong>Success!!!</strong> Amount transfered successfully.'+
+                        '<strong>Success!!!</strong> '+getToastMessage('AMOUNT_TRANSFERED_SUCCESSFULLY')['text']+
                         '</div>';
                     $form.prepend(errorHTML);
                     $that.prop('disabled', false);
@@ -197,7 +197,7 @@ $(document).ready(function() {
                     else{
                         var errorHTML = '<div class="remove-alert alert alert-success">'+
                             '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> ' +
-                            '<strong>Success!!!</strong> Credit card details updated'+
+                            '<strong>Success!!!</strong> '+getToastMessage('CREDIT_CARD_DETAILS_UPDATED')['text']+
                         '</div>';
                         $form.prepend(errorHTML);
                         $form.find('input,select').val('');
@@ -358,7 +358,7 @@ $(document).ready(function() {
                 if(resp.success){
                     $(".message").html('<div class="alert alert-success" style="margin-bottom:15px;">'+
                         '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
-                    '<strong>Success!</strong> Profile updated successfully...'+
+                    '<strong>Success!</strong>'+getToastMessage('PROFILE_UPDATED_SUCCESSFULLY')['text']+
                     '</div>');
 
                 }

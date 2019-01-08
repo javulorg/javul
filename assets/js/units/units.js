@@ -216,7 +216,7 @@ $(document).ready(function() {
                                         $("#unit_category").select2('val',selected_categories_id);
                                     }
                                     else {
-                                        toastr['error']('Please select category', '');
+                                        showToastMessage('PLEASE_SELECT_CATEGORY');
                                         return false;
                                     }
                                 }

@@ -203,7 +203,7 @@ $(document).ready(function() {
                 return true;
             }
             if (taskSummary.ckeditor().editor.document.getBody().getText().length >= 1000) {
-                toastr['error']('Task summary can accept maximum 1000 character.', '');
+                showToastMessage('TASK_SUMMARY_CAN_ACCEPT_MAXIMUM_1000_CHARACTER');
                 return false;
             }else { return true; }
         });
@@ -393,7 +393,7 @@ $(document).ready(function() {
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Document deleted successfully.', '');
+                        showToastMessage('DOCUMENT_DELETED');
                         if ($("table.documents tbody tr").length > 1)
                             $that.parents('tr:eq(0)').remove();
                         if ($("table.documents tbody tr").length < 10)
@@ -402,7 +402,7 @@ $(document).ready(function() {
                         $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
                     }
                     else
-                        toastr['error']('Something goes wrong. please try again later.', '');
+                        showToastMessage('SOMETHING_GOES_WRONG');
                 }
             })
         }
@@ -434,7 +434,7 @@ $(document).ready(function() {
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Request submitted successfully.', '');
+                        showToastMessage('REQUEST_SUBMITTED');
                         if($.trim(resp.status) != "" && resp.status == "awaiting_approval")
                             window.location.reload(true);
                         //more than 1 editors edit the task
@@ -442,7 +442,7 @@ $(document).ready(function() {
 							window.location.reload(true);
                     }
                     else
-                        toastr['error']('Something goes wrong. please try again later.', '');
+                        showToastMessage('SOMETHING_GOES_WRONG');
                 }
             })
         }

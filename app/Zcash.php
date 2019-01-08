@@ -23,21 +23,22 @@ class Zcash extends Model{
         if(empty($accessToken)){
             return array('success'=>false,'message'=>"Please add access token in env file.");
         }
+        $coin = "zec";// "tzec";
             
         /**
          * API Ref :- https://test.bitgo.com/api/v2/tbtc/wallet
          * url :- https://www.bitgo.com/api/v2/?shell#list-wallets
          * Get list of wallet
          */
-        $walletList = Curl::to($api_url."tzec/wallet")
+        $walletList = Curl::to($api_url.$coin."/wallet")
         ->withHeader('Authorization: Bearer '.$accessToken.'')
         ->asJson()
         ->get();
-        if(count($walletList) > 0){
+        if(!isset($walletList->error)){
             $wallet = $walletList->wallets[0];
             $wallet_id = $wallet->id;
 
-            $transfet_list = Curl::to($api_url."tzec/wallet/".$wallet_id."/transfer")
+            $transfet_list = Curl::to($api_url.$coin."/wallet/".$wallet_id."/transfer")
             ->withHeader('Content-Type: application/json')
             ->withHeader('Authorization: Bearer '.$accessToken.'')
             ->asJsonResponse()
@@ -48,7 +49,7 @@ class Zcash extends Model{
              * https://www.bitgo.com/api/v2/?shell#create-wallet-address
              * Create address
              */
-            $get_new_address = Curl::to($api_url."tzec/wallet/".$wallet_id."/address")
+            $get_new_address = Curl::to($api_url.$coin."/wallet/".$wallet_id."/address")
             ->withHeader('Authorization: Bearer '.$accessToken.'')
             ->asJsonResponse()
             ->post();
@@ -71,8 +72,10 @@ class Zcash extends Model{
 
                 return array('success'=>true,'qrcode'=>$file_location,'address'=>$created_address,'fundID'=>(isset($payment_details['fundID']))?$payment_details['fundID']:NULL,'user_transaction_id'=>(isset($payment_details['transaction_id']))?$payment_details['transaction_id']:NULL);
             }else{
-                return array('success'=>false,'message'=>"Something goes wrong please try again.");
+                return array('success'=>false,'message'=>"Something goes wrong please try again.",'error_data'=>$get_new_address);
             }
+        }else{
+            return array('success'=>false,'message'=>$walletList->error,'error_data'=>$walletList);
         }
     }
 

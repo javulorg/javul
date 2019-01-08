@@ -56,6 +56,7 @@ $(function(){
                     check_zcash_payment();
                 }else{
                     console.log("Error Response  -> ",resp);
+                    toastr['error'](resp['message'], '');
                 }
             }
         });

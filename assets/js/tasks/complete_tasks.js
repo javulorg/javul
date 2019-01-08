@@ -186,14 +186,14 @@ $(document).ready(function() {
                 dataType:'json',
                 success:function(resp){
                     if(resp.success){
-                        toastr['success']('Document deleted successfully.', '');
+                        showToastMessage('DOCUMENT_DELETED');
                         if ($("table.complete_task_attachment tbody tr").length > 1)
                             $that.parents('tr:eq(0)').remove();
 
                         $(".complete_task_attachment").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
                     }
                     else
-                        toastr['error']('Something goes wrong. please try again later.', '');
+                        showToastMessage('SOMETHING_GOES_WRONG');
                 }
             })
         }

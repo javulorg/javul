@@ -1,0 +1,82 @@
+<?php
+namespace App;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+class UserMessages extends Model
+{
+	public $message = [
+		//Issue
+		'ISSUE_CREATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Issue created successfully!!!'),
+		'ISSUE_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Issue updated successfully!!!'),
+		//Objective
+		'OBJECTIVE_CREATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Objective created successfully!!!'),
+		'OBJECTIVE_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Objective updated successfully!!!'),
+		//Task
+		'TASK_CREATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task created successfully!!!'),
+		'TASK_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task updated successfully!!!'),
+		'TASK_STATUS_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task status updated successfully!!!'),
+		'TASK_BID' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task bid successfully!!!'),
+		'TASK_COMPLETED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task Completed successfully!!!'),
+		'TASK_ASSIGNED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task assigned successfully!!!'),
+		'TASK_WHERE_NOT_FOUND' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Task were not found. Please again later.'),
+		'TASK_CANCELLED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Task Cancelled successfully!!!'),
+		//Unit
+		'UNIT_CREATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Unit created successfully!!!'),
+		'UNIT_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Unit updated successfully!!!'),
+		//area of interest 
+		'PLEASE_SELECT_AREA_OF_INTEREST' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Please select area of interest'),
+		'AREA_OF_INTEREST_ADDED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Area of interest added successfully!!!'),
+		'AREA_OF_INTEREST_DELETED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Area of interest deleted successfully!!!'),
+		'AREA_OF_INTEREST_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Area of interest updated successfully!!!'),
+		'AREA_OF_INTEREST_APPROVED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Area of interest approved successfully!!!'),
+		//Unit
+		'PLEASE_SELECT_CATEGORY' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Please select category'),
+		'UNIT_CATEGORY_ADDED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Unit category added successfully!!!'),
+		'UNIT_CATEGORY_DELETED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Unit category deleted successfully!!!'),
+		'UNIT_CATEGORY_APPROVED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Unit category approved successfully!!!'),
+		'FEATURED_UNIT_SET_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Featured unit set successfully!!!'),
+		'FEATURED_UNIT_REMOVED_SUCCESSFULLY' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Featured unit removed successfully!!!'),
+		'UNIT_DELETED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Unit deleted successfully!!!'),
+		//Objective
+		'OBJECTIVE_NOT_FOUND' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Objectives not found.'),
+		'OBJECTIVE_DELETED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Objective deleted successfully!!!'),
+		//Task
+		'TASK_DELETED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Task deleted successfully!!!'),
+		'TASK_SUMMARY_CAN_ACCEPT_MAXIMUM_1000_CHARACTER' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task summary can accept maximum 1000 character.'),
+		'TASK_ASSIGN_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task assign successfully'),
+		//Jobs
+		'JOB_CATEGORY_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Job category updated successfully!!!'),
+		'JOB_SKILL_ADDED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Job skill added successfully!!!'),
+		'JOB_SKILL_DELETED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Job skill deleted successfully!!!'),
+		'JOB_SKILL_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Job skill updated successfully!!!'),
+		'JOB_SKILL_APPROVED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Job skill approved successfully!!!'),
+		'JOB_SKILL_CHANGES_DISCARDED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Job skill changes discarded successfully!!!'),
+		//Skill
+		'PLEASE_SELECT_SKILL' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Please select skill'),
+		'DOCUMENT_DELETED' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Document deleted successfully.'),
+		'REQUEST_SUBMITTED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Request submitted successfully.'),
+		'SOMETHING_GOES_WRONG' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Something goes wrong. please try again later.'),
+		'REMOVED_FROM_WATCH_LIST' => array('type'=>'success','auto-dismiss'=>true,'text'=>' removed from your watchlist'),
+		'ENABLED_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>' enabled successfully.'),
+		'DISABLED_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>' disabled successfully.'),
+		'AMOUNT_TRANSFERED_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Amount transfered successfully.'),
+		'REQUEST_SEND_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Request send successfully'),
+		'CREDIT_CARD_DETAILS_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Credit card details updated'),
+		'PROFILE_UPDATED_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Profile updated successfully...'),
+		//Site Message
+		'THANK_YOU_YOUR_MESSAGE_WAS_SENT_TO_JAVUL' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Thank you! Your message was sent to the Javul.org admin.'),
+	];
+
+	public function getMessage($key){
+		if(isset($this->message[$key])){
+			$message = $this->message[$key];
+			return $message['text'];
+		}else
+			return '';
+	}
+	public function getAllMessages(){
+		return $this->message;
+	}
+}
