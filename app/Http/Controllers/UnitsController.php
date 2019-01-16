@@ -357,7 +357,7 @@ class UnitsController extends Controller
                  unit <a href="'.url('units/'.$unit_id.'/'.$slug).'">'.$request->input('unit_name').'</a>'
             ]);
 
-            $request->session()->flash('msg_val', $this->user_messages->getMessage('UNIT_CREATED'));
+            $request->session()->flash('msg_val', $this->user_messages->getMessage('UNIT_CREATED')['text']);
             return redirect('units');
         }
 
@@ -542,7 +542,7 @@ class UnitsController extends Controller
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', $this->user_messages->getMessage('UNIT_UPDATED'));
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('UNIT_UPDATED')['text']);
                     return redirect('units/'.$unitIDEncoded.'/'.$slug);
 
                 }

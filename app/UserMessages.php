@@ -22,6 +22,9 @@ class UserMessages extends Model
 		'TASK_ASSIGNED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task assigned successfully'),
 		'TASK_WHERE_NOT_FOUND' => array('type'=>'info','auto-dismiss'=>true,'text'=>'No tasks found'),
 		'TASK_CANCELLED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task cancelled successfully'),
+		'TASK_HAS_BEEN_ASSIGNED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task Assigned!','continue_text'=>' Your bid has been selected and task','continue_text_too'=>'has been assigned to you.'),
+		'TASK_ASSIGNED_BID_SELECTED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task Assigned!','continue_text'=>' Your bid has been selected and task'),
+		'TASK_RE_ASSIGNED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Task Re-Assigned!','continue_text'=>'The task','continue_text_too'=>'has been re-assigned to you.'),
 		//Unit
 		'UNIT_CREATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Unit created successfully'),
 		'UNIT_UPDATED' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Unit updated successfully'),
@@ -71,8 +74,7 @@ class UserMessages extends Model
 
 	public function getMessage($key){
 		if(isset($this->message[$key])){
-			$message = $this->message[$key];
-			return $message['text'];
+			return $this->message[$key];
 		}else
 			return '';
 	}

@@ -444,7 +444,7 @@ class ObjectivesController extends Controller
 //                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
 //            });
 
-            $request->session()->flash('msg_val', $this->user_messages->getMessage('OBJECTIVE_CREATED'));
+            $request->session()->flash('msg_val', $this->user_messages->getMessage('OBJECTIVE_CREATED')['text']);
             return redirect('objectives');
 
         }
@@ -594,7 +594,7 @@ class ObjectivesController extends Controller
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', $this->user_messages->getMessage('OBJECTIVE_UPDATED'));
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('OBJECTIVE_UPDATED')['text']);
                     return redirect('objectives/'.$objectiveIDHashID->encode($objectiveObj->id).'/'.$objectiveObj->slug);
 
 

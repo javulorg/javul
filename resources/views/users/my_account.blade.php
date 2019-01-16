@@ -340,14 +340,14 @@
                             @if($errors->has('error'))
                             <div class="alert alert-danger">
                                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                <strong>Error!</strong> {{$errors->first('error')}}.
+                                <img src="{!! url('assets/images/error-icon.png') !!}"> <strong>Error!</strong> {{$errors->first('error')}}.
                             </div>
                             @endif
 
                             @if($errors->has('paypal_email'))
                             <div class="alert alert-danger">
                                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                <strong>Error!</strong> {{$errors->first('paypal_email')}}.
+                                <img src="{!! url('assets/images/error-icon.png') !!}"> <strong>Error!</strong> {{$errors->first('paypal_email')}}.
                             </div>
                             @endif
                             @if(empty(Auth::user()->paypal_email) && $payment_method == "PAYPAL")

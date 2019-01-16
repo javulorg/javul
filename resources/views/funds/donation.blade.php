@@ -93,7 +93,7 @@
 
             <div class="alert alert-danger">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Error!</strong> {!!$err_msg!!}
+                <img src="{!! url('assets/images/error-icon.png') !!}"> <strong>Error!</strong> {!!$err_msg!!}
             </div>
 
         @endif
@@ -131,7 +131,7 @@
 
                 <div class="alert alert-danger">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <strong>Error!</strong> {!!$err_msg!!}
+                    <img src="{!! url('assets/images/error-icon.png') !!}"> <strong>Error!</strong> {!!$err_msg!!}
                 </div>
 
             @endif

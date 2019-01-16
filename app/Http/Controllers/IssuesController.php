@@ -390,7 +390,7 @@ class IssuesController extends Controller
                         created issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
                         ]);
 
-                        $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_CREATED'));
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_CREATED')['text']);
                         return redirect('issues/'.$unitIDHashID->encode($unitObj->id).'/lists');
                     }
                     $availableUnitFunds =Fund::getUnitDonatedFund($unit_id);
@@ -556,7 +556,7 @@ class IssuesController extends Controller
                         created issue <a href="'.url('issues/'.$issue_id_encoded.'/view').'">'.$request->input('title').'</a>'
             ]);
 
-            $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_CREATED'));
+            $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_CREATED')['text']);
             return redirect('issues');
         }
         view()->share('site_activity',[]);
@@ -728,7 +728,7 @@ class IssuesController extends Controller
                         ]);
 
                         $unitIDHashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
-                        $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_UPDATED'));
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_UPDATED')['text']);
                         return redirect('issues/'.$issueIDHashID->encode($issueObj->id).'/view');
                     }
                     $user_can_change_status = true;

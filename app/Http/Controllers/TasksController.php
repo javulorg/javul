@@ -633,7 +633,7 @@ class TasksController extends Controller
 //                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
 //            });
 
-            $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_CREATED'));
+            $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_CREATED')['text']);
 
             return redirect('tasks/'.$task_id.'/'.$slug);
         }
@@ -663,7 +663,7 @@ class TasksController extends Controller
                         Task::where('id',$task_id)->update([
                             'status'=> $request->task_status
                         ]);
-                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_UPDATED'));
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_UPDATED')['text']);
                         return redirect('tasks/'.$taskIDHashID->encode($task_id).'/'.$task->slug);
                     }
                     //end here
@@ -960,7 +960,7 @@ class TasksController extends Controller
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_UPDATED'));
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_UPDATED')['text']);
                     return redirect('tasks/'.$taskIDHashID->encode($taskObjTemp->id).'/'.$taskObjTemp->slug);
                 }
 
@@ -1558,7 +1558,7 @@ class TasksController extends Controller
                             $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
-                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_BID'));
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_BID')['text']);
                         return redirect('tasks');
                     }
                     else{
@@ -1706,8 +1706,8 @@ class TasksController extends Controller
             if($taskBidderObj->status == "offer_sent"){
                 $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:15px">'.
                           '<a href="#" class="close" data-dismiss="alert" aria-label="close" style="display:none;">&times;</a>'.
-                          '<strong>Task Assigned!</strong> Your bid has been selected and task(<b>'.$taskBidderObj->name.'</b>) ' .
-                            'has been assigned to you.'.
+                          '<img src="{!! url("assets/images/warning-icon.png") !!}"> <strong>'.$this->user_messages->getMessage('TASK_HAS_BEEN_ASSIGNED')['text'].'</strong> '.$this->user_messages->getMessage('TASK_HAS_BEEN_ASSIGNED')['continue_text'].'(<b>'.$taskBidderObj->name.'</b>) ' .
+                          $this->user_messages->getMessage('TASK_HAS_BEEN_ASSIGNED')['continue_text_too'].
                         '<div class="pull-right">' .
                             '<a class="btn btn-success btn-xs offer" data-task_id="'.$task_id.'" style="margin-right:5px;">Accept</a>' .
                             '<a class="btn btn-danger btn-xs offer" data-task_id="'.$task_id.'">Reject</a></div>'.
@@ -1715,7 +1715,7 @@ class TasksController extends Controller
             }
             else{
                 $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:0px;margin-top:10px;">'.
-                    '<strong>Task Re-Assigned!</strong> The task (<b>'.$taskBidderObj->name.'</b>) has been re-assigned to you.' .
+                    '<img src="{!! url("assets/images/warning-icon.png") !!}"> <strong>'.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['text'].'</strong> '.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['continue_text'].' (<b>'.$taskBidderObj->name.'</b>) '.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['continue_text_too'].'' .
                     '<a href="#" class="close" data-dismiss="alert" aria-label="close" style="display:none;">&times;</a>'.
                     '<div class="pull-right">' .
                         '<a class="btn btn-success btn-xs re_assigned offer" data-task_id="'.$task_id.'" style="margin-right:5px;">Ok</a>' .
@@ -2066,7 +2066,7 @@ class TasksController extends Controller
                             $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
-                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_COMPLETED'));
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_COMPLETED')['text']);
                         return redirect('tasks');
                     }
                     else{
@@ -2182,12 +2182,12 @@ class TasksController extends Controller
 
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
-                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_ASSIGNED'));
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_ASSIGNED')['text']);
                     return redirect('tasks');
                 }
             }
         }
-        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_WHERE_NOT_FOUND'));
+        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_WHERE_NOT_FOUND')['text']);
         $request->session()->flash('msg_type', "danger");
 
         return redirect('tasks');
@@ -2346,7 +2346,7 @@ class TasksController extends Controller
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_COMPLETED'));
+                    $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_COMPLETED')['text']);
                     return redirect('tasks');
                 }
             }
@@ -2450,7 +2450,7 @@ class TasksController extends Controller
                             $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                         });
 
-                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_CANCELLED'));
+                        $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_CANCELLED')['text']);
                         return redirect('tasks');
                     }
                     else{
