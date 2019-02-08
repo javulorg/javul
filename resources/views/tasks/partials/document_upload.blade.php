@@ -1,4 +1,4 @@
-@if((empty($$unitObjForLeftBar) || \App\Task::isUnitAdminOfTask($taskObj->id)) && count($taskDocumentsObj) < 10)
+@if((empty($unitObjForLeftBar) || \App\Task::isUnitAdminOfTask($taskObj->id)) && count($taskDocumentsObj) < 10)
 <tr>
     <td style="width:90%;">
         <div class="fileinput fileinput-new input-group" data-provides="fileinput">

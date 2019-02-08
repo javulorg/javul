@@ -30,7 +30,7 @@
                     <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6 col-xs-6">{!! trans('messages.wiki_edits') !!}</div>
-                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">12221</div>
+                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">0</div>
                         </div>
                     </div>
                 </div>
@@ -60,13 +60,13 @@
                     <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6 col-xs-6">{!! trans('messages.forum_threads') !!}</div>
-                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">123</div>
+                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">0</div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6 col-xs-6">{!! trans('messages.fund_awarded') !!}</div>
-                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">12343</div>
+                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">0</div>
                         </div>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                     <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6 col-xs-6">{!! trans('messages.forum_posts') !!}</div>
-                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">833</div>
+                            <div class="col-sm-6 col-xs-6 text-right colorLightBlue">0</div>
                         </div>
                     </div>
                 </div>

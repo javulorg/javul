@@ -73,7 +73,7 @@ class ZcashController extends Controller
         $api_url = env('ZCASH_API_URL');
         //$accessToken = "v2xd906ab6b1c780d80e92b9bf3320bfdf3d7e16cfadfe5a135c54a684d552decf2";
         $accessToken = env('ZCASH_ACCESS_TOKEN');
-        $coin = "zec";//"tzec";
+        $coin = env('ZCASH_COIN');//"zec";//"tzec";
         $transaction_exits = ZcashWebhookData::where("transaction_id",$notification_data['hash'])->first();
 
 
@@ -191,7 +191,7 @@ class ZcashController extends Controller
 
             //Wallet configuration
             $wallet_id = env('ZCASH_WALLET_ID');
-            $coin = "zec";//"tzec";
+            $coin = env('ZCASH_COIN');//"zec";//"tzec";
             $wallet_pass = env('ZCASH_WALLET_PASSWORD');
             
             

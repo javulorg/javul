@@ -23,7 +23,7 @@ class Zcash extends Model{
         if(empty($accessToken)){
             return array('success'=>false,'message'=>"Please add access token in env file.");
         }
-        $coin = "zec";// "tzec";
+        $coin = env('ZCASH_COIN');//"zec";// "tzec";
             
         /**
          * API Ref :- https://test.bitgo.com/api/v2/tbtc/wallet

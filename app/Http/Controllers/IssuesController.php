@@ -465,8 +465,8 @@ class IssuesController extends Controller
             $validator = \Validator::make($request->all(), [
                 'title' => 'required',
                 'unit_id'=>'required',
-//                'objective_id'=>'required',
-//                'task_id'=>'required',
+            //'objective_id'=>'required',
+            //'task_id'=>'required',
                 'description' => 'required'
             ]);
 
@@ -567,6 +567,7 @@ class IssuesController extends Controller
         view()->share('user_can_resolve_issue',false);
         view()->share('taskObj',[]);
         view()->share('issueDocumentsObj',[]);
+        view()->share('taskDocumentsObj',[]);
 
         view()->share('action_method','add');
         return view('issues.create');
