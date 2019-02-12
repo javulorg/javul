@@ -10,6 +10,8 @@
             .border-main{left:94px;}
             .list-item-main{width: 94px;}
         }
+        .panel-body.list-group>.list-group-item>div.row>.col-xs-12>div:last-child>.border-main>.last-site-activity{ display:none !important; }
+        .panel-body.list-group>.list-group-item>div.row>.col-xs-12>div:last-child>.border-main>div{ height: 65px; }
     </style>
 @endsection
 @section('content')

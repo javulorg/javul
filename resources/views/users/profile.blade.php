@@ -5,6 +5,8 @@
     span.tags{padding:0 6px;}
     .text-danger{color:#ed6b75 !important;}
     .navbar-nav > li.active{background-color: #e7e7e7;}
+    .panel-body.list-group>.list-group-item>div.row>.col-xs-12>div:last-child>.border-main>.last-site-activity{ display:none !important; }
+    .panel-body.list-group>.list-group-item>div.row>.col-xs-12>div:last-child>.border-main>div{ height: 71px; }
 
 </style>
 @endsection
