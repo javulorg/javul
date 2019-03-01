@@ -329,7 +329,7 @@ function check_assigned_task(){
         success:function(resp){
             if(resp.success){
                 if($(".confirmation_box_"+resp.task_id).length == 0){
-                    $(".content").find('.container').prepend('<div class="row"><div class="col-sm-12">'+resp.html+'</div></div>');
+                    $(".content > .container").prepend('<div class="row"><div class="col-sm-12">'+resp.html+'</div></div>');
                 }
                 /*bootbox.dialog({
                     message: resp.html,
