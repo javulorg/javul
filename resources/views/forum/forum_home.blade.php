@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>Forum - Javul.org</title>
+@endsection
 @section('page-css')
 <style type="text/css">
     .topic-list{

@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>@if(empty($objectiveObj)) Create Objective @else Update Objective @endif - Javul.org</title>
+@endsection
 @section('page-css')
     <link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />

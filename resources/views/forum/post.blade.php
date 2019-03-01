@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>Forum Thread: <?= $topic->title ?> - Javul.org</title>
+@endsection
 @section('page-css')
   <style type="text/css">
         .post-desc {

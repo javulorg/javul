@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>{!! $wiki_page['wiki_page_title'] !!} - Javul.org</title>
+@endsection
 @section('page-css')
     <link href="{!! url('assets/css/wiki.css') !!}" rel="stylesheet" type="text/css" />
 @endsection

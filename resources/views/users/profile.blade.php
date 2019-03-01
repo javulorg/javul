@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>{{$userObj->first_name}} {{$userObj->last_name}} - Javul.org</title>
+@endsection
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-star-rating-master/css/star-rating.css') !!}" media="all" rel="stylesheet" type="text/css" />
 <style>
