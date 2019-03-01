@@ -130,6 +130,7 @@
                 if(json['success']){
                     toastr['success'](json['success'], '');
                     $("#form_topic_form textarea").val('');
+                    $("#form_topic_form input").val('');
                    // setTimeout(function(){ location = json['location'] },1000);
                 }
                 if(json['error']){
