@@ -144,7 +144,7 @@
                 </li>-->
                 @endif
 
-
+                @if (!empty($authUserObj))
                 <li class="search_div_main" style="padding-top: 15px;">
                     <form action="{!! url('global_search') !!}" method="get">
                         <div class="input-group add-on">
@@ -160,6 +160,7 @@
                         </div>
                     </form>
                 </li>
+                @endif
             </ul>
 
         </div><!-- /.navbar-collapse -->
