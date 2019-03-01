@@ -17,13 +17,13 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 <head>
-    <meta charset="utf-8" />
-    <title>Javul.org</title>
+    @yield('page-meta', "<title>Javul.org</title>")
+    <meta charset="utf-8" />    
     <link rel="shortcut icon" href="{!! url('favicon.ico') !!}" type="image/icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
-    <meta content="" name="author" />
+    <meta content="" name="author" />    
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="//fonts.googleapis.com/css?family=Roboto:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/font-awesome/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css" />

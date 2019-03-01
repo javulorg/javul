@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>{{$issueObj->title}} - Javul.org</title>
+@endsection
 @section('page-css')
     <style>.related_para{margin:0 0 10px;}</style>
 @endsection

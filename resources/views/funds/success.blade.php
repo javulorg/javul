@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>Donation Success - Javul.org</title>
+@endsection
 @section('page-css')
 <style>
     hr, p{margin:0 0 10px !important;}

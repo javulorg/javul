@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>@if(empty($taskObj)) Create Task @else Update Task @endif - Javul.org</title>
+@endsection
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.css') !!}" rel="stylesheet" type="text/css" />
