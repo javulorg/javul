@@ -128,7 +128,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-4 form-group {{ $errors->has('task_skills') ? ' has-error' : '' }}">
+                                <div class="col-sm-8 form-group {{ $errors->has('task_skills') ? ' has-error' : '' }}">
                                     <label class="control-label">Task Skills</label>
                                     <div class="input-icon right">
                                         <i class="fa select-error"></i>
