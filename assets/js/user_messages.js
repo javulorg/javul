@@ -11,7 +11,7 @@ function showToastMessage(msg_key){
         "closeButton": false,//To show close button
         "timeOut": 3000,//set time limit for message
     };
-    let user_msg = toast_messages[msg_key];
+    let user_msg = toast_messages[$.trim(msg_key)];
     if(!user_msg['auto-dismiss']){
         toastr.options.closeButton = true;
         toastr.options.timeOut = 0;
