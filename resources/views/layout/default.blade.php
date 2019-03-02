@@ -108,6 +108,12 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{!! url('assets/js/user_messages.js') !!}" type="text/javascript"></script>
         <script>
             var logged_in ='{{Auth::check()?true:false}}';
+            //showing toast message for global search query
+            var toast_msg_val = '@if(Session::has("msg_val")) {!! trim(Session::get("msg_val")) !!} @endif';
+            if($.trim(toast_msg_val) !== ''){
+                showToastMessage(toast_msg_val);
+            }
+
             $(function(){
                 if(logged_in) {
                     $('[data-toggle="popover"]').popover({

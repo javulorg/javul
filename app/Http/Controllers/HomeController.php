@@ -27,6 +27,7 @@ use PayPal\Types\AP\PayRequest;
 use PayPal\Types\AP\Receiver;
 use PayPal\Types\AP\ReceiverList;
 use PayPal\Types\Common\RequestEnvelope;
+use App\UserMessages;
 
 class HomeController extends Controller
 {
@@ -78,24 +79,29 @@ class HomeController extends Controller
     public function global_search(Request $request){
 
         $search_word = $request->input('search_term');
-        $unitObj = Unit::where('name','like', '%'.$search_word.'%')->get();
-        view()->share('unitObj',$unitObj);
+        if(!empty(trim($search_word))){
+            $unitObj = Unit::where('name','like', '%'.$search_word.'%')->get();
+            view()->share('unitObj',$unitObj);
 
-        $objectiveObj = Objective::where('name','like', '%'.$search_word.'%')->get();
-        view()->share('objectivesObj',$objectiveObj);
+            $objectiveObj = Objective::where('name','like', '%'.$search_word.'%')->get();
+            view()->share('objectivesObj',$objectiveObj);
 
-        $taskObj = Task::where('name','like', '%'.$search_word.'%')->get();
-        view()->share('taskObj',$taskObj);
+            $taskObj = Task::where('name','like', '%'.$search_word.'%')->get();
+            view()->share('taskObj',$taskObj);
 
-        $issueObj = Issue::where('title','like', '%'.$search_word.'%')->get();
-        view()->share('issueObj',$issueObj);
+            $issueObj = Issue::where('title','like', '%'.$search_word.'%')->get();
+            view()->share('issueObj',$issueObj);
 
-        view()->share('site_activity_text','Global Activity Log');
-        $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-        view()->share('site_activity',$site_activity);
+            view()->share('site_activity_text','Global Activity Log');
+            $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+            view()->share('site_activity',$site_activity);
 
-        view()->share('search_word',$search_word);
-        return view('global_search');
+            view()->share('search_word',$search_word);
+            return view('global_search');
+        }else{
+            $request->session()->flash('msg_val', 'PLEASE_ENTER_VALID_SEARCH_TERM');
+            return redirect()->back();
+        }
     }
  
 	public function check_username(Request $check){
@@ -142,6 +148,7 @@ class HomeController extends Controller
                 $page_limit = \Config::get('app.global_site_activity_page');
                 $site_activity = SiteActivity::where('user_id',Auth::user()->id)->orderBy('id','desc')->paginate($page_limit);
                 $site_activity_text= "Unit Activity Log";
+                view()->share('unit_activity_id','');
             }
         }
         else{
