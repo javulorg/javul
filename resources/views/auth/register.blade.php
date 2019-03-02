@@ -14,7 +14,7 @@
 
 				<div class="row form-group{{ $errors->has('user_name') || $errors->has('username_duplicate') ? ' has-error' : '' }}">
                     <div class="col-md-12"style="padding: ">
-                        <input type="text" id="uname" class="form-control" required="" name="user_name" value="{{ old('user_name') }}"  placeholder="Enter User Name">
+                        <input type="text" id="uname" class="form-control" required="" name="user_name" value="{{ old('user_name') }}"  placeholder="Enter User Name*">
                        @if ($errors->has('user_name'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('user_name') }}</strong>
@@ -30,7 +30,7 @@
                 <div class="row form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                     <div class="col-md-12">
                         <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}"  placeholder="{!!
-                        Lang::get('messages.enter_firstname') !!}">
+                        Lang::get('messages.enter_firstname') !!}*" required>
                         @if ($errors->has('first_name'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('first_name') }}</strong>
@@ -42,7 +42,7 @@
                 <div class="row form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
                     <div class="col-md-12">
                         <input name="last_name" type="text" id="last_name" value="{{ old('last_name') }}" class="form-control"
-                               placeholder="{!! Lang::get('messages.enter_lastname') !!}"/>
+                               placeholder="{!! Lang::get('messages.enter_lastname') !!}*" required />
                         @if ($errors->has('last_name'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('last_name') }}</strong>
@@ -53,7 +53,7 @@
 
                 <div class="row form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <div class="col-md-12">
-                        <input name="email" type="email" value="{{ old('email') }}" id="email" class="form-control" placeholder="{!! Lang::get('messages.email_address') !!}"
+                        <input name="email" type="email" value="{{ old('email') }}" id="email" class="form-control" placeholder="{!! Lang::get('messages.email_address') !!}*"
                                required="" >
 
                         @if ($errors->has('email'))
@@ -99,7 +99,7 @@
 
                 <div class="row form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                     <div class="col-md-12">
-                        <input name="password" type="password" id="password" class="form-control" placeholder="{!! Lang::get('messages.enter_password') !!}"
+                        <input name="password" type="password" id="password" class="form-control" placeholder="{!! Lang::get('messages.enter_password') !!}*"
                                required="">
                         @if ($errors->has('password'))
                             <span class="help-block">
@@ -112,7 +112,7 @@
                 <div class="row form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
                     <div class="col-md-12">
                         <input name="password_confirmation" type="password" id="password_confirmation" class="form-control"
-                               placeholder="{!! Lang::get('messages.confirm_password') !!}" required="" />
+                               placeholder="{!! Lang::get('messages.confirm_password') !!}*" required="" />
 
                         @if ($errors->has('password_confirmation'))
                             <span class="help-block">
