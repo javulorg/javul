@@ -417,6 +417,7 @@ class IssuesController extends Controller
                     view()->share('user_can_resolve_issue',false);
                     view()->share('taskObj',[]);
                     view()->share('issueDocumentsObj',[]);
+                    view()->share('taskDocumentsObj',[]);
 
                     view()->share('action_method','add');
                     return view('issues.create');
@@ -769,6 +770,7 @@ class IssuesController extends Controller
                     view()->share('user_can_change_status',$user_can_change_status);
                     view()->share('user_can_resolve_issue',$user_can_resolve_issue);
                     view()->share('action_method','edit');
+                    view()->share('taskDocumentsObj',[]);
                     return view('issues.create');
                 }
             }

@@ -16,6 +16,7 @@
                     &nbsp;&nbsp;
                 </div>
                 <div class="clearfix"></div>
+                @if(\Auth::check())
                 <hr>
                 <div class="form">
                     <form role="form" method="post" id="form_topic_form"  enctype="multipart/form-data">
@@ -32,6 +33,7 @@
                         </div>
                     </form>
                 </div>
+                @endif
             </div>
         </div>
     </div>

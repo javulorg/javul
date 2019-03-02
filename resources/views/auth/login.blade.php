@@ -3,7 +3,7 @@
 <div class="container" style="min-height: calc(63vh - 60px);margin-top: 100px;">
     <div class="row">
         <div class="col-sm-offset-3 col-sm-6">
-            <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
+            <form class="form-horizontal {{ $errors->any() ? ' has-error' : '' }}" role="form" method="POST" action="{{ url('/login') }}">
                 <div class="row form-group">
                     <div class="col-sm-12">
                         <h2 class="form-signin-heading">{!! Lang::get('messages.please_signin') !!}</h2>
@@ -37,6 +37,11 @@
                         @endif
                     </div>
                 </div>
+                @if ($errors->any())
+                    <span class="help-block">
+                        <strong>{{ implode('', $errors->all(':message')) }}</strong>
+                    </span>
+                @endif
 
                 <div class="row form-group">
                     <div class="col-md-12 text-center">
