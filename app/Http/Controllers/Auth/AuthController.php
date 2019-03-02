@@ -40,6 +40,11 @@ class AuthController extends Controller
      */
     protected $redirectTo = '/';
 
+    /**
+     * Where user redirect after successfully logout
+     */
+    protected $redirectAfterLogout = '/login';
+    
     public $sweetcaptcha;
 
     /**
