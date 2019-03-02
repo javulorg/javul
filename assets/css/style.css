@@ -43,7 +43,7 @@ body, h1, h2, h3, h4, h5, h6{
 .left-button .user-menu-left{font-size: 12px;padding-top:9px;}
 .user-menu-right-icons{color:#b93c89 !important;}
 .time_digit,.time_text{display: inline-block;}
-.time_digit{position: relative;top:-10px;}
+.time_digit{position: relative;top:0px; vertical-align: top;}
 .time_text{width: 65%;}
 .activity-refresh{padding: 6px;background-color:#f9f9f9;box-shadow: 0 2px 3px 0px #cecece;color:#84b660;margin-top: 3px; }
 .featured_unit_heading{padding: 0px !important;}
