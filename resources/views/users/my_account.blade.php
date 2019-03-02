@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>My Account - Javul.org</title>
+@endsection
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-fileinput/fileinput.min.css') !!}" rel="stylesheet" type="text/css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css" rel="stylesheet" type="text/css" />

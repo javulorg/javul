@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>My Contributions - Javul.org</title>
+@endsection
 @section('page-css')
     <style>
         .time_digit{position:inherit;}

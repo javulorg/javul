@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>Create New Wiki Page - Javul.org</title>
+@endsection
 @section('page-css')
     <link href="{!! url('assets/css/wiki.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />

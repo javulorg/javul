@@ -15,7 +15,9 @@
         "greggilbert/recaptcha": "^2.1",
         "barryvdh/laravel-elfinder": "^0.3.10",
         "guzzlehttp/psr7": "^1.4",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "ixudra/curl": "^6.16",
+        "simplesoftwareio/simple-qrcode": "~2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -29,7 +31,8 @@
         "fahim/laravel5-paypal-ipn": "dev-master@dev",
         "paypal/adaptivepayments-sdk-php":"*",
         "paypal/adaptiveaccounts-sdk-php":"*",
-		"netshell/paypal":"dev-master"
+		"netshell/paypal":"dev-master",
+        "xethron/migrations-generator": "^2.0"
     },
     "autoload": {
         "classmap": [

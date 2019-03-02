@@ -39,8 +39,6 @@
                                 <p>
                                     @if(!empty($featured_unit) && count($featured_unit) > 0)
                                         {!!  $featured_unit->description !!}
-                                    @else
-                                        No Description available.
                                     @endif
                                 </p>
                             </div>

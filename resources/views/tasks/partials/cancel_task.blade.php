@@ -18,7 +18,7 @@
             <div class="col-sm-6 grey-bg unit_grey_screen_height">
                 <h1 class="unit-heading create_unit_heading">
                     <span class="glyphicon glyphicon-list-alt"></span>
-                    Complete Task
+                    Cancel Task
                 </h1>
             <span style="font-size: 14px;padding-left:50px">
                 <b>{{$taskObj->name}}</b>

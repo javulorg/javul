@@ -25,7 +25,7 @@ class CreateUnitsTable extends Migration
             $table->integer('country_id')->unsigned()->nullable();
             $table->integer('state_id')->unsigned()->nullable();
             $table->foreign('state_id')->references('id')->on('states');
-            $table->integer('city_id')->unsigned()->nullable;
+            $table->integer('city_id')->unsigned()->nullable();
             $table->foreign('city_id')->references('id')->on('cities');
             $table->string('status')->comment="active or disabled";
             $table->integer('parent_id')->nullable();

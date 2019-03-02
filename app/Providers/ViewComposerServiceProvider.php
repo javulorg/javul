@@ -45,9 +45,12 @@ class ViewComposerServiceProvider extends ServiceProvider
         $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
         $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
         $btcTransactionIDHashID = new Hashids('btc transaction id hash',10,\Config::get('app.encode_chars'));
+        
+        $loggedInUser = 0;                
+        if(\DB::connection()->getSchemaBuilder()->hasTable('users')){
+            $loggedInUser = \DB::table('users')->whereRaw('unix_timestamp() - loggedin < 30')->count();            
+        }
 
-
-        $loggedInUser = \DB::table('users')->whereRaw('unix_timestamp() - loggedin < 30')->count();
         view()->share('totalLoggedinUsers',$loggedInUser);
 		
 		//Get all system messages
@@ -55,8 +58,11 @@ class ViewComposerServiceProvider extends ServiceProvider
         $user_messages = $user_msg->getAllMessages();
 		view()->share('user_messages',json_encode($user_messages));
 		//end
-
-        $totalUsers = \App\User::count();
+        
+        $totalUsers = 0;
+        if(\DB::connection()->getSchemaBuilder()->hasTable('users')){
+            $totalUsers = \App\User::count();
+        }
         view()->share('totalRegisteredUsers',$totalUsers );
         view()->share('userIDHashID',$userIDHashID );
         view()->share('unitIDHashID',$unitIDHashID );

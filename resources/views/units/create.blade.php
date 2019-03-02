@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>@if(empty($unitObj)) Create Unit @else Update Unit @endif - Javul.org</title>
+@endsection
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/select2/css/select2-bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
