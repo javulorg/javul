@@ -58,7 +58,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                                @if(!empty($unitsObj))
+                                @if(!empty($unitsObj) && count($unitsObj) > 0)
                                     @foreach($unitsObj as $unit)
                                         <tr>
                                             <td>
@@ -125,7 +125,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(!empty($tasksObj))
+                            @if(!empty($tasksObj) && count($tasksObj) > 0)
                                 @foreach($tasksObj as $task)
                                     <tr>
                                         <td>
