@@ -188,7 +188,7 @@ class ForumController extends Controller
         ]);
         if ($validator->fails()){
             return json_encode(array(
-                'error' => 'Something wrong try again'
+                'error' => 'PLEASE_FILL_PROPER_DETAILS'
             ), 200);
         }
         $forumID =  Forum::checkTopic(array(
