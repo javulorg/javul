@@ -105,7 +105,7 @@
             <div class="col-sm-4">
                 <label for="amount" class="control-label">Amount to Donate</label>
                 <input type="text" value="" name="donate_amount" id="donate_amount" data-numeric
-                       placeholder="Amount" class="form-control" required autocomplete="off">
+                       placeholder="Amount" class="form-control" required autocomplete="off" maxlength="10">
 
                 <label id="paypal-fees" class="control-label"></label>
             </div>
@@ -142,7 +142,7 @@
                 <div class="col-sm-4">
                     <label for="amount" class="control-label">Amount to Donate For User</label>
                     <input type="text" value="" name="donate_amount" id="donate_amount" data-numeric
-                           placeholder="Amount" class="form-control" required autocomplete="off">
+                           placeholder="Amount" class="form-control" required autocomplete="off" maxlength="10">
 
                     <label id="paypal-fees" class="control-label"></label>
                 </div>
