@@ -265,7 +265,7 @@
 
                                 <div class="col-sm-12 form-group">
                                     <label class="control-label">Description</label>
-                                    <textarea class="form-control summernote" name="description">@if(!empty($taskObj)) {{$taskObj->description}} @endif</textarea>
+                                    <textarea class="form-control summernote" id="description" name="description">@if(!empty($taskObj)) {{$taskObj->description}} @endif</textarea>
                                 </div>
 
                                 <div class="col-sm-12 form-group">
