@@ -129,11 +129,11 @@ class AuthController extends Controller
             'all' => 0,
             'account_creation' => 0,
             'confirmation_email' => 0,
-            'forum_replies' => 0,
+            'forum_replies' => 1,
             'watched_items' => 1,
             'inbox' => 1,
-            'fund_received' => 0,
-            'task_management' => 0,
+            'fund_received' => 1,
+            'task_management' => 1,
         ]);
 
         return $userData;
