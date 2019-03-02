@@ -37,6 +37,7 @@
     .add_edit_skills div:first-child{margin-top:0px;padding-left:5px;padding-right:5px;}
     .new_box,#skill_firstbox,#area_of_interest_firstbox{min-width: 12.5em;width:100%;}
     .table .btn{margin-right:0px;}
+    #address{ resize: vertical; }
 </style>
 @endsection
 @section('content')
@@ -447,7 +448,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <tr>
+                            <!--<tr>
                                 <td width="40%" style="width: 40%;">Default All</td>
                                 <td>
                                     <input @if(!empty($alertsObj) && $alertsObj->all == 1) checked  @endif data-toggle="toggle" type="checkbox" name="alert_all"
@@ -457,18 +458,18 @@
                                 <tr>
                                     <td width="40%" style="width: 40%;">Account Creation</td>
                                     <td>
-                                        <input data-toggle="toggle" type="checkbox" name="alert_account_creation"
-                                               id="alert_account_creation" class="alerts" value="account_creation">
+                                        <input @if(!empty($alertsObj) && $alertsObj->account_creation == 1) checked  @endif data-toggle="toggle" type="checkbox" name="alert_account_creation"
+                                               id="alert_account_creation" class="alerts dynamic_alert" value="account_creation">
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td width="40%" style="width: 40%;">Confirmation Email</td>
                                     <td>
-                                        <input  data-toggle="toggle" type="checkbox" name="alert_confirmation_email"
-                                               id="alert_confirmation_email" class="alerts" value="confirmation_email">
+                                        <input  @if(!empty($alertsObj) && $alertsObj->confirmation_email == 1) checked  @endif data-toggle="toggle" type="checkbox" name="alert_confirmation_email"
+                                               id="alert_confirmation_email" class="alerts dynamic_alert" value="confirmation_email">
                                     </td>
-                                </tr>
+                                </tr>-->
 
                                 <tr>
                                     <td width="40%" style="width: 40%;">Forum Replies</td>
@@ -483,7 +484,7 @@
                                 <tr>
                                     <td width="40%" style="width: 40%;">Watched Items</td>
                                     <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->watched_items==1) checked  @endif data-toggle="toggle"
+                                        <input @if(!empty($alertsObj) && $alertsObj->watched_items == 1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_watched_items"
                                                id="alert_watched_items" class="alerts dynamic_alert" value="watched_items">
@@ -493,7 +494,7 @@
                                 <tr>
                                     <td width="40%" style="width: 40%;">Inbox</td>
                                     <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->inbox==1) checked  @endif data-toggle="toggle"
+                                        <input @if(!empty($alertsObj) && $alertsObj->inbox == 1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_inbox"
                                                id="alert_inbox" class="alerts dynamic_alert" value="inbox">
@@ -503,7 +504,7 @@
                                 <tr>
                                     <td width="40%" style="width: 40%;">Fund Received</td>
                                     <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->fund_received==1) checked  @endif data-toggle="toggle"
+                                        <input @if(!empty($alertsObj) && $alertsObj->fund_received == 1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_fund_received"
                                                id="alert_fund_received" class="alerts dynamic_alert" value="fund_received">
@@ -513,7 +514,7 @@
                                 <tr>
                                     <td width="40%" style="width: 40%;">Task Management</td>
                                     <td>
-                                        <input @if(!empty($alertsObj) && $alertsObj->task_management==1) checked  @endif data-toggle="toggle"
+                                        <input @if(!empty($alertsObj) && $alertsObj->task_management == 1) checked  @endif data-toggle="toggle"
                                                type="checkbox"
                                                name="alert_task_management"
                                                id="alert_task_management" class="alerts dynamic_alert" value="task_management">
@@ -675,6 +676,7 @@
         var selected_skill_id= new Array();
 
         var browse_area_of_interest_box='';
+        var actual_area_of_interest = [];
         var selected_area_of_interest_id= new Array();
         $(function(){
 
