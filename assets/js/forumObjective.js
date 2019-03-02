@@ -49,7 +49,8 @@ $(".objectiveComment #form_topic_form").submit(function(){
             }
 
             if(json['error']){
-                toastr['error'](json['error'], '');
+                showToastMessage(json['error']);
+                // toastr['error'](json['error'], '');
             }
         }
     });

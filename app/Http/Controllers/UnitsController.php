@@ -542,7 +542,7 @@ class UnitsController extends Controller
                         $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
                     });
 
-                    $request->session()->flash('msg_val', $this->user_messages->getMessage('UNIT_UPDATED')['text']);
+                    $request->session()->flash('msg_val', 'UNIT_UPDATED');
                     return redirect('units/'.$unitIDEncoded.'/'.$slug);
 
                 }
