@@ -151,8 +151,8 @@ class AccountController extends Controller
     public function update_personal_info(Request $request){
         if($request->isMethod('post') && $request->ajax()){
             $validator = \Validator::make($request->all(), [
-//                'first_name' => 'required',
-//                'last_name' => 'required',
+            //    'first_name' => 'required',
+            //    'last_name' => 'required',
                 'email' => 'required|unique:users,email,'.Auth::user()->id,
                 'paypal_email' => 'email'
                 /*'phone'=>'required|numeric',

@@ -33,7 +33,7 @@
                         <br><?= $message['body'] ?></div>
                     </div> 
                     <div class="clearfix"></div>
-                    <a href="{!! url('message/send')."/".$message['to'] !!}" class="btn black-btn pull-right">Reply</a>
+                    <a href="{!! url('message/send')."/".$message['from'] !!}" class="btn black-btn pull-right">Reply</a>
                 </div>
             </div>
              
