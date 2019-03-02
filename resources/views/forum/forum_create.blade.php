@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>Create New Thread - Javul.org</title>
+@endsection
 @section('page-css')
 @endsection
 @section('content')

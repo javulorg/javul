@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>Tasks - Javul.org</title>
+@endsection
 @section('content')
 <div class="container">
     <div class="row form-group" style="margin-bottom: 15px;">

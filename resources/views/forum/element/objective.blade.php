@@ -10,7 +10,11 @@
         <div class="list-group-item">
             <div class="row">
                 <ul class="posts"></ul>
-                <div class="pagingnation-forum pull-right">Showing last <span class="item-count"> 0 </span> comments. <a href="<?= isset($addComments) ?  $addComments : '' ?>"> View Forum Thread </a></div>
+                <div class="pagingnation-forum pull-right">Showing last <span class="item-count"> 0 </span> comments. 
+
+                    <a href="<?= isset($addComments) ?  $addComments : '' ?>" class="<?= !isset($addComments) ?  'hide' : '' ?>"> View Forum Thread </a>
+                    &nbsp;&nbsp;
+                </div>
                 <div class="clearfix"></div>
                 <hr>
                 <div class="form">

@@ -1,5 +1,7 @@
 @extends('layout.default')
-
+@section('page-meta')
+<title>My Tasks - Javul.org</title>
+@endsection
 @section('content')
 
 <div class="container">

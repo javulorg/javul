@@ -1,4 +1,7 @@
 @extends('layout.default')
+@section('page-meta')
+<title>New Message - Javul.org</title>
+@endsection
 @section('page-css')
 <style>
     .related_para{margin:0 0 10px;}
@@ -127,6 +130,7 @@
                 if(json['success']){
                     toastr['success'](json['success'], '');
                     $("#form_topic_form textarea").val('');
+                    $("#form_topic_form input").val('');
                    // setTimeout(function(){ location = json['location'] },1000);
                 }
                 if(json['error']){
