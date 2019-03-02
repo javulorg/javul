@@ -92,6 +92,7 @@ class UserWikiController extends Controller
                 $tasksObj = Task::where('user_id',$user_id)->get();
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
+                $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
                 
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
@@ -120,6 +121,7 @@ class UserWikiController extends Controller
                 view()->share('activityPoints_forum',$activityPoints_forum);
                 view()->share('userObj',$userObj);
                 view()->share('unitsObj',$unitsObj);
+                view()->share('rating_points',$rating_points);
                 return view('users.wiki.wiki_page_recentchange');
 	            
             }
@@ -383,6 +385,7 @@ class UserWikiController extends Controller
                 $tasksObj = Task::where('user_id',$user_id)->get();
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
+                $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
                 
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
@@ -391,7 +394,7 @@ class UserWikiController extends Controller
                 $interestObj = [];
                 if(!empty($userObj->job_skills))
                     $interestObj = AreaOfInterest::whereIn('id',explode(",",$userObj->area_of_interest))->get();
-                if($user_id == Auth::user()->id){
+                if(Auth::check() && $user_id == Auth::user()->id){
                     $userWikiPage = UserWiki::select(['page_title','id','updated_at','slug'])
                                     ->where("user_id","=",$user_id)
                                     ->where("page_type","=","1")
@@ -422,6 +425,7 @@ class UserWikiController extends Controller
                 view()->share('activityPoints_forum',$activityPoints_forum);
                 view()->share('userObj',$userObj);
                 view()->share('unitsObj',$unitsObj);
+                view()->share('rating_points',$rating_points);
                 return view('users.wiki.wiki_page_list');
             }
         }
@@ -454,6 +458,7 @@ class UserWikiController extends Controller
                 $tasksObj = Task::where('user_id',$user_id)->get();
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
+                $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
                 
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
@@ -475,6 +480,7 @@ class UserWikiController extends Controller
                 view()->share('activityPoints_forum',$activityPoints_forum);
                 view()->share('userObj',$userObj);
                 view()->share('unitsObj',$unitsObj);
+                view()->share('rating_points',$rating_points);
                 if($user_id != Auth::user()->id && $pageObj->private == 1 ){
                     return view("users.wiki.private");
                 }
