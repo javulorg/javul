@@ -8,6 +8,7 @@ use App\Message;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
 use DB;
+use App\UserMessages;
 
 class MessageController extends Controller
 {
@@ -94,7 +95,8 @@ class MessageController extends Controller
 					'errors' => $validator->getMessageBag()->toArray()
 				), 200);
 	        }
-	        $messageId = Message::send($inputData);
+            $messageId = Message::send($inputData);
+            $user_messages = new UserMessages();
 	        $json = array();
 	        if($messageId){
                 // send actual message to user as per said in https://github.com/javulorg/javul/issues/4
@@ -104,11 +106,11 @@ class MessageController extends Controller
                     ' sent you message';
                 $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' sent you message';
                 User::SendEmailAndOnSiteAlert($content,$email_subject,[$receiverObj],$onlyemail = true,'inbox');
-	            $json['success'] = "Message Send successfully";
+	            $json[$user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['type']] = $user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['text'];
 	        }
 	        else
 	        {
-	        	$json['error'] = "Error in Sending Message";
+	        	$json[$user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['type']] = $user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['text'];;
 	        }
 	        return json_encode($json);
     	}
