@@ -70,6 +70,11 @@ class UserMessages extends Model
 		'PROFILE_UPDATED_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Profile updated successfully'),
 		//Site Message
 		'THANK_YOU_YOUR_MESSAGE_WAS_SENT_TO_JAVUL' => array('type'=>'success','auto-dismiss'=>true,'text'=>'Thank you! Your message was sent to the Javul.org admin.'),
+		'PLEASE_ENTER_VALID_SEARCH_TERM' => array('type'=>'info','auto-dismiss'=>true,'text'=>'Please enter valid search term and try again.'),
+		'PLEASE_FILL_PROPER_DETAILS' => array('type'=>'error','auto-dismiss'=>true,'text'=>'Please fill proper details and try again.'),
+		// Messages /Inbox
+		'MESSAGE_SENT_SUCCESSFULLY' => array('type'=>'success','auto-dismiss'=>true,'text'=>"Message sent successfully"),
+		'ERROR_IN_SENDING_MESSAGE' => array('type'=>'success','auto-dismiss'=>true,'text'=>"Error in Sending Message"),
 	];
 
 	public function getMessage($key){
