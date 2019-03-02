@@ -148,10 +148,10 @@
     <script>
         $(function(){
             $("#uname").keyup(function(){
-                var username=$(this).val();
+                var username= $.trim($(this).val());
                 var url ='{!! url("") !!}';
                 if(username.length>5){
-                    $("#user_img").attr({src:"http://localhost/javul/assets/images/loader.gif"});
+                    $("#user_img").attr({src:"{!! url('assets/images/loader.gif') !!}"});
                     $.ajax({
                         type:'post',
                         url:'{!! url("check_username") !!}',
