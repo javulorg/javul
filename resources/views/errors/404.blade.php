@@ -30,6 +30,9 @@
                 text-align: center;
                 display: inline-block;
             }
+            .content div a {
+                text-decoration: none;
+            }
 
             .title {
                 font-size: 72px;
@@ -40,7 +43,7 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">404 Page not found.</div>
+                <div class="title">Page not found - <a href="{{ url('') }}">Javul.org</a></div>
             </div>
         </div>
     </body>

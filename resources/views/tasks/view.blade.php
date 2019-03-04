@@ -1,6 +1,6 @@
 @extends('layout.default')
 @section('page-meta')
-<title>{{$taskObj->name}} - Javul.org</title>
+<title>Task: {{$taskObj->name}} - Javul.org</title>
 @endsection
 @section('page-css')
 <style>
