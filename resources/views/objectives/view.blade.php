@@ -1,6 +1,6 @@
 @extends('layout.default')
 @section('page-meta')
-<title>{{$objectiveObj->name}} - Javul.org</title>
+<title>Objective: {{$objectiveObj->name}} - Javul.org</title>
 @endsection
 @section('page-css')
 <style>.related_para{margin:0 0 10px;}</style>

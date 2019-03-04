@@ -1,6 +1,6 @@
 @extends('layout.default')
 @section('page-meta')
-<title>{{$unitObj->name}} - Javul.org</title>
+<title>Unit: {{$unitObj->name}} - Javul.org</title>
 @endsection
 @section('page-css')
 <style>

@@ -1,5 +1,5 @@
 @section('page-meta')
-<title>{{$userObj->first_name.' '.$userObj->last_name}} - Javul.org</title>
+<title>User: {{$userObj->first_name.' '.$userObj->last_name}} - Javul.org</title>
 @endsection
 <div class="grey-bg" style="padding-top:20px;margin-bottom: 20px; ">
         <div class="row">
