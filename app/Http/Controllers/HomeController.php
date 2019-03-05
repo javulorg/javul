@@ -39,7 +39,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth',['except'=>['index','add_to_watchlist','get_unit_site_activity_paginate','get_site_activity_paginate',
-            'global_activities','get_categories','browse_categories','get_next_level_categories','global_search','check_username']]);
+            'global_activities','get_categories','browse_categories','get_next_level_categories','global_search','check_username','check_email']]);
     }
 
     /**
@@ -113,6 +113,21 @@ class HomeController extends Controller
 			return \Response::json(['success'=>true]);
         
         return \Response::json(['success'=>false]);
+    }
+
+    /**
+     * Validate email address
+     */
+    public function check_email(Request $request){
+        if($request->has('email')){
+            $validator = \Validator::make($request->all(), [
+                'email' => 'required|string|email|max:255|unique:users,email,'
+            ]);
+            if ($validator->fails())
+                return response()->json(['success'=>true,'error'=>$validator->errors(['email'])->all()]);
+            else
+                return \Response::json(array('success'=>false));
+        }
     }
 
     public function get_unit_site_activity_paginate(Request $request){

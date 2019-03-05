@@ -62,6 +62,7 @@
                             </span>
                         @endif
                     </div>
+                    <img id="email_img" src="" style="float: right;position: absolute;margin-top: 7px">
                 </div>
 
                 <!--<div class="row form-group{{ $errors->has('address') ? ' has-error' : '' }}">
@@ -172,6 +173,32 @@
                     });
                 }
                 if(username.length<6){$("#user_img").attr({src:""});}
+            });
+            $("#email").keyup(function(){
+                var email = $.trim($(this).val());
+                var url ='{!! url("") !!}';
+                if(email !== ''){
+                    $("#email_img").attr({src:"{!! url('assets/images/loader.gif') !!}"});
+                    $.ajax({
+                        type:'post',
+                        url:'{!! url("check_email") !!}',
+                        dataType:'json',
+                        data:{_token:'{{csrf_token()}}',email:email},
+                        success: function(data){
+                            if(data.success==true){
+                                $("#email_img").attr({src: url+"/assets/images/not-available.png"});
+                                $("#email").parent('.col-md-12').find(".help-block").remove();
+                                $("#email").after('<span class="help-block "><strong>'+data.error[0]+'</strong></span>');
+                                $("#email").parent('.col-md-12').addClass('has-error');
+                            }else{
+                                $("#email_img").attr({src:url+"/assets/images/available.png"});
+                                $("#email").parent('.col-md-12').find(".help-block").remove();
+                                $("#email").parent('.col-md-12').removeClass('has-error');
+                            }
+                        }
+                    });
+                }
+                if(email.length<6){$("#email_img").attr({src:""});}
             });
         });
     </script>
