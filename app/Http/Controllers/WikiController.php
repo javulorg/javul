@@ -11,7 +11,7 @@ use App\Fund;
 class WikiController extends Controller
 {
 	public function __construct(){
-        $this->middleware('auth',['except'=>['home']]);
+        $this->middleware('auth',['except'=>['home','view']]);
         view()->share('site_activity_text','Unit Activity Log');
     }
     public function home($unit_id = '',$slug = '')
