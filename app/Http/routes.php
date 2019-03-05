@@ -15,6 +15,7 @@ Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
 Route::get('/global_search','HomeController@global_search');
 Route::post('/check_username','HomeController@check_username');
+Route::post('/check_email','HomeController@check_email');
 Route::get('/account', 'AccountController@index');
 Route::get('/account/logout', 'AccountController@logout');
 Route::get('/account/check_user_login','AccountController@check_user_login');
