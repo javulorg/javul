@@ -619,7 +619,7 @@ class UnitsController extends Controller
                         $taskBidders = Task::join('task_bidders','tasks.id','=','task_bidders.task_id')->where('task_bidders.user_id',
                             Auth::user()->id)->where('unit_id',$unit_id)->where('tasks.status', '=', "approval")->count();
 
-                    if($taskForBidding > 0)
+                    if($taskForBidding > 0 && Auth::check())
                         $taskForBidding = $taskForBidding - $taskBidders;
 
                     $state_name_as_city_for_field = null;
