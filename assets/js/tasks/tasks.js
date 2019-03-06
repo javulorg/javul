@@ -61,7 +61,7 @@ var FormValidation = function () {
                 task_name: {
                     required: true
                 },
-                task_skills: {
+                'task_skills[]': {
                     required: true
                 },
                 estimated_completion_time_start: {
@@ -87,12 +87,12 @@ var FormValidation = function () {
 
             errorPlacement: function (error, element) { // render error placement for each input type
                 var field_name = $(element).attr('name');
-                if(field_name == "unit" || field_name == "objective" || field_name == "task_skills")
+                if(field_name == "unit" || field_name == "objective" || field_name == "task_skills[]")
                     $(element).parents('.input-icon').find(".select2").find(".select2-selection").css("border-color","#a94442");
 
                 if(field_name == "estimated_completion_time_end" || field_name == "estimated_completion_time_start")
                     var icon = $(element).parent('.input-group').children('i');
-                else if(field_name == "unit" || field_name == "objective" || field_name == "task_skills"  )
+                else if(field_name == "unit" || field_name == "objective" || field_name == "task_skills[]"  )
                     var icon = $(element).parents('.input-icon').children('i');
                 else
                     var icon = $(element).parent('.input-icon').children('i');
@@ -101,8 +101,10 @@ var FormValidation = function () {
             },
 
             highlight: function (element) { // hightlight error inputs
-                $(element)
-                    .closest('.col-sm-4').removeClass("has-success").addClass('has-error'); // set error class to the control group
+                $(element).closest('.col-sm-4').removeClass("has-success").addClass('has-error'); // set error class to the control group
+                if($(element).attr('name') == "task_skills[]"){
+                    $(element).closest('.col-sm-8').removeClass("has-success").addClass('has-error'); // set error class to the control group
+                }
             },
 
             unhighlight: function (element) { // revert the change done by hightlight
@@ -113,15 +115,16 @@ var FormValidation = function () {
                 var field_name =$(element).attr('name');
                 if(field_name == "estimated_completion_time_end" || field_name == "estimated_completion_time_start")
                     var icon = $(element).parent('.input-group').children('i');
-                else if(field_name == "unit" || field_name == "objective" || field_name == "task_skills"  )
+                else if(field_name == "unit" || field_name == "objective" || field_name == "task_skills[]"  )
                     var icon = $(element).parents('.input-icon').children('i');
                 else
                     var icon = $(element).parent('.input-icon').children('i');
 
-                if(field_name == "unit" || field_name == "objective" || field_name == "task_skills")
+                if(field_name == "unit" || field_name == "objective" || field_name == "task_skills[]")
                     $(element).parents('.input-icon').find(".select2").find(".select2-selection").css("border-color","#3c763d");
 
                 $(element).closest('.col-sm-4').removeClass('has-error').addClass('has-success'); // set success class to the control group
+                $(element).closest('.col-sm-8').removeClass('has-error').addClass('has-success');
                 icon.removeClass("fa-warning").addClass("fa-check");
             },
 
