@@ -32,6 +32,20 @@ var FormValidation = function () {
             }
         }, "end datetime must be greater than start datetime.");
 
+        jQuery.validator.addMethod("checkTaskDescription", function(value, element) {
+            // var description = $.trim($("#description").summernote().val());
+            if($("#description").summernote('isEmpty')){
+                $("#desc-error").html('<span class="help-block"><strong>Description cannot be an empty.</strong></span>');
+                $("#description").parent('.col-sm-12').addClass('has-error');
+                $("#cke_description").hide();
+                return false;
+            }else{
+                $("#desc-error").html('');
+                $("#description").parent('.col-sm-12').removeClass('has-error');
+                return true;
+            }
+        }, "Description cannot be an empty.");
+
         form2.validate({
             errorElement: 'span', //default input error message container
             errorClass: 'help-block help-block-error', // default input error message class
@@ -56,6 +70,9 @@ var FormValidation = function () {
                 estimated_completion_time_end: {
                     required: true,
                     checkGreaterOrNot : true
+                },
+                description:{
+                    checkTaskDescription: true
                 },
                 city: {
                     required: true
