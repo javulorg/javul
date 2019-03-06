@@ -1,5 +1,7 @@
 @extends('layout.default')
 @section('page-css')
+<link rel="stylesheet" type="text/css" href="{!! url('assets/plugins/editor/sets/wiki/style.css') !!}">
+<link href="{!! url('assets/plugins/bootstrap-star-rating-master/css/star-rating.css') !!}" media="all" rel="stylesheet" type="text/css" />
 <style>
     span.tags{padding:0 6px;}
     .text-danger{color:#ed6b75 !important;}
@@ -71,5 +73,10 @@
 </div>
 @endsection
 @section('page-scripts')
-<link rel="stylesheet" type="text/css" href="{!! url('assets/plugins/editor/sets/wiki/style.css') !!}">
+<script src="{!! url('assets/plugins/bootstrap-star-rating-master/js/star-rating.js') !!}" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function(){
+        $('#input-3').rating({displayOnly: true, step: 0.1,size:'xs'});
+    });
+</script>
 @endsection
