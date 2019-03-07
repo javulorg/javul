@@ -387,7 +387,7 @@ class AccountController extends Controller
             if (count($file) > 0) {
                 $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
 
-                $rules = ['profile_pic' => 'required', 'extension' => 'required|in:jpg,png,jpeg'];
+                $rules = ['profile_pic' => 'required', 'extension' => 'required|in:jpg,png,jpeg','profile_pic' => 'mimes:jpg,jpeg,png'];
                 $fileData = ['profile_pic' => $file, 'extension' => strtolower($file->getClientOriginalExtension())];
 
                 // doing the validation, passing post data, rules and the messages
