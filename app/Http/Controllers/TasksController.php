@@ -1706,7 +1706,7 @@ class TasksController extends Controller
             if($taskBidderObj->status == "offer_sent"){
                 $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:15px">'.
                           '<a href="#" class="close" data-dismiss="alert" aria-label="close" style="display:none;">&times;</a>'.
-                          '<img src="{!! url("assets/images/warning-icon.png") !!}"> <strong>'.$this->user_messages->getMessage('TASK_HAS_BEEN_ASSIGNED')['text'].'</strong> '.$this->user_messages->getMessage('TASK_HAS_BEEN_ASSIGNED')['continue_text'].'(<b>'.$taskBidderObj->name.'</b>) ' .
+                          '<img src="'.url('assets/images/warning-icon.png').'"> <strong>'.$this->user_messages->getMessage('TASK_HAS_BEEN_ASSIGNED')['text'].'</strong> '.$this->user_messages->getMessage('TASK_HAS_BEEN_ASSIGNED')['continue_text'].'(<b>'.$taskBidderObj->name.'</b>) ' .
                           $this->user_messages->getMessage('TASK_HAS_BEEN_ASSIGNED')['continue_text_too'].
                         '<div class="pull-right">' .
                             '<a class="btn btn-success btn-xs offer" data-task_id="'.$task_id.'" style="margin-right:5px;">Accept</a>' .
@@ -1715,7 +1715,7 @@ class TasksController extends Controller
             }
             else{
                 $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:0px;margin-top:10px;">'.
-                    '<img src="{!! url("assets/images/warning-icon.png") !!}"> <strong>'.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['text'].'</strong> '.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['continue_text'].' (<b>'.$taskBidderObj->name.'</b>) '.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['continue_text_too'].'' .
+                    '<img src="'.url('assets/images/warning-icon.png').'"> <strong>'.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['text'].'</strong> '.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['continue_text'].' (<b>'.$taskBidderObj->name.'</b>) '.$this->user_messages->getMessage('TASK_ASSIGNED_BID_SELECTED')['continue_text_too'].'' .
                     '<a href="#" class="close" data-dismiss="alert" aria-label="close" style="display:none;">&times;</a>'.
                     '<div class="pull-right">' .
                         '<a class="btn btn-success btn-xs re_assigned offer" data-task_id="'.$task_id.'" style="margin-right:5px;">Ok</a>' .
@@ -2376,8 +2376,10 @@ class TasksController extends Controller
                             'comment' => 'required'
                         ]);
 
-                        if ($validator->fails())
+                        if ($validator->fails()){
+                            $request->session()->flash('msg_val', 'PLEASE_FILL_PROPER_DETAILS');
                             return redirect()->back()->withErrors($validator)->withInput();
+                        }
 
                         TaskCancel::create([
                             'user_id'=>Auth::user()->id,
