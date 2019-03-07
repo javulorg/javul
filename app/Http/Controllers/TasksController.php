@@ -36,7 +36,7 @@ class TasksController extends Controller
 {
     public $user_messages;
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists']]);
+        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists','search_by_skills','search_by_status']]);
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
         view()->share('site_activity_text','Unit Activity Log');
         $this->user_messages = new UserMessages;
@@ -2558,7 +2558,7 @@ class TasksController extends Controller
             return \Response::json(['items'=>$names,'total_counts'=> count($result)]);
         }
 
-        return \Response::json([]);
+        return \Response::json(['items'=>[],'total_counts'=> 0]);
     }
 
 
