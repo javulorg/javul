@@ -77,11 +77,10 @@
     @endforeach
     <tr style="background-color: #fff !important;text-align: right">
         <td colspan="7">
-            <a href="{!! url('tasks/add')!!}"class="btn black-btn" id="add_unit_btn"
+            <!-- <a href="{!! url('tasks/add')!!}"class="btn black-btn" id="add_unit_btn"
                type="button">
-                <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_task')
-                                                !!}</span>
-            </a>
+                <i class="fa fa-plus plus"></i> <span class="plus_text">{!! trans('messages.add_task')!!}</span>
+            </a> -->
             @if($from_page != "task_search_view")
                 @if($tasks->lastPage() > 1 && $tasks->lastPage() != $tasks->currentPage())
                     <a href="#" data-url="{{$tasks->url($tasks->currentPage()+1) }}" data-from_page="{{$from_page}}"
