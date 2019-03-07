@@ -62,9 +62,9 @@
                         @endif
                         <tr style="background-color: #fff;text-align: right;">
                             <td colspan="7" >
-                                <a href="{!! url('tasks/add')!!}"class="btn black-btn" id="add_task_btn" type="button">
+                                <!-- <a href="{!! url('tasks/add')!!}"class="btn black-btn" id="add_task_btn" type="button">
                                     <i class="fa fa-plus plus"></i> <span class="plus_text">Add Task</span>
-                                </a>
+                                </a> -->
 
                                 @if($tasks->lastPage() > 1 && $tasks->lastPage() != $tasks->currentPage())
                                     <a href="#" data-url="{{$tasks->url($tasks->currentPage()+1) }}" class="btn more-black-btn more-tasks"
