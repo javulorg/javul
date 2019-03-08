@@ -64,6 +64,17 @@
                                     </div>
                                     <div class="col-xs-8 borderLFT text-left">
                                         <label class="control-label colorLightGreen">{{\App\SiteConfigs::task_status($taskObj->status)}}</label>
+                                        @if($taskObj->status == "open_for_bidding")
+                                            @if(\App\TaskBidder::checkBid($taskObj->id))
+                                                <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($taskObj->id)).'#bid_now' !!}" class="btn btn-xs btn-primary" style="color:#fff !important;">
+                                                    Bid now
+                                                </a>
+                                            @else
+                                                <a title="applied bid" class="btn btn-xs btn-warning" style="color:#fff !important;">
+                                                    Applied Bid
+                                                </a>
+                                            @endif
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row borderBTM lnht30">
