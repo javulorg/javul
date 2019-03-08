@@ -19,6 +19,9 @@ var FormValidation = function () {
                 title: {
                     required: true
                 },
+                unit_id: {
+                    required: true
+                },
                 "description": {
                     required: true
                 }
@@ -33,7 +36,7 @@ var FormValidation = function () {
             errorPlacement: function (error, element) { // render error placement for each input type
                 var field_name = $(element).attr('name');
                 if(field_name == "description")
-                    $(element).parent('.col-sm-12').find(".note-editor").attr("style","border-color:#a94442 !important;");
+                    $(element).parent('.col-sm-12').find(".cke_editor_description").attr("style","border-color:#a94442 !important;");
 
                 var icon = $(element).parent('.input-icon').children('i');
                 icon.removeClass('fa-check').addClass("fa-warning");
@@ -44,8 +47,11 @@ var FormValidation = function () {
                 var field_name = $(element).attr('name');
                 if(field_name == "description")
                     $(element).closest('.col-sm-12').removeClass("has-success").addClass('has-error'); // set error class to the control group
-                else
+                else 
                     $(element).closest('.col-sm-4').removeClass("has-success").addClass('has-error'); // set error class to the control group
+                    
+                if(field_name  == "unit_id")
+                    $(element).parents('.input-icon').find(".select2").find(".select2-selection").css("border-color","#a94442");
 
             },
 
@@ -64,7 +70,9 @@ var FormValidation = function () {
                 icon.removeClass("fa-warning").addClass("fa-check");
 
                 if(field_name == "description")
-                    $(element).parent('.col-sm-12').find(".note-editor").attr("style","border-color:#3c763d !important;");
+                    $(element).parent('.col-sm-12').find(".cke_editor_description").attr("style","border-color:#3c763d !important;");
+                if(field_name == "unit_id")
+                    $(element).parents('.input-icon').find(".select2").find(".select2-selection").css("border-color","#3c763d");
 
             },
 
