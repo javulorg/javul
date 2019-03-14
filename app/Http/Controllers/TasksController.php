@@ -36,7 +36,7 @@ class TasksController extends Controller
 {
     public $user_messages;
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists','search_by_skills','search_by_status']]);
+        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists','search_by_skills','search_by_status','search_tasks']]);
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
         view()->share('site_activity_text','Unit Activity Log');
         $this->user_messages = new UserMessages;
@@ -624,14 +624,14 @@ class TasksController extends Controller
             $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
             $subject="Task Created";
 
-//            \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
-//            {
-//                $message->to($toEmail,$toName)->subject($subject);
-//                if(!empty($siteAdminemails))
-//                    $message->bcc($siteAdminemails,"Admin")->subject($subject);
-//
-//                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
-//            });
+        //    \Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
+        //    {
+        //        $message->to($toEmail,$toName)->subject($subject);
+        //        if(!empty($siteAdminemails))
+        //            $message->bcc($siteAdminemails,"Admin")->subject($subject);
+
+        //        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+        //    });
 
             $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_CREATED')['text']);
 
@@ -2520,7 +2520,7 @@ class TasksController extends Controller
     }
 
     public  function search_by_skills(Request $request){
-        $terms = $request->input('q');
+        $terms = trim($request->input('q'));
         $page = $request->input('page');
         if(!empty($terms)){
             if($page == 0)
@@ -2543,7 +2543,7 @@ class TasksController extends Controller
     }
 
     public  function search_by_status(Request $request){
-        $terms = $request->input('q');
+        $terms = trim($request->input('q'));
         $page = $request->input('page');
         $task_status_arr = SiteConfigs::task_status();
         $result = array_filter($task_status_arr, function ($item) use ($terms) {

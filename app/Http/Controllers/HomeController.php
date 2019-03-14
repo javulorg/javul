@@ -78,7 +78,7 @@ class HomeController extends Controller
 
     public function global_search(Request $request){
 
-        $search_word = $request->input('search_term');
+        $search_word = trim($request->input('search_term'));
         if(!empty(trim($search_word))){
             $unitObj = Unit::where('name','like', '%'.$search_word.'%')->get();
             view()->share('unitObj',$unitObj);

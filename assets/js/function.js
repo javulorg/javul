@@ -189,6 +189,11 @@ $(function(){
         return false;
     });
 
+    //Global Search Form
+    $('#form-global-search').submit(function() {
+        $(this).find("[name='search_term']").val($.trim($(this).find("[name='search_term']").val()));
+    });
+
 
 
     //add item to watchlist

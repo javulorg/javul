@@ -146,7 +146,7 @@
 
                 @if (!empty($authUserObj))
                 <li class="search_div_main" style="padding-top: 15px;">
-                    <form action="{!! url('global_search') !!}" method="get">
+                    <form action="{!! url('global_search') !!}" method="get" id="form-global-search">
                         <div class="input-group add-on">
                             <input type="text" class="form-control" id="search_box" name="search_term"
                                    placeholder="{!! trans('messages.search_for') !!}"
