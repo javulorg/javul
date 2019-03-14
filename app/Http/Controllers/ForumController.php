@@ -21,7 +21,7 @@ use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 class ForumController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth');
+        $this->middleware('auth',['except'=>['index']]);
         view()->share('site_activity_text','Unit Activity Log');
     }
     public function index($unit_id = 0)
