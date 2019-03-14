@@ -28,7 +28,12 @@
                                         <select name="task_skill_search" class="form-control" id="task_skill_search"></select>
                                     </div>
                                     <div class="col-sm-6">
-                                        <select name="task_status_search" class="form-control" id="task_status_search"></select>
+                                        <select name="task_status_search" class="form-control" id="task_status_search">
+                                            <option value="">Search by status</option>
+                                            @foreach(\App\SiteConfigs::task_status() as $index=>$status)
+                                                <option value="{{$index}}">{{ $status }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
 

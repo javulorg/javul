@@ -21,17 +21,17 @@ $(function(){
         width: '100%',
         multiple: false,
         allowClear:true,
-        minimumInputLength: 1,
-        ajax: {
-            type: 'get',
-            url: siteURL+"/tasks/search_by_status",
-            delay: 250,
-            dataType: 'json',
-            processResults: function(data) {
-                return { results: data.items };
-            },
-            cache: true
-        }
+        //minimumInputLength: 1,
+        // ajax: {
+        //     type: 'get',
+        //     url: siteURL+"/tasks/search_by_status",
+        //     delay: 250,
+        //     dataType: 'json',
+        //     processResults: function(data) {
+        //         return { results: data.items };
+        //     },
+        //     cache: true
+        // }
     });
    $(".delete-task").on('click',function(){
        var id = $(this).attr('data-id');
