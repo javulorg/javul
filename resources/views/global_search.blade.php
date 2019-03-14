@@ -27,7 +27,7 @@
                             <div class="featured_unit search_unit">
                                 <i class="fa fa-search "></i>
                             </div>
-                            <h4>Search Results</h4>
+                            <h4>Search Results For  <span style="text-transform: none;">"{{ \Request::get('search_term') }}"</h4>
                         </div>
                     </div>
 
