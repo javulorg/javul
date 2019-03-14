@@ -13,32 +13,60 @@ class Forum extends Model
         if(isset($filter['section_id'])){
             $extraWhere[] = array("forum_topic.section_id","=",$filter['section_id']);
         }
-    	$topics = DB::table("forum_topic")
-    				->select([
-    					"forum_topic_updown.value as updownstatus",
-    					"forum_topic.topic_id",
-    					"forum_topic.unit_id",
-    					"forum_topic.title",
-    					"forum_topic.user_id",
-    					"forum_topic.slug",
-    					"forum_topic.created_time",
-    					"forum_topic.modify_time",
-    					"users.first_name",
-    					"users.last_name",
-                        DB::raw("(SELECT count(*) FROM forum_post as temp WHERE forum_topic.topic_id=temp.topic_id ) as post"),
-                        DB::raw("(SELECT sum(value) FROM forum_topic_updown as tempud WHERE tempud.topic_id = forum_topic.topic_id AND tempud.user_id = ". Auth::user()->id ." ) as votecount"),
-						DB::raw("(SELECT CONCAT(users.first_name, ' ' ,users.last_name,':',id) FROM users WHERE users.id = (SELECT user_id FROM forum_post as temp_forum_post WHERE temp_forum_post.topic_id =  forum_topic.topic_id ORDER BY post_id DESC LIMIT 1  ) ) as lastReply"),
-                        
-    				])
-                    ->join('users', 'users.id', '=', 'forum_topic.user_id')
-    				->leftJoin('forum_topic_updown', function($join){
-    					$join->on('forum_topic_updown.user_id', '=', DB::raw(Auth::user()->id) );
-    					$join->on('forum_topic_updown.topic_id', '=', 'forum_topic.topic_id' );
-					 })
-                    ->where($extraWhere)
-    				->where("forum_topic.unit_id","=",$unit_id)
-    				->orderBy("votecount","DESC")
-    				->orderBy("forum_topic.topic_id","DESC");
+        if(Auth::check()){
+            $topics = DB::table("forum_topic")
+                        ->select([
+                            "forum_topic_updown.value as updownstatus",
+                            "forum_topic.topic_id",
+                            "forum_topic.unit_id",
+                            "forum_topic.title",
+                            "forum_topic.user_id",
+                            "forum_topic.slug",
+                            "forum_topic.created_time",
+                            "forum_topic.modify_time",
+                            "users.first_name",
+                            "users.last_name",
+                            DB::raw("(SELECT count(*) FROM forum_post as temp WHERE forum_topic.topic_id=temp.topic_id ) as post"),
+                            DB::raw("(SELECT sum(value) FROM forum_topic_updown as tempud WHERE tempud.topic_id = forum_topic.topic_id AND tempud.user_id = ". Auth::user()->id ." ) as votecount"),
+                            DB::raw("(SELECT CONCAT(users.first_name, ' ' ,users.last_name,':',id) FROM users WHERE users.id = (SELECT user_id FROM forum_post as temp_forum_post WHERE temp_forum_post.topic_id =  forum_topic.topic_id ORDER BY post_id DESC LIMIT 1  ) ) as lastReply"),
+                            
+                        ])
+                        ->join('users', 'users.id', '=', 'forum_topic.user_id')
+                        ->leftJoin('forum_topic_updown', function($join){
+                            $join->on('forum_topic_updown.user_id', '=', DB::raw(Auth::user()->id) );
+                            $join->on('forum_topic_updown.topic_id', '=', 'forum_topic.topic_id' );
+                        })
+                        ->where($extraWhere)
+                        ->where("forum_topic.unit_id","=",$unit_id)
+                        ->orderBy("votecount","DESC")
+                        ->orderBy("forum_topic.topic_id","DESC");
+            }else{
+                $topics = DB::table("forum_topic")
+                ->select([
+                    "forum_topic_updown.value as updownstatus",
+                    "forum_topic.topic_id",
+                    "forum_topic.unit_id",
+                    "forum_topic.title",
+                    "forum_topic.user_id",
+                    "forum_topic.slug",
+                    "forum_topic.created_time",
+                    "forum_topic.modify_time",
+                    "users.first_name",
+                    "users.last_name",
+                    DB::raw("(SELECT count(*) FROM forum_post as temp WHERE forum_topic.topic_id=temp.topic_id ) as post"),
+                    DB::raw("(SELECT sum(value) FROM forum_topic_updown as tempud WHERE tempud.topic_id = forum_topic.topic_id ) as votecount"),
+                    DB::raw("(SELECT CONCAT(users.first_name, ' ' ,users.last_name,':',id) FROM users WHERE users.id = (SELECT user_id FROM forum_post as temp_forum_post WHERE temp_forum_post.topic_id =  forum_topic.topic_id ORDER BY post_id DESC LIMIT 1  ) ) as lastReply"),
+                    
+                ])
+                ->join('users', 'users.id', '=', 'forum_topic.user_id')
+                ->leftJoin('forum_topic_updown', function($join){
+                    $join->on('forum_topic_updown.topic_id', '=', 'forum_topic.topic_id' );
+                })
+                ->where($extraWhere)
+                ->where("forum_topic.unit_id","=",$unit_id)
+                ->orderBy("votecount","DESC")
+                ->orderBy("forum_topic.topic_id","DESC");
+            }
          if(isset($filter['limit'])){
             $topics =  $topics->limit($filter['limit']);
             $topics =  $topics->get();

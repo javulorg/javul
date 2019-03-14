@@ -89,7 +89,8 @@
                 <div class="panel-heading">
                     <h4><i class="fa fa-quote-right"></i> Forum</h4>
                 </div>
-                <div class="panel-body list-group" style="    padding: 10px 7px;">
+                <div class="panel-body list-group" style="padding: 10px 7px;">
+                
                     <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                         <div class="panel-heading current_unit_heading featured_unit_heading">                   
                             <h4 style="width: 100%;line-height: 31px;">
@@ -107,9 +108,9 @@
                                 <?php foreach ($topics[1] as $key => $topic) { ?>
                                     <li data-id="{!! $topic['topic_id'] !!}">
                                         <div class="up-down">
-                                            <i data-value="1" class="glyphicon <?= $topic['updownstatus'] == 1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-up"></i>
-                                            <i class="count">{!! $topic['votecount'] !!}</i>
-                                            <i data-value="0" class="glyphicon <?= $topic['updownstatus'] == -1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-down"></i>
+                                            @if(Auth::check())<i data-value="1" class="glyphicon <?= $topic['updownstatus'] == 1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-up"></i>@endif
+                                            <i class="count" @if(!Auth::check()) style="padding-top: calc(100% - 25px);" @endif>{!! $topic['votecount'] !!}</i>
+                                            @if(Auth::check())<i data-value="0" class="glyphicon <?= $topic['updownstatus'] == -1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-down"></i>@endif
                                         </div>
                                         <h4 class="heading"><a href="{!! url('forum/post').'/'.$topic['topic_id'].'/'.$topic['slug'] !!}"> <?= $topic['title'] ?> </a></h4>
                                         <div class="silent">
@@ -124,6 +125,7 @@
                             </ul>
                         </div>
                     </div>
+
                     <div class="panel panel-grey panel-default" style="margin-bottom: 30px;">
                         <div class="panel-heading current_unit_heading featured_unit_heading">                   
                             <h4 style="width: 100%;line-height: 31px;"> 
@@ -141,9 +143,9 @@
                                 <?php foreach ($topics[2] as $key => $topic) { ?>
                                     <li data-id="{!! $topic['topic_id'] !!}">
                                         <div class="up-down">
-                                            <i data-value="1" class="glyphicon <?= $topic['updownstatus'] == 1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-up"></i>
-                                            <i class="count">{!! $topic['votecount'] !!}</i>
-                                            <i data-value="0" class="glyphicon <?= $topic['updownstatus'] == -1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-down"></i>
+                                            @if(Auth::check())<i data-value="1" class="glyphicon <?= $topic['updownstatus'] == 1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-up"></i>@endif
+                                            <i class="count" @if(!Auth::check()) style="padding-top: calc(100% - 25px);" @endif>{!! $topic['votecount'] !!}</i>
+                                            @if(Auth::check())<i data-value="0" class="glyphicon <?= $topic['updownstatus'] == -1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-down"></i>@endif
                                         </div>
                                         <h4 class="heading"><a href="{!! url('forum/post').'/'.$topic['topic_id'].'/'.$topic['slug'] !!}"> <?= $topic['title'] ?> </a></h4>
                                         <div class="silent">
@@ -176,9 +178,9 @@
                                 <?php foreach ($topics[3] as $key => $topic) { ?>
                                     <li data-id="{!! $topic['topic_id'] !!}">
                                         <div class="up-down">
-                                            <i data-value="1" class="glyphicon <?= $topic['updownstatus'] == 1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-up"></i>
-                                            <i class="count">{!! $topic['votecount'] !!}</i>
-                                            <i data-value="0" class="glyphicon <?= $topic['updownstatus'] == -1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-down"></i>
+                                            @if(Auth::check())<i data-value="1" class="glyphicon <?= $topic['updownstatus'] == 1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-up"></i>@endif
+                                            <i class="count" @if(!Auth::check()) style="padding-top: calc(100% - 25px);" @endif>{!! $topic['votecount'] !!}</i>
+                                            @if(Auth::check())<i data-value="0" class="glyphicon <?= $topic['updownstatus'] == -1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-down"></i>@endif
                                         </div>
                                         <h4 class="heading"><a href="{!! url('forum/post').'/'.$topic['topic_id'].'/'.$topic['slug'] !!}"> <?= $topic['title'] ?> </a></h4>
                                         <div class="silent">
@@ -211,9 +213,9 @@
                                 <?php foreach ($topics[4] as $key => $topic) { ?>
                                     <li data-id="{!! $topic['topic_id'] !!}">
                                         <div class="up-down">
-                                            <i data-value="1" class="glyphicon <?= $topic['updownstatus'] == 1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-up"></i>
-                                            <i class="count">{!! $topic['votecount'] !!}</i>
-                                            <i data-value="0" class="glyphicon <?= $topic['updownstatus'] == -1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-down"></i>
+                                            @if(Auth::check())<i data-value="1" class="glyphicon <?= $topic['updownstatus'] == 1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-up"></i>@endif
+                                            <i class="count" @if(!Auth::check()) style="padding-top: calc(100% - 25px);" @endif>{!! $topic['votecount'] !!}</i>
+                                            @if(Auth::check())<i data-value="0" class="glyphicon <?= $topic['updownstatus'] == -1 ? 'active' : ''  ?> up-down-vote glyphicon-arrow-down"></i>@endif
                                         </div>
                                         <h4 class="heading"><a href="{!! url('forum/post').'/'.$topic['topic_id'].'/'.$topic['slug'] !!}"> <?= $topic['title'] ?> </a></h4>
                                         <div class="silent">
