@@ -659,7 +659,7 @@ class TasksController extends Controller
                 // if user submit the form then update the data.
                 if($request->isMethod('post') && !empty($task)){
                     //change task status if user unitAdmin
-                    if($change_status){
+                    if($change_status || (Task::isUnitAdminOfTask($task_id) && $task->task_status != "editable")){
                         Task::where('id',$task_id)->update([
                             'status'=> $request->task_status
                         ]);
@@ -1889,15 +1889,14 @@ class TasksController extends Controller
             $taskBidder = TaskBidder::find($id);
             if(!empty($taskBidder)){
                 $html = '<div class="row "><div class="col-sm-12 form-group">' .
-                        '<label class="control-label" style="width:100%;font-weight:bold">Amount</label><span>'.$taskBidder->amount.
+                        '<label class="control-label" style="width:100%;font-weight:bold">'.ucwords($taskBidder->charge_type).'</label><span>'.$taskBidder->amount.
                         '</div><div class="col-sm-12 form-group">' .
                         '<label class="control-label" style="width:100%;font-weight:bold">Charge Type</label><span>'.$taskBidder->charge_type.
                         '</div><div class="col-sm-12 form-group">' .
                         '<label class="control-label" style="width:100%;font-weight:bold">Comment</label><span>'.$taskBidder->comment.
                         '</div></div>';
-            return \Response::json(['success'=>true,'html'=>$html]);
+                return \Response::json(['success'=>true,'html'=>$html]);
             }
-
         }
         return \Response::json(['success'=>false]);
     }
