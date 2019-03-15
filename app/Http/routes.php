@@ -82,7 +82,7 @@ Route::any('/area_of_interest/add','HomeController@area_of_interest_add');
 //Route::any('/job_skills/{skill_id}/edit','HomeController@skill_edit');
 Route::any('/category/{category_id}/edit','HomeController@category_edit');
 Route::any('/area_of_interest/{area_id}/edit','HomeController@area_of_interest_edit');
-//Route::get('/job_skills/{skill_id}','HomeController@skill_view');
+Route::get('/job_skills/{skill_id}','HomeController@skill_view');
 Route::get('/category/{category_id}','HomeController@category_view');
 Route::any('/area_of_interest/{area_id}','HomeController@area_of_interest_view');
 

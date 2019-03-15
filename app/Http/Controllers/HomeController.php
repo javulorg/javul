@@ -39,7 +39,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth',['except'=>['index','add_to_watchlist','get_unit_site_activity_paginate','get_site_activity_paginate',
-            'global_activities','get_categories','browse_categories','get_next_level_categories','global_search','check_username','check_email']]);
+            'global_activities','get_categories','browse_categories','get_next_level_categories','global_search','check_username','check_email','skill_view']]);
     }
 
     /**
@@ -510,6 +510,40 @@ class HomeController extends Controller
             'comment'=>$html
         ]);
         return \Response::json(['success'=>true,'category_id'=>$category_id,'category_name'=>$data['name']]);
+    }
+
+    /**
+     * Showing selected skill with task list
+     */
+    public function skill_view(Request $request,$skill_id = false){
+        if($skill_id){
+            $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
+            $skill_id = $jobSkillIDHashID->decode($skill_id);
+            if(!empty($skill_id)){
+                $skill_id = $skill_id[0];
+                $tasks = \DB::table('tasks')
+                        ->join('objectives','tasks.objective_id','=','objectives.id')
+                        ->join('units','tasks.unit_id','=','units.id')
+                        ->join('users','tasks.user_id','=','users.id')
+                        ->select(['tasks.*','units.name as unit_name','users.first_name','users.last_name','users.id as user_id','objectives.name as objective_name'])
+                        ->whereNull('tasks.deleted_at')
+                        ->whereRaw('FIND_IN_SET(?,skills)',[$skill_id])
+                        ->orderBy('tasks.id','desc')
+                        ->paginate(\Config::get('app.page_limit'));
+
+                $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+
+                view()->share('msg_flag',false);
+                view()->share('msg_val','');
+                view()->share('msg_type','');
+                view()->share('site_activity_text','Global Activity Log');
+
+                view()->share('site_activity',$site_activity);
+                view()->share('tasks',$tasks);
+                return view('tasks.tasks');
+            }
+        }
+        return view('errors.404');
     }
 
     public function skill_add(Request $request){
