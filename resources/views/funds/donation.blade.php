@@ -138,17 +138,15 @@
                 </div>
 
             @endif
-            @if($current_payment_method == "PAYPAL")
             <div class="row form-group donationDiv credit_card"  >
                 <div class="col-sm-4">
                     <label for="amount" class="control-label">Amount to Donate For User</label>
                     <input type="text" value="" name="donate_amount" id="donate_amount" data-numeric
                            placeholder="Amount" class="form-control" required autocomplete="off" maxlength="10">
 
-                    <label id="paypal-fees" class="control-label"></label>
+                    <label id="paypal-fees" class="control-label" @if($current_payment_method == "Zcash") style="display:none" @endif></label>
                 </div>
             </div>
-            @endif
             <div class="row form-group donationDiv credit_card"  >
                 <div class="col-sm-2 col-xs-12">
                     @if($current_payment_method == "Zcash")
