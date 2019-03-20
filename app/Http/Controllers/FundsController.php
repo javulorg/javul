@@ -515,7 +515,7 @@ class FundsController extends Controller
                     if(isset($transfer['success'])) {
                         return view('funds.success', ['messageType' => true, 'payment_id' => 'Inner Transaction', 'amount' => $amount]);
                     } else {
-                        return view('funds.success', ['messageType' => false, 'payment_id' => 'Inner Transaction', 'amount' => $amount]);
+                        return view('funds.success', ['messageType' => false, 'payment_id' => 'Inner Transaction', 'amount' => $amount, 'err_message'=>$transfer['error']]);
                     }
                 }
             }

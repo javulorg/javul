@@ -49,7 +49,13 @@
                 </div>
             @else
                 <div class="text-center">
-                    <h2 style="margin-bottom: 20px;">Something goes wrong. Please try again later.</h2>
+                    <h2 style="margin-bottom: 20px;">
+                        @if(isset($err_message))
+                            {{ $err_message }}
+                        @else
+                            Something goes wrong. Please try again later.
+                        @endif
+                    </h2>
                     <div style="margin-bottom: 25px;">
                         <i class="fa fa-times-circle-o fa-3x text-danger" style="margin:10px;position:relative;bottom:-7px"></i>
                         <span style="font-size:16px;">Failure</span>
