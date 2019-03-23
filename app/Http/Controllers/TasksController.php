@@ -659,9 +659,9 @@ class TasksController extends Controller
                 // if user submit the form then update the data.
                 if($request->isMethod('post') && !empty($task)){
                     //change task status if user unitAdmin
-                    if($change_status || (Task::isUnitAdminOfTask($task_id) && $task->task_status != "editable")){
+                    if($change_status || (Task::isUnitAdminOfTask($task_id) && $task->status != "editable")){
                         Task::where('id',$task_id)->update([
-                            'status'=> $request->task_status
+                            'status'=> $request->input('task_status')
                         ]);
                         $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_UPDATED')['text']);
                         return redirect('tasks/'.$taskIDHashID->encode($task_id).'/'.$task->slug);

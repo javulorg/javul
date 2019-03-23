@@ -29,7 +29,7 @@
                             <a class="btn btn-xs btn-danger" style="color:#fff;">Offer Rejected</a>
                         @elseif($taskObj->status=="in_progress" && $bidder->user_id == $taskObj->assign_to)
                             <a class="btn btn-xs btn-info" style="color:#fff;">In Progress</a>
-                        @elseif(empty($taskObj->assign_to) && $isUnitAdminOfTask)
+                        @elseif((empty($taskObj->assign_to) && $isUnitAdminOfTask) || (!empty($taskObj->assign_to) && $isUnitAdminOfTask && $taskObj->status=="open_for_bidding"))
                             <a class="btn btn-xs btn-primary assign_now"
                                data-uid="{{$userIDHashID->encode($bidder->user_id)}}"
                                data-tid="{{$taskIDHashID->encode($bidder->task_id)}}"
