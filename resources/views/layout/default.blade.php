@@ -158,6 +158,10 @@ License: You must have a valid license purchased only from themeforest(the above
                         $(".div-table-second-cell").css('z-index', '99999');
                         $(".list-item-main").css('z-index', '99999');
                     });
+                }else{
+                    if($(".is_logged_in").length > 0){
+                        window.location.reload(true);
+                    }
                 }
 
                 $('span.tooltipster').tooltipster({ //find more options on the tooltipster page

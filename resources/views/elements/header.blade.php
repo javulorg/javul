@@ -32,51 +32,51 @@
                         </a>
                     </li>
                 @else
-                    <li class="top_menu_li">
+                    <li class="top_menu_li is_logged_in">
                         <a href="#" data-toggle="popover" class="notification_popover">
                             Alerts <i id="alerts-notification" class="fa fa-bell @if($notificationCount > 0) colorOrange @endif" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
-                    <li class="top_menu_li">
+                    <li class="top_menu_separator is_logged_in">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li is_logged_in">
                         <a href="{!! url('my_watchlist') !!}">
                             Watch List <i class="fa fa-eye" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
-                    <li class="top_menu_li">
+                    <li class="top_menu_separator is_logged_in">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li is_logged_in">
                         <a href="{!! url('my_contributions') !!}">
                             My Contributions <i class="fa fa-file-text" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
-                    <li class="top_menu_li">
+                    <li class="top_menu_separator is_logged_in">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li is_logged_in">
                         <a href="{!! url('my_tasks') !!}">
                             My Tasks <i class="fa fa-tasks" aria-hidden="true"></i>
                         </a>
                     </li>
 
-                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
-                    <li class="top_menu_li">
+                    <li class="top_menu_separator is_logged_in">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li is_logged_in">
                         <a href="{!! route('message_inbox') !!}">
                             Inbox <span id="unread-message"  class="badge badge-danger"></span> <i class="fa fa-envelope" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <li class="top_menu_separator middle_sep">&nbsp;|&nbsp;</li>
-                    <li class="middle_li_block" style="display: none;"></li>
-                    <li class="top_menu_li">
+                    <li class="top_menu_separator middle_sep is_logged_in">&nbsp;|&nbsp;</li>
+                    <li class="middle_li_block is_logged_in" style="display: none;"></li>
+                    <li class="top_menu_li is_logged_in">
                         <a href="{!! url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower(Auth::user()->first_name).'_'.strtolower(Auth::user()->last_name)) !!}">
                             My Profile <i class="fa fa-user" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
-                    <li class="top_menu_li">
+                    <li class="top_menu_separator is_logged_in">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li is_logged_in">
                         <a href="{!! url('account') !!}">
                             Account Settings <i class="fa fa-cog" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
-                    <li class="top_menu_li">
+                    <li class="top_menu_separator is_logged_in">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li is_logged_in">
                         <a href="{!! url('userprofiles/'.$userIDHashID->encode(Auth::user()->id).'/'.strtolower(Auth::user()->first_name).'_'.strtolower(Auth::user()->last_name)) !!}">
                             @if (!empty($authUserObj->username))
                                 Logged in as: {{$authUserObj->username}}
@@ -85,8 +85,8 @@
                             @endif
                         </a>
                     </li>
-                    <li class="top_menu_separator">&nbsp;|&nbsp;</li>
-                    <li class="top_menu_li">
+                    <li class="top_menu_separator is_logged_in">&nbsp;|&nbsp;</li>
+                    <li class="top_menu_li is_logged_in">
                         <a href="{!! url('account/logout') !!}">
                             Logout <i class="fa fa-sign-out" aria-hidden="true"></i>
                         </a>
@@ -145,7 +145,7 @@
                 @endif
 
                 @if (!empty($authUserObj))
-                <li class="search_div_main" style="padding-top: 15px;">
+                <li class="search_div_main is_logged_in" style="padding-top: 15px;">
                     <form action="{!! url('global_search') !!}" method="get" id="form-global-search">
                         <div class="input-group add-on">
                             <input type="text" class="form-control" id="search_box" name="search_term"
