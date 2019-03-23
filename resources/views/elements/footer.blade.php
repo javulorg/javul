@@ -88,7 +88,7 @@
                     <div id="footer-nav">
                         <ul>
                             @if(!empty($authUserObj))
-                                <li><a href="{!! url('site_admin') !!}" class="colorLightBlue">SITE ADMINISTRATION</a></li>
+                                <li class="is_logged_in"><a href="{!! url('site_admin') !!}" class="colorLightBlue">SITE ADMINISTRATION</a></li>
                                 <li class="mrgrtlt5">|</li>
                             @endif
                             <li><a href="#" class="colorLightBlue">TERMS OF SERVICE</a></li>

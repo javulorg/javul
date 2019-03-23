@@ -10,6 +10,10 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+// Route::get('/clear-cache', function() {
+//     Artisan::call('cache:clear');
+//     return "Cache is cleared";
+// });
 
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
@@ -17,7 +21,7 @@ Route::get('/global_search','HomeController@global_search');
 Route::post('/check_username','HomeController@check_username');
 Route::post('/check_email','HomeController@check_email');
 //protecting pages from back button after logout
-Route::group(['middleware' => 'prevent-back-history'],function(){
+Route::group(['middleware' => 'prevent-back-history','auth'],function(){
 	Route::get('/account', 'AccountController@index');
     Route::get('/account/logout', 'AccountController@logout');
     Route::get('/account/check_user_login','AccountController@check_user_login');
