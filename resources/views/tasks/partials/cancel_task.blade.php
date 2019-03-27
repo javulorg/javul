@@ -13,7 +13,7 @@
     <div class="row">
         @include('elements.user-menu',['page'=>'tasks'])
     </div>
-    <div class="row form-group">
+    <div class="row form-group margin-top-15">
         <div class="col-sm-12 ">
             <div class="col-sm-6 grey-bg unit_grey_screen_height">
                 <h1 class="unit-heading create_unit_heading">
