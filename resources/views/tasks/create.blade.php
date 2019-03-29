@@ -4,7 +4,9 @@
 @endsection
 @section('page-css')
 <link href="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css') !!}" rel="stylesheet" type="text/css" />
-<link href="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.css') !!}" rel="stylesheet" type="text/css" />
+<!-- <link href="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.css') !!}" rel="stylesheet" type="text/css" /> -->
+<link src="{!! url('assets/plugins/kartik-bootstrap-fileinput/themes/explorer-fa/theme.css') !!}" />
+<link href="{!! url('assets/plugins/kartik-bootstrap-fileinput/css/fileinput.min.css') !!}" media="all" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/select2/css/select2-bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
 
@@ -281,7 +283,7 @@
                                     </div>-->
                                 </div>
                             </div>
-                              <div class="row">
+                            <div class="row">
                                 <div class="col-sm-12 form-group">
                                     <div class="document_listing_div">
                                         <div class="table-responsive ofhidden">
@@ -371,8 +373,45 @@
     }
 </script>
 <script src="{!! url('assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js') !!}" type="text/javascript"></script>
-<script src="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.js') !!}" type="text/javascript"></script>
+<!-- <script src="{!! url('assets/plugins/bootstrap-fileinput/bootstrap-fileinput.js') !!}" type="text/javascript"></script> -->
+<script src="{!! url('assets/plugins/kartik-bootstrap-fileinput/js/fileinput.min.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/plugins/kartik-bootstrap-fileinput/js/plugins/piexif.min.js') !!}" type="text/javascript"></script>
+<script src="{!! url('assets/plugins/kartik-bootstrap-fileinput/themes/explorer-fa/theme.js') !!}" type="text/javascript"></script>
+
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/admin/skill_browse.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/tasks/tasks.js') !!}"></script>
+<script>
+    $(function(){
+        var uploaded_files = '{!!(!is_array($taskDocumentsObj))?$taskDocumentsObj:''!!}';
+        if($.trim(uploaded_files) !== '')
+            uploaded_files = JSON.parse(uploaded_files);
+        var max_file_allow = 10;
+        if(uploaded_files && uploaded_files.length > 0)
+            max_file_allow = max_file_allow - uploaded_files.length;
+
+        $(".file_input").fileinput({
+            'theme': 'explorer-fa',
+            maxFileCount: 10,
+            validateInitialCount: true,
+            overwriteInitial: false,
+            showClose: true,
+            showCaption: true,
+            showBrowse: true,
+            browseOnZoneClick: true,
+            removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
+            showRemove:false,
+            showUpload:false,
+            removeTitle: 'Cancel or reset changes',
+            elErrorContainer: '#kv-error-2',
+            msgErrorClass: 'alert alert-block alert-danger',
+            uploadAsync: false,
+            uploadUrl: window.location.href, // your upload server url
+            uploadExtraData:{_token:'{{csrf_token()}}'},
+            fileActionSettings : {'showUpload':false},
+            allowedFileExtensions: ["doc","docx","pdf","txt","jpg","png","ppt","pptx","jpeg","doc","xls","xlsx"],
+            dropZoneEnabled: false
+        });
+    });
+</script>
 @endsection
