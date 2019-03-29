@@ -417,7 +417,7 @@ $(document).ready(function() {
                         if ($("table.documents tbody tr").length > 1)
                             $that.parents('tr:eq(0)').remove();
                         if ($("table.documents tbody tr").length < 10)
-                            cloneTR(true);
+                            // cloneTR(true);
 
                         $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
                     }
