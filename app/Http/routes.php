@@ -65,6 +65,7 @@ Route::group(['middleware' => 'prevent-back-history','auth'],function(){
     Route::any('/job_skills/add','HomeController@skill_add');
     Route::any('/job_skills/delete','HomeController@skill_delete');
     Route::any('/job_skills/edit','HomeController@skill_edit');
+    Route::post('/job_skills/update_user_skill','HomeController@update_user_skill');
     Route::any('unit_category/add','HomeController@category_add');
     Route::any('unit_category/edit','HomeController@category_edit');
     Route::any('unit_category/delete','HomeController@category_delete');

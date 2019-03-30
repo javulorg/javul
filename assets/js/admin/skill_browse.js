@@ -7,6 +7,12 @@ $(function(){
             text= text.replace('>','');
             $(".selected_text_task").html('<b>' + text + '</b>');
             browse_skill_box.find('.okay-btn').prop('disabled',false);
+            //For my account screen
+            if(page == 'account' && hasOpenJobSkill)
+                selected_skill_id.pop();
+            if(page == 'account' && !hasOpenJobSkill)
+                hasOpenJobSkill = true;
+            //end
             selected_skill_id.push($(this).val());
         }
         return false;
@@ -63,8 +69,10 @@ $(function(){
                         var html = '<div class="hierarchy_parent"><div class="hierarchy new_box" data-number="'+
                             (next_level+1)+'">';
                         $.each(resp.data,function(index,val){
-                            html+='<a  href="#" class="hierarchy select_skill" data-number="'+(next_level+1)+'" data-value="'+index+'" ' +
-                                'data-type="'+val.type+'" >'+val.name+'&nbsp; ></a>';
+                            if(val.hasSubOption)
+                                html+='<a  href="#" class="hierarchy select_skill" data-number="'+(next_level+1)+'" data-value="'+index+'" ' + 'data-type="'+val.type+'" >'+val.name+'&nbsp; ></a>';
+                            else
+                                html+='<a  href="#" class="hierarchy select_skill" data-number="'+(next_level+1)+'" data-value="'+index+'" ' + 'data-type="'+val.type+'" >'+val.name+'</a>';
                         });
                         if(page == "site_admin") {
                             html += '</div>' +
@@ -122,24 +130,34 @@ $(function(){
         $.ajax({
             type:'get',
             url:siteURL+'/job_skills/browse_skills',
+            data : { from : page },
             dataType:'json',
             success:function(resp){
                 if(resp.success){
+                    var class_name = 'btn-success okay-btn';
+                    if(page == 'account')//hide "Set Skill" button on my account screen reference issue(#101 : Github)
+                        class_name = 'btn-success okay-btn hide';
                     browse_skill_box = bootbox.dialog({
                         message: resp.html,
                         title: "Browse Skill",
                         buttons: {
                             success: {
                                 label: "Set Skill",
-                                className: "btn-success okay-btn",
+                                className: class_name,
                                 callback: function(e) {
                                     if($.trim(selected_skill_id) != ""){
                                         $("#task_skills").select2('val',selected_skill_id);
-                                    }
-                                    else {
+                                    }else {
                                         showToastMessage('PLEASE_SELECT_SKILL');
                                         return false;
                                     }
+                                }
+                            },
+                            cancel: {
+                                label: "Close",
+                                className: "btn-danger cancel-btn",
+                                callback: function(e) {
+                                    return true;
                                 }
                             }
                         }
@@ -148,7 +166,25 @@ $(function(){
                         browse_skill_box.find('.okay-btn').prop('disabled',true);
                     });
                     browse_skill_box.on("hidden.bs.modal", function (e) {
-                        browse_skill_box='';
+                        if(page == "account"){
+                            $.ajax({
+                                type:'post',
+                                url:siteURL+'/job_skills/update_user_skill',
+                                data:{ selected_skill_id:selected_skill_id, update_skill:true, _token: window.report_concern_token },
+                                dataType:'json',
+                                success:function(resp){
+                                    if(resp.success){
+                                        if($.trim(selected_skill_id) != ""){
+                                            $("#task_skills").select2('val',selected_skill_id);
+                                        }
+                                        browse_skill_box='';
+                                    }
+                                }
+                            });
+                            hasOpenJobSkill = false;
+                        }else{
+                            browse_skill_box='';
+                        }
                     });
 
                     browse_skill_box.modal('show');
@@ -156,5 +192,29 @@ $(function(){
             }
         });
         return false;
+    });
+
+    //to delete selected skills from my_account screen
+    $(document).off("click",".delete-selected-skill-tag").on('click','.delete-selected-skill-tag',function(e){
+        var skill_id = $.trim($(this).data('id'));
+        var $this = $(this);
+        if(skill_id !== ''){
+            $.ajax({
+                type:'post',
+                url:siteURL+'/job_skills/update_user_skill',
+                data:{ id:skill_id, delete_skill:true, _token: window.report_concern_token },
+                dataType:'json',
+                success:function(resp){
+                    if(resp.success){
+                        $this.parents('.badge').remove();
+                        var ind = selected_skill_id.indexOf(skill_id);
+                        selected_skill_id.splice(ind,1);
+                        if($(".delete-selected-skill-tag").length < 1)
+                            $(".selected_text_task").html('<b> None </b>');
+                        $("#task_skills").select2('val',selected_skill_id);
+                    }
+                }
+            });
+        }
     });
 });
