@@ -1436,15 +1436,15 @@ class HomeController extends Controller
                     continue;
                 }
                 if($type == "new"){
-                    $skills[$skillObj->id] = ['type' => 'new', 'name' => $skillObj->skill_name];
+                    $skills[$skillObj->id] = ['type' => 'new', 'name' => $skillObj->skill_name, 'hasSubOption' => JobSkill::hasSubOptions($skillObj->id)];
                 }
                 else {
                     if (!empty($skillObj->action_type) && $skillObj->action_type == "edit")
-                        $skills[$skillObj->id] = ['type' => 'old', 'name' => $skillObj->history_skill_name];
+                        $skills[$skillObj->id] = ['type' => 'old', 'name' => $skillObj->history_skill_name,'hasSubOption' => JobSkill::hasSubOptions($skillObj->id)];
                     elseif (!empty($skillObj->action_type) && $skillObj->action_type == "add")
-                        $skills[$skillObj->history_id] = ['type' => 'new', 'name' => $skillObj->history_skill_name];
+                        $skills[$skillObj->history_id] = ['type' => 'new', 'name' => $skillObj->history_skill_name, 'hasSubOption' => JobSkill::hasSubOptions($skillObj->id)];
                     else
-                        $skills[$skillObj->id] = ['type' => 'old', 'name' => $skillObj->skill_name];
+                        $skills[$skillObj->id] = ['type' => 'old', 'name' => $skillObj->skill_name, 'hasSubOption' => JobSkill::hasSubOptions($skillObj->id)];
                 }
             }
         }
@@ -2038,6 +2038,13 @@ class HomeController extends Controller
                     }
                 }
                 view()->share('firstBox_skills',$firstBox_skills);
+                $selected_skills = []; $job_skill_list = JobSkill::lists('skill_name','id')->all();
+                if(!empty($request->input('from')) && $request->input('from') == "account"){
+                    $selected_skills = explode(",",\Auth::user()->job_skills);
+                }
+                view()->share('request_from',$request->input('from'));
+                view()->share('selected_skills',$selected_skills);
+                view()->share('job_skill_list',$job_skill_list);
                 $html = view('admin.partials.skill_browse',['from'=>'task'])->render();
                 return \Response::json(['success'=>true,'html'=>$html]);
             }
@@ -2045,6 +2052,37 @@ class HomeController extends Controller
 
         }
         return view('errors.404');
+    }
+
+    /**
+     * Update current user job skill
+     * My Account Screen
+     */
+    public function update_user_skill(Request $request){
+        if($request->isMethod('POST')){
+            $user_skill = '';
+            if($request->has('update_skill') && $request->input('update_skill')){
+                $user_skill = $request->input('selected_skill_id');
+                if(!empty($user_skill))
+                    $job_skills = implode(",",$user_skill);
+                else
+                    $job_skills = '';
+            }
+
+            if($request->has('delete_skill') && $request->input('delete_skill')){
+                $user_skill = explode(",",\Auth::user()->job_skills);
+                unset($user_skill[array_search($request->input('id'),$user_skill)]);
+                if(!empty($user_skill))
+                    $job_skills = implode(",",$user_skill);
+                else
+                    $job_skills='';
+            }
+            Auth::user()->job_skills = $job_skills;
+            Auth::user()->save();
+            return \Response::json(['success'=>true]);
+        }else{
+            return \Response::json(['success'=>false]);
+        }
     }
 
     public function browse_categories(Request $request){

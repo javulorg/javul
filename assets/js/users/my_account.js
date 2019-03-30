@@ -404,41 +404,43 @@ $(document).ready(function() {
     });
 
     var skillSelect2 = $("#task_skills").select2({
-        allowClear: true,
+        // allowClear: true,
+        showSearchBox: false,
+        theme: "bootstrap job-skill-options",
         width: '100%',
         displayValue:'skill_name',
-        ajax: {
-            url: siteURL+"/job_skills/get_skills",
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    term: params.term, // search term
-                    page: params.page
-                };
-            },
-            processResults: function (data, params) {
+        // ajax: {
+        //     url: siteURL+"/job_skills/get_skills",
+        //     dataType: 'json',
+        //     delay: 250,
+        //     data: function (params) {
+        //         return {
+        //             term: params.term, // search term
+        //             page: params.page
+        //         };
+        //     },
+        //     processResults: function (data, params) {
 
-                // parse the results into the format expected by Select2
-                // since we are using custom formatting functions we do not need to
-                // alter the remote JSON data, except to indicate that infinite
-                // scrolling can be used
-                params.page = params.page || 1;
+        //         // parse the results into the format expected by Select2
+        //         // since we are using custom formatting functions we do not need to
+        //         // alter the remote JSON data, except to indicate that infinite
+        //         // scrolling can be used
+        //         params.page = params.page || 1;
 
-                return {
-                    results: data.items,
-                    pagination: {
-                        //more: (params.page * 1) < data.total_counts
-                        more:false
-                    }
-                };
-            },
-            cache: true
-        },
+        //         return {
+        //             results: data.items,
+        //             pagination: {
+        //                 //more: (params.page * 1) < data.total_counts
+        //                 more:false
+        //             }
+        //         };
+        //     },
+        //     cache: true
+        // },
         escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-        minimumInputLength: 1,
-        templateResult: formatSkills, // omitted for brevity, see the source of this page
-        templateSelection: formatSkillsSelection // omitted for brevity, see the source of this page
+        // minimumInputLength: 1,
+        // templateResult: formatSkills, // omitted for brevity, see the source of this page
+        // templateSelection: formatSkillsSelection // omitted for brevity, see the source of this page
     });
 
     skillSelect2.on("select2:unselect",function(e){

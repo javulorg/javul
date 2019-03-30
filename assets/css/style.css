@@ -152,7 +152,7 @@ a .fa-plus{margin-right: 10px;}
 .issue-table tbody tr td p,.unit-table tbody tr td p{margin:0px;}
 .featured_heading p:first-child{margin: 0px;}
 .add_edit_area_of_interest button,.add_edit_categories button,.add_edit_skills button{display: block;margin:10px;background-color:#5a5858;border-radius:2px;border:1px solid transparent;color:#fff;}
-#skill_firstbox{height:94px;}
+/* #skill_firstbox{height:94px;} */
 .new_box{display:inline-block;width:auto;border:1px solid #828790;height:94px;overflow-y:scroll;min-width: 110px;}
 .new_box a{display: inline-block;padding-left: 5px;padding-right: 5px;color:#333;text-decoration: none;}
 .new_box a:hover{text-decoration:none;}

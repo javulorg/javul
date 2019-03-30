@@ -197,4 +197,15 @@ class JobSkill extends Model
 
     }
 
+    public static function hasSubOptions($id = false){
+        if($id){
+            $hasOptions = self::where('parent_id',$id)->count();
+            if($hasOptions > 0)
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }
+
 }

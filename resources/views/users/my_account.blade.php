@@ -23,6 +23,7 @@
     .file_documents{display: inline-block;padding: 10px;}
     select[name='exp_month']{width:80px;display: inline-block;}
     select[name="exp_year"]{width:100px;display: inline-block;}
+    .job-skill-options{ display : none; }
 
      .kv-avatar .file-preview-frame,.kv-avatar .file-preview-frame:hover {
          margin: 0;
@@ -294,8 +295,7 @@
                                                         selected=selected @endif>{{$skill_name}}</option>
                                                     @endforeach
                                                 </select>
-                                                <a href="" class="browse-skills input-group-addon" style="border-radius: 0px;
-                                                color:#333;text-decoration: none;">Browse</a>
+                                                <a href="" class="browse-skills input-group-addon" style="border-radius: 0px;color:#333;text-decoration: none;">Edit</a>
                                             </div>
                                             <span class="help-block"></span>
                                         </div>
@@ -677,6 +677,12 @@
         var page='account';
         var browse_skill_box='';
         var selected_skill_id= new Array();
+        var selected_job_skill = '{!! json_encode($users_skills) !!}';
+        var hasOpenJobSkill = false;
+        if(selected_job_skill && $.trim(selected_job_skill) !== ''){
+            selected_job_skill = JSON.parse(selected_job_skill);
+            selected_skill_id = selected_job_skill;
+        }
 
         var browse_area_of_interest_box='';
         var actual_area_of_interest = [];
