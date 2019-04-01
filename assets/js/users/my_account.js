@@ -451,6 +451,11 @@ $(document).ready(function() {
         }
         return false;
     });
+    //disabled search input from job skill #101
+    skillSelect2.on('select2:opening select2:closing', function( event ) {
+        var $searchfield = $( '#'+event.target.id ).parent().find('.select2-search__field');
+        $searchfield.prop('disabled', true);
+    });
 
     var areaOfInterestSelect2 =  $("#area_of_interest").select2({
         allowClear: true,
