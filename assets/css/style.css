@@ -847,7 +847,7 @@ input:disabled, input.disabled {
     margin-right: auto;
     padding-bottom: 3px;
     padding-top: 3px;
-    width: 1170px;
+    width: 100%;
 }
 
 .under-construction-image {
