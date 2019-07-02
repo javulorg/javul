@@ -55,7 +55,7 @@
                             <?php }else{ ?>
                                 <div class="col-sm-12 form-group">
                                     <label>To</label>
-                                    <select  name="user_id" class="form-control" >
+                                    <select  id="user_id_fromSel2" name="user_id" class="form-control" >
                                         <?php foreach ($user as $key => $value) { ?>
                                             <option value="<?= $value->id ?>">
                                                 <?= $value->first_name ?> <?= $value->last_name ?>
@@ -140,5 +140,11 @@
         });
         return false;
     })
+</script>
+
+<script>
+    $('#user_id_fromSel2').select2({
+        minimumInputLength: 2
+    });
 </script>
 @endsection
