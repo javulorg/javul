@@ -3,6 +3,7 @@
 <title>@if(empty($unitObj)) Create Unit @else Update Unit @endif - Javul.org</title>
 @endsection
 @section('page-css')
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jodit/3.1.39/jodit.min.css">
 <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
 <link href="{!! url('assets/plugins/select2/css/select2-bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
 <style>
@@ -194,12 +195,23 @@
                         </div>
                     </div>
 
+{{--                    <div class="row">--}}
+{{--                        <div class="col-sm-12 form-group">--}}
+{{--                            <label class="control-label">Unit Description</label>--}}
+{{--                            <textarea class="form-control summernote" name="description">@if(!empty($unitObj)) {!! $unitObj->description !!} @endif</textarea>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+
+{{--                    Unit Description new editor testing--}}
+
                     <div class="row">
                         <div class="col-sm-12 form-group">
                             <label class="control-label">Unit Description</label>
-                            <textarea class="form-control summernote" name="description">@if(!empty($unitObj)) {!! $unitObj->description !!} @endif</textarea>
+                            <textarea class="form-control" id="editor" name="description">@if(!empty($unitObj)) {!! $unitObj->description !!} @endif</textarea>
                         </div>
                     </div>
+
+
                     <div class="row">
                         <div class="col-sm-12 form-group">
                             <label class="control-label">Comment</label>
@@ -280,8 +292,32 @@
             }
         })
     </script>
+
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jodit/3.1.92/jodit.min.js"></script>
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/units/units.js') !!}"></script>
 <script src="{!! url('assets/js/units/unit_location.js') !!}"></script>
 <script src="{!! url('assets/js/admin/category_browse.js') !!}" type="text/javascript"></script>
+
+
+    <script>
+
+        var editor = new Jodit('#editor', {
+            textIcons: false,
+            iframe: false,
+
+            height: 300,
+
+            observer: {
+                timeout: 100
+            },
+            uploader: {
+                "insertImageAsBase64URI": true
+            },
+
+
+        });
+
+    </script>
 @endsection

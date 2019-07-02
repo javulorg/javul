@@ -301,7 +301,7 @@ $(document).ready(function() {
                 success:function(resp){
                     $(".states_loader.location_loader").hide();
                     $("#state").prop('disabled',false);
-                    $("#city").prop('disabled',false);
+                    $("#city").prop('disabled',true);
                     if(resp.success){
                         var html='<option value="">Select</option>';
                         $.each(resp.states,function(index,val){
