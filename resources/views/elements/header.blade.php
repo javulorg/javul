@@ -1,6 +1,6 @@
 <nav class="navbar navbar-grey" style="margin-bottom: 0px;min-height: 35px;">
     <div class="text-center under-construction-block">
-        <img class="under-construction-image" src="{!! url('assets/images/construction.png') !!}">This site is under construction. Some links and functionalities may not work. <a target="_blank" href="https://github.com/javulorg/javul/wiki/Under-Construction-Notice">(details)</a>
+        <img class="under-construction-image" src="{!! url('assets/images/construction.png') !!}">This site is under construction. Some links and functionalities may not work. <a target="_blank" href="https://javul.org/wiki/Website_is_under_construction">(details)</a>
     </div>
 
     <div class="container">
@@ -87,10 +87,11 @@
                     </li>
                     <li class="top_menu_separator is_logged_in">&nbsp;|&nbsp;</li>
                     <li class="top_menu_li is_logged_in">
-                        <a href="{!! url('account/logout') !!}">
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Logout <i class="fa fa-sign-out" aria-hidden="true"></i>
                         </a>
                     </li>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
                 @endif
             </ul>
         </div><!-- /.navbar-collapse -->

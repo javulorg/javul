@@ -861,7 +861,7 @@ class IssuesController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function lists(Request $request){
+    public function pluck(Request $request){
         $unit_id = $request->segment(2);
         if(!empty($unit_id))
         {

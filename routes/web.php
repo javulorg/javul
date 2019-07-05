@@ -15,15 +15,17 @@
 //     return "Cache is cleared";
 // });
 
-Route::get('/', 'HomeController@index');
-Route::get('/home', 'HomeController@index');
-Route::get('/global_search','HomeController@global_search');
-Route::post('/check_username','HomeController@check_username');
-Route::post('/check_email','HomeController@check_email');
-//protecting pages from back button after logout
+    Route::get('/', 'HomeController@index');
+    Route::get('/home', 'HomeController@index');
+    Route::get('/global_search','HomeController@global_search');
+    Route::post('/check_username','HomeController@check_username');
+    Route::post('/check_email','HomeController@check_email');
+    //protecting pages from back button after logout
 Route::group(['middleware' => 'prevent-back-history','auth'],function(){
-	Route::get('/account', 'AccountController@index');
-    Route::get('/account/logout', 'AccountController@logout');
+    Route::get('/account', 'AccountController@index');
+
+//    Route::post('/account/logout', 'AccountController@logout')->name("logout");
+    Auth::routes();
     Route::get('/account/check_user_login','AccountController@check_user_login');
     Route::post('/account/upload_profile', 'AccountController@upload_profile');
     Route::post('/account/remove_profile_pic', 'AccountController@remove_profile_pic');
@@ -152,7 +154,7 @@ Route::group(['middleware' => 'prevent-back-history','auth'],function(){
     Route::any('issues/{issue_id}/edit','IssuesController@edit');
     Route::any('issues/{unit_id}/{objective_id}/add','IssuesController@create');
     Route::any('issues/{unit_id}/{objective_id}/{task_id}/add','IssuesController@create');
-    
+
     //WikiController
     Route::get('wiki/menu/{unit_id}/{slug}', 'WikiController@menu');
     Route::get('wiki/all_pages/{unit_id}/{slug}', 'WikiController@pages');
@@ -183,7 +185,7 @@ Route::group(['middleware' => 'prevent-back-history','auth'],function(){
     Route::post('chat/loadmsg', 'ChatController@loadmsg');
     Route::post('chat/online', 'ChatController@online');
     Route::get('chat/{roomid}', 'ChatController@chatroom');
-    
+
     //ElfinderController
     Route::get('elfinder/connectorex', 'ElfinderController@showConnector')->name("elfinder.connectorex")->middleware('auth');
     Route::post('elfinder/connectorex', 'ElfinderController@showConnector')->name("elfinder.connectorex")->middleware('auth');
@@ -191,13 +193,14 @@ Route::group(['middleware' => 'prevent-back-history','auth'],function(){
 
 //HomeController
 Route::get('/activities','HomeController@global_activities');
-Route::get('/add_to_watchlist','HomeController@add_to_watchlist');
+Route::get('/add_to_watchlist','HomeController@add_to_watchlist')->name("add.watchlist");
 Route::get('/get_unit_site_activity_paginate','HomeController@get_unit_site_activity_paginate');
 Route::get('/get_site_activity_paginate','HomeController@get_site_activity_paginate');
 Route::any('unit_category/get_categories','HomeController@get_categories');
 Route::get('unit_category/browse_categories','HomeController@browse_categories');
 Route::any('unit_categories/get_next_level_categories','HomeController@get_next_level_categories');
 Route::get('/job_skills/{skill_id}','HomeController@skill_view');
+
 
 //UserController
 Route::any('/userprofiles/{user_id}','UserController@user_profile');
@@ -211,17 +214,7 @@ Route::any('/notification/ipn_donation','NotificationController@ipn_donation');
 Route::auth();
 
 
-// get all request except login,register, forgot password, reset password and logout method
-/*Route::any('{all}', function($all){
 
-    $all = explode("/",$all);
-    $method_name = $all[0];
-    unset($all[0]);
-    $param = array_values($all);
-
-    return App::call('\App\Http\Controllers\UnitsController@' . $method_name, $param);
-
-})->where('all', '(.*)');*/
 Route::post('login','Auth\AuthController@login');
 
 //UserWikiController

@@ -29,7 +29,7 @@
                             <div class="col-sm-5 featured_heading text-right colorLightBlue">
                                 <div class="row">
                                     <div class="col-xs-3 text-center">
-                                        <a class="add_to_my_watchlist" data-type="objective" data-id="{{$objectiveIDHashID->encode($objectiveObj->id)}}">
+                                        <a href="{{route('add.watchlist', ['id' => $objectiveIDHashID->encode($objectiveObj->id), 'type' => "objective",  ] ) }}" class="add_to_my_watchlistt" data-type="objective" >
                                             <i class="fa fa-eye" style="margin-right:2px"></i>
                                             <i class="fa fa-plus plus"></i>
                                         </a>

@@ -269,6 +269,8 @@ $(document).ready(function() {
         return false;
     });*/
 
+    $("#state").prop('disabled',true);
+    $("#city").prop('disabled',true);
 
     $("#country").on('change',function(){
         var value = $(this).val();
@@ -281,7 +283,7 @@ $(document).ready(function() {
         }
         else if($.trim(value) == 247){
             $("#state").prop('disabled',true);
-            $("#city").prop('disabled',true);
+            // $("#city").prop('disabled',true);
             return false;
         }
         else
@@ -299,13 +301,14 @@ $(document).ready(function() {
                 success:function(resp){
                     $(".states_loader.location_loader").hide();
                     $("#state").prop('disabled',false);
-                    $("#city").prop('disabled',false);
+                    $("#city").prop('disabled',true);
                     if(resp.success){
                         var html='<option value="">Select</option>';
                         $.each(resp.states,function(index,val){
                             html+='<option value="'+index+'">'+val+'</option>'
                         });
                         $("#state").html(html).select2({allowClear:true,placeholder:"Select State"});
+                        $("#city").html(html).select2({allowClear:true,placeholder:"Select City"});
                     }
                 }
             })

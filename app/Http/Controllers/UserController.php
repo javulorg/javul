@@ -129,16 +129,17 @@ class UserController extends Controller
         if(Auth::user()->role == "superadmin"){
             $myEvaluationTask = Task::join('task_complete','tasks.id','=','task_complete.task_id')
                 ->join('users','task_complete.user_id','=','users.id')
-                ->select(['tasks.name','slug','tasks.status','users.first_name','users.last_name','users.id as user_id',
-                    'tasks.id as task_id','task_complete.attachments','task_complete.comments'])
+                ->selectRaw('max(tasks.name),max(slug),max(tasks.status),
+                    max(users.first_name),max(users.last_name),max(users.id) as user_id,
+                    max(tasks.id) as task_id,max(task_complete.attachments),max(task_complete.comments)')
                 ->where('tasks.status','completion_evaluation')
                 ->groupBy('task_complete.task_id')
                 ->get();
 
             $myCancelledTask = Task::join('task_cancel','tasks.id','=','task_cancel.task_id')
                 ->join('users','task_cancel.user_id','=','users.id')
-                ->select(['tasks.name','slug','tasks.status','users.first_name','users.last_name','users.id as user_id',
-                    'tasks.id as task_id','task_cancel.comments'])
+                ->selectRaw('max(tasks.name),max(slug),max(tasks.status),max(users.first_name),max(users.last_name),max(users.id) as user_id,
+                    max(tasks.id) as task_id,max(task_cancel.comments)')
                 ->where('tasks.status','cancelled')
                 ->groupBy('task_cancel.task_id')
                 ->get();

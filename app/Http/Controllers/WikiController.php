@@ -70,6 +70,7 @@ class WikiController extends Controller
                     'unit_id' => $unit_id,
                     'is_wikihome' => 3,
                 );
+
                 Wiki::createNotExist($unit,$filter);
                 $pages = Wiki::getPage($filter);
                 if(empty($pages['pages'])){

@@ -15,12 +15,12 @@ return [
 
     'env' => env('APP_ENV', 'production'),
     'encode_chars'=>'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
-	'support_email'=>'aadhyatechnologies34@gmail.com',
+    'support_email'=>'aadhyatechnologies34@gmail.com',
     'notification_email'=>'notifications@javul.org',
     'notification_reply_to' => 'no-reply@javul.org',
     'site_name'=>'Javul.org',
-	'site_activity_page_limit'=>5,
-	'global_site_activity_page'=>20,
+    'site_activity_page_limit'=>5,
+    'global_site_activity_page'=>20,
     'page_limit'=>5,
 
     /*
@@ -47,7 +47,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost/javul'),
+    'url' => env('APP_URL', 'http://localhost/update'),
 
     /*
     |--------------------------------------------------------------------------
@@ -159,17 +159,18 @@ return [
         /*
          * Application Service Providers...
          */
+
+        Laravel\Cashier\CashierServiceProvider::class,
+        Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
+        Netshell\Paypal\PaypalServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
+        Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
+        Barryvdh\Elfinder\ElfinderServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ViewComposerServiceProvider::class,
-        Laravel\Cashier\CashierServiceProvider::class,
-        Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
-		Netshell\Paypal\PaypalServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
-		Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
-        Barryvdh\Elfinder\ElfinderServiceProvider::class,
 
         /*
         * For generate qr code image and Curl service
@@ -225,7 +226,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
-		'Paypal' => Netshell\Paypal\Facades\Paypal::class,
+        'Paypal' => Netshell\Paypal\Facades\Paypal::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
         'Curl'   => Ixudra\Curl\Facades\Curl::class,
