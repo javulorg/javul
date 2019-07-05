@@ -12,3 +12,5 @@ email : admin@javul.org<br/>
 password : 123456 <br/>
 
 For details on setting up on a new webhost and working on existing code, see this Github wiki page: https://github.com/javulorg/javul/wiki/Setting-up-on-a-new-Webhost-and-Working-with-Existing-Code
+
+Test edit
