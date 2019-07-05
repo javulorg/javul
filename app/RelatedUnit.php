@@ -29,8 +29,8 @@ class RelatedUnit extends Model
     public static function getRelatedUnitName($unit_id){
         $relatedObjs = self::where('unit_id',$unit_id)->first();
         $related_unit = [];
-
-        if(count($relatedObjs) > 0){
+//        count($relatedObjs) > 0
+        if(!empty($relatedObjs)){
             $related_to = explode(",",$relatedObjs->related_to);
             if(count($related_to) > 0){
                 foreach($related_to as $val)

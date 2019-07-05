@@ -401,10 +401,10 @@ class TasksController extends Controller
 
         // ********************* end **************************
 
-        $unitsObj = Unit::where('status','active')->lists('name','id');
-        $task_skills = JobSkill::lists('skill_name','id');
+        $unitsObj = Unit::where('status','active')->pluck('name','id');
+        $task_skills = JobSkill::pluck('skill_name','id');
         $assigned_toUsers = User::where('id','!=',Auth::user()->id)->where('role','!=','superadmin')->get();
-        $assigned_toUsers= $assigned_toUsers->lists('full_name','id');
+        $assigned_toUsers= $assigned_toUsers->pluck('full_name','id');
         view()->share('assigned_toUsers',$assigned_toUsers);
         view()->share('task_skills',$task_skills );
         view()->share('unitsObj',$unitsObj);
@@ -964,10 +964,10 @@ class TasksController extends Controller
                     return redirect('tasks/'.$taskIDHashID->encode($taskObjTemp->id).'/'.$taskObjTemp->slug);
                 }
 
-                $unitsObj = Unit::where('status','active')->lists('name','id');
-                $task_skills = JobSkill::lists('skill_name','id');
+                $unitsObj = Unit::where('status','active')->pluck('name','id');
+                $task_skills = JobSkill::pluck('skill_name','id');
                 $assigned_toUsers = User::where('id','!=',Auth::user()->id)->where('role','!=','superadmin')->get();
-                $assigned_toUsers= $assigned_toUsers->lists('full_name','id');
+                $assigned_toUsers= $assigned_toUsers->pluck('full_name','id');
                 $taskObj = $task;
                 $taskObj->task_action = str_replace(array("\r", "\n"), '', $taskObj->task_action);
                 $objectiveObj = Objective::where('unit_id',$taskObj->unit_id)->get();
@@ -1102,7 +1102,7 @@ class TasksController extends Controller
                 $unit_id = $unit_id[0];
                 $unitObj = Unit::where('id',$unit_id)->get();
                 if(count($unitObj) > 0){
-                    $objectivesObj = Objective::where('unit_id',$unit_id)->lists('name','id');
+                    $objectivesObj = Objective::where('unit_id',$unit_id)->pluck('name','id');
                     $return_arr = [];
                     if(count($objectivesObj) > 0){
                         foreach($objectivesObj as $id=>$val)
@@ -1124,7 +1124,7 @@ class TasksController extends Controller
                 $obj_id = $obj_id[0];
                 $objectiveObj = Objective::where('id',$obj_id)->get();
                 if(count($objectiveObj) > 0){
-                    $taskObj = Task::where('objective_id',$obj_id)->lists('name','id');
+                    $taskObj = Task::where('objective_id',$obj_id)->pluck('name','id');
                     $return_arr = [];
                     $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
                     if(count($taskObj) > 0){
@@ -1235,6 +1235,7 @@ class TasksController extends Controller
                     view()->share("unit_id", $taskObj->unit_id);
                     view()->share("section_id", 2);
                     view()->share("object_id",$taskObj->id);
+
 
                     $forumID =  Forum::checkTopic(array(
                         'unit_id' => $taskObj->unit_id,
@@ -2464,7 +2465,7 @@ class TasksController extends Controller
         }
     }
 
-    public function lists(Request $request)
+    public function pluck(Request $request)
     {
         $unit_id = $request->segment(2);
         $unit_id_encoded = $unit_id;

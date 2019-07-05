@@ -17,7 +17,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 <head>
-    @yield('page-meta', "<title>Javul.org</title>")
+    <title>@yield('pageTitle') Javul.org</title>
     <meta charset="utf-8" />    
     <link rel="shortcut icon" href="{!! url('favicon.ico') !!}" type="image/icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

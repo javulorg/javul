@@ -74,10 +74,10 @@ class AccountController extends Controller
 
 
         $countries = Unit::getAllCountryWithFrequent();
-        $states = State::where('country_id',Auth::user()->country_id)->lists('name','id');
-        $cities = City::where('state_id',Auth::user()->state_id)->lists('name','id');
-        $job_skills = JobSkill::lists('skill_name','id')->all();
-        $area_of_interest = AreaOfInterest::lists('title','id')->all();
+        $states = State::where('country_id',Auth::user()->country_id)->pluck('name','id');
+        $cities = City::where('state_id',Auth::user()->state_id)->pluck('name','id');
+        $job_skills = JobSkill::pluck('skill_name','id')->all();
+        $area_of_interest = AreaOfInterest::pluck('title','id')->all();
 
         view()->share('countries',$countries);
         view()->share('states',$states);
@@ -376,6 +376,7 @@ class AccountController extends Controller
             return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later.']]);
     }
     public function logout(){
+
         return redirect('logout');
     }
 

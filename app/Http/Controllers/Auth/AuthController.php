@@ -14,7 +14,8 @@ use Validator;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Foundation\Auth\AuthenticatesUsers as AuthenticatesUsers;
 use App\SiteActivity;
 use Hashids\Hashids;
 
@@ -31,7 +32,11 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use RegistersUsers, AuthenticatesUsers, ThrottlesLogins{
+        AuthenticatesUsers::redirectPath insteadof RegistersUsers;
+        AuthenticatesUsers::guard insteadof RegistersUsers;
+    }
+
 
     /**
      * Where to redirect users after login / registration.
@@ -59,7 +64,9 @@ class AuthController extends Controller
             env('SWEETCAPTCHA_SECRET'),
             public_path('sweetcaptcha.php')
         );
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+//        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+        $this->middleware('guest')->except('Logout');
+
     }
 
     /**
@@ -175,7 +182,7 @@ class AuthController extends Controller
 
         if (\Auth::attempt(\Request::only($field, 'password'))){
             // dd($field);
-            return redirect('/');
+            return redirect()->intended('/');
         }
 
 

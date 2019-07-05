@@ -196,7 +196,7 @@ class UnitsController extends Controller
         $countries = Unit::getAllCountryWithFrequent();
         view()->share('countries',$countries);
 
-        $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
+        $unit_category_arr = UnitCategory::where('status','approved')->pluck('name','id');
         view()->share('unit_category_arr',$unit_category_arr);
 
         if($category_search) {
@@ -214,7 +214,7 @@ class UnitsController extends Controller
     public function get_state(Request $request){
         $country_id = $request->input('country_id');
 
-        $states = State::where('country_id',$country_id)->lists('name','id');
+        $states = State::where('country_id',$country_id)->pluck('name','id');
         return \Response::json(['success'=>true,'states'=>$states]);
     }
 
@@ -225,7 +225,7 @@ class UnitsController extends Controller
      */
     public function get_city(Request $request){
         $state_id = $request->input('state_id');
-        $cities = City::where('state_id',$state_id)->lists('name','id');
+        $cities = City::where('state_id',$state_id)->pluck('name','id');
         $state_name = null;
         if(empty($cities) || count($cities) == 0) {
             $state_name = State::getName($state_id);
@@ -239,10 +239,10 @@ class UnitsController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create(Request $request){
-        $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
+        $unit_category_arr = UnitCategory::where('status','approved')->pluck('name','id');
         $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
         $countries = Unit::getAllCountryWithFrequent();
-        $unitsObj = Unit::lists('name','id');
+        $unitsObj = Unit::pluck('name','id');
 
         view()->share('totalUnits',count($unitsObj));
         view()->share('relatedUnitsObj',$unitsObj);
@@ -550,13 +550,13 @@ class UnitsController extends Controller
 
                     //redirect to edit page
                     //$units = array_shift($units);
-                    $unit_category_arr = UnitCategory::where('status','approved')->lists('name','id');
+                    $unit_category_arr = UnitCategory::where('status','approved')->pluck('name','id');
                     $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
-                    $countries = Country::lists('name','id');
+                    $countries = Country::pluck('name','id');
                     $countries = Unit::getAllCountryWithFrequent();
-                    $states = State::where('country_id',$units->country_id)->lists('name','id');
-                    $cities = City::where('state_id',$units->state_id)->lists('name','id');
-                    $unitsObj = Unit::where('id','!=',$unit_id)->lists('name','id');
+                    $states = State::where('country_id',$units->country_id)->pluck('name','id');
+                    $cities = City::where('state_id',$units->state_id)->pluck('name','id');
+                    $unitsObj = Unit::where('id','!=',$unit_id)->pluck('name','id');
 
                     $relatedUnitsofUnitObj = RelatedUnit::where('unit_id',$unit_id)->first();
                     if(!empty($relatedUnitsofUnitObj))
@@ -608,7 +608,9 @@ class UnitsController extends Controller
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
+
                 $unit = Unit::getUnitWithCategories($unit_id);
+
                 if(!empty($unit)){
                     $objectives = Objective::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
                     $related_units = RelatedUnit::getRelatedUnitName($unit_id);
@@ -623,6 +625,7 @@ class UnitsController extends Controller
                         $taskForBidding = $taskForBidding - $taskBidders;
 
                     $state_name_as_city_for_field = null;
+//                    dd($unit->country_id);
                     if($unit->country_id == 247)
                         $cityName = "Global";
                     elseif(!empty($unit->city_id))

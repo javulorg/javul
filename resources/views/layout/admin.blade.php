@@ -125,7 +125,7 @@
                     $.sessionTimeout({
                         title: '{{trans("messages.session_time_out_notification")}}',
                         message: '{{trans("messages.your_session_about_to_expire")}}',
-                        ajaxType:'get',
+                        ajaxType:'POST',
                         keepAliveUrl:siteURL+'/account/check-auth',
                         redirUrl: siteURL+'/account/logout',
                         logoutUrl: siteURL+'/account/logout',

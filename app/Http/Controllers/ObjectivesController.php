@@ -318,8 +318,8 @@ class ObjectivesController extends Controller
         view()->share('availableUnitFunds',$availableUnitFunds);
         view()->share('awardedUnitFunds',$awardedUnitFunds);
 
-        $unitsObj = Unit::where('status','active')->lists('name','id');
-        $parentObjectivesObj = Objective::lists('name','id');
+        $unitsObj = Unit::where('status','active')->pluck('name','id');
+        $parentObjectivesObj = Objective::pluck('name','id');
 
         view()->share('parentObjectivesObj',$parentObjectivesObj);
         view()->share('unitsObj',$unitsObj);
@@ -602,8 +602,8 @@ class ObjectivesController extends Controller
                 elseif(!empty($objectiveObj)){
                     //display update page to user
                     view()->share('objectiveObj',$objectiveObj);
-                    $unitsObj = Unit::where('status','active')->lists('name','id');
-                    $parentObjectivesObj = Objective::where('id','!=',$objective_id)->lists('name','id');
+                    $unitsObj = Unit::where('status','active')->pluck('name','id');
+                    $parentObjectivesObj = Objective::where('id','!=',$objective_id)->pluck('name','id');
                     view()->share('parentObjectivesObj',$parentObjectivesObj);
                     view()->share('unitsObj',$unitsObj);
                     $availableUnitFunds =Fund::getUnitDonatedFund($objectiveObj->unit->id);
@@ -856,7 +856,7 @@ class ObjectivesController extends Controller
         return \Response::json(['success'=>false]);
     }
 
-    public function lists(Request $request)
+    public function pluck(Request $request)
     {
         $unit_id = $request->segment(2);
         if(!empty($unit_id)){

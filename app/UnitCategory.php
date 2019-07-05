@@ -37,7 +37,7 @@ class UnitCategory extends Model
             }
             else{
                 $obj = self::find($id);
-                if(count($obj) > 0)
+                if($obj->count() > 0)
                     return $obj->name;
                 return '-';
             }

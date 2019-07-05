@@ -226,6 +226,9 @@ $(function(){
                     data: {type: type, id: id},
                     dataType: 'json',
                     success: function (resp) {
+                        if(resp.msg == 'redirect'){
+                            console.log(route('login'));
+                        }
                         flag = false;
                         if (!resp.success) {
                             toastr['error'](resp.msg, '');

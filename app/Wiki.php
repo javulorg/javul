@@ -16,7 +16,7 @@ class Wiki extends Model
                     ->where("wiki_pages.unit_id","=",$unitDetail->id)
                     ->where("wiki_pages.is_wikihome","=",$filter['is_wikihome'])
                     ->get();
-        if(empty($check)){
+        if($check->count() == 0){
             
             if($filter['is_wikihome'] == 1){
                  $wiki_pages = array(
@@ -45,11 +45,13 @@ class Wiki extends Model
         }
         else
         {
+
             return $check[0]->wiki_page_id;
+
         }
     }
     
-    public static function getChanges($filter){
+    public static function getChangesFor($filter){
         $extraWhere = array();
         if(isset($filter['unit_id'])){
             $extraWhere[] = array("wiki_arch_revisions.unit_id","=",$filter['unit_id']);
@@ -64,13 +66,13 @@ class Wiki extends Model
                     ->where($extraWhere)
                     ->orderBy("wiki_arch_revisions.revision_id","DESC")
                     ->paginate(15);
-        
+
         $changes = array('changes' => array(), 'links' =>  $wiki->links() );
         if(!empty($wiki->items())){
             if(isset($filter['userlink'])){
                 $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
             }
-            foreach ($wiki->items() as $key => $pageChanges) { 
+            foreach ($wiki->items() as $key => $pageChanges) {
                 $user_id = $userIDHashID->encode($pageChanges->user_id);
                 $changes['changes'][] = array(
                     'revision_id'       => $pageChanges->revision_id,

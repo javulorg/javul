@@ -2,7 +2,7 @@
 
 namespace App;
 
-use ___PHPSTORM_HELPERS\object;
+//use ___PHPSTORM_HELPERS\object;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use DB;
@@ -76,21 +76,22 @@ class Unit extends Model
         $extraWhere = array();
         $extraWhere[] = array("wiki_pages.unit_id","=",$unit_id);
         $extraWhere[] = array("wiki_pages.is_wikihome","=",3);
-        
+
 
         $wiki = DB::table("wiki_pages")
                         ->select("page_content")
                         ->where($extraWhere)
                         ->get();
 
-        if(!empty($wiki)){
+        if(!empty($wiki) && $wiki->count() > 0){
             $wiki[0]->page_content = Wiki::parse($wiki[0]->page_content);
         }
 
         if(count($unitsObj) == 1){
             $unitsObjTmp = $unitsObj[0];
             if(!empty($unit_id)){
-                $unitsObjTmp->other_menulink = empty($wiki) ? "Other Link" : $wiki[0]->page_content;
+
+                $unitsObjTmp->other_menulink = $wiki->count() == 0 ? "Other Link" : $wiki[0]->page_content;
                 return $unitsObjTmp;
             }
             $unitsObj= array_filter((array)$unitsObj[0]);
@@ -127,12 +128,21 @@ class Unit extends Model
     }
 
     public static function getAllCountryWithFrequent(){
-        $top10MostCountries = self::join('countries','units.country_id','=','countries.id')->groupBy('country_id')->orderBy('units.id',
-            'desc')->select(['countries.id','countries.name'])->limit(10)->lists('countries.name','countries.id')->all();
+        $top10MostCountries = self::join('countries','units.country_id','=','countries.id')
+            ->groupBy('country_id')
+            ->orderBy('units_id', 'desc')
+            ->selectRaw('max(countries.id) as countriesid , max(countries.name) as countriesname, max(units.id) as units_id')
+            ->limit(10)
+            ->pluck('countriesname','countriesid')
+            ->all();
+
+
+
+
 
         $top10MostCountries['dash_line']='dash_line';
         $countries_id = array_keys($top10MostCountries);
-        $otherCountries = Country::whereNotIn('id',$countries_id)->where('id','!=','247')->lists('name','id')->all();
+        $otherCountries = Country::whereNotIn('id',$countries_id)->where('id','!=','247')->pluck('name','id')->all();
 
         $all=['247'=>'Global','dash_line1'=>'dash_line1']+($top10MostCountries + $otherCountries );
 
@@ -156,7 +166,7 @@ class Unit extends Model
     }
     public static function getCategoryNames($category_id)
     {
-        $categoryObj = UnitCategory::whereIn('id',explode(",",$category_id))->lists('name')->all();
+        $categoryObj = UnitCategory::whereIn('id',explode(",",$category_id))->pluck('name')->all();
         if(!empty($categoryObj))
             return implode(", ",$categoryObj);
         return "-";

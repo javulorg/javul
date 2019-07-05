@@ -22,7 +22,7 @@ class AreaOfInterest extends Model
 
     public static function getName($id){
         $obj = self::find($id);
-        if(count($obj) && !empty($obj))
+        if(!empty($obj))
             return $obj->title;
         return '-';
     }

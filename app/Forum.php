@@ -92,7 +92,8 @@ class Forum extends Model
                     ->select(['topic_id','slug'])
                     ->where($extraWhere)
                     ->get();
-        if(!empty($topic)){
+
+        if(count($topic) && !empty($topic)){
             return $topic[0];
         }
         return array();

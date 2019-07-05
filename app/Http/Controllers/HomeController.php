@@ -178,8 +178,8 @@ class HomeController extends Controller
     }
 
     public function add_to_watchlist(Request $request){
-        if($request->method('ajax')){
-            if(Auth::check()){
+
+            if(Auth::check() ){
                 $type = $request->input('type');
                 $id = $request->input('id');
 
@@ -227,17 +227,18 @@ class HomeController extends Controller
                             strtolower($type).'_id'=>$id
                         ]);
 
-                        return \Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
+//                        return \Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
+                        return redirect()->intended('defaultpage');
                     }
                     else
-                        return \Response::json(['success'=>false,'msg'=>ucfirst($type).' already added to watchlist.']);
-
+//                        return redirect()->back()->with(\Response::json(['success'=>false,'msg'=>ucfirst($type).' already added to watchlist.']));
+                        return redirect()->back();
                 }
                 return \Response::json(['success'=>false,'msg'=>ucfirst($type).' not found in database.']);
             }
-            return \Response::json(['success'=>false,'msg'=>'Please login to continue.']);
+            return redirect()->guest('login');
 
-        }
+
         return view('errors.404');
 
     }
@@ -352,7 +353,7 @@ class HomeController extends Controller
         // also list the skill he added but yet not approved by siteadmin.
         if(Auth::user()->role != "superadmin") {
             //get pending skills of current user
-            $pending_skills = JobSkillHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->lists('skill_name','prefix_id')
+            $pending_skills = JobSkillHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->pluck('skill_name','prefix_id')
                 ->all();
             if(count($pending_skills) > 0){
                 foreach($pending_skills as $index=>$skl_nm)
@@ -360,14 +361,14 @@ class HomeController extends Controller
             }
 
             //get pending categories of current user
-            $pending_categories = UnitCategoryHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->lists('name','prefix_id')->all();
+            $pending_categories = UnitCategoryHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->pluck('name','prefix_id')->all();
             if(count($pending_categories) > 0){
                 foreach($pending_categories as $index=>$cat_nm)
                     $firstBox_category[$index]=['type'=>'new','name'=>$cat_nm];
             }
 
             //get pending area of interest of current user
-            $pending_areaofInterest = AreaOfInterestHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->lists('title','prefix_id')->all();
+            $pending_areaofInterest = AreaOfInterestHistory::where('user_id', Auth::user()->id)->where('parent_id',0)->pluck('title','prefix_id')->all();
             if(count($pending_areaofInterest) > 0){
                 foreach($pending_areaofInterest as $index=>$area_nm)
                     $firstBox_areaOfInterest[$index]=['type'=>'new','name'=>$area_nm];
@@ -1451,9 +1452,9 @@ class HomeController extends Controller
 
        /* dd($dataObj);
         if($type  == "old")
-            $skills = JobSkill::where('parent_id',$id)->lists('skill_name','id')->all();
+            $skills = JobSkill::where('parent_id',$id)->pluck('skill_name','id')->all();
         else
-            $skills=JobSkillHistory::where('parent_id',$id)->lists('skill_name','id')->all();*/
+            $skills=JobSkillHistory::where('parent_id',$id)->pluck('skill_name','id')->all();*/
         return \Response::json(['success'=>true,'data'=>$skills]);
     }
 
@@ -2038,7 +2039,7 @@ class HomeController extends Controller
                     }
                 }
                 view()->share('firstBox_skills',$firstBox_skills);
-                $selected_skills = []; $job_skill_list = JobSkill::lists('skill_name','id')->all();
+                $selected_skills = []; $job_skill_list = JobSkill::pluck('skill_name','id')->all();
                 if(!empty($request->input('from')) && $request->input('from') == "account"){
                     $selected_skills = explode(",",\Auth::user()->job_skills);
                 }
