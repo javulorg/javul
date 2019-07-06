@@ -984,7 +984,7 @@ class TasksController extends Controller
                     ->first();
 
                 $availableDays ='';
-                if(count($firstUserSubmitted) > 0){
+                if(!empty($firstUserSubmitted)){
                     $submittedDate = strtotime($firstUserSubmitted->updated_at);
                     $availableDays = time() - $submittedDate;
                     $availableDays = 8 - (int)date('d',$availableDays );
