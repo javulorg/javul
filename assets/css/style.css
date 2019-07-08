@@ -203,6 +203,7 @@ a.add_skill{text-decoration: underline;color:#337ab7}
     .statistics .square{width:49%;}
     .search-navbar{width: 30%;}
     .search_div_main .fa-search{left:250px;}
+    a.btn.user-menu-left {font-size: 10px;}
 }
 @media (max-width: 991px) {
     .top-most-icons{text-align: center;}
@@ -291,6 +292,7 @@ a.add_skill{text-decoration: underline;color:#337ab7}
 
 @media (max-width: 325px) {
     .widthMenu{width: 15%;}
+    a.btn.user-menu-left {font-size: 10px;}
 }
 .unit_search_td.has-error .row .col-sm-12 .select2 .selection .select2-selection,.unit_search_td.has-error .row .col-sm-4 .select2 .selection .select2-selection{border: 1px solid #a94442 !important;}
 .tasks_search_td.has-error .row .col-sm-6 .select2 .selection .select2-selection,.tasks_search_td.has-error .row .col-sm-4 .select2 .selection .select2-selection{border: 1px solid #a94442 !important;}
