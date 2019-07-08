@@ -60,7 +60,7 @@ class JobSkill extends Model
     }
     public static function getName($id){
         $obj = self::find($id);
-        if($obj->count() > 0 && !empty($obj))
+        if(!empty($obj))
             return $obj->skill_name;
     }
 
