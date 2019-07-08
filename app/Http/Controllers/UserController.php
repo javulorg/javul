@@ -19,6 +19,7 @@ use App\Wiki;
 use App\ZcashWithdrawRequest;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
+use DateTime;
 
 class UserController extends Controller
 {
@@ -88,11 +89,43 @@ class UserController extends Controller
                         $rating_points = round($rating_points,1);
                 }
 
+
+                /**
+                 * Account age.
+                 */
+                $created_date = new DateTime($userObj->created_at);
+                $now_date = $created_date->diff(new DateTime());
+
+                if($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0 && $now_date->i == 0)
+                    $userObj->age = $now_date->s .' seconds ';
+                elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0)
+                    $userObj->age = $now_date->i .' min '. $now_date->s .' seconds';
+                elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0)
+                    $userObj->age = $now_date->h .' hours '. $now_date->i .' min';
+                elseif ($now_date->y == 0 && $now_date->m == 0)
+                    if($now_date->h == 0){
+                        $userObj->age = $now_date->m .' months '. $now_date->i .' min';
+                    }else{
+                        $userObj->age = $now_date->d .' days '. $now_date->h .' hours';
+                    }
+                elseif ($now_date->y == 0 )
+                    if($now_date->d == 0){
+                        $userObj->age = $now_date->m .' months '. $now_date->h .' hours';
+                    }else{
+                        $userObj->age = $now_date->m .' months '. $now_date->d .' days';
+                    }
+                elseif ($now_date->y != 0 )
+                    if($now_date->m == 0){
+                        $userObj->age = $now_date->y .' year '. $now_date->d .' days';
+                    }else{
+                        $userObj->age = $now_date->y .' year '. $now_date->m .' months';
+                    }
+
+
                 view()->share('rating_points',$rating_points);
                 view()->share("page_id_hase",$page_id);
 
                 view()->share('userWiki',$userWiki);
-
                 view()->share('objectivesObj',$objectivesObj);
                 view()->share('tasksObj',$tasksObj);
                 view()->share('interestObj',$interestObj);
