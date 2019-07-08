@@ -23,17 +23,19 @@
                             <thead>
                             <tr>
                                 <th>Creation Date</th>
-                                <th>Issue Title</th>
+                                <th>Issue Name</th>
                                 <th>Unit Name</th>
-                                <th>Issue Status</th>
+                                <th>Status</th>
                             </tr>
                             </thead>
                             <tbody>
                             @if(count($issues) > 0 )
+
+
                                 @foreach($issues as $issue)
 
                                     <tr>
-                                        <td>{!! \App\Library\Helpers::timetostr($issue->created_at) !!}</td>
+                                        <td>{!! $issue->age !!}</td>
                                         <td>
                                             <a href="{!! url('issues/'.$issueIDHashID->encode($issue->id).'/view') !!}">
                                                 {{$issue->title}}
