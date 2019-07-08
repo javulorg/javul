@@ -178,7 +178,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 window.onresize = function(event) {
                     $(".time_text").each(function(){
                         if($(this).height() > 19){
-                            $(this).prev('.time_digit').css({'top':'-10px','position':'relative'});
+                            $(this).prev('.time_digit').css({'top':'0px','position':'relative'});
                         }
                         else
                             $(this).prev('.time_digit').css('top','0px');
