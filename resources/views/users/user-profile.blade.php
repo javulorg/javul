@@ -26,7 +26,7 @@
                 </div>
                 <div class="user-header">
                     <span class="glyphicon glyphicon-time"></span>
-                    Account age: {{$userObj->created_at}}</label>
+                    Account age: {{$userObj->age}}</label>
                 </div>
                 <div class="user-header">
                     <span class="glyphicon glyphicon-thumbs-up"></span>
