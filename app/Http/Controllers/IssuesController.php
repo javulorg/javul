@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\UserController;
 use App\ActivityPoint;
 use App\Fund;
 use App\ImportanceLevel;
@@ -271,6 +271,12 @@ class IssuesController extends Controller
 
         // get all issues for listing
         $issues = Issue::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+        $userController = new UserController;
+
+        foreach ($issues as $issue){
+            $issue->age = $userController->date_calculateToNow($issue->created_at);
+        }
+
         view()->share('issues',$issues );
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);

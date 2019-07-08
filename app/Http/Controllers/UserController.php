@@ -27,6 +27,37 @@ class UserController extends Controller
         $this->middleware('auth',['except'=>['user_profile']]);
     }
 
+    public function date_calculateToNow($date){
+        $created_date = new DateTime($date);
+        $now_date = $created_date->diff(new DateTime());
+
+        if($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0 && $now_date->i == 0)
+            return $now_date->s .' seconds ';
+        elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0)
+            return $now_date->i .' min '. $now_date->s .' seconds';
+        elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0)
+            return $now_date->h .' hours '. $now_date->i .' min';
+        elseif ($now_date->y == 0 && $now_date->m == 0)
+            if($now_date->h == 0){
+                return $now_date->m .' months '. $now_date->i .' min';
+            }else{
+                return  $now_date->d .' days '. $now_date->h .' hours';
+            }
+        elseif ($now_date->y == 0 )
+            if($now_date->d == 0){
+                return-$now_date->m .' months '. $now_date->h .' hours';
+            }else{
+                return $now_date->m .' months '. $now_date->d .' days';
+            }
+        elseif ($now_date->y != 0 )
+            if($now_date->m == 0){
+                return  $now_date->y .' year '. $now_date->d .' days';
+            }else{
+                return  $now_date->y .' year '. $now_date->m .' months';
+            }
+
+    }
+
     public function user_profile(Request $request,$user_id,$slug=null)
     {
         view()->share('user_id_hash',$user_id);
@@ -93,33 +124,8 @@ class UserController extends Controller
                 /**
                  * Account age.
                  */
-                $created_date = new DateTime($userObj->created_at);
-                $now_date = $created_date->diff(new DateTime());
+                 $userObj->age = $this->date_calculateToNow($userObj->created_at);
 
-                if($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0 && $now_date->i == 0)
-                    $userObj->age = $now_date->s .' seconds ';
-                elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0)
-                    $userObj->age = $now_date->i .' min '. $now_date->s .' seconds';
-                elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0)
-                    $userObj->age = $now_date->h .' hours '. $now_date->i .' min';
-                elseif ($now_date->y == 0 && $now_date->m == 0)
-                    if($now_date->h == 0){
-                        $userObj->age = $now_date->m .' months '. $now_date->i .' min';
-                    }else{
-                        $userObj->age = $now_date->d .' days '. $now_date->h .' hours';
-                    }
-                elseif ($now_date->y == 0 )
-                    if($now_date->d == 0){
-                        $userObj->age = $now_date->m .' months '. $now_date->h .' hours';
-                    }else{
-                        $userObj->age = $now_date->m .' months '. $now_date->d .' days';
-                    }
-                elseif ($now_date->y != 0 )
-                    if($now_date->m == 0){
-                        $userObj->age = $now_date->y .' year '. $now_date->d .' days';
-                    }else{
-                        $userObj->age = $now_date->y .' year '. $now_date->m .' months';
-                    }
 
 
                 view()->share('rating_points',$rating_points);
