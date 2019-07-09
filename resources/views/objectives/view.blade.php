@@ -29,7 +29,7 @@
                             <div class="col-sm-5 featured_heading text-right colorLightBlue">
                                 <div class="row">
                                     <div class="col-xs-3 text-center">
-                                        <a href="{{route('add.watchlist', ['id' => $objectiveIDHashID->encode($objectiveObj->id), 'type' => "objective",  ] ) }}" class="add_to_my_watchlistt" data-type="objective" >
+                                        <a class="add_to_my_watchlist" data-type="objective" data-id="{{$objectiveIDHashID->encode($objectiveObj->id)}}" data-redirect="{{url()->current()}}" >
                                             <i class="fa fa-eye" style="margin-right:2px"></i>
                                             <i class="fa fa-plus plus"></i>
                                         </a>
@@ -228,6 +228,14 @@
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/forumObjective.js') !!}" type="text/javascript"></script>
 <script>
+
+    $(document).ready(function(){
+                @if(!empty($add_to_watch['id']))
+        var session_id = '{{$add_to_watch['id']}}';
+        $("[data-id='" + session_id + "']").click();
+        @endif
+    });
+
     $(function(){
         $(".both-div").css("min-height",($(".objective-desc").height())+10+'px');
 

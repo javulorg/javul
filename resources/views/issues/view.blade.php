@@ -28,12 +28,19 @@
                                 </div>
                                 <div class="col-sm-5 featured_heading text-right colorLightBlue">
                                     <div class="row">
+
                                         <div class="col-xs-3 text-center">
+                                            <a class="add_to_my_watchlist" data-type="issue" data-id="{{$issueIDHashID->encode($issueObj->id)}}" data-redirect="{{url()->current()}}" >
+                                                <i class="fa fa-eye" style="margin-right:2px"></i>
+                                                <i class="fa fa-plus plus"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-xs-2 text-center">
                                             <a href="{!! url('issues/'.$issueIDHashID->encode($issueObj->id).'/edit')!!}">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                         </div>
-                                        <div class=" col-xs-9 text-center">
+                                        <div class=" col-xs-7 text-center">
                                             <a href="{!! route('issues_revison',[$issueIDHashID->encode($issueObj->id)]) !!}"><i class="fa fa-history"></i> REVISION HISTORY</a>
                                         </div>
                                     </div>
@@ -228,6 +235,14 @@
 <script src="{!! url('assets/plugins/bootstrap-summernote/summernote.js') !!}" type="text/javascript"></script>
 <script src="{!! url('assets/js/forumObjective.js') !!}" type="text/javascript"></script>
     <script>
+
+        $(document).ready(function(){
+                    @if(!empty($add_to_watch['id']))
+            var session_id = '{{$add_to_watch['id']}}';
+            $("[data-id='" + session_id + "']").click();
+            @endif
+        });
+
         $(function(){
             $(".both-div").css("min-height",($(".objective-desc").height())+10+'px');
 

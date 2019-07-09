@@ -178,69 +178,68 @@ class HomeController extends Controller
     }
 
     public function add_to_watchlist(Request $request){
+        if($request->method('ajax')) {
+            $redirect_to = $request->input('sessionUrl');
+            $request->session()->put('url.intended', $redirect_to);
+            $data = array('type' => $request->input('type'), 'id' => $request->input('id'));
+            $request->session()->put('add_to_wl', $data);
 
-            if(Auth::check() ){
+            if (Auth::check()) {
                 $type = $request->input('type');
                 $id = $request->input('id');
-
                 $hashID = '';
                 $obj = [];
-                switch($type){
+                switch ($type) {
                     case 'unit':
-                        $hashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                        $hashID = new Hashids('unit id hash', 10, \Config::get('app.encode_chars'));
                         $id = $hashID->decode($id);
-                        if(!empty($id)) {
+                        if (!empty($id)) {
                             $id = $id[0];
                             $obj = Unit::find($id);
                         }
                         break;
                     case 'objective':
-                        $hashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                        $hashID = new Hashids('objective id hash', 10, \Config::get('app.encode_chars'));
                         $id = $hashID->decode($id);
-                        if(!empty($id)) {
+                        if (!empty($id)) {
                             $id = $id[0];
                             $obj = Objective::find($id);
                         }
                         break;
                     case 'task':
-                        $hashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                        $hashID = new Hashids('task id hash', 10, \Config::get('app.encode_chars'));
                         $id = $hashID->decode($id);
-                        if(!empty($id)) {
+                        if (!empty($id)) {
                             $id = $id[0];
                             $obj = Task::find($id);
                         }
                         break;
                     case 'issue':
-                        $hashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+                        $hashID = new Hashids('issue id hash', 10, \Config::get('app.encode_chars'));
                         $id = $hashID->decode($id);
-                        if(!empty($id)) {
+                        if (!empty($id)) {
                             $id = $id[0];
                             $obj = Issue::find($id);
                         }
                         break;
                 }
-                if(!empty($obj)){
-                    $exist = Watchlist::where(strtolower($type).'_id',$id)->where('user_id',Auth::user()->id)->get();
-                    if(empty($exist) || count($exist) == 0 ){
+                if (!empty($obj)) {
+                    $exist = Watchlist::where(strtolower($type) . '_id', $id)->where('user_id', Auth::user()->id)->get();
+                    if (empty($exist) || count($exist) == 0) {
                         Watchlist::create([
-                            'user_id'=>Auth::user()->id,
-                            strtolower($type).'_id'=>$id
+                            'user_id' => Auth::user()->id,
+                            strtolower($type) . '_id' => $id
                         ]);
-
-//                        return \Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
-                        return redirect()->intended('defaultpage');
-                    }
-                    else
-//                        return redirect()->back()->with(\Response::json(['success'=>false,'msg'=>ucfirst($type).' already added to watchlist.']));
-                        return redirect()->back();
+                        return \Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
+                        $request->session()->forget('add_to_wl');
+                    } else
+                      return \Response::json(['success'=>false,'msg'=>ucfirst($type).' already added to watchlist.']);
                 }
                 return \Response::json(['success'=>false,'msg'=>ucfirst($type).' not found in database.']);
             }
-            return redirect()->guest('login');
-
-
+            return \Response::json(['success'=>false,'msg'=>'Please login to continue.']);
+        }
         return view('errors.404');
-
     }
 
     public function my_watchlist(Request $request){
@@ -253,12 +252,19 @@ class HomeController extends Controller
         $watchedTasks = Watchlist::join('tasks','my_watchlist.task_id','=','tasks.id')
                         ->where('my_watchlist.user_id',Auth::user()->id)
                         ->whereNotNull('task_id')->select(['tasks.*'])->get();
-        //$watchedIssues = Watchlist::with(['issues'])->where('user_id',Auth::user()->id)->whereNotNull('issue_id')//->get();
 
+
+        $watchedIssues = Watchlist::join( 'issues','my_watchlist.issue_id','=','issues.id')
+            ->where('my_watchlist.user_id',Auth::user()->id)
+            ->whereNotNull('issue_id')->select(['issues.*'])->get();
+
+
+
+//        dd($watchedIssues);
         view()->share('watchedUnits',$watchedUnits);
         view()->share('watchedObjectives',$watchedObjectives);
         view()->share('watchedTasks',$watchedTasks);
-        //view()->share('watchedIssues',$watchedIssues);
+        view()->share('watchedIssues',$watchedIssues);
         return view('users.my_watchlist');
     }
 

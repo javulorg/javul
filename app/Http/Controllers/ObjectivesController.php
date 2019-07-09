@@ -690,6 +690,14 @@ class ObjectivesController extends Controller
                         if(!empty($forumID)){
                             view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
                         }
+                        if( session()->get('add_to_wl') ){
+                            $add_to_watchlist = session()->get('add_to_wl');
+                            $arr = [];
+                            foreach ( $add_to_watchlist as $key => $add){
+                                $arr[$key] = $add;
+                            }
+                            view()->share('add_to_watch',$arr);
+                        }
                        
                         return view('objectives.view');
                     }

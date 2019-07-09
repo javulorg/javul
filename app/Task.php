@@ -183,14 +183,14 @@ class Task extends Model
 
     public static function getName($task_id){
         $task = self::find($task_id);
-        if(!empty($task) && count($task) > 0)
+        if(!empty($task) && $task->count() > 0)
             return $task->name;
         return null;
     }
 
     public static function getSlug($task_id){
         $task = self::find($task_id);
-        if(!empty($task) && count($task) > 0)
+        if(!empty($task) && $task->count() > 0)
             return $task->slug;
         return null;
     }

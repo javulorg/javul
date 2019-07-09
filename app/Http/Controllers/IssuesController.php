@@ -797,7 +797,7 @@ class IssuesController extends Controller
             if(!empty($issue_id)){
                 $issue_id = $issue_id[0];
                 $issueObj = Issue::with(['issue_documents'])->find($issue_id);
-                if(!empty($issueObj)  && count($issueObj) > 0){
+                if(!empty($issueObj)  && $issueObj->count() > 0){
                     $unitObj = Unit::find($issueObj->unit_id);
                     view()->share('unitObj',$unitObj);
                     view()->share('issueObj',$issueObj);
@@ -853,6 +853,14 @@ class IssuesController extends Controller
                     
                     if(!empty($forumID)){
                         view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
+                    }
+                    if( session()->get('add_to_wl') ){
+                        $add_to_watchlist = session()->get('add_to_wl');
+                        $arr = [];
+                        foreach ( $add_to_watchlist as $key => $add){
+                            $arr[$key] = $add;
+                        }
+                        view()->share('add_to_watch',$arr);
                     }
 
                     return view('issues.view');
