@@ -201,6 +201,7 @@ $(function(){
     $(".add_to_my_watchlist").on('click',function(){
         var type=$(this).data('type');
         var id = $(this).data('id');
+        var url_redirect = $(this).data('redirect');
 
         toastr.options = {
             "closeButton": true,
@@ -223,18 +224,21 @@ $(function(){
                 $.ajax({
                     type: 'get',
                     url: siteURL + '/add_to_watchlist',
-                    data: {type: type, id: id},
+                    data: {type: type, id: id, sessionUrl: url_redirect},
                     dataType: 'json',
                     success: function (resp) {
-                        if(resp.msg == 'redirect'){
-                            console.log(route('login'));
-                        }
                         flag = false;
                         if (!resp.success) {
-                            toastr['error'](resp.msg, '');
+                            if(resp.msg == 'Please login to continue.'){
+                                window.location.href = siteURL + '/login';
+                            }else{
+                                toastr['error'](resp.msg, '');
+                            }
                         } else {
                             toastr['success'](resp.msg, '');
                         }
+                    },
+                    error: function (error) {
                     }
                 })
             }

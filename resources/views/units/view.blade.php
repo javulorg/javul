@@ -31,7 +31,7 @@
                         <div class="col-sm-5 featured_heading text-right colorLightBlue">
                             <div class="row">
                                 <div class="col-xs-3 text-center">
-                                    <a class="add_to_my_watchlist" data-type="unit" data-id="{{$unitIDHashID->encode($unitObj->id)}}">
+                                    <a class="add_to_my_watchlist" data-type="unit" data-id="{{$unitIDHashID->encode($unitObj->id)}}" data-redirect="{{url()->current()}}" >
                                         <i class="fa fa-eye" style="margin-right:2px"></i>
                                         <i class="fa fa-plus plus"></i>
                                     </a>
@@ -193,11 +193,22 @@
         </div>
     </div>
 </div>
+
+
+
 @include('elements.footer')
 @stop
 @section('page-scripts')
 <script src="{!! url('assets/plugins/jquery.ThreeDots.min.js') !!}" type="text/javascript"></script>
 <script>
+
+    $(document).ready(function(){
+        @if(!empty($add_to_watch['id']))
+            var session_id = '{{$add_to_watch['id']}}';
+            $("[data-id='" + session_id + "']").click();
+        @endif
+    });
+
     $(function(){
         var the_obj = $('.text_wraps').ThreeDots({
             max_rows: 1

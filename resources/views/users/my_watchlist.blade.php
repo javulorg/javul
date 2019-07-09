@@ -173,12 +173,42 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @if(count($watchedIssues) > 0 )
+                                @foreach($watchedIssues as $issue)
+                                    <?php $category_ids = $issue->category_id;
+                                    $category_names = $issue->category_name;
+                                    $category_ids = explode(",",$category_ids);
+                                    $category_names  = explode(",",$category_names );
+                                    ?>
+                                    <tr>
+                                        <td><a href="{!! url('issues/'.$issueIDHashID->encode($issue->id).'/'.$issue->slug.'view') !!}">{{ $issue->title}}</a></td>
+                                        <td>
+{{--                                            @if(count($category_ids) > 0 )--}}
+{{--                                                @foreach($category_ids as $index=>$category)--}}
+{{--                                                    <a href="{!! url('issue/category/'.$issueDocumentIDHashID->encode($category))--}}
+{{--                                                    !!}">{{\App\IssueDocument::getName($category)}}</a>--}}
+{{--                                                    @if(count($category_ids) > 1 && $index != count($category_ids) -1)--}}
+{{--                                                        <span>&#44;</span>--}}
+{{--                                                    @endif--}}
+{{--                                                @endforeach--}}
+{{--                                            @endif--}}
+                                        </td>
+                                        <td><div class="text_wraps" data-toggle="tooltip" data-placement="top"  title="{!!trim
+                                            ($issue->description)!!}"><span
+                                                        class="ellipsis_text">{!!trim( $issue->description)!!}</span></div></td>
+                                        <td>
+                                            <a href="#" class="remove-from-watchlist text-danger" data-id="{{$issueIDHashID->encode($issue->id)}}"
+                                               data-type="issue">
+                                                <span><i class="fa fa-trash" aria-hidden="true"></i></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
                                 <tr>
                                     <td colspan="4">No record(s) found.</td>
-                                    <td>
-
-                                    </td>
                                 </tr>
+                            @endif
                             </tbody>
                         </table>
                     </div>

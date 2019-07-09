@@ -663,6 +663,16 @@ class UnitsController extends Controller
                     $issuesObj = Issue::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
                     view()->share('issuesObj',$issuesObj);
 
+                    if( session()->get('add_to_wl') ){
+                        $add_to_watchlist = session()->get('add_to_wl');
+                        $arr = [];
+                        foreach ( $add_to_watchlist as $key => $add){
+                            $arr[$key] = $add;
+                        }
+                        view()->share('add_to_watch',$arr);
+                    }
+
+
                     return view('units.view');
                 }
             }
