@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Mc;
 use App\UserMessages;
+use GuzzleHttp\Client;
 
 class IssuesController extends Controller
 {
@@ -1068,53 +1069,68 @@ class IssuesController extends Controller
     }
 
     public function report_concern_email(Request $email){
-        $validate_fields = ['message'=>'required'];
-        if(!\Auth::check())
-            $validate_fields['captcha_value']='required';
 
-        $validator=\Validator::make($email->all(), $validate_fields);
-        if ($validator->fails()){
-            return \Response::json(['success'=>false,'errors'=>$validator->messages()->toArray()]);
-        }
+        if(!\Auth::check()){
 
+            $auth_check = 0;
+            if( empty($email->captcha_value) ){
+                return \Response::json(['success'=>false,'errors'=>'Captcha Required'] );
+            }
+            $validator = \Validator::make($email->all(), [
+                'message' => 'required',
+                'captcha_value' => 'required'
+            ]);
 
-        $email_id=null;
-        if(!Auth::check())
+            $token = $email->captcha_value;
+            $client = new Client();
+            $response = $client->post('https://www.google.com/recaptcha/api/siteverify',[
+                'form-params' => array(
+                    'secret' => '6LfDyawUAAAAAK-Q7p4-h1WsQc2EdQ-SIQUkmJ7V',
+                    'response' => $token
+                )
+            ]);
+
+            $result = json_decode($response->getBody()->getContents());
+
+            if($result->success){
+                $flag=true;
+            }else{
+                $flag=false;
+            }
+
             $name = "Anonymous";
-        else {
+            $email_id=null;
+        }else{
+            $auth_check = 1;
+            $validator = \Validator::make($email->all(), [
+                'message' => 'required',
+            ]);
+
             $name = Auth::user()->first_name . ' ' . Auth::user()->last_name;
             if(!empty(Auth::user()->username))
                 $name = Auth::user()->username;
 
             $email_id = Auth::user()->email;
-        }
-
-
-        $answer=(int)$email->get('captcha_value');
-        $flag =false;
-        if(!\Auth::check()){
-            if($answer==Mc::getMcAnswer())
-                $flag=true;
-        }
-        else
             $flag=true;
+        }
+
+        if ($validator->fails()){
+            return \Response::json(['success'=>false,'errors'=>$validator->messages()->toArray(), 'auth_check'=>$auth_check]);
+        }
 
         if($flag){
             $visit_url=$email->get('visit_url');
             $message=$email->get('message');
             $data=array('name' => $name, 'messages' => $message,'email'=>$email_id,'url'=>$visit_url);
-           $mail_sent = Mail::send('emails/report_concern', $data, function ($message){
+            $mail_sent = Mail::send('emails/report_concern', $data, function ($message){
                $message->from('javul.org@gmail.com','javul.org');
                $message->to('javul.org@gmail.com','Administrator');
                $message->subject('Webform:Report a concern');
             });
-            // re-generate captcha
-            Mc::putMcData();
-            $question=Mc::getMcQuestion();
-            return \Response::json(['success'=>true,'captcha_value'=>$question,'mail_sent'=>$mail_sent]);
+            return \Response::json(['success'=>true,'mail_sent'=>$mail_sent]);
+        }else{
+            return \Response::json(['success'=>false,'errors'=>'You have problems']);
         }
-        else
-            return \Response::json(['success'=>false,'errors'=>["captcha_value"=>["The captcha is invalid."]]]);
 
     }
 

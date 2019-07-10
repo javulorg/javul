@@ -245,12 +245,33 @@ $(function(){
         }
     });
 
+    var widget;
+    var onloadCallbackRecaptcha = function() {
+        var myinto = setInterval(function(){
+            var elementExists = document.getElementById("gcaptcha");
+            if ( $('#gcaptcha').length ) {
+                widget = grecaptcha.render(document.getElementById('gcaptcha'), {
+                    'sitekey' : '6LfDyawUAAAAAIeiKY1kIW8hs0e52tAcmV3Gk0id',
+                    'callback' : correctCaptcha
+                });
+                $("button[data-bb-handler='success']").attr("disabled", true);
+                var captchaResponse = grecaptcha.getResponse();
+                clearInterval(myinto);
+            }
+        }, 1000);
+    };
+
+    var correctCaptcha = function(response) {
+        $("button[data-bb-handler='success']").attr("disabled", false);
+    };
 
     $(".report").click(function(){
+        var captchaResponse = "";
         var visited_url = window.location.href;
         $(".div-table-second-cell").css('z-index','100');
         $(".list-item-main").css('z-index','100');
-        var html = '<form class="form-horizontal" role="form" method="post" action="#">'+
+
+        var html = '<form class="form-horizontal" role="form" method="post" action="javascript:grecaptcha.reset(widget);">'+
             '<div class="form-group">'+
             '<label for="visited url" class="col-sm-2 control-label paddpop">Visited URL</label>'+
             '<div class="col-sm-10">'+
@@ -263,59 +284,76 @@ $(function(){
             '<textarea class="form-control" id="message" rows="4" name="message" placeholder="Write your message here.">'+
             '</textarea><span class="text-danger errors" id="message_error"></span>'+
             '</div>'+
-            '                    </div>';
+            '</div>';
+
 
         if($.trim(login) == ""){
             html+= '<div class="form-group">'+
-                '<label for="human" class="col-sm-2 control-label captcha_label">'+captcha_code+'</label>'+
                 '<div class="col-sm-10">'+
-                '<input type="text" class="form-control" id="captcha" name="captcha_value" placeholder="Your Answer">'+
-                '<span class="text-danger errors" id="captcha_value_error"></span>'+
+                ' <div id="gcaptcha" ></div>'+
                 '</div>'+
                 '</div>'+
                 '</form>';
+            onloadCallbackRecaptcha();
+            var captcha_intval = setInterval(function(){
+                captchaResponse = grecaptcha.getResponse();
+            }, 1000);
+        }else{
+             captchaResponse = "";
         }
+
         var bootbox_dialog=bootbox.dialog({
             title: 'Report a Concern<br><p class="text">Your message will be sent to the Javul.org administrator.',
             message:html,
             buttons: {
                 success: {
                     label: "Submit",
-                    className:'btn-success',
+                    className: 'btn-success',
                     callback: function () {
+                        clearInterval(captcha_intval);
                         $(".errors").html('');
-                        var captcha_value=$("#captcha").val();
-                        var visit_url=$('#url').val();
-                        var message=$('#message').val();
-
+                        var captcha_value = captchaResponse;
+                        var visit_url = $('#url').val();
+                        var message = $('#message').val();
                         $.ajax({
-                            type:'post',
-                            url:siteURL+'/reportconc',
-                            dataType:'json',
-                            data:{_token:report_concern_token,visit_url:visit_url,message:message,captcha_value:captcha_value},
-                            success: function(response){
-                                if(!response.success){
-
-                                    $.each(response.errors,function(index,value){
-                                        $("[id='"+index+"_error']").html(value);
+                            type: 'post',
+                            url: siteURL + '/reportconc',
+                            dataType: 'json',
+                            data: {
+                                _token: report_concern_token,
+                                visit_url: visit_url,
+                                message: message,
+                                captcha_value: captcha_value
+                            },
+                            success: function (response) {
+                                if (!response.success) {
+                                    console.log(response);
+                                    $.each(response.errors, function (index, value) {
+                                        $("[id='" + index + "_error']").html(value);
                                     });
 
-                                }
-                                else{
+                                    if(response.errors.message = 'The message field is required.' && response.auth_check.message == 0){
+                                        grecaptcha.reset();
+                                    }
+
+                                } else {
                                     showToastMessage('THANK_YOU_YOUR_MESSAGE_WAS_SENT_TO_JAVUL');
-                                    captcha_code=response.captcha_value;
+                                    captcha_code = response.captcha_value;
                                     bootbox.hideAll();
                                 }
+                            },
+                            error: function ($err) {
+                                console.log($err);
                             }
                         });
                         return false;
                     }
+                }
                 },
                 cancel:{
                     label:'Cancel',
                     className:'btn-danger'
                 }
-            }
         });
 
         bootbox_dialog.on("hidden.bs.modal", function (e) {
