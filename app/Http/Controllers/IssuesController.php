@@ -1080,17 +1080,18 @@ class IssuesController extends Controller
                 'message' => 'required',
                 'captcha_value' => 'required'
             ]);
-
             $token = $email->captcha_value;
+
             $client = new Client();
-            $response = $client->post('https://www.google.com/recaptcha/api/siteverify',[
-                'form-params' => array(
-                    'secret' => '6LfDyawUAAAAAK-Q7p4-h1WsQc2EdQ-SIQUkmJ7V',
-                    'response' => $token
-                )
-            ]);
+
+            $options = [
+                'verify' => false,
+                 'header'  => "Content-type: application/x-www-form-urlencoded",
+            ];
+            $response = $client->post('https://www.google.com/recaptcha/api/siteverify?secret=6LfDyawUAAAAAK-Q7p4-h1WsQc2EdQ-SIQUkmJ7V&response=' .$token, $options);
 
             $result = json_decode($response->getBody()->getContents());
+
 
             if($result->success){
                 $flag=true;
