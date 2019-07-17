@@ -690,12 +690,17 @@ class ObjectivesController extends Controller
                         if(!empty($forumID)){
                             view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
                         }
-                        if( session()->get('add_to_wl') ){
+
+                        $add_wl = session()->get('add_to_wl');
+                        if( $add_wl  != null ){
                             $add_to_watchlist = session()->get('add_to_wl');
                             $arr = [];
-                            foreach ( $add_to_watchlist as $key => $add){
-                                $arr[$key] = $add;
+                            if(is_array($add_to_watchlist) || is_object($add_to_watchlist)){
+                                foreach ( $add_to_watchlist as $key => $add){
+                                    $arr[$key] = $add;
+                                }
                             }
+                            session()->put('add_to_wl', 'null');
                             view()->share('add_to_watch',$arr);
                         }
                        
