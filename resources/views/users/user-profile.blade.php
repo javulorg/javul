@@ -5,8 +5,8 @@
         <div class="row">
             <div class="col-sm-4 text-center form-group">
                 <div>
-                @if(!empty($userObj->profile_pic) && file_exists(base_path('uploads/user_profile/'.$userIDHashID->encode($userObj->id).'/'.$userObj->profile_pic)))
-                    <img src="{!! url('uploads/user_profile/'.$userIDHashID->encode($userObj->id).'/'.$userObj->profile_pic) !!}" class="img-rounded-circle"/>
+                @if(!empty($userObj->profile_pic) )
+                    <img src="{{ $userObj->profile_pic }} " class="img-rounded-circle" style="width: 160px;"/>
                 @else
                     <img src="{!! url('assets/images/user.png')!!}" class="img-rounded-circle"/>
                 @endif

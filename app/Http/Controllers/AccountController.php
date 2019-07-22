@@ -211,6 +211,9 @@ class AccountController extends Controller
                 $area_of_interest='';
 
 
+            $image = $request->input('profilePic');
+            $clear_image = str_replace(' ','+',$request->input('profilePic'));
+
             Auth::user()->first_name=$request->input('first_name');
             Auth::user()->last_name=$request->input('last_name');
             Auth::user()->email=$request->input('email');
@@ -222,6 +225,7 @@ class AccountController extends Controller
             Auth::user()->city_id=$request->input('city');
             Auth::user()->job_skills=$job_skills;
             Auth::user()->area_of_interest=$area_of_interest;
+            Auth::user()->profile_pic=$clear_image;
             Auth::user()->timezone=$request->input('timezone');
             Auth::user()->paypal_email=$request->input('paypal_email');
             Auth::user()->save();

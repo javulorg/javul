@@ -57,7 +57,7 @@
                     <div class="profile-div">
                         @if(!empty(Auth::user()->profile_pic))
                             <div class="file-preview-frame" id="preview-1475558631183-0" data-fileindex="0" data-template="image"><div class="kv-file-content">
-                                    <img src="{!! url('uploads/user_profile/'.$user_id_encoded.'/'.Auth::user()->profile_pic) !!}"
+                                    <img src="{{ Auth::user()->profile_pic }}"
                                          class="kv-preview-data file-preview-image" style="width:160px;height:auto;">
                                 </div><div class="file-thumbnail-footer">
                                     <div class="file-thumb-progress hide"><div class="progress">
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                         @else
-                            <form class="text-center" method="post" enctype="multipart/form-data">
+                            <form class="text-center" method="post" enctype="multipart/form-data" id="profilePic">
                                 <input id="avatar-2" name="profile_pic" type="file" class="file-loading">
                                 <!-- include other inputs if needed and include a form submit (save) button -->
                             </form>
@@ -571,8 +571,8 @@
 
                 var html  ='<div class="file-preview-frame" id="preview-1475558631183-0" data-fileindex="0" data-template="image"><div ' +
                         'class="kv-file-content">'+
-                        '<img src="'+response.filename+'?'+Math.random()+'"'+
-                        'class="kv-preview-data file-preview-image" style="width:160px;height:auto;">'+
+                        '<img id="profpicc" src="'+response.filename+'?'+Math.random()+'"'+
+                        'class="kv-preview-dataaa file-preview-image" style="width:160px;height:auto;">'+
                         '</div><div class="file-thumbnail-footer">'+
                         '<div class="file-actions">'+
                         '<div class="file-footer-buttons">'+
@@ -660,6 +660,9 @@
                                 }
                                 $("#changed_by").val('');
                             }
+                        },
+                        error:function(err){
+                            console.log(err);
                         }
                     });
                 }
