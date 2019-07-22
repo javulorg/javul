@@ -49,7 +49,7 @@ class AlertsController extends Controller
             else
                 $data[$field_name] = $val;
 
-            if(!empty($alertObj) && count($alertObj) > 0){
+            if(!empty($alertObj) ){
                 $alertObj->update($data);
                 return \Response::json(['success'=>true]);
             }else
