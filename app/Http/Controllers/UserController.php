@@ -36,7 +36,11 @@ class UserController extends Controller
         elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0)
             return $now_date->i .' min '. $now_date->s .' seconds';
         elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0)
-            return $now_date->h .' hours '. $now_date->i .' min';
+            if($now_date->d == 0){
+                return $now_date->h .' hours '. $now_date->i .' min';
+            }else{
+                return $now_date->d .' days '. $now_date->h .' hours';
+            }
         elseif ($now_date->y == 0 && $now_date->m == 0)
             if($now_date->h == 0){
                 return $now_date->m .' months '. $now_date->i .' min';

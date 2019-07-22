@@ -348,7 +348,14 @@ $(document).ready(function() {
         }
     });
 
+    function enableCityState() {
+        $("#city").prop('disabled',false);
+        $("#state").prop('disabled',false);
+    }
+
     $("#update_profile").on('click',function(){
+        enableCityState();
+        var profilePic = $(".kv-file-content").find('img').attr("src");
         $form = $("#personal-info");
         $form.find('.help-block').html('');
         $.ajax({
@@ -356,7 +363,7 @@ $(document).ready(function() {
             url:siteURL+'/account/update_personal_info',
             dataType:'json',
             async:true,
-            data:$form.serialize(),
+            data:$form.serialize() + '&profilePic=' + profilePic,
             success:function(resp){
                 if(resp.success){
                     $(".message").html('<div class="alert alert-success" style="margin-bottom:15px;">'+

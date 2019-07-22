@@ -56,7 +56,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="icon" type="image/png" sizes="32x32" href="{!! url('assets/images/favicon-32x32.png') !!}">
     <link rel="icon" type="image/png" sizes="96x96" href="{!! url('assets/images/favicon-96x96.png') !!}">
     <link rel="icon" type="image/png" sizes="16x16" href="{!! url('assets/images/favicon-16x16.png') !!}">
-    <script src='//www.google.com/recaptcha/api.js'></script>
+    <script src='https://www.google.com/recaptcha/api.js' async defer></script>
     @yield('page-css')
     <!--<script type="text/javascript" src="//js.stripe.com/v2/"></script>
     <script type="text/javascript">Stripe.setPublishableKey('{{env("STRIPE_SECRET")}}');</script>-->
