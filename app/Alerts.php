@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Alerts extends Model
 {
 	/**
-     * The table associated with the model.
+     * The table associated with the model.-
      *
      * @var string
      */
