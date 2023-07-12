@@ -1,8 +1,7 @@
 <?php namespace App\Listeners;
 
-
-use App\SiteActivity;
 use Hashids\Hashids;
+use Illuminate\Support\Facades\Config;
 
 class UserEventListener {
 
@@ -12,7 +11,7 @@ class UserEventListener {
     public function onUserLogin($event) {
 
 
-        $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID = new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode($event->user->id);
 
         // add comment : issue : skype text by sir (26.07.2016)
@@ -30,8 +29,9 @@ class UserEventListener {
     /**
      * Handle user logout events.
      */
-    public function onUserLogout($event) {
-        $userIDHashID = new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+    public function onUserLogout($event)
+    {
+        $userIDHashID = new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode($event->user->id);
 
         // add comment : issue : skype text by sir (26.07.2016)

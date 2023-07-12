@@ -1,8 +1,6 @@
 <?php namespace App\Library;
-use App\Appointments;
-use App\PaymentPipe;
-use App\User;
 use Illuminate\Support\Facades\Auth;
+use Ixudra\Curl\Facades\Curl;
 
 class Helpers {
 
@@ -100,7 +98,7 @@ class Helpers {
             'url'      => $url,
         ];
 
-        $response = \Curl::to($api_url)
+        $response = Curl::to($api_url)
             ->withData($data)
             ->post();
 

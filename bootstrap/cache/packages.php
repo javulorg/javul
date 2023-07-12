@@ -13,13 +13,6 @@
       0 => 'BeyondCode\\DumpServer\\DumpServerServiceProvider',
     ),
   ),
-  'fideloper/proxy' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
-    ),
-  ),
   'intervention/image' => 
   array (
     'providers' => 
@@ -29,17 +22,6 @@
     'aliases' => 
     array (
       'Image' => 'Intervention\\Image\\Facades\\Image',
-    ),
-  ),
-  'ipunkt/laravel-analytics' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Ipunkt\\LaravelAnalytics\\AnalyticsServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Analytics' => 'Ipunkt\\LaravelAnalytics\\AnalyticsFacade',
     ),
   ),
   'ixudra/curl' => 
@@ -53,6 +35,13 @@
       'Curl' => 'Ixudra\\Curl\\Facades\\Curl',
     ),
   ),
+  'kitloong/laravel-migrations-generator' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'KitLoong\\MigrationsGenerator\\MigrationsGeneratorServiceProvider',
+    ),
+  ),
   'laravel/cashier' => 
   array (
     'providers' => 
@@ -60,11 +49,32 @@
       0 => 'Laravel\\Cashier\\CashierServiceProvider',
     ),
   ),
+  'laravel/sail' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Sail\\SailServiceProvider',
+    ),
+  ),
+  'laravel/sanctum' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Sanctum\\SanctumServiceProvider',
+    ),
+  ),
   'laravel/tinker' => 
   array (
     'providers' => 
     array (
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    ),
+  ),
+  'laravel/ui' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Ui\\UiServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
@@ -81,6 +91,13 @@
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     ),
   ),
+  'nunomaduro/termwind' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    ),
+  ),
   'simplesoftwareio/simple-qrcode' => 
   array (
     'providers' => 
@@ -92,12 +109,15 @@
       'QrCode' => 'SimpleSoftwareIO\\QrCode\\Facades\\QrCode',
     ),
   ),
-  'xethron/migrations-generator' => 
+  'spatie/laravel-ignition' => 
   array (
     'providers' => 
     array (
-      0 => 'Way\\Generators\\GeneratorsServiceProvider',
-      1 => 'Xethron\\MigrationsGenerator\\MigrationsGeneratorServiceProvider',
+      0 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Flare' => 'Spatie\\LaravelIgnition\\Facades\\Flare',
     ),
   ),
 );
