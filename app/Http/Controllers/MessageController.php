@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers;
-use App\Alerts;
-use App\User;
+use App\Models\Alerts;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Message;
+use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
-use DB;
-use App\UserMessages;
+use App\Models\UserMessages;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class MessageController extends Controller
 {
@@ -19,7 +19,7 @@ class MessageController extends Controller
     {
         $json = array();
         $json['count'] = DB::table('message')->where("to","=",Auth::user()->id)->where("isRead","=",DB::raw(0))->count();
-        
+
         return json_encode($json);
     }
 
@@ -50,7 +50,7 @@ class MessageController extends Controller
             view()->share("message", $message['message'][0] );
             view()->share("myId", Auth::user()->id );
             view()->share("page", '' );
-           
+
             return view("message.view");
         }
         return view('errors.404');
@@ -77,11 +77,11 @@ class MessageController extends Controller
 
         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
         $hashed_user_id = $userIDHashID->encode(Auth::user()->id);
-        
+
     	if ($request->isMethod('post')) {
     		 $inputData = $request->all();
-    	
-	        $validator = \Validator::make($inputData, [
+
+	        $validator = Validator::make($inputData, [
 	            'message'=> 'required',
                 'user_id'=> 'required',
 	            'subject'=> 'required',

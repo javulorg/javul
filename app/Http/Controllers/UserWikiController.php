@@ -1,32 +1,32 @@
 <?php
 namespace App\Http\Controllers;
-use App\TaskRatings;
+use App\Models\TaskRatings;
 use Illuminate\Http\Request;
-use App\Http\Requests;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
-use App\UserWiki;
-use App\User;
-use App\Unit;
-use App\Objective;
-use App\Task;
-use App\ActivityPoint;
-use App\SiteActivity;
+use App\Models\UserWiki;
+use App\Models\User;
+use App\Models\Unit;
+use App\Models\Objective;
+use App\Models\Task;
+use App\Models\ActivityPoint;
+use App\Models\SiteActivity;
 use Hashids\Hashids;
 use Carbon\Carbon;
-use App\Wiki;
-use App\UserwikiRevisions;
-use App\JobSkill;
-use App\AreaOfInterest;
+use App\Models\Wiki;
+use App\Models\UserwikiRevisions;
+use App\Models\JobSkill;
+use App\Models\AreaOfInterest;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Validator;
 
 class UserWikiController extends Controller
 {
     public function page_history(Request $request,$slug,$user_id,$page_id = false)
-    {	
+    {
     	view()->share('user_id_hash',$user_id);
     	view()->share('slug',$slug);
         if(!empty($user_id)){
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
             if(!empty($user_id)){
                 $user_id = $user_id [0];
@@ -37,7 +37,7 @@ class UserWikiController extends Controller
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
                 $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
-                
+
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
                 if(!empty($userObj->job_skills))
@@ -46,7 +46,7 @@ class UserWikiController extends Controller
                 if(!empty($userObj->job_skills))
                     $interestObj = AreaOfInterest::whereIn('id',explode(",",$userObj->area_of_interest))->get();
                	if($page_id){
-               		$userPageIDHashID= new Hashids('userpage id hash',10,\Config::get('app.encode_chars'));
+               		$userPageIDHashID= new Hashids('userpage id hash',10,Config::get('app.encode_chars'));
     				$page_id = $userPageIDHashID->decode($page_id);
     				if(!empty($page_id)){
     					$page_id = $page_id[0];
@@ -54,7 +54,7 @@ class UserWikiController extends Controller
 		                					->join('users', 'users.id', '=', 'userwiki_revisions.user_id')
 		                                    ->where("userwiki_revisions.page_id","=",$page_id)
 		                                    ->paginate(15);
-		                
+
                 		view()->share('userPageIDHashID',$userPageIDHashID);
                 		view()->share('userIDHashID',$userIDHashID);
                 		view()->share('userWikiRev',$userWikiRev);
@@ -70,19 +70,19 @@ class UserWikiController extends Controller
 		                view()->share('unitsObj',$unitsObj);
                         view()->share('rating_points',$rating_points);
 		                return view('users.wiki.wiki_page_history');
-	                	
+
 	                }
-               	}               
+               	}
             }
         }
         return view('errors.404');
     }
     public function recent_changes(Request $request,$slug,$user_id)
-    {	
+    {
     	view()->share('user_id_hash',$user_id);
     	view()->share('slug',$slug);
         if(!empty($user_id)){
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
             if(!empty($user_id)){
                 $user_id = $user_id [0];
@@ -93,7 +93,7 @@ class UserWikiController extends Controller
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
                 $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
-                
+
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
                 if(!empty($userObj->job_skills))
@@ -101,13 +101,13 @@ class UserWikiController extends Controller
                 $interestObj = [];
                 if(!empty($userObj->job_skills))
                     $interestObj = AreaOfInterest::whereIn('id',explode(",",$userObj->area_of_interest))->get();
-               
+
                 $userWikiRev = UserwikiRevisions::select(['userwiki_revisions.*','users.first_name','users.last_name'])
                 					->join('users', 'users.id', '=', 'userwiki_revisions.user_id')
-                                    
+
                                     ->paginate(15);
-                $userPageIDHashID= new Hashids('userpage id hash',10,\Config::get('app.encode_chars'));
-                
+                $userPageIDHashID= new Hashids('userpage id hash',10,Config::get('app.encode_chars'));
+
         		view()->share('userPageIDHashID',$userPageIDHashID);
         		view()->share('userIDHashID',$userIDHashID);
         		view()->share('userWikiRev',$userWikiRev);
@@ -123,17 +123,17 @@ class UserWikiController extends Controller
                 view()->share('unitsObj',$unitsObj);
                 view()->share('rating_points',$rating_points);
                 return view('users.wiki.wiki_page_recentchange');
-	            
+
             }
         }
         return view('errors.404');
     }
     public function page_diff(Request $request,$slug,$user_id,$rev1 = false , $rev2 = false )
-    {	
+    {
     	view()->share('user_id_hash',$user_id);
     	view()->share('slug',$slug);
         if(!empty($user_id)){
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
             if(!empty($user_id)){
                 $user_id = $user_id [0];
@@ -145,7 +145,7 @@ class UserWikiController extends Controller
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
                 $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
                 view()->share('rating_points',$rating_points);
-                
+
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
                 if(!empty($userObj->job_skills))
@@ -154,7 +154,7 @@ class UserWikiController extends Controller
                 if(!empty($userObj->job_skills))
                     $interestObj = AreaOfInterest::whereIn('id',explode(",",$userObj->area_of_interest))->get();
                	if($rev1 ){
-               		
+
 	                $userWikiRev = UserwikiRevisions::select(['userwiki_revisions.*'])
 	                                    ->wherein("userwiki_revisions.id",[(int)$rev1])
 	                                    ->get();
@@ -179,7 +179,7 @@ class UserWikiController extends Controller
                         {
                             $userWikiRev[1] = $userWikiRev2[0];
                         }
-                		
+
                 		view()->share('userWikiRev',$userWikiRev);
                 		view()->share('objectivesObj',$objectivesObj);
 		                view()->share('tasksObj',$tasksObj);
@@ -193,19 +193,19 @@ class UserWikiController extends Controller
 		                return view('users.wiki.wiki_page_diff');
 		            }
                     else if($userWikiRev->count() == 2){
-                    }   
-	                	
-	                
+                    }
+
+
                	}
                 else if($rev1 && $rev2){
-                    
+
                     $userWikiRev = UserwikiRevisions::select(['userwiki_revisions.*'])
                                         ->wherein("userwiki_revisions.page_id",[(int)$rev1,(int)$rev2])
                                         ->get();
                     if($userWikiRev->count() == 2){
-                        
+
                         view()->share('userWikiRev',$userWikiRev);
-                        
+
                         view()->share('objectivesObj',$objectivesObj);
                         view()->share('tasksObj',$tasksObj);
                         view()->share('interestObj',$interestObj);
@@ -218,10 +218,10 @@ class UserWikiController extends Controller
                         return view('users.wiki.wiki_page_diff');
                     }
                     else if($userWikiRev->count() == 1){
-                    }   
-                        
-                    
-                }               
+                    }
+
+
+                }
             }
         }
         return view('errors.404');
@@ -231,7 +231,7 @@ class UserWikiController extends Controller
     	view()->share('user_id_hash',$user_id);
     	view()->share('slug',$slug);
         if(!empty($user_id)){
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
             if(!empty($user_id)){
                 $user_id = $user_id [0];
@@ -242,7 +242,7 @@ class UserWikiController extends Controller
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
                 $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
-                
+
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
                 if(!empty($userObj->job_skills))
@@ -251,7 +251,7 @@ class UserWikiController extends Controller
                 if(!empty($userObj->job_skills))
                     $interestObj = AreaOfInterest::whereIn('id',explode(",",$userObj->area_of_interest))->get();
                	if($page_id){
-               		$userPageIDHashID= new Hashids('userpage id hash',10,\Config::get('app.encode_chars'));
+               		$userPageIDHashID= new Hashids('userpage id hash',10,Config::get('app.encode_chars'));
     				$page_id = $userPageIDHashID->decode($page_id);
     				if(!empty($page_id)){
     					$page_id = $page_id[0];
@@ -282,7 +282,8 @@ class UserWikiController extends Controller
         }
         return view('errors.404');
     }
-    public function save_pagedata(Request $request,$user_id){
+    public function save_pagedata(Request $request,$user_id)
+    {
     	$json = array();
     	$inputData = $request->all();
     	if((int)$inputData['id'] > 0){
@@ -293,7 +294,7 @@ class UserWikiController extends Controller
     		    	$validation_rule['title'] = 'required';
     		    	$validation_rule['id'] = 'required';
 
-    		    	$validator = \Validator::make($inputData, $validation_rule );
+    		    	$validator = Validator::make($inputData, $validation_rule );
     		    	if ($validator->fails()){
     		            return json_encode(array(
     			            'errors' => $validator->getMessageBag()->toArray()
@@ -322,14 +323,14 @@ class UserWikiController extends Controller
     			    $wikipage->page_type = 1;
     			    $wikipage->slug = substr(str_replace(" ","-",strtolower($inputData['title'])),0,30);
     			    $wikipage->save();
-                    $userPageIDHashID= new Hashids('userpage id hash',10,\Config::get('app.encode_chars'));
+                    $userPageIDHashID= new Hashids('userpage id hash',10,Config::get('app.encode_chars'));
                     $page_id = $userPageIDHashID->encode($inputData['id']);
                     $json['location'] = route("user_wiki_view",[$inputData['slug'],$page_id,$wikipage->slug]);
                 }
                 else if($wikipage->page_type == 2){
                     $validation_rule['description'] = 'required';
                     $validation_rule['id'] = 'required';
-                    $validator = \Validator::make($inputData, $validation_rule );
+                    $validator = Validator::make($inputData, $validation_rule );
                     if ($validator->fails()){
                         return json_encode(array(
                             'errors' => $validator->getMessageBag()->toArray()
@@ -338,7 +339,7 @@ class UserWikiController extends Controller
                     $wikipage->page_content = $inputData['description'];
                     $wikipage->private = 1;
                     $wikipage->save();
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
                     $json['location'] = url("userprofiles")."/".$user_id."/".$inputData['slug'];
                 }
@@ -352,7 +353,7 @@ class UserWikiController extends Controller
     	else {
 	    	$validation_rule['description'] = 'required';
 	    	$validation_rule['title'] = 'required';
-	    	$validator = \Validator::make($inputData, $validation_rule );
+	    	$validator = Validator::make($inputData, $validation_rule );
 	    	if ($validator->fails()){
 	            return json_encode(array(
 		            'errors' => $validator->getMessageBag()->toArray()
@@ -367,17 +368,19 @@ class UserWikiController extends Controller
 		    $wikipage->slug = substr(str_replace(" ","-",strtolower($inputData['title'])),0,30);
 		    $wikipage->user_id = Auth::user()->id;
 		    $wikipage->save();
-		    
+
 		    $json['success'] = 'User Wiki Creatd Successfully ..';
 		    $json['location'] = route("user_wiki_page_list",[$inputData['slug'],$user_id]);
 		}
 	    echo json_encode($json);
     }
-    public function pagelist(Request $request,$slug,$user_id){
+
+    public function pagelist(Request $request,$slug,$user_id)
+    {
     	view()->share('user_id_hash',$user_id);
     	view()->share('slug',$slug);
         if(!empty($user_id)){
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
             if(!empty($user_id)){
                 $user_id = $user_id [0];
@@ -388,7 +391,7 @@ class UserWikiController extends Controller
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
                 $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
-                
+
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
                 if(!empty($userObj->job_skills))
@@ -413,7 +416,7 @@ class UserWikiController extends Controller
                                     ->paginate(15);
                 }
 
-                $userPageIDHashID= new Hashids('userpage id hash',10,\Config::get('app.encode_chars'));
+                $userPageIDHashID= new Hashids('userpage id hash',10,Config::get('app.encode_chars'));
                 view()->share('userPageIDHashID',$userPageIDHashID);
                 view()->share('userWikiPage',$userWikiPage);
                 view()->share('Carbon',new Carbon);
@@ -434,10 +437,10 @@ class UserWikiController extends Controller
         return view('errors.404');
     }
     public function view(Request $request,$user_slug,$page_id,$page_slug){
-    	
+
     	view()->share('slug',$user_slug);
     	view()->share('page_id_hase',$page_id);
-    	$userPageIDHashID= new Hashids('userpage id hash',10,\Config::get('app.encode_chars'));
+    	$userPageIDHashID= new Hashids('userpage id hash',10,Config::get('app.encode_chars'));
     	$page_id = $userPageIDHashID->decode($page_id);
     	if(!empty($page_id)){
     		$page_id = $page_id[0];
@@ -449,8 +452,8 @@ class UserWikiController extends Controller
 			if($userWikiPage->count()){
 				$pageObj=$userWikiPage[0];
 				$user_id = $pageObj->user_id;
-                
-				$userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+
+				$userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
         		$user_id_hash = $userIDHashID->encode($user_id);
         		view()->share('user_id_hash',$user_id_hash);
 
@@ -461,7 +464,7 @@ class UserWikiController extends Controller
                 $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
                 $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
-                
+
                 $site_activities = SiteActivity::where('user_id',$user_id)->take(10)->orderBy('created_at','desc')->get();
                 $skills = [];
                 if(!empty($userObj->job_skills))
@@ -488,13 +491,13 @@ class UserWikiController extends Controller
                 }
                 return view('users.wiki.wiki_page_view');
 			}
-            
+
     	}
 
         return view('errors.404');
     }
     public function home()
     {
-    	
+
     }
 }

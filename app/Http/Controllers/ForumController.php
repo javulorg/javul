@@ -1,38 +1,38 @@
 <?php
 namespace App\Http\Controllers;
-use App\Alerts;
-use App\User;
-use App\UserNotification;
+use App\Models\Alerts;
+use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
-use App\Forum;
-use App\Http\Requests;
+use App\Models\Forum;
 use Hashids\Hashids;
-use App\Unit;
+use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use App\Fund;
-use App\SiteActivity;
-use App\ActivityPoint;
-use App\Issue;
-use App\Objective;
-use App\Task;
+use App\Models\Fund;
+use App\Models\SiteActivity;
+use App\Models\ActivityPoint;
+use App\Models\Issue;
+use App\Models\Objective;
+use App\Models\Task;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
+use Illuminate\Support\Facades\Validator;
 
 class ForumController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth',['except'=>['index']]);
         view()->share('site_activity_text','Unit Activity Log');
     }
+
     public function index($unit_id = 0)
     {
-        /*if($unit_id == 0){
-            return view("errors.404");
-        }*/
     	view()->share("unit_id",$unit_id);
     	$unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
         $unit_id = $unitIDHashID->decode($unit_id);
-        if(!empty($unit_id)){
+        if(!empty($unit_id))
+        {
         	$unit_id = $unit_id[0];
 	        $unit = Unit::getUnitWithCategories($unit_id);
 	        if(!empty($unit)){
@@ -81,9 +81,9 @@ class ForumController extends Controller
                 }
                 view()->share("start",$start);
                 view()->share("topics",$allTopics);
-                
+
     			view()->share("unit",$unit);
-              
+
     			return view("forum.forum_home");
 	        }
         }
@@ -155,7 +155,7 @@ class ForumController extends Controller
                 view()->share("section_name",$section_name);
                 view()->share("pagination",$topics->links());
     			view()->share("unit",$unit);
-              
+
     			return view("forum.topic_list");
 	        }
         }
@@ -163,7 +163,7 @@ class ForumController extends Controller
     public function loadObjectiveComment(Request $request)
     {
         $inputData = $request->all();
-         
+
         $filter = array(
             'limit' => 5,
             'page' => 1,
@@ -180,7 +180,7 @@ class ForumController extends Controller
     public function submitauto(Request $request)
     {
         $inputData = $request->all();
-        $validator = \Validator::make($inputData, [
+        $validator = Validator::make($inputData, [
             'object_id'=> 'required',
             'desc'=> 'required',
             'unit_id'=> 'required',
@@ -196,10 +196,11 @@ class ForumController extends Controller
             'section_id' => $inputData['section_id'],
             'object_id' => $inputData['object_id'],
         ));
-        
-        
+
+
         $json = array();
-        if(empty($forumID)){
+        if(empty($forumID))
+        {
             $forumData = array();
             if($inputData['section_id'] == 3){
                 $issueObj = Issue::with(['issue_documents'])->find($inputData['object_id']);
@@ -240,7 +241,7 @@ class ForumController extends Controller
         {
             $forumID = $forumID->topic_id;
         }
-        
+
         if($forumID){
             $commmentData = array(
                 'post' => $inputData['desc'],
@@ -260,14 +261,14 @@ class ForumController extends Controller
         {
             $json['error'] = "Something wrong try again..";
         }
-        
+
         echo json_encode($json);die;
     }
     public function submit(Request $request)
     {
     	$inputData = $request->all();
         $inputData['slug']=substr(str_replace(" ","_",strtolower($inputData['title'])),0,20);
-        $validator = \Validator::make($inputData, [
+        $validator = Validator::make($inputData, [
             'title'=> 'required'
         ],[
             'title.required'=>'Please enter title',
@@ -307,10 +308,11 @@ class ForumController extends Controller
         }
        	return json_encode($json);
     }
-    public function postSubmit(Request $request){
+    public function postSubmit(Request $request)
+    {
         $inputData = $request->all();
-    	
-        $validator = \Validator::make($inputData, [
+
+        $validator = Validator::make($inputData, [
             'post'=> 'required'
         ],[
             'post.required'=>'Please enter comment',
@@ -322,7 +324,8 @@ class ForumController extends Controller
 			), 200);
         }
         $postId = Forum::postSubmit($inputData);
-        if($postId){
+        if($postId)
+        {
             $json['success'] = "Post created successfully";
             $filter = array(
                 'parent' => $inputData['reply_id'],
@@ -332,7 +335,7 @@ class ForumController extends Controller
                 'topic_id' => $inputData['topic_id'],
             );
         	$json['post'] = Forum::getPost($filter);
-             
+
             /* Add Site Activity */
                 $unitData = Forum::getUnitId($inputData['topic_id']);
                 $unitId =  $unitData['unit_id'];
@@ -354,14 +357,14 @@ class ForumController extends Controller
                     $fromuser_id = $userIDHashID->encode($unitData['user_id']);
                     $commment = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .$loggedinUsername.'</a>
                      replied to <a href="'.url('userprofiles/'.$fromuser_id.'/'.strtolower($unitData['first_name'].'_'.$unitData['last_name'])).'">' .$unitUsername.'</a>
-                     in forum thread <a href="'.url('forum/post/'.$inputData['topic_id'].'/' . $unitData['slug'] ).'"> '. $unitData['title'] .' </a> 
+                     in forum thread <a href="'.url('forum/post/'.$inputData['topic_id'].'/' . $unitData['slug'] ).'"> '. $unitData['title'] .' </a>
                      for Unit <a href="'.url('units/'.$unit_id.'/'.$unit->slug).'">'.$unit->name.'</a> ';
                 }
                 else
                 {
                     $commment = '
                         <a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .$loggedinUsername.'</a>
-                        posted a comment in forum thread  <a href="'.url('forum/post/'.$inputData['topic_id'].'/' . $unitData['slug'] ).'"> '. $unitData['title'] .' </a> 
+                        posted a comment in forum thread  <a href="'.url('forum/post/'.$inputData['topic_id'].'/' . $unitData['slug'] ).'"> '. $unitData['title'] .' </a>
                         for Unit <a href="'.url('units/'.$unit_id.'/'.$unit->slug).'">'.$unit->name.'</a>';
                 }
 
@@ -405,7 +408,7 @@ class ForumController extends Controller
                 }
 
             /* Add Site Activity */
-            
+
         }
         else
         {
@@ -413,7 +416,9 @@ class ForumController extends Controller
         }
        	return json_encode($json);
     }
-    public function postLoad(Request $request){
+
+    public function postLoad(Request $request)
+    {
     	$inputData = $request->all();
     	$json = array();
         $inputData['limit'] = $limit = 5;
@@ -432,7 +437,9 @@ class ForumController extends Controller
 
     	echo json_encode($json);
     }
-    public function post($topic_id){
+
+    public function post($topic_id)
+    {
         $topic = Forum::getTopic($topic_id);
         if(!empty($topic)){
             $unit_id = $topic[0]->unit_id;
@@ -452,14 +459,14 @@ class ForumController extends Controller
                 $topicDetail->link =  url('userprofiles/'. $user_id .'/'.strtolower($topicDetail->first_name.'_'.$topicDetail->last_name));
                 $topicDetail->created_time =  Carbon::createFromFormat('Y-m-d H:i:s', $topicDetail->created_time)->diffForHumans();
                 if($topicDetail->object_id > 0){
-                    
+
                     if($topicDetail->section_id == 3){
                         $issueObj = Issue::with(['issue_documents'])->find($topicDetail->object_id);
                         $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
                         $issue_id = $issueIDHashID->encode($issueObj->unit_id);
                         $topicDetail->objectLink  = url('issues')."/".$issue_id."/view";
                         $topicDetail->objectLinkText  = "VIEW ISSUE";
-                       
+
                     }
                     else if($topicDetail->section_id == 2){
                         $taskObj = Task::with(['objective','task_documents'])->find($topicDetail->object_id);
@@ -467,7 +474,7 @@ class ForumController extends Controller
                         $task_id = $taskIDHashID->encode($taskObj->id);
                         $topicDetail->objectLink  = url('tasks')."/".$task_id."/".$taskObj->slug;
                         $topicDetail->objectLinkText  = "VIEW TASK";
-                         
+
                     }
                     else if($topicDetail->section_id == 1){
                         $Obj = Objective::where('id',$topicDetail->object_id)->first();
@@ -477,7 +484,7 @@ class ForumController extends Controller
                         $topicDetail->objectLinkText  = "VIEW OBJECTIVES";
                     }
                 }
-                
+
                 view()->share("topic",$topicDetail);
                 view()->share("topic_id",$topic_id);
                 return view("forum.post");
@@ -485,10 +492,11 @@ class ForumController extends Controller
         }
         return view("errors.404");
     }
+
     public function postUpDown(Request $request)
     {
         $inputData = $request->all();
-        $validator = \Validator::make($inputData, [
+        $validator = Validator::make($inputData, [
             'val'=> 'required',
             'topic_id'=> 'topic_id',
         ]);
@@ -498,7 +506,7 @@ class ForumController extends Controller
             ), 200);
         }
         $updownId = Forum::postUpDown($inputData);
-        $json['point'] = Forum::postUpDownCount($inputData); 
+        $json['point'] = Forum::postUpDownCount($inputData);
         if($updownId){
             $json['success'] = true;
         }
@@ -508,10 +516,11 @@ class ForumController extends Controller
         }
         echo json_encode($json);
     }
+
     public function topicUpDown(Request $request)
     {
         $inputData = $request->all();
-        $validator = \Validator::make($inputData, [
+        $validator = Validator::make($inputData, [
             'val'=> 'required',
             'topic_id'=> 'required',
         ]);
@@ -532,10 +541,11 @@ class ForumController extends Controller
         }
         echo json_encode($json);
     }
+
     public function ideapoint(Request $request)
     {
         $inputData = $request->all();
-        $validator = \Validator::make($inputData, [
+        $validator = Validator::make($inputData, [
             'val'=> 'required',
             'post_id'=> 'required',
         ]);
@@ -556,10 +566,11 @@ class ForumController extends Controller
         }
         echo json_encode($json);
     }
+
     public function post_ideapoint(Request $request)
     {
         $inputData = $request->all();
-        $validator = \Validator::make($inputData, [
+        $validator = Validator::make($inputData, [
             'val'=> 'required',
             'topic_id'=> 'required',
         ]);
@@ -579,6 +590,7 @@ class ForumController extends Controller
         }
         echo json_encode($json);
     }
+
     public function create($unit_id,$section_name)
     {
 	    view()->share("unitid",$unit_id);

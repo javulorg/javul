@@ -3,17 +3,17 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-offset-3 col-sm-6">
-            <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
+            <form class="form-horizontal" id="register-form" role="form" method="POST" action="{{ url('/register') }}">
                 {!! csrf_field() !!}
 
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <h2 class="form-signin-heading">{!! Lang::get('messages.please_signup') !!}</h2>
+                        <h2 class="form-signin-heading">{!! \Lang::get('messages.please_signup') !!}</h2>
                     </div>
                 </div>
 
 				<div class="row form-group{{ $errors->has('user_name') || $errors->has('username_duplicate') ? ' has-error' : '' }}">
-                    <div class="col-md-12"style="padding: ">
+                    <div class="col-md-12" style="padding: ">
                         <input type="text" id="uname" class="form-control" required="" name="user_name" value="{{ old('user_name') }}"  placeholder="Enter User Name*">
                        @if ($errors->has('user_name'))
                             <span class="help-block">
@@ -30,7 +30,7 @@
                 <div class="row form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                     <div class="col-md-12">
                         <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}"  placeholder="{!!
-                        Lang::get('messages.enter_firstname') !!}*" required>
+                        \Lang::get('messages.enter_firstname') !!}*" required>
                         @if ($errors->has('first_name'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('first_name') }}</strong>
@@ -42,7 +42,7 @@
                 <div class="row form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
                     <div class="col-md-12">
                         <input name="last_name" type="text" id="last_name" value="{{ old('last_name') }}" class="form-control"
-                               placeholder="{!! Lang::get('messages.enter_lastname') !!}*" required />
+                               placeholder="{!! \Lang::get('messages.enter_lastname') !!}*" required />
                         @if ($errors->has('last_name'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('last_name') }}</strong>
@@ -122,9 +122,12 @@
                         @endif
                     </div>
                 </div>
+                <input type="hidden" name="g-recaptcha-response-name" id="g-recaptcha-response">
                 <div class="row form-group{{ $errors->has('g-recaptcha-response') ? ' has-error' : '' }}">
-                    <div class="col-sm-7">
-                        {!! \Recaptcha::render() !!}
+                    <div class="g-recaptcha col-sm-7"
+                         data-sitekey="6LdqlBAnAAAAAKfLVMR-3BC4vWv35c4Z-2rvSP30"
+                         data-callback='onSubmit'
+                         data-action='register-form' onclick="sendToken(event)">
                     </div>
                     <div class="col-sm-5">
                         @if( $errors->has('g-recaptcha-response'))
@@ -201,6 +204,19 @@
                 if(email.length<6){$("#email_img").attr({src:""});}
             });
         });
+    </script>
+
+    <script>
+        function sendToken(e) {
+            e.preventDefault();
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6LdqlBAnAAAAAKfLVMR-3BC4vWv35c4Z-2rvSP30', {action: 'register-form'}).then(function(token) {
+                    console.log(token);
+                    document.getElementById('g-recaptcha-response').value = token;
+                    document.getElementById('register-form').submit();
+                });
+            });
+        }
     </script>
 @endsection
 

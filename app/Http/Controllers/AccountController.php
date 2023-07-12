@@ -2,30 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Alerts;
-use App\AreaOfInterest;
-use App\City;
-use App\Country;
-use App\Fund;
-use App\Http\Requests;
-use App\JobSkill;
-use App\Library\Helpers;
-use App\Objective;
-use App\Paypal;
-use App\PaypalTransaction;
-use App\SiteActivity;
-use App\SiteConfigs;
-use App\State;
-use App\Task;
-use App\Transaction;
-use App\Unit;
-use App\User;
-use App\UserNotification;
+use App\Models\Alerts;
+use App\Models\AreaOfInterest;
+use App\Models\City;
+use App\Models\Country;
+use App\Models\Fund;
+use App\Models\JobSkill;
+use App\Models\Paypal;
+use App\Models\PaypalTransaction;
+use App\Models\State;
+use App\Models\Transaction;
+use App\Models\Unit;
+use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
-use Image;
-use App\ZcashWithdrawRequest;
+use App\Models\ZcashWithdrawRequest;
+use Illuminate\Support\FacadesConfig;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 class AccountController extends Controller
 {
@@ -39,11 +36,6 @@ class AccountController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         $msg_flag = false;
@@ -69,7 +61,7 @@ class AccountController extends Controller
             $transaction = Transaction::where('id',$zcash_transaction->user_transaction_id)->first();
             $transaction->status = "cancel";
             $transaction->save();
-            return \Response::json(['success'=>true,'message'=>'Your withdrawal request successfully cancelled.']);
+            return response()->json(['success'=>true,'message'=>'Your withdrawal request successfully cancelled.']);
         }
 
 
@@ -97,7 +89,7 @@ class AccountController extends Controller
         /*if(!empty(Auth::user()->credit_card_id))
             $users_card= Paypal::getCreditCard(Auth::user()->credit_card_id);*/
         view()->share('users_cards',$users_card);
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID= new Hashids('user id hash',10, Config::get('app.encode_chars'));
         view()->share('user_id_encoded',$userIDHashID->encode(Auth::user()->id));
 
         $alertsObj = Alerts::where('user_id',Auth::user()->id)->first();
@@ -110,7 +102,7 @@ class AccountController extends Controller
         //Get user withdrawal request list
         $withdrawal_list = Transaction::join('zcash_withdraw_request','zcash_withdraw_request.user_transaction_id','=','transactions.id')
         ->select('zcash_withdraw_request.status as withdrawal_status','zcash_withdraw_request.*')
-        ->where('transactions.user_id','=',\Auth::user()->id)
+        ->where('transactions.user_id','=', Auth::user()->id)
         ->get();
         view()->share('withdrawal_list',$withdrawal_list);
 
@@ -121,36 +113,40 @@ class AccountController extends Controller
      * Get notification alert of user
      *
      */
-    public function get_notifications(){
-        if(Auth::check()){
+    public function get_notifications()
+    {
+        if(Auth::check())
+        {
             $notifications= UserNotification::where('user_id',Auth::user()->id)->where('message_read','=',0)->get();
             return view('users.notification_popup',['notifications'=>$notifications]);
         }
         return '<div>No notification found..';
-
     }
 
-    public function update_notifications(Request $request){
+    public function update_notifications(Request $request)
+    {
         $id = $request->input('id');
         $notificationObj = UserNotification::where('user_id',Auth::user()->id)->where('message_read','=',0)->where('id',$id)->first();
         if(!empty($notificationObj) && count($notificationObj) > 0){
             UserNotification::find($id)->update(['message_read'=>1]);
         }
-        return \Response::json(['success'=>true]);
+        return response()->json(['success'=>true]);
     }
-    /**
-     * Check user is logged in or not.
-     */
-    public function check_user_login(Request $request){
-        if($request->ajax() && \Auth::check()){
-            User::find(\Auth::user()->id)->update(['loggedin'=>time()]);
-            return \Response::json(['success'=>true]);
+
+    public function check_user_login(Request $request)
+    {
+        if($request->ajax() && Auth::check()){
+            User::find(Auth::user()->id)->update(['loggedin'=>time()]);
+            return response()->json(['success'=>true]);
         }
         return view('error.404');
     }
-    public function update_personal_info(Request $request){
-        if($request->isMethod('post') && $request->ajax()){
-            $validator = \Validator::make($request->all(), [
+
+    public function update_personal_info(Request $request)
+    {
+        if($request->isMethod('post') && $request->ajax())
+        {
+            $validator = Validator::make($request->all(), [
             //    'first_name' => 'required',
             //    'last_name' => 'required',
                 'email' => 'required|unique:users,email,'.Auth::user()->id,
@@ -166,9 +162,9 @@ class AccountController extends Controller
             ]);
 
             if ($validator->fails())
-                return \Response::json(['success'=>false,'errors'=>$validator->errors()]);
+                return response()->json(['success'=>false,'errors'=>$validator->errors()]);
 
-            $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+//            $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
 
             $short_country_name = Country::find($request->input('country'));
             if(!empty($short_country_name))
@@ -195,7 +191,7 @@ class AccountController extends Controller
 
             if(!empty($mobile_number)) {
                 if (!$isValid)
-                    return \Response::json(['success' => false, 'errors' => ['mobile' => 'Invalid mobile number']]);
+                    return response()->json(['success' => false, 'errors' => ['mobile' => 'Invalid mobile number']]);
             }
 
             $job_skills = $request->input('job_skills');
@@ -229,18 +225,16 @@ class AccountController extends Controller
             Auth::user()->timezone=$request->input('timezone');
             Auth::user()->paypal_email=$request->input('paypal_email');
             Auth::user()->save();
-            return \Response::json(['success'=>true]);
+            return response()->json(['success'=>true]);
         }
 
     }
-    /**
-     * Function will transfer money from seller account to user account (paypal only).
-     * @param Request $request
-     * @return $this
-     */
-    public function withdraw(Request $request){
-        if(empty(Auth::user()->paypal_email)){
-            $validator = \Validator::make($request->all(), [
+
+    public function withdraw(Request $request)
+    {
+        if(empty(Auth::user()->paypal_email))
+        {
+            $validator = Validator::make($request->all(), [
                 'paypal_email'=> 'required|email'
             ]);
             if ($validator->fails()){
@@ -249,7 +243,7 @@ class AccountController extends Controller
                     $errors[$index]=$err[0];
 
                 $errors['active'] = 'withdraw';
-                return \Response::json(['success'=>false,'errors'=>$errors]);
+                return response()->json(['success'=>false,'errors'=>$errors]);
             }
             $paypal_email = $request->input('paypal_email');
         }
@@ -265,9 +259,9 @@ class AccountController extends Controller
         $checkEmailExist = Paypal::checkEmailExistINPaypal($paypal_email);
 
         if(!$checkEmailExist['success'] && $checkEmailExist['timeout_error'])
-            return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later']]);
+            return response()->json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later']]);
         else if(!$checkEmailExist['success'])
-            return \Response::json(['success'=>false,'errors'=>['error'=>'Email does not exist in Paypal']]);
+            return response()->json(['success'=>false,'errors'=>['error'=>'Email does not exist in Paypal']]);
         else if($checkEmailExist['success']){
             Auth::user()->paypal_email = $paypal_email;
             Auth::user()->save();
@@ -276,7 +270,7 @@ class AccountController extends Controller
             $debitedBalance = Fund::getUserAwardedFund(Auth::user()->id);
             $availableBalance = $creditedBalance - $debitedBalance;
 
-            $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
+            $orderIDHashID= new Hashids('order id hash',10, Config::get('app.encode_chars'));
 
             $transactionData['created_by'] =Auth::user()->id;
             $transactionData['user_id'] =Auth::user()->id;
@@ -298,11 +292,13 @@ class AccountController extends Controller
 
             if(!$payment['success']){
                 $transactionObj->update(['status'=>'cancelled']);
-                return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later.']]);
+                return response()->json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later.']]);
             }
 
-            if($payment['success'] && !empty($payment['paymentResponse'])){
-                if(count($transactionObj) > 0 && !empty($transactionObj)){
+            if($payment['success'] && !empty($payment['paymentResponse']))
+            {
+                if(count($transactionObj) > 0 && !empty($transactionObj))
+                {
                     if($payment['status'] == "completed")
                         $payment['status']="approved";
                     $transactionObj->update(['pay_key'=>$payment['paykey'],'status'=>strtolower($payment['status'])]);
@@ -321,43 +317,41 @@ class AccountController extends Controller
                 $debitedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit')->sum('amount');
                 $availableBalance = $creditedBalance - $debitedBalance;
 
-                return \Response::json(['success'=>true,'availableBalance'=>number_format($availableBalance,2)]);
+                return response()->json(['success'=>true,'availableBalance'=>number_format($availableBalance,2)]);
             }
             else
                 $transactionObj->update(['status'=>'cancelled']);
             $transactionObj->update(['status'=>'cancelled']);
-            return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again later.']]);
+            return response()->json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again later.']]);
         }
     }
 
-    /**
-     * Function will check. email exist in paypal or not.
-     * @param Request $request
-     * @return mixed
-     */
-    public function paypal_email_check(Request $request){
+
+    public function paypal_email_check(Request $request)
+    {
         $email = $request->input('paypal_email');
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'paypal_email'=> 'required|email'
         ]);
         if ($validator->fails())
-            return \Response::json(['success'=>false,'message'=>'Email is invalid.']);
+            return response()->json(['success'=>false,'message'=>'Email is invalid.']);
 
         $checkEmailExist = Paypal::checkEmailExistINPaypal($email);
 
         if(!$checkEmailExist['success'] && $checkEmailExist['timeout_error'])
-            return \Response::json(['success'=>false,'message'=>'Could not connect to Paypal. Please try again later.' ]);
+            return response()->json(['success'=>false,'message'=>'Could not connect to Paypal. Please try again later.' ]);
         else if(!$checkEmailExist['success'] && !$checkEmailExist['timeout_error'])
-            return \Response::json(['success'=>false,'message'=>'Email address does not exist in Paypal.' ]);
+            return response()->json(['success'=>false,'message'=>'Email address does not exist in Paypal.' ]);
 
         if($checkEmailExist['success'])
-            return \Response::json(['success'=>true]);
+            return response()->json(['success'=>true]);
     }
 
-    public function update_creditcard(Request $request){
+    public function update_creditcard(Request $request)
+    {
         $inputData = $request->all();
         $inputData['cc-number'] = str_replace(" ","",$inputData['cc-number']);
-        $validator = \Validator::make($inputData, [
+        $validator = Validator::make($inputData, [
             'cc-card-type'=>'required',
             'exp_month'=>'required',
             'exp_year'=>'required',
@@ -371,36 +365,38 @@ class AccountController extends Controller
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success'=>false,'errors'=>$validator->errors()]);
+            return response()->json(['success'=>false,'errors'=>$validator->errors()]);
 
         $saveCardResponse = Paypal::saveCard($inputData);
         if($saveCardResponse['success'])
-            return \Response::json(['success'=>true]);
+            return response()->json(['success'=>true]);
         else if($saveCardResponse['timeout_error'])
-            return \Response::json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later.']]);
+            return response()->json(['success'=>false,'errors'=>['error'=>'Could not connect to Paypal. Please try again later.']]);
     }
-    public function logout(){
+    public function logout()
+    {
 
         return redirect('logout');
     }
 
-    public function upload_profile(Request $request){
+    public function upload_profile(Request $request)
+    {
 
         if($request->hasFile('profile_pic')){
             $file= $request->file('profile_pic');
             $image_name = null;
             if (count($file) > 0) {
-                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $userIDHashID= new Hashids('user id hash',10, Config::get('app.encode_chars'));
 
                 $rules = ['profile_pic' => 'required', 'extension' => 'required|in:jpg,png,jpeg','profile_pic' => 'mimes:jpg,jpeg,png'];
                 $fileData = ['profile_pic' => $file, 'extension' => strtolower($file->getClientOriginalExtension())];
 
                 // doing the validation, passing post data, rules and the messages
-                $validator = \Validator::make($fileData, $rules);
+                $validator = Validator::make($fileData, $rules);
                 if (!$validator->fails()) {
                     if ($file->isValid()) {
                         $destinationPath = base_path() . '/uploads/user_profile/' . $userIDHashID->encode(Auth::user()->id); // upload path
-                        if (!\File::exists($destinationPath)) {
+                        if (!File::exists($destinationPath)) {
                             $oldumask = umask(0);
                             @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
                             umask($oldumask);
@@ -418,36 +414,37 @@ class AccountController extends Controller
                         $logo->save($destinationPath . '/'.$fileName);
                         Auth::user()->profile_pic = $fileName;
                         Auth::user()->save();
-                        return \Response::json(['success'=>true,'filename'=>url('uploads/user_profile/'.$userIDHashID->encode(Auth::user()
+                        return response()->json(['success'=>true,'filename'=>url('uploads/user_profile/'.$userIDHashID->encode(Auth::user()
                                 ->id).'/'.$fileName)]);
                     }
                 }
             }
         }
-        return \Response::json(['success'=>false,'error'=>'No files were processed.']);
+        return response()->json(['success'=>false,'error'=>'No files were processed.']);
     }
 
-    public function remove_profile_pic(){
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+    public function remove_profile_pic()
+    {
+        $userIDHashID= new Hashids('user id hash',10, Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
-        \File::delete('uploads/user_profile/'.$user_id.'/'.Auth::user()->profile_pic );
+        File::delete('uploads/user_profile/'.$user_id.'/'.Auth::user()->profile_pic );
         Auth::user()->profile_pic = null;
         Auth::user()->save();
-        return \Response::json(['success'=>true]);
-
+        return response()->json(['success'=>true]);
     }
 
-    public function request_to_transfer_zcash(Request $request){
-        $validator = \Validator::make($request->all(), [
+    public function request_to_transfer_zcash(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'zcash_address'=>'required'
         ],[
             'zcash_address.required'=>'Please enter Zcash address ',
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success'=>false,'errors'=>$validator->errors()]);
-        
+            return response()->json(['success'=>false,'errors'=>$validator->errors()]);
+
         // $creditedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit_zcash')->sum('amount');
 		// $debitedBalance = Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit_zcash')->where('status','!=','rejected')->sum('amount');
         // $availableBalance = $creditedBalance - $debitedBalance;
@@ -464,7 +461,7 @@ class AccountController extends Controller
 		$transactionData['trans_type'] = 'debit_zcash';
 		$transactionData['status'] = 'withdrawal';
         $transactionID = Transaction::create($transactionData)->id;
-        
+
         $send_request = ZcashWithdrawRequest::create([
             'user_id' => Auth::user()->id,
             'user_transaction_id' => $transactionID,
@@ -495,9 +492,9 @@ class AccountController extends Controller
         $availableBalance = $creditedBalance - $debitedBalance;
 
 		if(!empty($send_request)){
-			return \Response::json(['success'=>true,'message'=>"Request send successfully",'availableBalance'=>$availableBalance]);
+			return response()->json(['success'=>true,'message'=>"Request send successfully",'availableBalance'=>$availableBalance]);
 		}else{
-			return \Response::json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again later.']]);
+			return response()->json(['success'=>false,'errors'=>['error'=>'Something goes wrong. Please try again later.']]);
 		}
     }
 

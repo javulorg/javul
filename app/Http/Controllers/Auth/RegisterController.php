@@ -1,17 +1,16 @@
 <?php
 namespace App\Http\Controllers\Auth;
-use App\Alerts;
-use App\SiteActivity;
-use App\sweetcaptcha;
-use App\User;
+use App\Models\Alerts;
+use App\Models\sweetcaptcha;
+use App\Models\User;
 use App\Http\Controllers\Controller;
-use Hashids\Hashids;
+use Closure;
 use Illuminate\Foundation\Auth\AuthenticatesUsers as AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Rules\ValidRecaptcha;
 
 class RegisterController extends Controller
 {
@@ -25,7 +24,7 @@ class RegisterController extends Controller
     | provide this functionality without requiring any additional code.
     |
     */
-    use RegistersUsers, AuthenticatesUsers, ThrottlesLogins{
+    use RegistersUsers, AuthenticatesUsers{
         AuthenticatesUsers::redirectPath insteadof RegistersUsers;
         AuthenticatesUsers::guard insteadof RegistersUsers;
     }
@@ -44,7 +43,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        view()->share('user_login',\Auth::check());
+        view()->share('user_login',Auth::check());
         $this->sweetcaptcha =new  sweetcaptcha(
             env('SWEETCAPTCHA_APP_ID'),
             env('SWEETCAPTCHA_KEY'),
@@ -54,12 +53,7 @@ class RegisterController extends Controller
 //        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
         $this->middleware('guest')->except('Logout');
     }
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
+
     protected function validator(array $data)
     {
         $validator = Validator::make($data, [
@@ -68,7 +62,17 @@ class RegisterController extends Controller
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
             'user_name' => 'required|min:6',
-            'g-recaptcha-response' => ['required', new ValidRecaptcha]
+            'g-recaptcha-response-name' => ['required', function (string $attribute, mixed $value, Closure $fail){
+            $g_response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret'    => \config('services.recaptcha.secret_key'),
+                'response'  => $value,
+                'remoteip'  => \request()->ip()
+            ]);
+            if(!$g_response->json('success'))
+            {
+                $fail("The {$attribute} is invalid");
+            }
+            }]
             /*'country'=>'required',
             'state'=>'required',
             'city'=>'required',*/
@@ -89,7 +93,7 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        $userData=User::create([
+        $userData = User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
@@ -105,19 +109,19 @@ class RegisterController extends Controller
         $toName= $data['first_name'].' '.$data['last_name'];
         $subject="Welcome to Javul.org";
 
-        \Mail::send('emails.registration', ['userObj'=> $userData, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject)
-        {
-            $message->to($toEmail,$toName)->subject($subject);
-            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
-        });
+//        Mail::send('emails.registration', ['userObj'=> $userData, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject)
+//        {
+//            $message->to($toEmail,$toName)->subject($subject);
+//            $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
+//        });
 
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
-        $user_id = $userIDHashID->encode($userData->id);
-        SiteActivity::create([
-            'user_id'=>$userData->id,
-            'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower($userData->first_name.'_'.$userData->last_name)).'">'
-                .$userData->username.'</a> created an account'
-        ]);
+//        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
+//        $user_id = $userIDHashID->encode($userData->id);
+//        SiteActivity::create([
+//            'user_id'=>$userData->id,
+//            'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower($userData->first_name.'_'.$userData->last_name)).'">'
+//                .$userData->username.'</a> created an account'
+//        ]);
 
         Alerts::create([
             'user_id' => $userData->id,
@@ -147,7 +151,7 @@ class RegisterController extends Controller
      * @param User $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function authenticated( \Illuminate\Http\Request $request, \App\User $user ) {
+    public function authenticated( \Illuminate\Http\Request $request, User $user ) {
         return redirect()->intended($this->redirectPath());
     }
 

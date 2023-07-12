@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\ActivityPoint;
-use App\City;
-use App\Country;
-use App\Fund;
-use App\Issue;
-use App\Objective;
-use App\RelatedUnit;
-use App\SiteActivity;
-use App\SiteConfigs;
-use App\State;
-use App\Task;
-use App\TaskBidder;
-use App\Unit;
-use App\UnitRevision;
-use App\UnitCategory;
-use App\User;
-use App\Watchlist;
+use App\Models\ActivityPoint;
+use App\Models\City;
+use App\Models\Country;
+use App\Models\Fund;
+use App\Models\Issue;
+use App\Models\Objective;
+use App\Models\RelatedUnit;
+use App\Models\SiteActivity;
+use App\Models\SiteConfigs;
+use App\Models\State;
+use App\Models\Task;
+use App\Models\Unit;
+use App\Models\UnitRevision;
+use App\Models\UnitCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests;
 use Hashids\Hashids;
 use Carbon\Carbon;
-use App\UserMessages;
+use App\Models\UserMessages;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class UnitsController extends Controller
 {
@@ -40,13 +40,13 @@ class UnitsController extends Controller
         if(!empty($unit_id))
         {
             view()->share('unit_id',$unit_id );
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
                 $units = Unit::getUnitWithCategories($unit_id);
 
-                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
                 $availableFunds =Fund::getUnitDonatedFund($unit_id);
                 $awardedFunds =Fund::getUnitAwardedFund($unit_id);
 
@@ -55,7 +55,7 @@ class UnitsController extends Controller
                 view()->share('availableFunds',$availableFunds );
                 view()->share('awardedFunds',$awardedFunds );
                 view()->share('site_activity',$site_activity);
-                
+
                 $revisions = UnitRevision::select(['unit_revisions.user_id','unit_revisions.description','unit_revisions.id','unit_revisions.unit_id','unit_revisions.comment','unit_revisions.size','unit_revisions.created_at','users.first_name','users.last_name',])
                             ->join('users', 'users.id', '=', 'unit_revisions.user_id')
                             ->where("unit_revisions.unit_id","=",$unit_id)
@@ -63,12 +63,12 @@ class UnitsController extends Controller
                             ->get();
 
                 if($revisions->count() == 2){
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
 
                     view()->share('userIDHashID', $userIDHashID);
                     view()->share('Carbon', new Carbon);
                     view()->share('revisions',$revisions );
-                              
+
                     return view("units.revison.changes_difference");
                 }
             }
@@ -82,13 +82,13 @@ class UnitsController extends Controller
         if(!empty($unit_id))
         {
             view()->share('unit_id',$unit_id );
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
                 $units = Unit::getUnitWithCategories($unit_id);
 
-                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
                 $availableFunds =Fund::getUnitDonatedFund($unit_id);
                 $awardedFunds =Fund::getUnitAwardedFund($unit_id);
 
@@ -97,24 +97,24 @@ class UnitsController extends Controller
                 view()->share('availableFunds',$availableFunds );
                 view()->share('awardedFunds',$awardedFunds );
                 view()->share('site_activity',$site_activity);
-                
+
                 $revisions = UnitRevision::select(['unit_revisions.user_id','unit_revisions.id','unit_revisions.unit_id','unit_revisions.comment','unit_revisions.size','unit_revisions.created_at','users.first_name','users.last_name',])
                             ->join('users', 'users.id', '=', 'unit_revisions.user_id')
                             ->where("unit_revisions.unit_id","=",$unit_id)
                             ->get();
 
-                        
+
                 //Carbon::createFromFormat('Y-m-d H:i:s', $pageChanges->time_stamp)->diffForHumans();
 
-                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
 
                 view()->share('units', $units);
                 view()->share('userIDHashID', $userIDHashID);
                 view()->share('Carbon', new Carbon);
                 view()->share('revisions',$revisions );
-                          
+
                 return view("units.revison.view");
-                
+
             }
 
         }
@@ -126,13 +126,13 @@ class UnitsController extends Controller
         if(!empty($unit_id))
         {
             view()->share('unit_id',$unit_id );
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
                 $units = Unit::getUnitWithCategories($unit_id);
 
-                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
                 $availableFunds =Fund::getUnitDonatedFund($unit_id);
                 $awardedFunds =Fund::getUnitAwardedFund($unit_id);
 
@@ -141,7 +141,7 @@ class UnitsController extends Controller
                 view()->share('availableFunds',$availableFunds );
                 view()->share('awardedFunds',$awardedFunds );
                 view()->share('site_activity',$site_activity);
-                
+
                 $revisions = UnitRevision::select(['unit_revisions.user_id','unit_revisions.id','unit_revisions.description','unit_revisions.unit_id','unit_revisions.comment','unit_revisions.size','unit_revisions.created_at','users.first_name','users.last_name',])
                             ->join('users', 'users.id', '=', 'unit_revisions.user_id')
                             ->where("unit_revisions.unit_id","=",$unit_id)
@@ -150,16 +150,16 @@ class UnitsController extends Controller
 
                 if($revisions->count()==1)
                 {
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
 
                     view()->share('units', $units);
                     view()->share('userIDHashID', $userIDHashID);
                     view()->share('Carbon', new Carbon);
                     view()->share('revisions',$revisions->first());
-                              
+
                     return view("units.revison.view_revision");
                 }
-                
+
             }
 
         }
@@ -185,11 +185,11 @@ class UnitsController extends Controller
         if($category_search) {
             $units = Unit::whereRaw('FIND_IN_SET(?, category_id)', [$category_search->id])->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
         } else {
-            $units = Unit::orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+            $units = Unit::orderBy('id','desc')->paginate(Config::get('app.page_limit'));
         }
 
         view()->share('units',$units );
-        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
         view()->share('site_activity_text','Global Activity Log');
 
@@ -215,7 +215,7 @@ class UnitsController extends Controller
         $country_id = $request->input('country_id');
 
         $states = State::where('country_id',$country_id)->pluck('name','id');
-        return \Response::json(['success'=>true,'states'=>$states]);
+        return response()->json(['success'=>true,'states'=>$states]);
     }
 
     /**
@@ -230,15 +230,12 @@ class UnitsController extends Controller
         if(empty($cities) || count($cities) == 0) {
             $state_name = State::getName($state_id);
         }
-        return \Response::json(['success'=>true,'cities'=>$cities,'state_name'=>$state_name]);
+        return response()->json(['success'=>true,'cities'=>$cities,'state_name'=>$state_name]);
     }
 
-    /**
-     * To create new unit
-     * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create(Request $request){
+
+    public function create(Request $request)
+    {
         $unit_category_arr = UnitCategory::where('status','approved')->pluck('name','id');
         $unit_credibility_arr= SiteConfigs::getUnitCredibilityTypes();
         $countries = Unit::getAllCountryWithFrequent();
@@ -256,7 +253,7 @@ class UnitsController extends Controller
         view()->share('relatedUnitsofUnitObj',[]);
         //if page is submitted
         if($request->isMethod('post')){
-            $validator = \Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'unit_name' => 'required',
                 'unit_category' => 'required',
                 'credibility' => 'required',
@@ -318,7 +315,7 @@ class UnitsController extends Controller
                 if(!empty($siteAdminemails))
                     $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+                $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
             });
 
             //if user selected related to unit then insert record to related_units table
@@ -338,10 +335,10 @@ class UnitsController extends Controller
                 'type'=>'unit'
             ]);
             // add site activity record for global statistics.
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->encode($unitID);
 
             $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
@@ -365,17 +362,13 @@ class UnitsController extends Controller
         return view('units.create');
     }
 
-    /**
-     * Update Unit information
-     * @param $unit_id
-     * @param Request $request
-     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
-     */
-    public function edit($unit_id,Request $request){
+
+    public function edit($unit_id,Request $request)
+    {
         if(!empty($unit_id))
         {
             $unitIDEncoded = $unit_id;
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
@@ -385,7 +378,7 @@ class UnitsController extends Controller
                 //dd($request->all());
                 if(!empty($units) && $request->isMethod('post')){
                     //update unit and redirect to units page
-                    $validator = \Validator::make($request->all(), [
+                    $validator = Validator::make($request->all(), [
                         'unit_name' => 'required',
                         'unit_category' => 'required',
                         'credibility' => 'required',
@@ -430,7 +423,7 @@ class UnitsController extends Controller
                         $UnitRevision->created_at  = date("Y-m-d H:i:s");
 
                         $UnitRevision->save();
-                   
+
                     // store old revision data end
 
                     $empty_city_state_name = $request->input('empty_city_state_name');
@@ -493,10 +486,10 @@ class UnitsController extends Controller
                         'type'=>'unit'
                     ]);
                     // add site activity record for global statistics.
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
-                    $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                    $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
                     $tempUnitID= $unit_id;
                     $unit_id = $unitIDHashID->encode($unit_id);
 
@@ -539,7 +532,7 @@ class UnitsController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+                        $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
                     });
 
                     $request->session()->flash('msg_val', 'UNIT_UPDATED');
@@ -604,7 +597,7 @@ class UnitsController extends Controller
     public function view($unit_id){
         if(!empty($unit_id))
         {
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
@@ -612,7 +605,7 @@ class UnitsController extends Controller
                 $unit = Unit::getUnitWithCategories($unit_id);
 
                 if(!empty($unit)){
-                    $objectives = Objective::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+                    $objectives = Objective::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.page_limit'));
                     $related_units = RelatedUnit::getRelatedUnitName($unit_id);
                     $taskForBidding = Task::where('unit_id', '=', $unit_id)->where('status', '=', "approval")->count();
                     $userAuth = Auth::user();
@@ -654,13 +647,13 @@ class UnitsController extends Controller
                     view()->share('availableFunds',$availableFunds );
                     view()->share('awardedFunds',$awardedFunds );
 
-                    $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                    $taskObj = Task::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+                    $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
+                    $taskObj = Task::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.page_limit'));
                     view()->share('taskObj',$taskObj);
                     view()->share('site_activity',$site_activity);
                     view()->share('unit_activity_id',$unit_id);
 
-                    $issuesObj = Issue::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+                    $issuesObj = Issue::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.page_limit'));
                     view()->share('issuesObj',$issuesObj);
 
                     $add_wl = session()->get('add_to_wl');
@@ -687,7 +680,7 @@ class UnitsController extends Controller
     public function delete_unit(Request $request){
         $unitID = $request->input('id');
         if(!empty($unitID)){
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unitID = $unitIDHashID->decode($unitID);
             if(!empty($unitID)){
                 $unitID = $unitID[0];
@@ -716,7 +709,7 @@ class UnitsController extends Controller
                     ]);
 
                     // add site activity record for global statistics.
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
                     /*$objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
@@ -748,20 +741,20 @@ class UnitsController extends Controller
                         if(!empty($siteAdminemails))
                             $message->bcc($siteAdminemails,"Admin")->subject($subject);
 
-                        $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+                        $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
                     });
 
-                    return \Response::json(['success'=>true]);
+                    return response()->json(['success'=>true]);
                 }
             }
         }
-        return \Response::json(['success'=>false]);
+        return response()->json(['success'=>false]);
     }
 
 
     public function available_bids($unit_id){
         if(!empty($unit_id)){
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
@@ -776,12 +769,13 @@ class UnitsController extends Controller
         return view('errors.404');
     }
 
-    public function get_units_paginate(Request $request){
-        $page_limit = \Config::get('app.page_limit');
+    public function get_units_paginate(Request $request)
+    {
+        $page_limit = Config::get('app.page_limit');
         $units = Unit::orderBy('id','desc')->paginate($page_limit);
         view()->share('units',$units);
         $html = view('units.partials.more_units')->render();
-        return \Response::json(['success'=>true,'html'=>$html]);
+        return response()->json(['success'=>true,'html'=>$html]);
 
     }
 
@@ -796,9 +790,9 @@ class UnitsController extends Controller
                 }
 
             }
-            return \Response::json(['items'=>$names,'total_counts'=>$obj = Unit::where('name','like',$terms.'%')->get()]);
+            return response()->json(['items'=>$names,'total_counts'=>$obj = Unit::where('name','like',$terms.'%')->get()]);
         }
-        return \Response::json([]);
+        return response()->json([]);
 
     }
 
@@ -806,7 +800,7 @@ class UnitsController extends Controller
         $id = $request->input('id');
         $type = $request->input('type');
         if(!empty($id) && $type == "set"){
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
@@ -819,7 +813,7 @@ class UnitsController extends Controller
                         }
                     }
                     $unitObj->update(['featured_unit'=>1]);
-                    return \Response::json(['success'=>true]);
+                    return response()->json(['success'=>true]);
                 }
             }
         }
@@ -831,9 +825,9 @@ class UnitsController extends Controller
                     Unit::find($fUnit->id)->update(['featured_unit'=>0]);
                 }
             }
-            return \Response::json(['success'=>true]);
+            return response()->json(['success'=>true]);
         }
-        return \Response::json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
+        return response()->json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
     }
     public function search_units(Request $request){
         $by_category_type = $request->input('category');
@@ -846,8 +840,8 @@ class UnitsController extends Controller
         view()->share('units',$units );*/
 
         $where = '';
-        \DB::enableQueryLog();
-        $unitObj = \DB::table('units');
+        DB::enableQueryLog();
+        $unitObj = DB::table('units');
 
         if(!empty($by_category_type)){
             foreach($by_category_type as $index=>$cate_id){
@@ -912,13 +906,13 @@ class UnitsController extends Controller
             }
         }
 
-        $unitObj = $unitObj->whereRaw($where)->paginate(\Config::get('app.page_limit'));
+        $unitObj = $unitObj->whereRaw($where)->paginate(Config::get('app.page_limit'));
 
         view()->share('units',$unitObj);
         $html = view('units.partials.more_units')->render();
         if(empty($html))
             $html = "<tr><td colspan='3'>No record(s) found.</td></tr>";
-        return \Response::json(['success'=>true,'html'=>$html]);
+        return response()->json(['success'=>true,'html'=>$html]);
     }
 
     public function search_by_location(Request $request){
@@ -939,9 +933,9 @@ class UnitsController extends Controller
                 }
 
             }
-            return \Response::json(['items'=>$names,'total_counts'=> UnitCategory::where('name','like',$terms.'%')->count()]);
+            return response()->json(['items'=>$names,'total_counts'=> UnitCategory::where('name','like',$terms.'%')->count()]);
         }
-        return \Response::json([]);
+        return response()->json([]);
     }
     public function search_by_category(Request $request){
         $terms = $request->input('q');
@@ -961,9 +955,9 @@ class UnitsController extends Controller
                 }
 
             }
-            return \Response::json(['items'=>$names,'total_counts'=> UnitCategory::where('name','like',$terms.'%')->count()]);
+            return response()->json(['items'=>$names,'total_counts'=> UnitCategory::where('name','like',$terms.'%')->count()]);
         }
-        return \Response::json([]);
+        return response()->json([]);
     }
 
     public function show()
