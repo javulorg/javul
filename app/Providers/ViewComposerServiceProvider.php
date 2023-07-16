@@ -1,19 +1,21 @@
 <?php
 
+
 namespace App\Providers;
 
-use App\Fund;
+
 use App\Http\Controllers\Mc;
-use App\Issue;
-use App\Objective;
-use App\SiteActivity;
-use App\Task;
-use App\Unit;
-use App\UserNotification;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\ServiceProvider;
+use App\Models\Fund;
+use App\Models\Issue;
+use App\Models\Objective;
+use App\Models\Task;
+use App\Models\Unit;
+use App\Models\User;
+use App\Models\UserMessages;
+use App\Models\UserNotification;
 use Hashids\Hashids;
-use App\UserMessages;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\ServiceProvider;
 
 class ViewComposerServiceProvider extends ServiceProvider
 {
@@ -45,23 +47,23 @@ class ViewComposerServiceProvider extends ServiceProvider
         $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
         $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
         $btcTransactionIDHashID = new Hashids('btc transaction id hash',10,\Config::get('app.encode_chars'));
-        
-        $loggedInUser = 0;                
-        if(\DB::connection()->getSchemaBuilder()->hasTable('users')){
-            $loggedInUser = \DB::table('users')->whereRaw('unix_timestamp() - loggedin < 30')->count();            
+
+        $loggedInUser = 0;
+        if(DB::connection()->getSchemaBuilder()->hasTable('users')){
+            $loggedInUser = \DB::table('users')->whereRaw('unix_timestamp() - loggedin < 30')->count();
         }
 
         view()->share('totalLoggedinUsers',$loggedInUser);
-		
-		//Get all system messages
-		$user_msg = new UserMessages;
+
+        //Get all system messages
+        $user_msg = new UserMessages;
         $user_messages = $user_msg->getAllMessages();
-		view()->share('user_messages',json_encode($user_messages));
-		//end
-        
+        view()->share('user_messages',json_encode($user_messages));
+        //end
+
         $totalUsers = 0;
-        if(\DB::connection()->getSchemaBuilder()->hasTable('users')){
-            $totalUsers = \App\User::count();
+        if(DB::connection()->getSchemaBuilder()->hasTable('users')){
+            $totalUsers = User::count();
         }
         view()->share('totalRegisteredUsers',$totalUsers );
         view()->share('userIDHashID',$userIDHashID );
@@ -77,7 +79,7 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('btcTransactionIDHashID',$btcTransactionIDHashID);
 
         view()->composer('elements.header',function($view){
-			Mc::putMcData();
+            Mc::putMcData();
             $question=Mc::getMcQuestion();
             $view->with('report_question',$question);
 

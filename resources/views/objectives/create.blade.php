@@ -79,7 +79,8 @@
                                                 <option value="">Select</option>
                                                 @if(count($unitsObj) > 0)
                                                     @foreach($unitsObj as $unit_id=>$unit)
-                                                        <option value="{{$unitIDHashID->encode($unit_id)}}"
+{{--                                                        <option value="{{$unitIDHashID->encode($unit_id)}}"--}}
+                                                        <option value=""
                                                                 @if(!empty($objectiveObj) && $objectiveObj->unit_id == $unit_id)
                                                                 selected=selected
                                                                 @elseif(empty($objectiveObj) && !empty($objectives_unit_id) && $unit_id == $objectives_unit_id )
@@ -150,7 +151,7 @@
                                     <label class="control-label">Comment</label>
                                     <input class="form-control" name="comment">
                                 </div>
-                                
+
                             </div>
                             <div class="row form-group">
                                 <div class="col-sm-12 ">

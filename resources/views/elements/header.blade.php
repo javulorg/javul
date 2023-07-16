@@ -168,7 +168,7 @@
 </nav>
 <script type="text/javascript">
 
-    var captcha_code ='{{$report_question}}';
+    {{--var captcha_code ='{{$report_question}}';--}}
     var report_concern_token='{{csrf_token()}}';
 
 </script>

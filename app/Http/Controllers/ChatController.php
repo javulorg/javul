@@ -1,45 +1,38 @@
 <?php
 namespace App\Http\Controllers;
-use App\ActivityPoint;
-use App\City;
-use App\Country;
-use App\Fund;
-use App\Issue;
-use App\Objective;
-use App\RelatedUnit;
-use App\SiteActivity;
-use App\SiteConfigs;
-use App\State;
-use App\Task;
-use App\TaskBidder;
-use App\Unit;
-use App\UnitCategory;
-use App\User;
+
+use App\Models\Fund;
+use App\Models\Issue;
+use App\Models\SiteActivity;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests;
 use Hashids\Hashids;
-use App\Chat;
+use App\Models\Chat;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
+
 class ChatController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth',['except'=>['index','view','get_units_paginate']]);
         view()->share('site_activity_text','Unit Activity Log');
     }
-    public function smilyTable(){
+
+    public function smilyTable()
+    {
     	$smileys = Chat::smilylist();
 		$used = array();
 		$link = array();
 		$image_url = asset("assets/js/emoji")."/";
 		foreach ($smileys as $key => $val)
 		{
-			
 			$link[] = '<a href="javascript:void(0);" onclick="insert_smiley(\''.$key.'\')"><img src="'.$image_url. $val[0] .'" alt="'.$val[3].'" style="width: '.$val[1].'; height: '.$val[2].'; border: 0;" /></a>';
-			 
 		}
 		return $link;
     }
+
     public function parse_smileys($str = '')
     {
     	$image_url = asset("assets/js/emoji")."/";
@@ -50,11 +43,14 @@ class ChatController extends Controller
 		}
 		return $str;
     }
-    public function chatroom($roomId , Request $request){
-    	if($roomId){
+
+    public function chatroom($roomId , Request $request)
+    {
+    	if($roomId)
+    	{
     		view()->share("smily",$this->smilyTable());
     		view()->share("roomId",$roomId);
-    		$unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+    		$unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
         	$roomId = $unitIDHashID->decode($roomId);
         	if(!empty($roomId)){
                 $roomId = $roomId[0];
@@ -62,12 +58,12 @@ class ChatController extends Controller
                 $unit_id = $roomDetail['unit_id'];
                 $unit = Unit::getUnitWithCategories($unit_id);
                 if(!empty($unit)){
-                    
+
                     $userAuth = Auth::user();
                     $availableFunds =Fund::getUnitDonatedFund($unit_id);
                     $awardedFunds =Fund::getUnitAwardedFund($unit_id);
-                    $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
-                   
+                    $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
+
                     view()->share('user_id', Auth::user()->id );
                     view()->share('unitObj',$unit );
                     view()->share('availableFunds',$availableFunds );
@@ -75,28 +71,29 @@ class ChatController extends Controller
                    	view()->share('site_activity',$site_activity);
                     view()->share('unit_activity_id',$unit_id);
                     view()->share('roomDetail',$roomDetail);
-                    $issuesObj = Issue::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.page_limit'));
+                    $issuesObj = Issue::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.page_limit'));
                     view()->share('issuesObj',$issuesObj);
                 }
                 return view("chat.chatroom");
             }
     	}
     }
-    
-    public function loaduser(Request $request,$return = false){
+
+    public function loaduser(Request $request,$return = false)
+    {
     	if ($request->isMethod('post')) {
     		$roomId = $request->input("roomId");
-    		$unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+    		$unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
         	$roomId = $unitIDHashID->decode($roomId);
         	$json['members'] = array();
         	if(!empty($roomId)){
                 $roomId = $roomId[0];
                 $members = Chat::roomMember($roomId);
-                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                 if(!empty($members)){
                     foreach ($members as $key => $member) {
                         $user_id = $userIDHashID->encode($member->user_id);
-                        
+
                     	$json['members'][] = array(
                     		'id' => $member->id,
     			            'room_id' => $member->room_id,
@@ -114,13 +111,15 @@ class ChatController extends Controller
             return  $json;
         }
     }
-    public function sendmsg(Request $request){
+
+    public function sendmsg(Request $request)
+    {
     	if ($request->isMethod('post')) {
     		$json = array();
-    		
+
     		$roomId = $request->input("roomId");
     		$message = $request->input("message");
-    		$unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+    		$unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
         	$roomId = $unitIDHashID->decode($roomId);
         	$user_id = Auth::user()->id;
         	if(!empty($roomId)){
@@ -137,28 +136,34 @@ class ChatController extends Controller
             echo json_encode($json);
         }
     }
-    public function online(Request $request){
+
+    public function online(Request $request)
+    {
     	if ($request->isMethod('post')) {
-	    	
+
 	    	$data = Chat::online($request->input('unit_id'));
 	    	$json['online'] = $data[0]->online;
 	    	echo json_encode($json);
 	   	}
     }
-    public function loadmsg(Request $request){
-    	if ($request->isMethod('post')) {
+
+    public function loadmsg(Request $request)
+    {
+    	if ($request->isMethod('post'))
+    	{
     		$json = array();
     		$roomId = $request->input("roomId");
     		$lastId = $request->input("lastId");
-    		$unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+    		$unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
         	$roomId = $unitIDHashID->decode($roomId);
-        	$json['messages'] = array(); 
-        	if(!empty($roomId)){
+        	$json['messages'] = array();
+        	if(!empty($roomId))
+        	{
         		$roomId = $roomId[0];
         		$messages = Chat::loadmsg($roomId,$lastId);
                 $json = $this->loaduser($request,$request->input("roomId"));
                 if($messages){
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                     foreach ($messages as $key => $message) {
                         $user_id = $userIDHashID->encode($message->user);
                         $json['messages'][] = array(
@@ -172,15 +177,17 @@ class ChatController extends Controller
                     }
                 }
             }
-
         	echo json_encode($json);
         }
     }
-    public function create_room(Request $request){
-    	if ($request->isMethod('post')) {
+
+    public function create_room(Request $request)
+    {
+    	if ($request->isMethod('post'))
+    	{
     		$json = array();
     		$unit_id = $request->input("unit_id");
-    		$unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+    		$unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
         	$unit_id = $unitIDHashID->decode($unit_id);
         	if(!empty($unit_id)){
                 $unit_id = $unit_id[0];

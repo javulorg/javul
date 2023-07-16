@@ -2,71 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\ActivityPoint;
-use App\AreaOfInterest;
-use App\City;
-use App\Country;
-use App\State;
-use App\Library\Helpers;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests;
 use Hashids\Hashids;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Config;
+use App\Models\Fund;
+use App\Models\ZcashTransaction;
+use App\Models\ZcashWebhookData;
+use App\Models\Transaction;
+use App\Models\ZcashWithdrawRequest;
 use Ixudra\Curl\Facades\Curl;
-use Illuminate\Support\Facades\Session;
-use App\Fund;
-use App\ZcashTransaction;
-use App\ZcashWebhookData;
-use App\Transaction;
-use App\ZcashWithdrawRequest;
 
 class ZcashController extends Controller
 {
 
-    /**
-     * Check Donation
-     */
-    public function check_zcash_payment(Request $request){
+
+    public function check_zcash_payment(Request $request)
+    {
         $zcash_address = $request->zcash_address;
         $fundID = $request->fundID;
         $user_transaction_id = $request->user_transaction_id;
         $payment_detail = [];
 
-        if(!empty($zcash_address)){
-  
+        if(!empty($zcash_address))
+        {
+
             $payment_detail = ZcashTransaction::where('zcash_address',$zcash_address)->where('fund_id',$fundID)->orWhere('user_transaction_id',$user_transaction_id)->first();
-            
-            if(count($payment_detail) > 0 && $payment_detail->status == "success"){
+
+            if(count($payment_detail) > 0 && $payment_detail->status == "success")
+            {
                 $fund_type = '';
                 $fund_detail = Fund::where('id',$payment_detail->fund_id)->first();
                 //encode fundid
-                $orderIDHashID = new Hashids('order id hash',10,\Config::get('app.encode_chars'));
-                if(!empty($fundID) && $fundID !== "null"){
+                $orderIDHashID = new Hashids('order id hash',10,Config::get('app.encode_chars'));
+                if(!empty($fundID) && $fundID !== "null")
+                {
                     $orderID = $orderIDHashID->encode($fundID);
                     $fund_type = $fund_detail->fund_type;
-                }else if(!empty($user_transaction_id) && $user_transaction_id !== "null"){
+                }else if(!empty($user_transaction_id) && $user_transaction_id !== "null")
+                {
                     $orderID = $orderIDHashID->encode($user_transaction_id);
                     $fund_type = 'user';
                 }
                 $orderID = $orderID;
                 //Create payment success url
                 $success_url = url('funds/success')."?payment_method=Zcash&type=".$fund_type."&orderID=".$orderID."&paymentId=".$payment_detail->transaction_id;
-                return \Response::json(['success'=>true,'success_url'=>$success_url]);
+                return response()->json(['success'=>true,'success_url'=>$success_url]);
             }else{
-                return \Response::json(['error'=>false]);
+                return response()->json(['error'=>false]);
             }
         }else{
-            return \Response::json(['error'=>false]);
+            return response()->json(['error'=>false]);
         }
     }
 
     /**
      * To check ZCash Webhook Notification
-     * At here we check that the payment is received or not 
+     * At here we check that the payment is received or not
      */
-    public function webhook_notification(Request $request){
+    public function webhook_notification(Request $request)
+    {
         //$test = json_decode('{"hash":"1202cda5b522f565eb86bd1f7f42471f96dca1b5058e6c454f1f9b5cedd12eb1","transfer":"5bfb8e6536ef5a1306bb151820512c64","coin":"tzec","type":"transfer","state":"confirmed","wallet":"5bf27c22f00302a903cbf9b3bc068182"}',true);
         $notification_data = json_decode(file_get_contents("php://input"),true);//$test;
         //$api_url = "https://test.bitgo.com/api/v2/";
@@ -98,13 +93,18 @@ class ZcashController extends Controller
                     $transaction_data = $transfer_list[array_search($notification_data['hash'], array_column($transfer_list, 'txid'))];
 
                     //check if transfer status is receive
-                    if($transaction_data['type'] == "receive"){
+                    if($transaction_data['type'] == "receive")
+                    {
                         $transaction_outputs = $transaction_data['outputs'];
                         $pending_transaction = ZcashTransaction::where('status','=','pending')->get();
-                        if(count($pending_transaction) > 0){
-                            foreach($transaction_outputs as $output_address){
-                                foreach($pending_transaction as $tra_address){
-                                    if($output_address['address'] == $tra_address->zcash_address){
+                        if(count($pending_transaction) > 0)
+                        {
+                            foreach($transaction_outputs as $output_address)
+                            {
+                                foreach($pending_transaction as $tra_address)
+                                {
+                                    if($output_address['address'] == $tra_address->zcash_address)
+                                    {
                                         //update transaction details
                                         $zcashTransaction = ZcashTransaction::where('zcash_address',$tra_address->zcash_address)->first();
                                         $zcashTransaction->transaction_id = $transaction_data['txid'];
@@ -113,13 +113,15 @@ class ZcashController extends Controller
                                         $zcashTransaction->save();
                                         //ZcashTransaction::where('zcash_address',$tra_address->zcash_address)->update(['transaction_id' => $transaction_data['txid'],'amount' => $transaction_data['value'],'status' => 'success']);
                                         //Update fund amount
-                                        if(!empty($zcashTransaction->fund_id)){
+                                        if(!empty($zcashTransaction->fund_id))
+                                        {
                                             $fund_detail = Fund::where('id',$tra_address->fund_id)->first();
                                             $fund_detail->amount = $transaction_data['value'];
                                             $fund_detail->status = 'approved';
                                             $fund_detail->save();
                                             //Fund::where('id',$tra_address->fund_id)->update(['amount'=>$transaction_data['value'],'status'=>'approved']);
-                                        }else if(!empty($zcashTransaction->user_transaction_id)){
+                                        }else if(!empty($zcashTransaction->user_transaction_id))
+                                        {
                                             $fund_detail = Transaction::where('id',$tra_address->user_transaction_id)->first();
                                             $fund_detail->amount = $transaction_data['value'];
                                             $fund_detail->status = 'approved';
@@ -138,7 +140,8 @@ class ZcashController extends Controller
                                         ]);
 
                                         //Send Email
-                                        if(!empty($fund_detail->donated_by_user_id)){
+                                        if(!empty($fund_detail->donated_by_user_id))
+                                        {
                                             $userObj = User::where('id',$fund_detail->donated_by_user_id)->first();
                                             //view()->share('userObj',$userObj);
                                             //view()->share('zcashTransaction',$zcashTransaction);
@@ -147,9 +150,10 @@ class ZcashController extends Controller
                                             $subject="Thank You";
 
                                             //return view('emails.thankyou_for_donation');
-                                            \Mail::send('emails.thankyou_for_donation', ['mailFrom'=>'Zcash','userObj'=> $userObj,'zcashTransaction'=>$zcashTransaction, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject){
+                                            \Mail::send('emails.thankyou_for_donation', ['mailFrom'=>'Zcash','userObj'=> $userObj,'zcashTransaction'=>$zcashTransaction, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject)
+                                            {
                                                 $message->to($toEmail,$toName)->subject($subject);
-                                                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+                                                $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
                                             });
                                         }
                                         break;
@@ -160,26 +164,27 @@ class ZcashController extends Controller
                     }
                 }
             }
-            
+
         }
     }
 
-    /**
-     * Transfer Zcash Coin to given address
-     */
-    public function transfer_zcash(Request $request,$zcash_transaction_id){
+
+    public function transfer_zcash(Request $request,$zcash_transaction_id)
+    {
         $BITGO_EXPRESS_HOST = "http://javul.org:3080/api/v2/";
         //$api_url = "https://test.bitgo.com/api/v2/";
         $api_url = env('ZCASH_API_URL');
         //$accessToken = "v2xb79955ed5cdc75fa4121ccefd3b302c6c9d89f2be5ce66181f95234cb2dfff56";
         $accessToken = env('ZCASH_ACCESS_TOKEN');
-        if(empty($accessToken)){
-            return \Response::json(['error'=>true,'message'=>"Please add access token in env file."]);
+        if(empty($accessToken))
+        {
+            return response()->json(['error'=>true,'message'=>"Please add access token in env file."]);
         }
-        
 
-        if(!empty($zcash_transaction_id)){
-            $zcashTransactionIDHashID = new Hashids('btc transaction id hash',10,\Config::get('app.encode_chars'));
+
+        if(!empty($zcash_transaction_id))
+        {
+            $zcashTransactionIDHashID = new Hashids('btc transaction id hash',10,Config::get('app.encode_chars'));
             $zcash_transaction_id = $zcashTransactionIDHashID->decode($zcash_transaction_id);
             $zcash_transaction_id = $zcash_transaction_id[0];
 
@@ -193,8 +198,8 @@ class ZcashController extends Controller
             $wallet_id = env('ZCASH_WALLET_ID');
             $coin = env('ZCASH_COIN');//"zec";//"tzec";
             $wallet_pass = env('ZCASH_WALLET_PASSWORD');
-            
-            
+
+
             //Start
              /**
              * Processes with 2FA-Token
@@ -229,17 +234,17 @@ class ZcashController extends Controller
                         $message = "Your withdrawal money request has been accepted by site admin and processed please check you account and the are transaction details are below.";
                         User::SendWithdrawalRequestEmail($message,$subject,$userObj,$zcash_transaction_detail);
 
-                        return \Response::json(['success'=>true,'message'=>'Your transaction was successfully completed.']);
+                        return response()->json(['success'=>true,'message'=>'Your transaction was successfully completed.']);
                     }else{
                         if($unlock->error){
                             if($unlock->error == "incorrect otp")
                                 $unlock->error = "Please enter correct otp and try again";
-                            return \Response::json(['error'=>true,'message'=>$unlock->error]);
+                            return response()->json(['error'=>true,'message'=>$unlock->error]);
                         }
                     }
                 }catch(\Exception $e){
                     $error_message = $e->getMessage();
-                    return \Response::json(['error'=>true,'message'=>$error_message]);
+                    return response()->json(['error'=>true,'message'=>$error_message]);
                 }
             }
             /* Unlock API End Here */
@@ -254,16 +259,16 @@ class ZcashController extends Controller
 
             if(isset($transfer_money->error)){
                 if(isset($transfer_money->needsUnlock))
-                    return \Response::json(['error'=>true,'need_to_unlock'=>true,'message'=>$transfer_money->message]);
+                    return response()->json(['error'=>true,'need_to_unlock'=>true,'message'=>$transfer_money->message]);
                 else
-                    return \Response::json(['error'=>true,'message'=>$transfer_money->message]);
+                    return response()->json(['error'=>true,'message'=>$transfer_money->message]);
             }else{
                 $transfer_details = $transfer_money->transfer;
                 $zcash_transaction_detail->status = 'approved';
                 $zcash_transaction_detail->transfer_transaction_id = $transfer_details->txid;
                 $zcash_transaction_detail->transaction_data = json_encode($transfer_details);
                 $zcash_transaction_detail->save();
-                return \Response::json(['success'=>true,'message'=>'Your transaction was successfully completed.']);
+                return response()->json(['success'=>true,'message'=>'Your transaction was successfully completed.']);
             }
             //End
         }
@@ -274,7 +279,7 @@ class ZcashController extends Controller
      */
     public function cancel_transfer_request(Request $request,$zcash_transaction_id){
         if(!empty($zcash_transaction_id)){
-            $zcashTransactionIDHashID = new Hashids('btc transaction id hash',10,\Config::get('app.encode_chars'));
+            $zcashTransactionIDHashID = new Hashids('btc transaction id hash',10,Config::get('app.encode_chars'));
             $zcash_transaction_id = $zcashTransactionIDHashID->decode($zcash_transaction_id);
             $zcash_transaction_id = $zcash_transaction_id[0];
 
@@ -287,7 +292,7 @@ class ZcashController extends Controller
               //Update Zcash Transaction Details Also
               $zcash_transaction_data->status = "rejected";
               $zcash_transaction_data->save();
-              
+
               //Send email about rejected transfer request
               $userObj = User::where('id',$zcash_transaction_data->user_id)->first();
               $subject="javul.org admin has rejected your transfer request.";

@@ -2,51 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\ActivityPoint;
-use App\AreaOfInterest;
-use App\City;
-use App\Country;
-use App\CreditCards;
-use App\Fund;
-use App\Issue;
-use App\JobSkill;
+use App\Models\AreaOfInterest;
+use App\Models\Fund;
+use App\Models\Issue;
+use App\Models\JobSkill;
 use App\Library\Helpers;
-use App\Objective;
-use App\Paypal;
-use App\PaypalTransaction;
-use App\RelatedUnit;
-use App\SiteActivity;
-use App\SiteConfigs;
-use App\State;
-use App\Task;
-use App\TaskBidder;
-use App\TaskRatings;
-use App\Transaction;
-use App\Unit;
-use App\UnitCategory;
-use App\User;
+use App\Models\Objective;
+use App\Models\Paypal;
+use App\Models\PaypalTransaction;
+use App\Models\SiteConfigs;
+use App\Models\Task;
+use App\Models\TaskRatings;
+use App\Models\Transaction;
+use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests;
 use Hashids\Hashids;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Session;
-use App\Zcash;
-use App\ZcashTransaction;
-use App\ZcashWithdrawRequest;
+use App\Models\Zcash;
+use Illuminate\Support\Facades\Validator;
 
 
 class FundsController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth',['except'=>['donate_to_unit_objective_task','donate_amount','transfer_from_unit','success','cancel']]);
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $msg_flag = false;
         $msg_val = '';
         $msg_type = '';
-        if($request->session()->has('msg_val')){
+        if($request->session()->has('msg_val'))
+        {
             $msg_val =  $request->session()->get('msg_val');
             $request->session()->forget('msg_val');
             $msg_flag = true;
@@ -63,9 +55,11 @@ class FundsController extends Controller
     }
 
 
-    public function donate_to_unit_objective_task(Request $request,$id){
+    public function donate_to_unit_objective_task(Request $request,$id)
+    {
 
-        if(!empty($id)){
+        if(!empty($id))
+        {
             $type = $request->segment(3);
             //sharing current payment method flag
             $current_payment_method = env("PAYMENT_METHOD");
@@ -221,8 +215,10 @@ class FundsController extends Controller
         return view('errors.404');
     }
 
-    public function donate_amount(Request $request){
-        if($request->isMethod('post')){
+    public function donate_amount(Request $request)
+    {
+        if($request->isMethod('post'))
+        {
 
             //check payment from new credit card or old?
            /* $fromType = $request->input('frmTyp');
@@ -251,7 +247,7 @@ class FundsController extends Controller
                         $donateTo =" unit ";
                         $controller="units";
                         $addFunds=['unit_id'=>$obj->id];
-                        $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                        $hashID= new Hashids('unit id hash',10, Config::get('app.encode_chars'));
                         $donateToLink='<a href="'.url('units/'.$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>';
                     }
                     break;
@@ -262,7 +258,7 @@ class FundsController extends Controller
                         $donateTo =" objective ";
                         $controller="objectives";
                         $addFunds=['objective_id'=>$obj->id];
-                        $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                        $hashID= new Hashids('objective id hash',10, Config::get('app.encode_chars'));
                         $donateToLink='<a href="'.url('objectives/'.$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>';
                     }
                     break;
@@ -273,7 +269,7 @@ class FundsController extends Controller
                         $donateTo =" task ";
                         $controller="tasks";
                         $addFunds=['task_id'=>$obj->id];
-                        $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                        $hashID= new Hashids('task id hash',10,Config::get('app.encode_chars'));
                         $donateToLink='<a href="'.url('tasks/'.$hashID->encode($obj->id).'/'.$obj->slug).'">'.$obj->name.'</a>';
                     }
                     break;
@@ -284,7 +280,7 @@ class FundsController extends Controller
                         $donateTo =" issue ";
                         $controller="issues";
                         $addFunds=['issue_id'=>$obj->id];
-                        $hashID= new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+                        $hashID= new Hashids('issue id hash',10, Config::get('app.encode_chars'));
                         $donateToLink='<a href="'.url('issues/'.$hashID->encode($obj->id).'/'.strtolower(substr($obj->title,0,4))).'">'.$obj->title.'</a>';
                     }
                     break;
@@ -297,7 +293,7 @@ class FundsController extends Controller
                         $donateTo =" user ";
                         $controller="userprofiles";
                         $addFunds=['task_id'=>$obj->id];
-                        $hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                        $hashID= new Hashids('user id hash',10, Config::get('app.encode_chars'));
                         $donateToLink='<a href="'.url('userprofiles/'.$hashID->encode($obj->id).'/'.strtolower($obj->name)).'">'.$obj->name.'</a>';
                     }
                     break;
@@ -309,7 +305,7 @@ class FundsController extends Controller
                 $response = null;
                 $inputData = $request->all();
                 if($current_payment_method == "PAYPAL"){
-                    $validator = \Validator::make($inputData, [
+                    $validator = Validator::make($inputData, [
                         'donate_amount'=> 'required|numeric'
                     ],[
                         'donate_amount.required'=>'Please enter amount to donate',
@@ -333,7 +329,7 @@ class FundsController extends Controller
 
                 $transactionID = null;
                 $fundID = null;
-                $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
+                $orderIDHashID= new Hashids('order id hash',10,Config::get('app.encode_chars'));
                 if($type == "user"){
                     $transactionData['created_by'] =1;//Auth::user()->id;
                     $transactionData['user_id'] =$obj->id;
@@ -408,7 +404,7 @@ class FundsController extends Controller
                         return $response;
                     }else{
                         $response = User::donateAmount($inputData);
-                    }                    
+                    }
                 }
 
                 // Donate amount to Unit/Objective/Task/User
@@ -488,12 +484,12 @@ class FundsController extends Controller
                     $donateTo = " objective ";
                     $controller = "objectives";
                     $addFunds = ['objective_id' => $obj->id];
-                    $hashID = new Hashids('objective id hash', 10, \Config::get('app.encode_chars'));
+                    $hashID = new Hashids('objective id hash', 10, Config::get('app.encode_chars'));
                     $donateToLink = '<a href="' . url('objectives/' . $hashID->encode($obj->id) . '/' . $obj->slug) . '">' . $obj->name . '</a>';
 
                     $response = null;
                     $inputData = $request->all();
-                    $validator = \Validator::make($inputData, [
+                    $validator = Validator::make($inputData, [
                         'donate_amount' => 'required|numeric'
                     ], [
                         'donate_amount.required' => 'Please enter amount to donate',
@@ -530,7 +526,7 @@ class FundsController extends Controller
         $orderID = $request->input('orderID');
         $payment_method = $request->input('payment_method');
 
-        $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
+        $orderIDHashID= new Hashids('order id hash',10,Config::get('app.encode_chars'));
         $orderID = $orderIDHashID->decode($orderID);
 
         $message="Something goes wrong. Please try again later.";
@@ -597,7 +593,7 @@ class FundsController extends Controller
                             $dataObj = User::find($obj->user_id);
                             $dataObj->name=$dataObj->first_name.' '.$dataObj->last_name;
                             $dataObj->slug=strtolower($dataObj->first_name.'_'.$dataObj->last_name);
-                            $hashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                            $hashID= new Hashids('user id hash',10, Config::get('app.encode_chars'));
                         }
                         else{
                             $payment_id = $obj->payment_id;
@@ -609,19 +605,19 @@ class FundsController extends Controller
                                 $controller = "units";
                                 $donateTo = ' unit ';
                                 $dataObj = Unit::find($obj->unit_id);
-                                $hashID= new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                                $hashID= new Hashids('unit id hash',10, Config::get('app.encode_chars'));
                             }
                             if(!empty($obj->task_id)){
                                 $controller = "tasks";
                                 $donateTo = ' task ';
                                 $dataObj = Task::find($obj->task_id);
-                                $hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                                $hashID= new Hashids('task id hash',10, Config::get('app.encode_chars'));
                             }
                             if(!empty($obj->objective_id)){
                                 $controller = "objectives";
                                 $donateTo = ' objective ';
                                 $dataObj = Objective::find($obj->objective_id);
-                                $hashID= new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                                $hashID= new Hashids('objective id hash',10, Config::get('app.encode_chars'));
                             }
                         }
 
@@ -657,7 +653,7 @@ class FundsController extends Controller
                             //return view('emails.thankyou_for_donation');
                             \Mail::send('emails.thankyou_for_donation', ['mailFrom'=>'PAYPAL','fundObj'=>$obj,'userObj'=> $userObj,'paypalTransaction'=>$paypalTransaction, 'report_concern' => false], function($message) use ($toEmail,$toName,$subject){
                                 $message->to($toEmail,$toName)->subject($subject);
-                                $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+                                $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
                             });
                         }
                     }
@@ -673,13 +669,14 @@ class FundsController extends Controller
         return view('funds.success');
     }
 
-    public function cancel(Request $request){
+    public function cancel(Request $request)
+    {
         $paymentID = $request->input('paymentId');
         $payerID =$request->input('PayerID');
         $type = $request->input('type');
         $orderID = $request->input('orderID');
 
-        $orderIDHashID= new Hashids('order id hash',10,\Config::get('app.encode_chars'));
+        $orderIDHashID= new Hashids('order id hash',10, Config::get('app.encode_chars'));
         $orderID = $orderIDHashID->decode($orderID);
 
         $message="Payment cancelled successfully.";

@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\ActivityPoint;
-use App\AreaOfInterest;
-use App\JobSkill;
-use App\Objective;
-use App\SiteActivity;
-use App\Task;
-use App\TaskBidder;
-use App\TaskRatings;
-use App\Unit;
+use App\Models\ActivityPoint;
+use App\Models\AreaOfInterest;
+use App\Models\JobSkill;
+use App\Models\Objective;
+use App\Models\SiteActivity;
+use App\Models\Task;
+use App\Models\TaskBidder;
+use App\Models\TaskRatings;
+use App\Models\Unit;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
-use App\UserWiki;
-use App\Wiki;
-use App\ZcashWithdrawRequest;
-use App\Http\Requests;
+use App\Models\UserWiki;
+use App\Models\Wiki;
+use App\Models\ZcashWithdrawRequest;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
+use Illuminate\Support\Facades\Config;
 
 class UserController extends Controller
 {
@@ -66,7 +66,7 @@ class UserController extends Controller
     {
         view()->share('user_id_hash',$user_id);
         if(!empty($user_id)){
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
             if(!empty($user_id)){
                 $user_id = $user_id [0];
@@ -93,7 +93,7 @@ class UserController extends Controller
                                     ->where("page_type","=","2")
                                     ->get();
                 if( $userWiki->count() == 0){
-                    
+
                     $wikipage =  new UserWiki;
                     $wikipage->page_content = 'Welcome to the User wiki home page';
                     $wikipage->page_title = 'Home Page';
@@ -107,7 +107,7 @@ class UserController extends Controller
                     $userWiki[0] = $wikipage;
                 }
 
-                $userPageIDHashID= new Hashids('userpage id hash',10,\Config::get('app.encode_chars'));
+                $userPageIDHashID= new Hashids('userpage id hash',10,Config::get('app.encode_chars'));
                 $page_id = $userPageIDHashID->encode($userWiki[0]->id);
                 $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
                 view()->share('activityPoints_forum',$activityPoints_forum);
@@ -153,7 +153,7 @@ class UserController extends Controller
 
     public function my_contribution(){
 
-        $site_activities = SiteActivity::where('user_id',Auth::user()->id)->orderBy('id','desc')->paginate(\Config::get('app.global_site_activity_page'));
+        $site_activities = SiteActivity::where('user_id',Auth::user()->id)->orderBy('id','desc')->paginate(Config::get('app.global_site_activity_page'));
         view()->share('site_activities',$site_activities );
 
         return view('users.my_contributions');
@@ -200,7 +200,7 @@ class UserController extends Controller
 
 
 
-        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
         view()->share('site_activity_text','Global Activity Log');
 

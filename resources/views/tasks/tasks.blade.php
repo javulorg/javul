@@ -1,4 +1,4 @@
-@extends('layout.default')
+    @extends('layout.default')
 @section('page-meta')
 <title>Tasks - Javul.org</title>
 @endsection
@@ -30,7 +30,7 @@
                                     <div class="col-sm-6">
                                         <select name="task_status_search" class="form-control" id="task_status_search">
                                             <option value="">Search by status</option>
-                                            <?php $task_status = \App\SiteConfigs::task_status(); asort($task_status); ?>
+                                            <?php $task_status = App\Models\SiteConfigs::task_status(); asort($task_status); ?>
                                             @foreach($task_status as $index=>$status)
                                                 <option value="{{$index}}">{{ $status }}</option>
                                             @endforeach

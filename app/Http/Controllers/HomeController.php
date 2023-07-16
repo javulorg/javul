@@ -2,32 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\AreaOfInterest;
-use App\AreaOfInterestHistory;
-use App\Http\Requests;
-use App\Issue;
-use App\JobSkill;
-use App\JobSkillHistory;
-use App\Objective;
-use App\SiteActivity;
-use App\Task;
-use App\Unit;
-use App\UnitCategory;
-use App\UnitCategoryHistory;
-use App\User;
-use App\UserNotification;
-use App\Watchlist;
+use App\Models\AreaOfInterest;
+use App\Models\AreaOfInterestHistory;
+use App\Models\Issue;
+use App\Models\JobSkill;
+use App\Models\JobSkillHistory;
+use App\Models\Objective;
+use App\Models\SiteActivity;
+use App\Models\Task;
+use App\Models\Unit;
+use App\Models\UnitCategory;
+use App\Models\UnitCategoryHistory;
+use App\Models\User;
+use App\Models\UserNotification;
+use App\Models\Watchlist;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
 use Illuminate\Support\Facades\Config;
-use PayPal\Service\AdaptivePaymentsService;
-use PayPal\Types\AP\PaymentDetailsRequest;
-use PayPal\Types\AP\PayRequest;
-use PayPal\Types\AP\Receiver;
-use PayPal\Types\AP\ReceiverList;
-use PayPal\Types\Common\RequestEnvelope;
-use App\UserMessages;
+//use PayPal\Service\AdaptivePaymentsService;
+//use PayPal\Types\AP\PaymentDetailsRequest;
+//use PayPal\Types\AP\PayRequest;
+//use PayPal\Types\AP\Receiver;
+//use PayPal\Types\AP\ReceiverList;
+//use PayPal\Types\Common\RequestEnvelope;
+use App\Models\UserMessages;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -42,11 +44,6 @@ class HomeController extends Controller
             'global_activities','get_categories','browse_categories','get_next_level_categories','global_search','check_username','check_email','skill_view']]);
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $recentUnits = Unit::take(5)->orderBy('created_at','desc')->get();
@@ -63,20 +60,21 @@ class HomeController extends Controller
         $featured_unit = Unit::where('featured_unit',1)->first();
         view()->share('featured_unit',$featured_unit);
 
-        $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
 
         return view('home');
     }
 
     public function global_activities(){
-        $activities = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.global_site_activity_page'));
+        $activities = SiteActivity::orderBy('id','desc')->paginate(Config::get('app.global_site_activity_page'));
         view()->share('site_activity',$activities);
         view()->share('site_activity_text','Global Activity Log');
         return view('global_activities',['type'=>'activities']);
     }
 
-    public function global_search(Request $request){
+    public function global_search(Request $request)
+    {
 
         $search_word = trim($request->input('search_term'));
         if(!empty(trim($search_word))){
@@ -93,7 +91,7 @@ class HomeController extends Controller
             view()->share('issueObj',$issueObj);
 
             view()->share('site_activity_text','Global Activity Log');
-            $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+            $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(Config::get('app.site_activity_page_limit'));
             view()->share('site_activity',$site_activity);
 
             view()->share('search_word',$search_word);
@@ -103,64 +101,68 @@ class HomeController extends Controller
             return redirect()->back();
         }
     }
- 
-	public function check_username(Request $check){
+
+	public function check_username(Request $check)
+    {
         $name=$check->get('check');
-        $user_count=User::where('username',$name)->count();
-        
+        $user_count = User::where('username',$name)->count();
+
         $string=preg_match("/[\s^]*(admin|site|javul|administration)/i",$name);
-        if($string || $user_count > 0)                    
-			return \Response::json(['success'=>true]);
-        
-        return \Response::json(['success'=>false]);
+        if($string || $user_count > 0)
+			return response()->json(['success'=>true]);
+
+        return response()->json(['success'=>false]);
     }
 
     /**
      * Validate email address
      */
-    public function check_email(Request $request){
-        if($request->has('email')){
-            $validator = \Validator::make($request->all(), [
+    public function check_email(Request $request)
+    {
+        if($request->has('email'))
+        {
+            $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email|max:255|unique:users,email,'
             ]);
             if ($validator->fails())
                 return response()->json(['success'=>true,'error'=>$validator->errors(['email'])->all()]);
             else
-                return \Response::json(array('success'=>false));
+                return response()->json(array('success'=>false));
         }
     }
 
-    public function get_unit_site_activity_paginate(Request $request){
+    public function get_unit_site_activity_paginate(Request $request)
+    {
         $unit_id = $request->input('unit_id');
 
         if(!empty($unit_id)){
-            $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
             $unit_id = $unitIDHashID->decode($unit_id);
             if(!empty($unit_id)){
                 $unit_id = $unit_id[0];
-                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
                 view()->share('site_activity',$site_activity);
                 view()->share('site_activity_text','Unit Activity Log');
                 view()->share('unit_activity_id',$unit_id);
                 view()->share('ajax',true);
                 $html = view('elements.site_activities')->render();
-                return \Response::json(['success'=>true,'html'=>$html]);
+                return response()->json(['success'=>true,'html'=>$html]);
 
             }
         }
-        return \Response::json(['success'=>false]);
+        return response()->json(['success'=>false]);
     }
 
     public function get_site_activity_paginate(Request $request){
-        $page_limit = \Config::get('app.site_activity_page_limit');
+        $page_limit = Config::get('app.site_activity_page_limit');
         $site_activity_text= "Global Activity Log";
         if($request->has('from_page')){
             $page = $request->input('from_page');
             if($page == "global_activity") {
-                $page_limit = \Config::get('app.global_site_activity_page');
+                $page_limit = Config::get('app.global_site_activity_page');
                 $site_activity = SiteActivity::orderBy('id','desc')->paginate($page_limit);
             }else{
-                $page_limit = \Config::get('app.global_site_activity_page');
+                $page_limit = Config::get('app.global_site_activity_page');
                 $site_activity = SiteActivity::where('user_id',Auth::user()->id)->orderBy('id','desc')->paginate($page_limit);
                 $site_activity_text= "Unit Activity Log";
                 view()->share('unit_activity_id','');
@@ -174,10 +176,11 @@ class HomeController extends Controller
         view()->share('site_activity_text',$site_activity_text);
         view()->share('ajax',true);
         $html = view('elements.site_activities')->render();
-        return \Response::json(['success'=>true,'html'=>$html]);
+        return Response::json(['success'=>true,'html'=>$html]);
     }
 
-    public function add_to_watchlist(Request $request){
+    public function add_to_watchlist(Request $request)
+    {
         if($request->method('ajax')) {
             $redirect_to = $request->input('sessionUrl');
             $request->session()->put('url.intended', $redirect_to);
@@ -191,7 +194,7 @@ class HomeController extends Controller
                 $obj = [];
                 switch ($type) {
                     case 'unit':
-                        $hashID = new Hashids('unit id hash', 10, \Config::get('app.encode_chars'));
+                        $hashID = new Hashids('unit id hash', 10, Config::get('app.encode_chars'));
                         $id = $hashID->decode($id);
                         if (!empty($id)) {
                             $id = $id[0];
@@ -199,7 +202,7 @@ class HomeController extends Controller
                         }
                         break;
                     case 'objective':
-                        $hashID = new Hashids('objective id hash', 10, \Config::get('app.encode_chars'));
+                        $hashID = new Hashids('objective id hash', 10, Config::get('app.encode_chars'));
                         $id = $hashID->decode($id);
                         if (!empty($id)) {
                             $id = $id[0];
@@ -207,7 +210,7 @@ class HomeController extends Controller
                         }
                         break;
                     case 'task':
-                        $hashID = new Hashids('task id hash', 10, \Config::get('app.encode_chars'));
+                        $hashID = new Hashids('task id hash', 10, Config::get('app.encode_chars'));
                         $id = $hashID->decode($id);
                         if (!empty($id)) {
                             $id = $id[0];
@@ -215,7 +218,7 @@ class HomeController extends Controller
                         }
                         break;
                     case 'issue':
-                        $hashID = new Hashids('issue id hash', 10, \Config::get('app.encode_chars'));
+                        $hashID = new Hashids('issue id hash', 10, Config::get('app.encode_chars'));
                         $id = $hashID->decode($id);
                         if (!empty($id)) {
                             $id = $id[0];
@@ -230,14 +233,14 @@ class HomeController extends Controller
                             'user_id' => Auth::user()->id,
                             strtolower($type) . '_id' => $id
                         ]);
-                        return \Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
+                        return Response::json(['success'=>true,'msg'=>ucfirst($type).' added to watchlist.']);
                         $request->session()->forget('add_to_wl');
                     } else
-                      return \Response::json(['success'=>false,'msg'=>ucfirst($type).' already added to watchlist.']);
+                      return Response::json(['success'=>false,'msg'=>ucfirst($type).' already added to watchlist.']);
                 }
-                return \Response::json(['success'=>false,'msg'=>ucfirst($type).' not found in database.']);
+                return Response::json(['success'=>false,'msg'=>ucfirst($type).' not found in database.']);
             }
-            return \Response::json(['success'=>false,'msg'=>'Please login to continue.']);
+            return Response::json(['success'=>false,'msg'=>'Please login to continue.']);
         }
         return view('errors.404');
     }
@@ -269,7 +272,7 @@ class HomeController extends Controller
     }
 
     public function my_alerts(Request $request){
-        $notifications= UserNotification::where('user_id',Auth::user()->id)->orderBy('message_read')->orderBy('created_at','desc')->paginate(\Config::get('app.global_site_activity_page'));
+        $notifications= UserNotification::where('user_id',Auth::user()->id)->orderBy('message_read')->orderBy('created_at','desc')->paginate(Config::get('app.global_site_activity_page'));
         view()->share('site_activity',$notifications);
         view()->share('site_activity_text','Notifications');
         return view('global_activities',['type'=>'notifications']);
@@ -281,7 +284,8 @@ class HomeController extends Controller
 
     public function site_admin(Request $request){
         if(!Auth::check())
-            return \Redirect::to(url(''));
+//            return \Redirect::to(url(''));
+            return redirect()->to('');
         $featuredUnit = [];
         $unitList = [];
         $where = '';
@@ -297,7 +301,7 @@ class HomeController extends Controller
 
 
         //get skills
-        $jobSkillsObj = \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id,c.skill_name,   p.skill_name AS Parentskill_name,IF(ISNULL(job_skills_history.`skill_name`),NULL,job_skills_history.`skill_name`) AS history_skill_name
+        $jobSkillsObj = DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id,c.skill_name,   p.skill_name AS Parentskill_name,IF(ISNULL(job_skills_history.`skill_name`),NULL,job_skills_history.`skill_name`) AS history_skill_name
                                     ,IF(ISNULL(job_skills_history.`prefix_id`),NULL,job_skills_history.`prefix_id`) AS prefix_id,IF(ISNULL(job_skills_history.`user_id`),NULL,job_skills_history.`user_id`) AS user_id
                                     FROM job_skills c LEFT JOIN job_skills p ON (c.parent_id = p.id) LEFT JOIN job_skills_history ON
                                     c.id=job_skills_history.`job_skill_id`'.$where.' WHERE IF(c.parent_id IS NULL, 0, c
@@ -315,7 +319,7 @@ class HomeController extends Controller
         }
 
         //get unit categories
-        $unitCategoriesObj = \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.name, p.name AS Parentcategory_name,
+        $unitCategoriesObj = DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.name, p.name AS Parentcategory_name,
                                           IF(ISNULL(unit_category_history.`name`),NULL,unit_category_history.`name`) AS history_category_name,
                                           IF(ISNULL(unit_category_history.`prefix_id`),NULL,unit_category_history.`prefix_id`) AS prefix_id,
                                           IF(ISNULL(unit_category_history.`user_id`),NULL,unit_category_history.`user_id`) AS user_id
@@ -336,7 +340,7 @@ class HomeController extends Controller
 
 
         //get area of interest
-        $area_of_interestObj= \DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.title, p.title AS Parenttitle,
+        $area_of_interestObj= DB::select('SELECT c.id, IF(ISNULL(c.parent_id), 0, c.parent_id) AS parent_id, c.title, p.title AS Parenttitle,
                                           IF(ISNULL(area_of_interest_history.`title`),NULL,area_of_interest_history.`title`) AS
                                           history_area_of_interest_name,
                                           IF(ISNULL(area_of_interest_history.`prefix_id`),NULL,area_of_interest_history.`prefix_id`) AS prefix_id,
@@ -413,7 +417,7 @@ class HomeController extends Controller
         //view()->share('categoriesObj',$categoriesObj);
         //view()->share('area_of_interestObj',$area_of_interestObj);
 
-        $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+        $site_activity = SiteActivity::orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
         view()->share('site_activity_text','Global Activity Log');
 
@@ -422,23 +426,23 @@ class HomeController extends Controller
 
     public function get_area_of_interest_paginate(Request $request){
         if(!Auth::check())
-            return \Response::json(['success'=>true,'html'=>'']);
+            return response()->json(['success'=>true,'html'=>'']);
 
-        $page_limit = \Config::get('app.page_limit');
+        $page_limit = Config::get('app.page_limit');
         $areaOfInterestObj = AreaOfInterest::paginate($page_limit);
         view()->share('areaOfInterestObj',$areaOfInterestObj);
         $html = view('admin.partials.more_area_of_interest')->render();
-        return \Response::json(['success'=>true,'html'=>$html]);
+        return response()->json(['success'=>true,'html'=>$html]);
     }
     public function get_skill_paginate(Request $request){
         if(!Auth::check())
-            return \Response::json(['success'=>true,'html'=>'']);
+            return response()->json(['success'=>true,'html'=>'']);
 
-        $page_limit = \Config::get('app.page_limit');
+        $page_limit = Config::get('app.page_limit');
         $jobSkillObj = JobSkill::paginate($page_limit);
         view()->share('jobSkillObj',$jobSkillObj);
         $html = view('admin.partials.more_skills')->render();
-        return \Response::json(['success'=>true,'html'=>$html]);
+        return response()->json(['success'=>true,'html'=>$html]);
     }
 
     public function category_add(Request $request)
@@ -447,14 +451,14 @@ class HomeController extends Controller
             return view('errors.404');
 
         if(!Auth::check())
-            return \Response::json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
+            return response()->json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
 
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'category_name' => 'required'
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success'=>false,'errors'=>$validator->messages()]);
+            return response()->json(['success'=>false,'errors'=>$validator->messages()]);
 
         $categoryExist = UnitCategory::whereRaw('LOWER(name) = "'.strtolower($request->input('category_name').'"'))->count();
 
@@ -476,7 +480,7 @@ class HomeController extends Controller
             'parent_id'=>$parent_id
         ];
 
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
 
@@ -516,7 +520,7 @@ class HomeController extends Controller
             'user_id'=>Auth::user()->id,
             'comment'=>$html
         ]);
-        return \Response::json(['success'=>true,'category_id'=>$category_id,'category_name'=>$data['name']]);
+        return response()->json(['success'=>true,'category_id'=>$category_id,'category_name'=>$data['name']]);
     }
 
     /**
@@ -524,11 +528,11 @@ class HomeController extends Controller
      */
     public function skill_view(Request $request,$skill_id = false){
         if($skill_id){
-            $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
+            $jobSkillIDHashID = new Hashids('job skills id hash',10,Config::get('app.encode_chars'));
             $skill_id = $jobSkillIDHashID->decode($skill_id);
             if(!empty($skill_id)){
                 $skill_id = $skill_id[0];
-                $tasks = \DB::table('tasks')
+                $tasks = DB::table('tasks')
                         ->join('objectives','tasks.objective_id','=','objectives.id')
                         ->join('units','tasks.unit_id','=','units.id')
                         ->join('users','tasks.user_id','=','users.id')
@@ -536,9 +540,9 @@ class HomeController extends Controller
                         ->whereNull('tasks.deleted_at')
                         ->whereRaw('FIND_IN_SET(?,skills)',[$skill_id])
                         ->orderBy('tasks.id','desc')
-                        ->paginate(\Config::get('app.page_limit'));
+                        ->paginate(Config::get('app.page_limit'));
 
-                $site_activity = SiteActivity::orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
+                $site_activity = SiteActivity::orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
 
                 view()->share('msg_flag',false);
                 view()->share('msg_val','');
@@ -555,19 +559,19 @@ class HomeController extends Controller
 
     public function skill_add(Request $request){
         if(!Auth::check() || !$request->ajax())
-            return \Response::json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
+            return response()->json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
 
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'skill_name' => 'required'
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success'=>false,'errors'=>$validator->messages()]);
+            return response()->json(['success'=>false,'errors'=>$validator->messages()]);
 
         $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.strtolower($request->input('skill_name').'"'))->count();
 
         if($skillExist> 0)
-            return \Response::json(['success'=>false,'errors'=>['skill_name'=>'Skill name already exists']]);
+            return response()->json(['success'=>false,'errors'=>['skill_name'=>'Skill name already exists']]);
 
         $parent_id = $request->input('parent_id');
         $temp_parent_id = $parent_id;
@@ -583,7 +587,7 @@ class HomeController extends Controller
             'parent_id'=>$parent_id
         ];
 
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
         $skill_id = '';
@@ -624,33 +628,33 @@ class HomeController extends Controller
             'user_id'=>Auth::user()->id,
             'comment'=>$html
         ]);
-        return \Response::json(['success'=>true,'skill_id'=>$skill_id,'skill_name'=>$data['skill_name']]);
+        return response()->json(['success'=>true,'skill_id'=>$skill_id,'skill_name'=>$data['skill_name']]);
     }
     public function skill_edit(Request $request)
     {
 
         if (!Auth::check() || !$request->ajax())
-            return \Response::json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
+            return response()->json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
 
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'skill_name' => 'required'
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success' => false, 'errors' => $validator->messages()]);
+            return response()->json(['success' => false, 'errors' => $validator->messages()]);
 
         $selected_id = $request->input('selected_id');
         if (empty($selected_id))
-            return \Response::json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
+            return response()->json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
 
         $skill_name = $request->input('skill_name');
         $skillExist = JobSkill::whereRaw('LOWER(skill_name) = "'.$skill_name.'" and id !='.$selected_id)->count();
 
         if ($skillExist > 0)
-            return \Response::json(['success' => false, 'errors' => ['skill_name' => 'Skill name already exists']]);
+            return response()->json(['success' => false, 'errors' => ['skill_name' => 'Skill name already exists']]);
 
         $type = $request->input('tbl_type');
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
         $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
@@ -680,9 +684,9 @@ class HomeController extends Controller
                     'user_id'=>Auth::user()->id,
                     'comment'=>$html
                 ]);
-                return \Response::json(['success'=>true,'skill_id'=>$jobSkillObj->id,'type'=>'old','skill_name'=>$request->input('skill_name')]);
+                return response()->json(['success'=>true,'skill_id'=>$jobSkillObj->id,'type'=>'old','skill_name'=>$request->input('skill_name')]);
             }
-            return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
+            return response()->json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
         }
         else {
             if ($type == "old") {
@@ -718,7 +722,7 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'skill_id'=>$jobSkillObj->id,'type'=>$type,'skill_name'=>$data['skill_name'] ]);
+                    return response()->json(['success'=>true,'skill_id'=>$jobSkillObj->id,'type'=>$type,'skill_name'=>$data['skill_name'] ]);
                 }
 
             } else {
@@ -744,11 +748,11 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'skill_id'=>$obj->id,'type'=>$type,'skill_name'=>$request->input('skill_name')]);
+                    return response()->json(['success'=>true,'skill_id'=>$obj->id,'type'=>$type,'skill_name'=>$request->input('skill_name')]);
                 }
             }
         }
-        return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
+        return response()->json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
     }
     public function skill_delete(Request $request){
         if(Auth::check() && $request->ajax()){
@@ -756,7 +760,7 @@ class HomeController extends Controller
             $type = $request->input('type');
             $path_text = $request->input('path_text');
 
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
 
@@ -777,9 +781,9 @@ class HomeController extends Controller
 
                 $jobSkillObj= JobSkill::find($job_skill_id );
                 if(!empty($jobSkillObj) && count($jobSkillObj) > 0) {
-                    $taskObj = \DB::select('SELECT * FROM tasks WHERE FIND_IN_SET('.$job_skill_id.',skills)');
+                    $taskObj = DB::select('SELECT * FROM tasks WHERE FIND_IN_SET('.$job_skill_id.',skills)');
                     if(!empty($taskObj) && count($taskObj) > 0)
-                        return \Response::json(['success'=>false,'msg'=>'You can not delete this skill. Currently it is used in task.']);
+                        return response()->json(['success'=>false,'msg'=>'You can not delete this skill. Currently it is used in task.']);
 
                     $html.=$jobSkillObj->skill_name.'</a>';
                     if(!empty($path_text)){
@@ -790,9 +794,9 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'msg'=>'Skill deleted successfully']);
+                    return response()->json(['success'=>true,'msg'=>'Skill deleted successfully']);
                 }
-                return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
+                return response()->json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
             }
             else{
                 if($type == "new"){
@@ -812,16 +816,16 @@ class HomeController extends Controller
                             'user_id'=>Auth::user()->id,
                             'comment'=>$html
                         ]);
-                        return \Response::json(['success'=>true,'msg'=>'Skill deleted successfully']);
+                        return response()->json(['success'=>true,'msg'=>'Skill deleted successfully']);
                     }
                 }
                 else{
                     $temp_id = $id;
                     if(strpos($temp_id ,"JBSH") !== false)
                         $temp_id = str_replace("JBSH","",$temp_id );
-                    $taskObj = \DB::select('SELECT * FROM tasks WHERE FIND_IN_SET('.$temp_id.',skills)');
+                    $taskObj = DB::select('SELECT * FROM tasks WHERE FIND_IN_SET('.$temp_id.',skills)');
                     if(!empty($taskObj) && count($taskObj) > 0)
-                        return \Response::json(['success'=>false,'msg'=>'You can not delete this skill. Currently it is used in task.']);
+                        return response()->json(['success'=>false,'msg'=>'You can not delete this skill. Currently it is used in task.']);
 
                     $data['parent_id_belongs_to'] = null;
                     $data['job_skill_id'] = $id;
@@ -841,11 +845,11 @@ class HomeController extends Controller
                         'comment'=>$html
                     ]);
 
-                    return \Response::json(['success'=>true]);
+                    return response()->json(['success'=>true]);
                 }
             }
         }
-        return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+        return response()->json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
     }
 
     public function category_edit(Request $request){
@@ -854,27 +858,27 @@ class HomeController extends Controller
             return view('errors.404');
 
         if (!Auth::check())
-            return \Response::json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
+            return response()->json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
 
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'category_name' => 'required'
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success' => false, 'errors' => $validator->messages()]);
+            return response()->json(['success' => false, 'errors' => $validator->messages()]);
 
         $selected_id = $request->input('selected_id');
         if (empty($selected_id))
-            return \Response::json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
+            return response()->json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
 
         $category_name = $request->input('category_name');
         $category_nameExist = UnitCategory::whereRaw('LOWER(name) = "'.$category_name.'" and id !='.$selected_id)->count();
 
         if ($category_nameExist > 0)
-            return \Response::json(['success' => false, 'errors' => ['category_name' => 'Unit category name already exists']]);
+            return response()->json(['success' => false, 'errors' => ['category_name' => 'Unit category name already exists']]);
 
         $type = $request->input('tbl_type');
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
         $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
@@ -905,9 +909,9 @@ class HomeController extends Controller
                     'user_id'=>Auth::user()->id,
                     'comment'=>$html
                 ]);
-                return \Response::json(['success'=>true,'category_id'=>$unitCategoryObj->id,'type'=>'old','category_name'=>$category_name]);
+                return response()->json(['success'=>true,'category_id'=>$unitCategoryObj->id,'type'=>'old','category_name'=>$category_name]);
             }
-            return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
+            return response()->json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
         }
         else {
             if ($type == "old") {
@@ -943,7 +947,7 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'category_id'=>$unitCategoryObj->id,'type'=>$type,
+                    return response()->json(['success'=>true,'category_id'=>$unitCategoryObj->id,'type'=>$type,
                         'category_name'=>$data['name'] ]);
                 }
 
@@ -968,11 +972,11 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'category_id'=>$obj->id,'type'=>$type,'category_name'=>$data['name']]);
+                    return response()->json(['success'=>true,'category_id'=>$obj->id,'type'=>$type,'category_name'=>$data['name']]);
                 }
             }
         }
-        return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
+        return response()->json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
 
     }
 
@@ -986,7 +990,7 @@ class HomeController extends Controller
             $type = $request->input('type');
             $path_text = $request->input('path_text');
 
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
             $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
@@ -1007,9 +1011,9 @@ class HomeController extends Controller
                 $unitCategoryObj= UnitCatergory::find($unit_category_id);
                 if(!empty($unitCategoryObj) && count($unitCategoryObj) > 0) {
 
-                    $taskObj = \DB::select('SELECT * FROM units WHERE FIND_IN_SET('.$unit_category_id.',category_id)');
+                    $taskObj = DB::select('SELECT * FROM units WHERE FIND_IN_SET('.$unit_category_id.',category_id)');
                     if(!empty($taskObj) && count($taskObj) > 0)
-                        return \Response::json(['success'=>false,'msg'=>'You can not delete this category. Currently it is used in unit.']);
+                        return response()->json(['success'=>false,'msg'=>'You can not delete this category. Currently it is used in unit.']);
 
 
                     $html.=$unitCategoryObj->name.'</a>';
@@ -1021,9 +1025,9 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'msg'=>'Unit category deleted successfully']);
+                    return response()->json(['success'=>true,'msg'=>'Unit category deleted successfully']);
                 }
-                return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
+                return response()->json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
             }
             else{
                 if($type == "new"){
@@ -1042,17 +1046,17 @@ class HomeController extends Controller
                             'user_id'=>Auth::user()->id,
                             'comment'=>$html
                         ]);
-                        return \Response::json(['success'=>true,'msg'=>'Unit category deleted successfully']);
+                        return response()->json(['success'=>true,'msg'=>'Unit category deleted successfully']);
                     }
-                    return \Response::json(['success'=>false,'msg'=>'No category found. Please try again later.']);
+                    return response()->json(['success'=>false,'msg'=>'No category found. Please try again later.']);
                 }
                 else{
                     $temp_id = $id;
                     if(strpos($temp_id ,"UCH") !== false)
                         $temp_id = str_replace("UCH","",$temp_id );
-                    $taskObj = \DB::select('SELECT * FROM units WHERE FIND_IN_SET('.$temp_id.',category_id)');
+                    $taskObj = DB::select('SELECT * FROM units WHERE FIND_IN_SET('.$temp_id.',category_id)');
                     if(!empty($taskObj) && count($taskObj) > 0)
-                        return \Response::json(['success'=>false,'msg'=>'You can not delete this category. Currently it is used in unit.']);
+                        return response()->json(['success'=>false,'msg'=>'You can not delete this category. Currently it is used in unit.']);
 
                     $data['parent_id_belongs_to'] = null;
                     $data['unit_category_id'] = $id;
@@ -1072,11 +1076,11 @@ class HomeController extends Controller
                         'comment'=>$html
                     ]);
 
-                    return \Response::json(['success'=>true]);
+                    return response()->json(['success'=>true]);
                 }
             }
         }
-        return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+        return response()->json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
     }
 
     public function area_of_interest_add(Request $request){
@@ -1084,14 +1088,14 @@ class HomeController extends Controller
             return view('errors.404');
 
         if(!Auth::check())
-            return \Response::json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
+            return response()->json(['success'=>false,'errors'=>['You are not authorized person to perform this action.']]);
 
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'title' => 'required'
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success'=>false,'errors'=>$validator->messages()]);
+            return response()->json(['success'=>false,'errors'=>$validator->messages()]);
 
         $areaofInterestExist = AreaOfInterest::whereRaw('LOWER(title) = "'.strtolower($request->input('title').'"'))->count();
 
@@ -1113,7 +1117,7 @@ class HomeController extends Controller
             'parent_id'=>$parent_id
         ];
 
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
         $path_text = $request->input('path_text');
@@ -1153,7 +1157,7 @@ class HomeController extends Controller
             'user_id'=>Auth::user()->id,
             'comment'=>$html
         ]);
-        return \Response::json(['success'=>true,'area_of_interest_id'=>$area_id,'title'=>$data['title']]);
+        return response()->json(['success'=>true,'area_of_interest_id'=>$area_id,'title'=>$data['title']]);
     }
 
     public function area_of_interest_edit(Request $request){
@@ -1161,18 +1165,18 @@ class HomeController extends Controller
             return view('errors.404');
 
         if (!Auth::check())
-            return \Response::json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
+            return response()->json(['success' => false, 'errors' => ['You are not authorized person to perform this action.']]);
 
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'title' => 'required'
         ]);
 
         if ($validator->fails())
-            return \Response::json(['success' => false, 'errors' => $validator->messages()]);
+            return response()->json(['success' => false, 'errors' => $validator->messages()]);
 
         $selected_id = $request->input('selected_id');
         if (empty($selected_id))
-            return \Response::json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
+            return response()->json(['success' => false, 'errors' => ['Something goes wrong please try again later.']]);
 
         $title = $request->input('title');
         if(strpos($selected_id,"AOIH") !== false)
@@ -1182,10 +1186,10 @@ class HomeController extends Controller
         $areaofInterest_nameExist = AreaOfInterest::whereRaw('LOWER(title) = "'.$title.'" and id !='.$temp_id )->count();
 
         if ($areaofInterest_nameExist > 0)
-            return \Response::json(['success' => false, 'errors' => ['title' => 'Area of interest already exists']]);
+            return response()->json(['success' => false, 'errors' => ['title' => 'Area of interest already exists']]);
 
         $type = $request->input('tbl_type');
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
         $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
@@ -1217,9 +1221,9 @@ class HomeController extends Controller
                     'user_id'=>Auth::user()->id,
                     'comment'=>$html
                 ]);
-                return \Response::json(['success'=>true,'area_of_interest_id'=>$areaOfInterestObj->id,'type'=>'old','title'=>$title]);
+                return response()->json(['success'=>true,'area_of_interest_id'=>$areaOfInterestObj->id,'type'=>'old','title'=>$title]);
             }
-            return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
+            return response()->json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
         }
         else {
             if ($type == "old") {
@@ -1256,7 +1260,7 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'area_of_interest_id'=>$areaOfInterestObj->id,'type'=>$type,
+                    return response()->json(['success'=>true,'area_of_interest_id'=>$areaOfInterestObj->id,'type'=>$type,
                         'title'=>$data['title'] ]);
                 }
 
@@ -1287,11 +1291,11 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'area_of_interest_id'=>$obj->id,'type'=>$type,'title'=>$data['title']]);
+                    return response()->json(['success'=>true,'area_of_interest_id'=>$obj->id,'type'=>$type,'title'=>$data['title']]);
                 }
             }
         }
-        return \Response::json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
+        return response()->json(['success'=>false,'errors'=>['Something goes wrong please try again later.']]);
     }
 
     public function area_of_interest_delete(Request $request){
@@ -1304,7 +1308,7 @@ class HomeController extends Controller
             $type = $request->input('type');
             $path_text = $request->input('path_text');
 
-            $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
 
             $loggedinUsername = strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name);
@@ -1324,9 +1328,9 @@ class HomeController extends Controller
 
                 $areaOfInterestObj= AreaOfInterest::find($area_of_interest_id);
                 if(!empty($areaOfInterestObj) && count($areaOfInterestObj) > 0) {
-                    $taskObj = \DB::select('SELECT * FROM users WHERE FIND_IN_SET('.$area_of_interest_id.',area_of_interest)');
+                    $taskObj = DB::select('SELECT * FROM users WHERE FIND_IN_SET('.$area_of_interest_id.',area_of_interest)');
                     if(!empty($taskObj) && count($taskObj) > 0)
-                        return \Response::json(['success'=>false,'msg'=>'You can not delete this area of interest. Currently it is used by
+                        return response()->json(['success'=>false,'msg'=>'You can not delete this area of interest. Currently it is used by
                         some user.']);
 
 
@@ -1339,9 +1343,9 @@ class HomeController extends Controller
                         'user_id'=>Auth::user()->id,
                         'comment'=>$html
                     ]);
-                    return \Response::json(['success'=>true,'msg'=>'Area of interest deleted successfully']);
+                    return response()->json(['success'=>true,'msg'=>'Area of interest deleted successfully']);
                 }
-                return \Response::json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
+                return response()->json(['success'=>true,'msg'=>'Something goes wrong. Please try again later.']);
             }
             else{
                 if($type == "new"){
@@ -1360,9 +1364,9 @@ class HomeController extends Controller
                             'user_id'=>Auth::user()->id,
                             'comment'=>$html
                         ]);
-                        return \Response::json(['success'=>true,'msg'=>'Area of interest deleted successfully']);
+                        return response()->json(['success'=>true,'msg'=>'Area of interest deleted successfully']);
                     }
-                    return \Response::json(['success'=>false,'msg'=>'No category found. Please try again later.']);
+                    return response()->json(['success'=>false,'msg'=>'No category found. Please try again later.']);
                 }
                 else{
                     $temp_id = $id;
@@ -1371,7 +1375,7 @@ class HomeController extends Controller
 
                     $taskObj = \DB::select('SELECT * FROM users WHERE FIND_IN_SET('.$temp_id.',area_of_interest)');
                     if(!empty($taskObj) && count($taskObj) > 0)
-                        return \Response::json(['success'=>false,'msg'=>'You can not delete this area of interest. Currently it is used by
+                        return response()->json(['success'=>false,'msg'=>'You can not delete this area of interest. Currently it is used by
                          some users.']);
 
                     $data['parent_id_belongs_to'] = null;
@@ -1392,11 +1396,11 @@ class HomeController extends Controller
                         'comment'=>$html
                     ]);
 
-                    return \Response::json(['success'=>true]);
+                    return response()->json(['success'=>true]);
                 }
             }
         }
-        return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+        return response()->json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
     }
 
     public function get_skills(Request $request){
@@ -1414,10 +1418,10 @@ class HomeController extends Controller
                     }
 
                 }
-                return \Response::json(['items'=>$str,'total_counts'=>$obj = JobSkill::where('skill_name','like',$terms.'%')->count()]);
+                return response()->json(['items'=>$str,'total_counts'=>$obj = JobSkill::where('skill_name','like',$terms.'%')->count()]);
             }
         }
-        return \Response::json([]);
+        return response()->json([]);
 
     }
 
@@ -1461,7 +1465,7 @@ class HomeController extends Controller
             $skills = JobSkill::where('parent_id',$id)->pluck('skill_name','id')->all();
         else
             $skills=JobSkillHistory::where('parent_id',$id)->pluck('skill_name','id')->all();*/
-        return \Response::json(['success'=>true,'data'=>$skills]);
+        return response()->json(['success'=>true,'data'=>$skills]);
     }
 
     public function approveSkill(Request $request){
@@ -1469,14 +1473,14 @@ class HomeController extends Controller
             if(Auth::user()->role=="superadmin"){
                 $prefix_id = $request->input('id');
 
-                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                 $user_id = $userIDHashID->encode(Auth::user()->id);
 
                 if(!empty($prefix_id)){
                     $jobSkillHistory = JobSkillHistory::where('prefix_id',$prefix_id)->first();
                     if(!empty($jobSkillHistory) && count($jobSkillHistory) > 0){
 
-                       /* $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                       /* $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                         $user_id = $userIDHashID->encode(Auth::user()->id);
 
                         $html = '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
@@ -1524,7 +1528,7 @@ class HomeController extends Controller
                             ]);
 
 
-                            return \Response::json(['success'=>true]);
+                            return response()->json(['success'=>true]);
 
                         }
                         elseif($jobSkillHistory->action_type == "edit"){
@@ -1553,16 +1557,16 @@ class HomeController extends Controller
                                 'comment'=>$html
                             ]);
 
-                            return \Response::json(['success'=>true]);
+                            return response()->json(['success'=>true]);
                         }
                         elseif($jobSkillHistory->action_type=="delete"){
                             $childrenExist = JobSkill::where('parent_id',$jobSkillHistory->job_skill_id)->get();
                             if(!empty($childrenExist) && count($childrenExist) > 0){
-                                return \Response::json(['success'=>false,'msg'=>'You can\t delete the parent skill.']);
+                                return response()->json(['success'=>false,'msg'=>'You can\t delete the parent skill.']);
                             }
                             $taskObj = \DB::select('SELECT * from tasks WHERE FIND_IN_SET('.$jobSkillHistory->job_skill_id.',skills)');
                             if(!empty($taskObj) && count($taskObj) > 0){
-                                return \Response::json(['success'=>false,'msg'=>'This skill currently assigned to task.']);
+                                return response()->json(['success'=>false,'msg'=>'This skill currently assigned to task.']);
                             }
                             $jobSkillObj =JobSkill::where('id',$jobSkillHistory->job_skill_id)->first();
                             if(!empty($jobSkillObj) && count($jobSkillObj) > 0)
@@ -1590,13 +1594,13 @@ class HomeController extends Controller
                             ]);
 
 
-                            return \Response::json(['success'=>true]);
+                            return response()->json(['success'=>true]);
                         }
                     }
                 }
             }
         }
-        return \Response::json(['success'=>false]);
+        return response()->json(['success'=>false]);
 
     }
 
@@ -1605,7 +1609,7 @@ class HomeController extends Controller
             if(Auth::user()->role=="superadmin"){
                 $prefix_id = $request->input('id');
 
-                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                 $user_id = $userIDHashID->encode(Auth::user()->id);
 
                 if(!empty($prefix_id)){
@@ -1654,7 +1658,7 @@ class HomeController extends Controller
                             ]);
 
 
-                            return \Response::json(['success'=>true]);
+                            return response()->json(['success'=>true]);
 
                         }
                         elseif($unitCategoryHistory->action_type == "edit"){
@@ -1682,19 +1686,19 @@ class HomeController extends Controller
                                     'comment'=>$html
                                 ]);
 
-                                return \Response::json(['success'=>true]);
+                                return response()->json(['success'=>true]);
                             }
-                            return \Response::json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
+                            return response()->json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
 
                         }
                         elseif($unitCategoryHistory->action_type=="delete"){
                             $childrenExist = UnitCategory::where('parent_id',$unitCategoryHistory->unit_category_id)->get();
                             if(!empty($childrenExist) && count($childrenExist) > 0){
-                                return \Response::json(['success'=>false,'msg'=>'You can\t delete the parent category.']);
+                                return response()->json(['success'=>false,'msg'=>'You can\t delete the parent category.']);
                             }
                             $taskObj = \DB::select('SELECT * from units WHERE FIND_IN_SET('.$unitCategoryHistory->unit_category_id.',category_id)');
                             if(!empty($taskObj) && count($taskObj) > 0){
-                                return \Response::json(['success'=>false,'msg'=>'This category currently assigned to unit. You can not
+                                return response()->json(['success'=>false,'msg'=>'This category currently assigned to unit. You can not
                                 delete this category.']);
                             }
                             $unitCategoryObj =UnitCategory::where('id',$unitCategoryHistory->unit_category_id)->first();
@@ -1724,13 +1728,13 @@ class HomeController extends Controller
                             ]);
 
 
-                            return \Response::json(['success'=>true]);
+                            return response()->json(['success'=>true]);
                         }
                     }
                 }
             }
         }
-        return \Response::json(['success'=>false]);
+        return response()->json(['success'=>false]);
 
     }
 
@@ -1739,7 +1743,7 @@ class HomeController extends Controller
             if(Auth::user()->role=="superadmin"){
                 $prefix_id = $request->input('id');
 
-                $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                 $user_id = $userIDHashID->encode(Auth::user()->id);
 
                 if(!empty($prefix_id)){
@@ -1788,7 +1792,7 @@ class HomeController extends Controller
                             ]);
 
 
-                            return \Response::json(['success'=>true]);
+                            return response()->json(['success'=>true]);
 
                         }
                         elseif($areaOfInterestHistory->action_type == "edit"){
@@ -1816,19 +1820,19 @@ class HomeController extends Controller
                                     'comment'=>$html
                                 ]);
 
-                                return \Response::json(['success'=>true]);
+                                return response()->json(['success'=>true]);
                             }
-                            return \Response::json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
+                            return response()->json(['success'=>false,'msg'=>'Something goes wrong. Please try again later.']);
 
                         }
                         elseif($areaOfInterestHistory->action_type=="delete"){
                             $childrenExist = AreaOfInterest::where('parent_id',$areaOfInterestHistory->area_of_interest_id)->get();
                             if(!empty($childrenExist) && count($childrenExist) > 0){
-                                return \Response::json(['success'=>false,'msg'=>'You can\t delete the parent area of interest.']);
+                                return response()->json(['success'=>false,'msg'=>'You can\t delete the parent area of interest.']);
                             }
                             $taskObj = \DB::select('SELECT * from users WHERE FIND_IN_SET('.$areaOfInterestHistory->area_of_interest_id.',area_of_interest)');
                             if(!empty($taskObj) && count($taskObj) > 0){
-                                return \Response::json(['success'=>false,'msg'=>'This area of interest currently assigned to some users.
+                                return response()->json(['success'=>false,'msg'=>'This area of interest currently assigned to some users.
                                  You can not delete this area of interest.']);
                             }
                             $areaOfInterestObj =AreaOfInterest::where('id',$areaOfInterestHistory->area_of_interest_id)->first();
@@ -1857,13 +1861,13 @@ class HomeController extends Controller
                             ]);
 
 
-                            return \Response::json(['success'=>true]);
+                            return response()->json(['success'=>true]);
                         }
                     }
                 }
             }
         }
-        return \Response::json(['success'=>false]);
+        return response()->json(['success'=>false]);
 
     }
 
@@ -1873,7 +1877,7 @@ class HomeController extends Controller
                 if (Auth::user()->role == "superadmin") {
                     $prefix_id = $request->input('id');
 
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
                     if (!empty($prefix_id)) {
@@ -1909,14 +1913,14 @@ class HomeController extends Controller
                                 'comment'=>$html
                             ]);
 
-                            return \Response::json(['success' => true]);
+                            return response()->json(['success' => true]);
                         } else
-                            return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                            return response()->json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
                     } else
-                        return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                        return response()->json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
                 }
             }
-            return \Response::json(['success' => false, 'msg' => 'You are not authorized person to perform this action.']);
+            return response()->json(['success' => false, 'msg' => 'You are not authorized person to perform this action.']);
 
         }
         return view('errors.404');
@@ -1928,7 +1932,7 @@ class HomeController extends Controller
                 if (Auth::user()->role == "superadmin") {
                     $prefix_id = $request->input('id');
 
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
                     if (!empty($prefix_id)) {
@@ -1964,14 +1968,14 @@ class HomeController extends Controller
                                 'comment'=>$html
                             ]);
 
-                            return \Response::json(['success' => true]);
+                            return response()->json(['success' => true]);
                         } else
-                            return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                            return response()->json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
                     } else
-                        return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                        return response()->json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
                 }
             }
-            return \Response::json(['success' => false, 'msg' => 'You are not authorized person to perform this action.']);
+            return response()->json(['success' => false, 'msg' => 'You are not authorized person to perform this action.']);
 
         }
         return view('errors.404');
@@ -1983,7 +1987,7 @@ class HomeController extends Controller
                 if (Auth::user()->role == "superadmin") {
                     $prefix_id = $request->input('id');
 
-                    $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
+                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
                     if (!empty($prefix_id)) {
@@ -2018,14 +2022,14 @@ class HomeController extends Controller
                                 'comment'=>$html
                             ]);
 
-                            return \Response::json(['success' => true]);
+                            return response()->json(['success' => true]);
                         } else
-                            return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                            return response()->json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
                     } else
-                        return \Response::json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
+                        return response()->json(['success' => false, 'msg' => 'Something goes wrong. Please try again later.']);
                 }
             }
-            return \Response::json(['success' => false, 'msg' => 'You are not authorized person to perform this action.']);
+            return response()->json(['success' => false, 'msg' => 'You are not authorized person to perform this action.']);
 
         }
         return view('errors.404');
@@ -2053,9 +2057,9 @@ class HomeController extends Controller
                 view()->share('selected_skills',$selected_skills);
                 view()->share('job_skill_list',$job_skill_list);
                 $html = view('admin.partials.skill_browse',['from'=>'task'])->render();
-                return \Response::json(['success'=>true,'html'=>$html]);
+                return response()->json(['success'=>true,'html'=>$html]);
             }
-            return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+            return response()->json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
 
         }
         return view('errors.404');
@@ -2086,9 +2090,9 @@ class HomeController extends Controller
             }
             Auth::user()->job_skills = $job_skills;
             Auth::user()->save();
-            return \Response::json(['success'=>true]);
+            return response()->json(['success'=>true]);
         }else{
-            return \Response::json(['success'=>false]);
+            return response()->json(['success'=>false]);
         }
     }
 
@@ -2108,9 +2112,9 @@ class HomeController extends Controller
                 }
                 view()->share('firstBox_category',$firstBox_category);
                 $html = view('admin.partials.unit_category_browse',['from'=>'unit'])->render();
-                return \Response::json(['success'=>true,'html'=>$html]);
+                return response()->json(['success'=>true,'html'=>$html]);
             //}
-            //return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+            //return response()->json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
 
         }
         return view('errors.404');
@@ -2133,9 +2137,9 @@ class HomeController extends Controller
                 }
                 view()->share('firstBox_areaOfInterest',$firstBox_areaOfInterest);
                 $html = view('admin.partials.area_of_interest_browse',['from'=>'account'])->render();
-                return \Response::json(['success'=>true,'html'=>$html]);
+                return response()->json(['success'=>true,'html'=>$html]);
             }
-            return \Response::json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
+            return response()->json(['success'=>false,'msg'=>'You are not authorized person to perform this action.']);
 
         }
         return view('errors.404');
@@ -2176,7 +2180,7 @@ class HomeController extends Controller
                 }
             }
         }
-        return \Response::json(['success'=>true,'data'=>$categories]);
+        return response()->json(['success'=>true,'data'=>$categories]);
     }
 
     public function get_categories(Request $request){
@@ -2194,10 +2198,10 @@ class HomeController extends Controller
                     }
 
                 }
-                return \Response::json(['items'=>$str,'total_counts'=>UnitCategory::where('name','like',$terms.'%')->count()]);
+                return response()->json(['items'=>$str,'total_counts'=>UnitCategory::where('name','like',$terms.'%')->count()]);
             }
         }
-        return \Response::json([]);
+        return response()->json([]);
 
     }
 
@@ -2216,10 +2220,10 @@ class HomeController extends Controller
                     }
 
                 }
-                return \Response::json(['items'=>$str,'total_counts'=>AreaOfInterest::where('title','like',$terms.'%')->count()]);
+                return response()->json(['items'=>$str,'total_counts'=>AreaOfInterest::where('title','like',$terms.'%')->count()]);
             }
         }
-        return \Response::json([]);
+        return response()->json([]);
 
     }
 
@@ -2258,7 +2262,7 @@ class HomeController extends Controller
                 }
             }
         }
-        return \Response::json(['success'=>true,'data'=>$areaOfInterests]);
+        return response()->json(['success'=>true,'data'=>$areaOfInterests]);
     }
 
     public function remove_from_watchlist(Request $request){
@@ -2269,7 +2273,7 @@ class HomeController extends Controller
         if(!empty($id) && !empty($type)){
             switch($type){
                 case 'unit':
-                    $hashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
+                    $hashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
                     $id = $hashID->decode($id);
                     if(!empty($id)) {
                         $id = $id[0];
@@ -2277,7 +2281,7 @@ class HomeController extends Controller
                     }
                     break;
                 case'objective':
-                    $hashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
+                    $hashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
                     $id = $hashID->decode($id);
                     if(!empty($id)) {
                         $id = $id[0];
@@ -2285,7 +2289,7 @@ class HomeController extends Controller
                     }
                     break;
                 case 'task':
-                    $hashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                    $hashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
                     $id = $hashID->decode($id);
                     if(!empty($id)) {
                         $id = $id[0];
@@ -2293,7 +2297,7 @@ class HomeController extends Controller
                     }
                     break;
                 case 'issue':
-                    $hashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
+                    $hashID = new Hashids('issue id hash',10,Config::get('app.encode_chars'));
                     $id = $hashID->decode($id);
                     if(!empty($id)) {
                         $id = $id[0];
@@ -2306,10 +2310,10 @@ class HomeController extends Controller
             }
             if($flag && !empty($obj)){
                 $obj->delete();
-                return \Response::json(['success'=>true]);
+                return response()->json(['success'=>true]);
             }
         }
-        return \Response::json(['success'=>false]);
+        return response()->json(['success'=>false]);
 
     }
 }
