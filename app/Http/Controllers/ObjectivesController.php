@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\ActivityPoint;
-use App\Fund;
-use App\ImportanceLevel;
-use App\Objective;
-use App\SiteActivity;
-use App\Task;
-use App\Unit;
-use App\User;
+use App\Models\ActivityPoint;
+use App\Models\Fund;
+use App\Models\ImportanceLevel;
+use App\Models\Objective;
+use App\Models\SiteActivity;
+use App\Models\Task;
+use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests;
 use Hashids\Hashids;
-use App\Forum;
-use App\ObjectiveRevision;
+use App\Models\Forum;
+use App\Models\ObjectiveRevision;
 use Carbon\Carbon;
-use App\UserMessages;
+use App\Models\UserMessages;
 
 class ObjectivesController extends Controller
 {
@@ -31,7 +30,7 @@ class ObjectivesController extends Controller
     public function diff($objective_id,$rev1,$rev2,Request $request){
         if(!empty($objective_id)){
             view()->share("objective_id",$objective_id);
-            
+
             $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
             $objective_id = $objectiveIDHashID->decode($objective_id);
             if(!empty($objective_id)){
@@ -58,20 +57,20 @@ class ObjectivesController extends Controller
                     view()->share('importancePercentage',$importancePercentage);
                     if(!empty($objectiveObj)){
                         view()->share('objectiveObj',$objectiveObj);
-                         
+
                         $availableUnitFunds =Fund::getUnitDonatedFund($objectiveObj->unit_id);
                         $awardedUnitFunds =Fund::getUnitAwardedFund($objectiveObj->unit_id);
 
                         view()->share('availableUnitFunds',$availableUnitFunds );
                         view()->share('awardedUnitFunds',$awardedUnitFunds );
 
-                    
+
 
                         view()->share("unit_id", $objectiveObj->unit_id);
                         view()->share("section_id", 1);
                         view()->share("object_id",$objectiveObj->id);
 
-                       
+
                         $site_activity = SiteActivity::where('unit_id',$objectiveObj->unit->id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                         view()->share('site_activity',$site_activity);
                         view()->share('unit_activity_id',$objectiveObj->unit->id);
@@ -89,7 +88,7 @@ class ObjectivesController extends Controller
                             view()->share('userIDHashID', $userIDHashID);
                             view()->share('Carbon', new Carbon);
                             view()->share('revisions',$revisions );
-                                      
+
                             return view("objectives.revison.changes_difference");
                         }
 
@@ -104,7 +103,7 @@ class ObjectivesController extends Controller
 
     public function revison($objective_id,Request $request)
     {
-        
+
         if(!empty($objective_id)){
             view()->share("objective_id",$objective_id);
 
@@ -134,14 +133,14 @@ class ObjectivesController extends Controller
                     view()->share('importancePercentage',$importancePercentage);
                     if(!empty($objectiveObj)){
                         view()->share('objectiveObj',$objectiveObj);
-                         
+
                         $availableUnitFunds =Fund::getUnitDonatedFund($objectiveObj->unit_id);
                         $awardedUnitFunds =Fund::getUnitAwardedFund($objectiveObj->unit_id);
 
                         view()->share('availableUnitFunds',$availableUnitFunds );
                         view()->share('awardedUnitFunds',$awardedUnitFunds );
 
-                        
+
                         $revisions = ObjectiveRevision::select(['objective_revisions.user_id','objective_revisions.id','objective_revisions.unit_id','objective_revisions.comment','objective_revisions.size','objective_revisions.created_at','users.first_name','users.last_name',])
                             ->join('users', 'users.id', '=', 'objective_revisions.user_id')
                             ->where("objective_revisions.unit_id","=",$objectiveObj->unit_id)
@@ -156,7 +155,7 @@ class ObjectivesController extends Controller
                         view()->share("unit_id", $objectiveObj->unit_id);
                         view()->share("section_id", 1);
                         view()->share("object_id",$objectiveObj->id);
-                       
+
                         $site_activity = SiteActivity::where('unit_id',$objectiveObj->unit->id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                         view()->share('site_activity',$site_activity);
                         view()->share('unit_activity_id',$objectiveObj->unit->id);
@@ -168,10 +167,10 @@ class ObjectivesController extends Controller
         }
         return view('errors.404');
     }
-    
+
     public function revisonview($objective_id,$revision_id,Request $request)
     {
-        
+
         if(!empty($objective_id)){
             view()->share("objective_id",$objective_id);
 
@@ -201,14 +200,14 @@ class ObjectivesController extends Controller
                     view()->share('importancePercentage',$importancePercentage);
                     if(!empty($objectiveObj)){
                         view()->share('objectiveObj',$objectiveObj);
-                         
+
                         $availableUnitFunds =Fund::getUnitDonatedFund($objectiveObj->unit_id);
                         $awardedUnitFunds =Fund::getUnitAwardedFund($objectiveObj->unit_id);
 
                         view()->share('availableUnitFunds',$availableUnitFunds );
                         view()->share('awardedUnitFunds',$awardedUnitFunds );
 
-                        
+
                         $revisions = ObjectiveRevision::select(['objective_revisions.user_id','objective_revisions.description','objective_revisions.id','objective_revisions.unit_id','objective_revisions.comment','objective_revisions.size','objective_revisions.created_at','users.first_name','users.last_name',])
                             ->join('users', 'users.id', '=', 'objective_revisions.user_id')
                             ->where("objective_revisions.unit_id","=",$objectiveObj->unit_id)
@@ -216,7 +215,7 @@ class ObjectivesController extends Controller
                             ->where("objective_revisions.id","=",$revision_id)
                             ->get();
 
-                        
+
                         if($revisions->count() == 1){
 
                             $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
@@ -232,7 +231,7 @@ class ObjectivesController extends Controller
                             view()->share("section_id", 1);
                             view()->share("object_id",$objectiveObj->id);
 
-                           
+
                             $site_activity = SiteActivity::where('unit_id',$objectiveObj->unit->id)->orderBy('id','desc')->paginate(\Config::get('app.site_activity_page_limit'));
                             view()->share('site_activity',$site_activity);
                             view()->share('unit_activity_id',$objectiveObj->unit->id);
@@ -245,7 +244,7 @@ class ObjectivesController extends Controller
         }
         return view('errors.404');
 
-       
+
         return view('errors.404');
     }
 
@@ -513,7 +512,7 @@ class ObjectivesController extends Controller
                             $ObjectiveRevision->created_at  = date("Y-m-d H:i:s");
 
                             $ObjectiveRevision->save();
-                       
+
                         // store old revision data end
 
                         Objective::where('id',$objective_id)->update([
@@ -676,7 +675,7 @@ class ObjectivesController extends Controller
                         view()->share('unit_activity_id',$objectiveObj->unit->id);
 
 
-                        // Forum Object coading 
+                        // Forum Object coading
                         view()->share("unit_id", $objectiveObj->unit_id);
                         view()->share("section_id", 1);
                         view()->share("object_id",$objectiveObj->id);
@@ -686,7 +685,7 @@ class ObjectivesController extends Controller
                             'section_id' => 1,
                             'object_id' => $objectiveObj->id,
                         ));
-                        
+
                         if(!empty($forumID)){
                             view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
                         }
@@ -703,7 +702,7 @@ class ObjectivesController extends Controller
                             session()->put('add_to_wl', 'null');
                             view()->share('add_to_watch',$arr);
                         }
-                       
+
                         return view('objectives.view');
                     }
                 }

@@ -2,22 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use App\Objective;
-use App\SiteActivity;
-use App\Task;
-use App\Unit;
-use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Hashids\Hashids;
 use Illuminate\Support\Facades\Config;
-use PayPal\Service\AdaptivePaymentsService;
-use PayPal\Types\AP\PaymentDetailsRequest;
-use PayPal\Types\AP\PayRequest;
-use PayPal\Types\AP\Receiver;
-use PayPal\Types\AP\ReceiverList;
-use PayPal\Types\Common\RequestEnvelope;
 
 class NotificationController extends Controller
 {
@@ -38,7 +24,7 @@ class NotificationController extends Controller
         \Mail::send('emails.print', ['data'=> $request->all()], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
-            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+            $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
         });
     }
 
@@ -49,7 +35,7 @@ class NotificationController extends Controller
         \Mail::send('emails.print', ['data'=> $request->all()], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
-            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+            $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
         });
     }
 
@@ -70,7 +56,7 @@ class NotificationController extends Controller
         \Mail::send('emails.print', ['data'=> $myPost], function($message) use ($toEmail,$toName,$subject)
         {
             $message->to($toEmail,$toName)->subject($subject);
-            $message->from(\Config::get("app.notification_email"), \Config::get("app.site_name"));
+            $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
         });
     }
 

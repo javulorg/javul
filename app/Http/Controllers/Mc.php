@@ -8,7 +8,9 @@
 	* Facebook		: http://facebook.com/haruncpi
 	* Licence		: MIT
 */
-use Session;
+use Illuminate\Support\Facades\Session;
+
+
 class Mc
 {
     private $num1;

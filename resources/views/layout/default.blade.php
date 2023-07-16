@@ -1,30 +1,15 @@
 <!DOCTYPE html>
-<!--
-Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.6
-Version: 4.5.4
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
-<!--[if !IE]><!-->
 <html lang="en">
-<!--<![endif]-->
-<!-- BEGIN HEAD -->
 <head>
     <title>@yield('pageTitle') Javul.org</title>
-    <meta charset="utf-8" />    
+    <meta charset="utf-8" />
     <link rel="shortcut icon" href="{!! url('favicon.ico') !!}" type="image/icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
-    <meta content="" name="author" />    
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <meta content="" name="author" />
+
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <link href="//fonts.googleapis.com/css?family=Roboto:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/font-awesome/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="{!! url('assets/plugins/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet" type="text/css" />
@@ -56,14 +41,12 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="icon" type="image/png" sizes="32x32" href="{!! url('assets/images/favicon-32x32.png') !!}">
     <link rel="icon" type="image/png" sizes="96x96" href="{!! url('assets/images/favicon-96x96.png') !!}">
     <link rel="icon" type="image/png" sizes="16x16" href="{!! url('assets/images/favicon-16x16.png') !!}">
-    <script src='https://www.google.com/recaptcha/api.js' async defer></script>
     @yield('page-css')
     <!--<script type="text/javascript" src="//js.stripe.com/v2/"></script>
     <script type="text/javascript">Stripe.setPublishableKey('{{env("STRIPE_SECRET")}}');</script>-->
-    {!! Analytics::render() !!}
+
+{{--    {!! \Analytics::render() !!}--}}
 </head>
-<!-- END HEAD -->
-    <!-- If login page reload every 15 minutes. -->
     <body>
         @include('elements.header')
         <div id="loadingDiv" style="display: none;"><img id="loading" src="{!! url('assets/images/loader.gif') !!}" alt="" /></div>
@@ -75,7 +58,7 @@ License: You must have a valid license purchased only from themeforest(the above
             var siteURL = '{!! url('') !!}';
             var login = '{{ \Auth::check() }}';
             // comes from app/providers/ViewComposerServiceProvider.php Line no:- 53 to 57
-            var user_messages = JSON.parse('{!! $user_messages !!}');
+{{--            var user_messages = JSON.parse('{!! $user_messages !!}');--}}
 
         </script>
         <!--[if lt IE 9]>
@@ -226,7 +209,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             }
                             else
                             {
-                                $("#unread-message").append(0).fadeOut();   
+                                $("#unread-message").append(0).fadeOut();
                             }
                         }
                     })
@@ -239,7 +222,7 @@ License: You must have a valid license purchased only from themeforest(the above
             $(".container").delegate(".start-unit-chat","click",function(){
             $this = $(this);
             var unit_id = $this.attr("data-unit_id");
-            
+
             $.ajax({
                 type:'post',
                 url:siteURL  + '/chat/create_room',

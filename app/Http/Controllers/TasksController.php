@@ -2,44 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\ActivityPoint;
-use App\Alerts;
-use App\Fund;
-use App\JobSkill;
-use App\Library\Helpers;
-use App\Objective;
-use App\RewardAssignment;
-use App\SiteActivity;
-use App\SiteConfigs;
-use App\Task;
-use App\TaskAction;
-use App\TaskBidder;
-use App\TaskCancel;
-use App\TaskComplete;
-use App\TaskDocuments;
-use App\TaskEditor;
-use App\TaskHistory;
-use App\TaskRatings;
-use App\Unit;
+use App\Models\ActivityPoint;
+use App\Models\Alerts;
+use App\Models\Fund;
+use App\Models\JobSkill;
+//use App\Library\Helpers;
+use App\Models\Objective;
+use App\Models\RewardAssignment;
+use App\Models\SiteActivity;
+use App\Models\SiteConfigs;
+use App\Models\Task;
+use App\Models\TaskAction;
+use App\Models\TaskBidder;
+use App\Models\TaskCancel;
+use App\Models\TaskComplete;
+use App\Models\TaskDocuments;
+use App\Models\TaskEditor;
+use App\Models\TaskHistory;
+use App\Models\TaskRatings;
+use App\Models\Unit;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests;
-use Illuminate\Support\Facades\Input;
-use App\Forum;
-use App\TasksRevision;
+
+use App\Models\Forum;
+use App\Models\TasksRevision;
 use Carbon\Carbon;
-use App\UserMessages;
+use App\Models\UserMessages;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class TasksController extends Controller
 {
     public $user_messages;
     public function __construct(){
-        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists','search_by_skills','search_by_status','search_tasks']]);
-        \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
-        view()->share('site_activity_text','Unit Activity Log');
-        $this->user_messages = new UserMessages;
+//        $this->middleware('auth',['except'=>['index','view','get_tasks_paginate','lists','search_by_skills','search_by_status','search_tasks']]);
+//        \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
+//        view()->share('site_activity_text','Unit Activity Log');
+//        $this->user_messages = new UserMessages;
     }
 
     public function revison($task_id){
@@ -83,7 +85,7 @@ class TasksController extends Controller
                     view()->share('awardedUnitFunds',$awardedUnitFunds );
 
 
-                    // Forum Object coading 
+                    // Forum Object coading
                     view()->share("unit_id", $taskObj->unit_id);
                     view()->share("section_id", 2);
                     view()->share("object_id",$taskObj->id);
@@ -154,7 +156,7 @@ class TasksController extends Controller
                     view()->share('awardedUnitFunds',$awardedUnitFunds );
 
 
-                    // Forum Object coading 
+                    // Forum Object coading
                     view()->share("unit_id", $taskObj->unit_id);
                     view()->share("section_id", 2);
                     view()->share("object_id",$taskObj->id);
@@ -228,7 +230,7 @@ class TasksController extends Controller
                     view()->share('awardedUnitFunds',$awardedUnitFunds );
 
 
-                    // Forum Object coading 
+                    // Forum Object coading
                     view()->share("unit_id", $taskObj->unit_id);
                     view()->share("section_id", 2);
                     view()->share("object_id",$taskObj->id);
@@ -238,7 +240,7 @@ class TasksController extends Controller
                         'section_id' => 2,
                         'object_id' => $taskObj->id,
                     ));
-                    
+
                     if(!empty($forumID)){
                         view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
                     }
@@ -255,14 +257,14 @@ class TasksController extends Controller
                             ->where("tasks_revisions.task_id","=",$taskObj->id)
                             ->whereIn("tasks_revisions.id",[ (int)$rev1, (int)$rev2 ])
                             ->get();
-                           
+
                     if($revisions->count() == 2){
                         $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
 
                         view()->share('userIDHashID', $userIDHashID);
                         view()->share('Carbon', new Carbon);
                         view()->share('revisions',$revisions );
-                                  
+
                         return view("tasks.revison.changes_difference");
                     }
 
@@ -273,12 +275,9 @@ class TasksController extends Controller
         return view('errors.404');
     }
 
-    /**
-     * Task Listing
-     * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View]
-     */
-    public function index(Request $request){
+
+    public function index(Request $request)
+    {
         $msg_flag = false;
         $msg_val = '';
         $msg_type = '';
@@ -298,7 +297,7 @@ class TasksController extends Controller
         view()->share('site_activity_text','Global Activity Log');
 
         //\DB::enableQueryLog();
-        $tasks = \DB::table('tasks')
+        $tasks = DB::table('tasks')
             ->join('objectives','tasks.objective_id','=','objectives.id')
             ->join('units','tasks.unit_id','=','units.id')
             ->join('users','tasks.user_id','=','users.id')
@@ -306,12 +305,12 @@ class TasksController extends Controller
                 'users.id as user_id','objectives.name as objective_name'])
             ->whereNull('tasks.deleted_at')
             ->orderBy('tasks.id','desc')
-            ->paginate(\Config::get('app.page_limit'));
+            ->paginate(5);
         //dd(\DB::getQueryLog());
 
 
         $site_activity = SiteActivity::orderBy('id',
-            'desc')->paginate(\Config::get('app.site_activity_page_limit'));
+            'desc')->paginate(Config::get('app.site_activity_page_limit'));
 
 
         view()->share('site_activity',$site_activity);
@@ -319,12 +318,9 @@ class TasksController extends Controller
         return view('tasks.tasks');
     }
 
-    /**
-     * create task.
-     * @param Request $request
-     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
-     */
-    public function create(Request $request){
+
+    public function create(Request $request)
+    {
 
         $segments =$request->segments();
 
@@ -338,7 +334,8 @@ class TasksController extends Controller
         $availableUnitFunds='';
         $awardedUnitFunds='';
 
-        if(count($segments) == 4){
+        if(count($segments) == 4)
+        {
 
             $task_unit_id = $request->segment(2);
             $task_objective_id = $request->segment(3);
@@ -417,7 +414,7 @@ class TasksController extends Controller
         view()->share('actionListFlag',false);
         if($request->isMethod('post')){
 
-            $validator = \Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'unit' => 'required',
                 'objective' => 'required',
                 'task_name' => 'required',
@@ -454,7 +451,7 @@ class TasksController extends Controller
             try {
                 $start_date  = new \DateTime($request->input('estimated_completion_time_start'));
                 $end_date     = new \DateTime($request->input('estimated_completion_time_end'));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo $e->getMessage();
                 exit(1);
             }
@@ -520,7 +517,7 @@ class TasksController extends Controller
                             $fileData = ['document' => $file, 'extension' => strtolower($file->getClientOriginalExtension())];
 
                             // doing the validation, passing post data, rules and the messages
-                            $validator = \Validator::make($fileData, $rules);
+                            $validator = Validator::make($fileData, $rules);
                             if (!$validator->fails()) {
                                if ($file->isValid()) {
                                     $destinationPath = base_path().'/uploads/tasks/'.$task_id; // upload path
@@ -588,7 +585,7 @@ class TasksController extends Controller
 
             $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' created task '.$request->input('task_name').
                 ' in objective '.$objectiveObj->name;
-            \App\User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
+            User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
 
             SiteActivity::create([
                 'user_id'=>Auth::user()->id,
@@ -641,12 +638,7 @@ class TasksController extends Controller
         return view('tasks.create');
     }
 
-    /**
-     * edit task function
-     * @param Request $request
-     * @param $task_id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
+
     public function edit(Request $request,$task_id,$change_status = false){
         if(!empty($task_id))
         {
@@ -670,7 +662,7 @@ class TasksController extends Controller
                     if($task->status == "awaiting_approval" || $task->status == "approval"){
                         return redirect()->back()->withErrors(['unit'=>'You can\'t edit task.'])->withInput();
                     }
-                    $validator = \Validator::make($request->all(), [
+                    $validator = Validator::make($request->all(), [
                         'unit' => 'required',
                         'objective' => 'required',
                         'task_name' => 'required',
@@ -712,7 +704,7 @@ class TasksController extends Controller
                     try {
                         $start_date  = new \DateTime($request->input('estimated_completion_time_start'));
                         $end_date     = new \DateTime($request->input('estimated_completion_time_end'));
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         echo $e->getMessage();
                         exit(1);
                     }
@@ -1231,7 +1223,7 @@ class TasksController extends Controller
                     view()->share('unit_activity_id',$taskObj->unit_id);
                     $skillNames = JobSkill::getSKillWithComma($taskObj->skills);
 
-                    // Forum Object coading 
+                    // Forum Object coading
                     view()->share("unit_id", $taskObj->unit_id);
                     view()->share("section_id", 2);
                     view()->share("object_id",$taskObj->id);
@@ -1242,7 +1234,7 @@ class TasksController extends Controller
                         'section_id' => 2,
                         'object_id' => $taskObj->id,
                     ));
-                    
+
                     if(!empty($forumID)){
                         view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
                     }

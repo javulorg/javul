@@ -1,16 +1,16 @@
 @if(count($units) > 0 )
     @foreach($units as $unit)
         <?php $category_ids = $unit->category_id;
-        $category_names = \App\UnitCategory::getName($category_ids);
+        $category_names = \App\Models\UnitCategory::getName($category_ids);
         $category_ids = explode(",",$category_ids);
         $category_names  = explode(",",$category_names );
         ?>
         <tr>
-            <td><a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}">{{$unit->name}}</a></td>
+{{--            <td><a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}">{{$unit->name}}</a></td>--}}
             <td>
                 @if(count($category_ids) > 0 )
                     @foreach($category_ids as $index=>$category)
-                        <a href="{!! url('units/category/'.$unitCategoryIDHashID->encode($category)) !!}">{{$category_names[$index]}}</a>
+{{--                        <a href="{!! url('units/category/'.$unitCategoryIDHashID->encode($category)) !!}">{{$category_names[$index]}}</a>--}}
                         @if(count($category_ids) > 1 && $index != count($category_ids) -1)
                             <span>&#44;</span>
                         @endif

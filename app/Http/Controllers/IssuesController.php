@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\UserController;
-use App\ActivityPoint;
-use App\Fund;
-use App\ImportanceLevel;
-use App\Issue;
-use App\IssueDocuments;
-use App\Objective;
-use App\SiteActivity;
-use App\Task;
-use App\Unit;
-use App\User;
+use App\Models\ActivityPoint;
+use App\Models\Fund;
+use App\Models\ImportanceLevel;
+use App\Models\Issue;
+use App\Models\IssueDocuments;
+use App\Models\Objective;
+use App\Models\SiteActivity;
+use App\Models\Task;
+use App\Models\Unit;
+use App\Models\User;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests;
-use App\Forum;
-use App\IssuesRevision;
+use App\Models\Forum;
+use App\Models\IssuesRevision;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Mc;
-use App\UserMessages;
+use App\Models\UserMessages;
 use GuzzleHttp\Client;
 
 class IssuesController extends Controller
@@ -79,7 +78,7 @@ class IssuesController extends Controller
                     view()->share('unit_activity_id',$issueObj->unit_id);
                     view()->share('site_activity_text','unit activity log');
 
-                     // Forum Object coading 
+                     // Forum Object coading
                     view()->share("unit_id", $issueObj->unit_id);
                     view()->share("section_id", 3);
                     view()->share("object_id",$issueObj->id);
@@ -153,7 +152,7 @@ class IssuesController extends Controller
                     view()->share('unit_activity_id',$issueObj->unit_id);
                     view()->share('site_activity_text','unit activity log');
 
-                     // Forum Object coading 
+                     // Forum Object coading
                     view()->share("unit_id", $issueObj->unit_id);
                     view()->share("section_id", 3);
                     view()->share("object_id",$issueObj->id);
@@ -227,7 +226,7 @@ class IssuesController extends Controller
                     view()->share('unit_activity_id',$issueObj->unit_id);
                     view()->share('site_activity_text','unit activity log');
 
-                     // Forum Object coading 
+                     // Forum Object coading
                     view()->share("unit_id", $issueObj->unit_id);
                     view()->share("section_id", 3);
                     view()->share("object_id",$issueObj->id);
@@ -245,7 +244,7 @@ class IssuesController extends Controller
                         view()->share('userIDHashID', $userIDHashID);
                         view()->share('Carbon', new Carbon);
                         view()->share('revisions',$revisions );
-                                  
+
                         return view("issues.revison.changes_difference");
                     }
 
@@ -851,7 +850,7 @@ class IssuesController extends Controller
                         'section_id' => 3,
                         'object_id' => $issueObj->id,
                     ));
-                    
+
                     if(!empty($forumID)){
                         view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
                     }
