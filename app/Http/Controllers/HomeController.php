@@ -60,7 +60,8 @@ class HomeController extends Controller
         $featured_unit = Unit::where('featured_unit',1)->first();
         view()->share('featured_unit',$featured_unit);
 
-        $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(Config::get('app.site_activity_page_limit'));
+        $site_activity = [];
+//        $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);
 
         return view('home');

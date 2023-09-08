@@ -24,7 +24,7 @@
         </div>
         <div class="col-md-8">
             <div class="panel panel-grey panel-default">
-                
+
                 <div class="panel-heading current_objective_heading featured_unit_heading">
                     <div class="featured_unit current_objective">
                         <i class="fa fa-bullseye" style="font-size:18px"></i>
@@ -60,7 +60,7 @@
                                 <?php } ?>
                             </tbody>
                             <tfoot>
-                                
+
                             </tfoot>
                           </table>
                           <br>
@@ -84,7 +84,7 @@
 <script type="text/javascript">
     var limit = 3;
     $('input.single-checkbox').on('change', function(evt) {
-       
+
         if($('input.single-checkbox:checked').length >= limit) {
             this.checked = false;
         }
@@ -98,7 +98,7 @@
     });
     var loc ='{!! url("objectives") !!}/{!! $objective_id !!}/diff';
     var slug ='';
- 
+
     $(".btn-compare").click(function(){
         if($('input.single-checkbox:checked').length == 2) {
            var rev = $('input.single-checkbox:checked')[0].value;

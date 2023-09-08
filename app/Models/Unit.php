@@ -62,43 +62,104 @@ class Unit extends Model
      * @param string $unit_id
      * @return mixed
      */
-    public static function getUnitWithCategories($unit_id=''){
-        $where= ' WHERE units.deleted_at IS NULL ';
-        if(!empty($unit_id))
-            $where .= " and units.id='".$unit_id."' ";
+//    public static function getUnitWithCategories($unit_id=''){
+//        $where= ' WHERE units.deleted_at IS NULL ';
+//        if(!empty($unit_id))
+//            $where .= " and units.id='".$unit_id."' ";
+//
+//        $unitsObj = \DB::select( DB::raw("SELECT cr.total_member,units.*,GROUP_CONCAT(unit_category.name SEPARATOR ', ') as category_name,
+//            (SELECT count(*) FROM forum_topic WHERE unit_id = units.id ) as totaltopic
+//            FROM units INNER JOIN unit_category ON  (units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  )
+//            LEFT JOIN chat_room cr ON (cr.unit_id = units.id )
+//            $where GROUP BY units.id") );
+//
+//        $extraWhere = array();
+//        $extraWhere[] = array("wiki_pages.unit_id","=",$unit_id);
+//        $extraWhere[] = array("wiki_pages.is_wikihome","=",3);
+//
+//
+//        $wiki = DB::table("wiki_pages")
+//                        ->select("page_content")
+//                        ->where($extraWhere)
+//                        ->get();
+//
+//        if(!empty($wiki) && $wiki->count() > 0){
+//            $wiki[0]->page_content = Wiki::parse($wiki[0]->page_content);
+//        }
+//
+//        if(count($unitsObj) == 1){
+//            $unitsObjTmp = $unitsObj[0];
+//            if(!empty($unit_id)){
+//
+//                $unitsObjTmp->other_menulink = $wiki->count() == 0 ? "Other Link" : $wiki[0]->page_content;
+//                return $unitsObjTmp;
+//            }
+//            $unitsObj= array_filter((array)$unitsObj[0]);
+//            if(!empty($unitsObj)){
+//                $temp[] =(object)$unitsObjTmp ;
+//                return $temp;
+//            }
+//        }
+//
+//        return $unitsObj;
+//    }
 
-        $unitsObj = \DB::select( DB::raw("SELECT cr.total_member,units.*,GROUP_CONCAT(unit_category.name SEPARATOR ', ') as category_name,
-            (SELECT count(*) FROM forum_topic WHERE unit_id = units.id ) as totaltopic
-            FROM units INNER JOIN unit_category ON  (units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  )
-            LEFT JOIN chat_room cr ON (cr.unit_id = units.id )
-            $where GROUP BY units.id") );
 
-        $extraWhere = array();
-        $extraWhere[] = array("wiki_pages.unit_id","=",$unit_id);
-        $extraWhere[] = array("wiki_pages.is_wikihome","=",3);
+    public static function getUnitWithCategories($unit_id = '')
+    {
+        $query = DB::table('units')
+            ->select(
+                'units.*',
+                'cr.total_member',
+                DB::raw('GROUP_CONCAT(unit_category.name SEPARATOR ", ") as category_name'),
+                DB::raw('(SELECT COUNT(*) FROM forum_topic WHERE unit_id = units.id) as totaltopic')
+            )
+            ->leftJoin('chat_room as cr', 'cr.unit_id', '=', 'units.id')
+            ->leftJoin('unit_category', function ($join) {
+                $join->on('units.category_id', 'IS', DB::raw('NOT NULL'))
+                    ->whereRaw('FIND_IN_SET(unit_category.id, units.category_id) > 0');
+            })
+            ->whereNull('units.deleted_at');
 
-
-        $wiki = DB::table("wiki_pages")
-                        ->select("page_content")
-                        ->where($extraWhere)
-                        ->get();
-
-        if(!empty($wiki) && $wiki->count() > 0){
-            $wiki[0]->page_content = Wiki::parse($wiki[0]->page_content);
+        if (!empty($unit_id)) {
+            $query->where('units.id', $unit_id);
         }
 
-        if(count($unitsObj) == 1){
-            $unitsObjTmp = $unitsObj[0];
-            if(!empty($unit_id)){
+        $query->groupBy('units.id');
 
-                $unitsObjTmp->other_menulink = $wiki->count() == 0 ? "Other Link" : $wiki[0]->page_content;
+        $unitsObj = $query->get();
+
+        if (count($unitsObj) == 1) {
+            $unitsObjTmp = $unitsObj[0];
+            if (!empty($unit_id)) {
+                $extraWhere = [
+                    ['wiki_pages.unit_id', '=', $unit_id],
+                    ['wiki_pages.is_wikihome', '=', 3]
+                ];
+
+                $wiki = DB::table('wiki_pages')
+                    ->select('page_content')
+                    ->where($extraWhere)
+                    ->first();
+
+                if (!empty($wiki)) {
+                    $unitsObjTmp->other_menulink = Wiki::parse($wiki->page_content);
+                } else {
+                    $unitsObjTmp->other_menulink = "Other Link";
+                }
+
                 return $unitsObjTmp;
             }
-            $unitsObj= array_filter((array)$unitsObj[0]);
-            if(!empty($unitsObj)){
-                $temp[] =(object)$unitsObjTmp ;
+
+            $unitsObj = array_filter((array) $unitsObj[0]);
+            if (!empty($unitsObj)) {
+                $temp[] = (object) $unitsObjTmp;
                 return $temp;
             }
+        }
+
+        if (count($unitsObj) > 0) {
+            return $unitsObj[0];
         }
 
         return $unitsObj;

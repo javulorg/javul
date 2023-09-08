@@ -11,7 +11,7 @@ class SiteActivity extends Model
      *
      * @var string
      */
-    protected $table = 'site_activity';
+    protected $table = 'site_activities';
 
     /**
      * The attributes that are mass assignable.

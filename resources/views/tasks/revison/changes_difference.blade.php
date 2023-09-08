@@ -28,7 +28,7 @@
         </div>
          <div class="col-md-8">
             <div class="panel panel-grey panel-default">
-              
+
                 <div class="panel-heading current_task_heading featured_unit_heading">
                     <div class="featured_unit current_task">
                         <i class="fa fa-pencil-square-o"></i>
@@ -51,7 +51,6 @@
                         </div>
                         <div class="viewType">
                             <input type="radio" name="_viewtype" id="sidebyside" onclick="diffUsingJS(0);" /> <label for="sidebyside">Side by Side Diff</label>
-                            &nbsp; &nbsp;
                             <input type="radio" name="_viewtype" id="inline" onclick="diffUsingJS(1);" /> <label for="inline">Inline Diff</label>
                         </div>
                         <div id="diffoutput"></div>
@@ -73,8 +72,8 @@
 diffUsingJS();
 function diffUsingJS(viewType) {
     "use strict";
-   
-    var getContent = function (id) { 
+
+    var getContent = function (id) {
         var oldHTML = $.trim($(id).html());
         return  oldHTML;
      },

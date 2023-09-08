@@ -42,8 +42,8 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{!! url('units/'.$unitIDHashID->encode($issue->unit_id).'/'.\App\Unit::getSlug($issue->unit_id)) !!}">
-                                                {{\App\Unit::getUnitName($issue->unit_id)}}
+                                            <a href="{!! url('units/'.$unitIDHashID->encode($issue->unit_id).'/'.\App\Models\Unit::getSlug($issue->unit_id)) !!}">
+                                                {{\App\Models\Unit::getUnitName($issue->unit_id)}}
                                             </a>
                                         </td>
                                         <td>

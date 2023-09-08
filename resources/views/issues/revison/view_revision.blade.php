@@ -24,14 +24,14 @@
             </div>
             <div class="col-md-8">
             <div class="panel panel-grey panel-default">
-                
+
                 <div class="panel-heading current_issue_heading featured_unit_heading">
                     <div class="featured_unit current_issue">
                         <i class="fa fa-bug" style="font-size:18px"></i>
                     </div>
                     <h4>View Revision: {!! $issueObj->title !!} </h4>
                     <div class="button pull-right small-a">
-                       
+
                     </div>
                 </div>
                 <div class="panel-body list-group">

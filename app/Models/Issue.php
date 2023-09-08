@@ -14,12 +14,10 @@ class Issue extends Model
      */
     protected $fillable = ['user_id','comment','unit_id','objective_id','task_id','title','description','file_attachments','status','resolution','verified_by','resolved_by'];
 
-    /**
-     * Get Parent Task of Issue..
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function issue_documents(){
-        return $this->hasMany('App\IssueDocuments');
+
+    public function issue_documents()
+    {
+        return $this->hasMany(IssueDocuments::class);
     }
 
     public static function getSelectedObjective($request){

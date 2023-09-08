@@ -67,7 +67,7 @@
                                     <tbody>
                                     @if(count($recentUnits) > 0)
                                         @foreach($recentUnits as $unit)
-                                            <?php $categories = \App\Unit::getCategoryNames($unit->category_id); ?>
+                                            <?php $categories = \App\Models\Unit::getCategoryNames($unit->category_id); ?>
                                             <tr>
                                                 <td width="70%">
                                                     <a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}"
@@ -82,7 +82,7 @@
                                                     @if(empty($unit->city_id) && $unit->country_id == 247)
                                                     GLOBAL
                                                     @else
-                                                    {{\App\City::getName($unit->city_id)}}
+                                                    {{\App\Models\City::getName($unit->city_id)}}
                                                     @endif
                                                 </td>
                                             </tr>
@@ -118,7 +118,7 @@
                                     <tbody>
                                     @if(count($recentUnits) > 0)
                                     @foreach($recentUnits as $unit)
-                                    <?php $categories = \App\Unit::getCategoryNames($unit->category_id); ?>
+                                    <?php $categories = \App\Models\Unit::getCategoryNames($unit->category_id); ?>
                                     <tr>
                                         <td width="70%">
                                             <a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug) !!}"
@@ -133,7 +133,7 @@
                                             @if(empty($unit->city_id) && $unit->country_id == 247)
                                                 GLOBAL
                                             @else
-                                                {{\App\City::getName($unit->city_id)}}
+                                                {{\App\Models\City::getName($unit->city_id)}}
                                             @endif
                                         </td>
                                     </tr>

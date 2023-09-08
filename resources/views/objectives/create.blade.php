@@ -124,11 +124,11 @@
                                 </div>
                             </div>-->
 
-                                @if(Request::route()->getName() == 'objectives_edit')
+                                @if(\Request::route()->getName() == 'objectives_edit')
                                 <div class="col-sm-4 form-group">
                                     <label class="control-label">Status</label>
                                     <select class="form-control" name="status">
-                                    @foreach(\App\Objective::objectiveStatus() as $index=>$status)
+                                    @foreach(\App\Models\Objective::objectiveStatus() as $index=>$status)
                                         <option value="{{$index}}"
                                                 @if(!empty($objectiveObj) && $objectiveObj->status == $index) selected=selected
                                                 @elseif(empty($objectiveObj) && $index != "in-progress") disabled="disabled" @endif>

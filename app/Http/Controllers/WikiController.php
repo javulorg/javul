@@ -190,42 +190,47 @@ class WikiController extends Controller
 
     public function changes($unit_id , $slug)
     {
-        view()->share("slug",$slug);
-        view()->share("unit_id",$unit_id);
-        $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+        view()->share("slug", $slug);
+        view()->share("unit_id", $unit_id);
+        $unitIDHashID = new Hashids('unit id hash', 10, Config::get('app.encode_chars'));
         $unit_id = $unitIDHashID->decode($unit_id);
-        if(!empty($unit_id)){
+        if (!empty($unit_id))
+        {
             $unit_id = $unit_id[0];
             $unit = Unit::getUnitWithCategories($unit_id);
-            if(!empty($unit)){
-                $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
-                $availableFunds =Fund::getUnitDonatedFund($unit_id);
-                $awardedFunds =Fund::getUnitAwardedFund($unit_id);
-                view()->share('unitObj',$unit );
-                view()->share('unit_activity_id',$unit_id);
-                view()->share('availableFunds',$availableFunds );
-                view()->share('awardedFunds',$awardedFunds );
-                view()->share('site_activity',$site_activity);
-                /*$filter = array(
+            if (!empty($unit))
+            {
+                $site_activity = SiteActivity::where('unit_id', $unit_id)->orderBy('id', 'desc')->paginate(Config::get('app.site_activity_page_limit'));
+                $availableFunds = Fund::getUnitDonatedFund($unit_id);
+                $awardedFunds = Fund::getUnitAwardedFund($unit_id);
+                view()->share('unitObj', $unit);
+                view()->share('unit_activity_id', $unit_id);
+                view()->share('availableFunds', $availableFunds);
+                view()->share('awardedFunds', $awardedFunds);
+                view()->share('site_activity', $site_activity);
+
+                $filter = array(
                     'unit_id' => $unit_id,
                     'wiki_page_id' => $wiki_page_id,
-                );*/
-                //$pages = Wiki::getPage($filter,false,false);
-                //if(!empty($pages['pages'])){
-                    //view()->share("wiki_page",$pages['pages'][0]);
+                );
+                $pages = Wiki::getPage($filter, false, false);
+                if (!empty($pages['pages'])) {
+                    view()->share("wiki_page", $pages['pages'][0]);
                     $filter = array(
                         'unit_id' => $unit_id,
                         'userlink' => true,
-                        //'wiki_page_id' => $wiki_page_id,
+                        'wiki_page_id' => $wiki_page_id,
                     );
-                    $changes = Wiki::getChanges($filter);
-                    view()->share("changes",$changes);
+                    $model = new Wiki();
+                    $changes = $model->getChanges($filter);
+                    view()->share("changes", $changes);
                     return view("wiki.changes_list");
 
-                //}
+                    //}
+                }
             }
+            return view("errors.404");
         }
-        return view("errors.404");
     }
 
     public function difference($unit_id ,$revision_id, $slug)
@@ -371,7 +376,8 @@ class WikiController extends Controller
         $wiki_page_id_return = 0;
         $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
         $unit_id = $unitIDHashID->decode($unit_id);
-        if(!empty($unit_id)){
+        if(!empty($unit_id))
+        {
             $unit_id = $unit_id[0];
             if($request->isMethod('post')){
                 $inputData = $request->all();

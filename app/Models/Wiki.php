@@ -551,7 +551,7 @@ class Wiki extends Model
         $strlen_var = strlen($str);
         $d = 0;
         for($c = 0; $c < $strlen_var; ++$c){
-            $ord_var_c = ord($str{$c});
+            $ord_var_c = ord($str[$c]);
             switch(true){
                 case(($ord_var_c >= 0x20) && ($ord_var_c <= 0x7F)):
                 $d++;
