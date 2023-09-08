@@ -4,7 +4,7 @@ $downvote_class="";
 $voteClass="";
 if(Auth::check()){
     $voteClass=" vote ";
-    $flag = \App\ImportanceLevel::checkImportanceLevel($issue_id,'issue_id');
+    $flag = \App\Models\ImportanceLevel::checkImportanceLevel($issue_id,'issue_id');
     if($flag == "1")
         $upvote_class="success-upvote";
     elseif($flag == "-1")

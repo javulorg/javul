@@ -80,9 +80,9 @@
                                             {{$obj->name}}
                                         </a>
                                     </td>
-                                    <td  class="text-center">{{\App\Task::getTaskCount('available',$obj->id)}}</td>
-                                    <td  class="text-center">{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
-                                    <td  class="text-center">{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
+                                    <td  class="text-center">{{\App\Models\Task::getTaskCount('available',$obj->id)}}</td>
+                                    <td  class="text-center">{{\App\Models\Task::getTaskCount('in-progress',$obj->id)}}</td>
+                                    <td  class="text-center">{{\App\Models\Task::getTaskCount('completed',$obj->id)}}</td>
                                 </tr>
                             @endforeach
                         @else
@@ -141,13 +141,13 @@
                                     </td>
                                     <td width="20%" class="text-center">
                                         @if($obj->status == "editable")
-                                            <span class="colorLightGreen">{{\App\SiteConfigs::task_status($obj->status)}}</span>
+                                            <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($obj->status)}}</span>
                                         @else
-                                            <span class="colorLightGreen">{{\App\SiteConfigs::task_status($obj->status)}}</span>
+                                            <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($obj->status)}}</span>
                                         @endif
                                     </td>
-                                    <td class="text-center">{{\App\Task::getTaskCount('in-progress',$obj->id)}}</td>
-                                    <td class="text-center">{{\App\Task::getTaskCount('completed',$obj->id)}}</td>
+                                    <td class="text-center">{{\App\Models\Task::getTaskCount('in-progress',$obj->id)}}</td>
+                                    <td class="text-center">{{\App\Models\Task::getTaskCount('completed',$obj->id)}}</td>
                                 </tr>
                             @endforeach
                         @else

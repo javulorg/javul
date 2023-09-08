@@ -31,7 +31,7 @@
                         <tbody>
                         @if(count($objectives) > 0 )
                         @foreach($objectives as $objective)
-                        <?php $unitslug =\App\Unit::getSlug($objective->unit_id); ?>
+                        <?php $unitslug =\App\Models\Unit::getSlug($objective->unit_id); ?>
                         <tr>
                             <td><a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/'.$objective->slug)!!}">{{$objective->name}}</a></td>
                             <td><a href="{!! url('units/'.$unitIDHashID->encode($objective->unit_id).'/'.$unitslug )!!}">{{$objective->unit_name}}</a></td>
@@ -39,7 +39,7 @@
                             ($objective->first_name.'_'.$objective->last_name))!!}">
                                     {{$objective->first_name.' '.$objective->last_name}}
                                 </a></td>
-                            <td>{{ \App\Objective::objectiveStatus()[$objective->status]}}</td>
+                            <td>{{ \App\Models\Objective::objectiveStatus()[$objective->status]}}</td>
                         </tr>
                         @endforeach
                         @else

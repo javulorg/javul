@@ -90,7 +90,7 @@
                                             <label class="control-label {{$status_class}}">
                                                 <?php $verified_by ='';?>
                                                 @if($issueObj->status == "verified")
-                                                    <?php $verified_by = " (by ".App\User::getUserName($issueObj->verified_by).')';?>
+                                                    <?php $verified_by = " (by ".App\Models\User::getUserName($issueObj->verified_by).')';?>
                                                 @endif
                                                 {{ucfirst($issueObj->status. $verified_by )}}
                                             </label>
@@ -180,11 +180,11 @@
                                         Associated Objective
                                     </label>
                                     <label class="control-label colorLightBlue form-control label-value">
-                                        <?php $objSlug = \App\Objective::getSlug($issueObj->objective_id); ?>
+                                        <?php $objSlug = \App\Models\Objective::getSlug($issueObj->objective_id); ?>
                                         <a style="font-weight: normal;" class="no-decoration" href="{!! url('objectives/'
                                     .$objectiveIDHashID->encode
                                     ($issueObj->objective_id).'/'.$objSlug ) !!}">
-                                            <span class="badge">{{\App\Objective::getObjectiveName($issueObj->objective_id)}}</span>
+                                            <span class="badge">{{\App\Models\Objective::getObjectiveName($issueObj->objective_id)}}</span>
                                         </a>
                                     </label>
                                 </div>
@@ -197,8 +197,8 @@
                                         @if(count($task_ids) > 0)
                                             @foreach($task_ids as $t_id)
                                                 <a style="font-weight: normal;" class="no-decoration" href="{!! url('tasks/'
-                                                    .$taskIDHashID->encode($t_id).'/'.\App\Task::getSlug($t_id) ) !!}">
-                                                    <span class="badge">{{\App\Task::getName($t_id)}}</span>
+                                                    .$taskIDHashID->encode($t_id).'/'.\App\Models\Task::getSlug($t_id) ) !!}">
+                                                    <span class="badge">{{\App\Models\Task::getName($t_id)}}</span>
                                                 </a>
                                                 <?php $i++; ?>
                                             @endforeach

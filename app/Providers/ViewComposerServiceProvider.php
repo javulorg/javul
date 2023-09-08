@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\UserMessages;
 use App\Models\UserNotification;
 use Hashids\Hashids;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
@@ -36,17 +37,17 @@ class ViewComposerServiceProvider extends ServiceProvider
         });
 
         //----------------- for footer ---------------------------
-        $userIDHashID= new Hashids('user id hash',10,\Config::get('app.encode_chars'));
-        $unitIDHashID = new Hashids('unit id hash',10,\Config::get('app.encode_chars'));
-        $unitCategoryIDHashID = new Hashids('unit category id hash',10,\Config::get('app.encode_chars'));
-        $objectiveIDHashID = new Hashids('objective id hash',10,\Config::get('app.encode_chars'));
-        $taskIDHashID = new Hashids('task id hash',10,\Config::get('app.encode_chars'));
-        $taskDocumentIDHashID = new Hashids('task document id hash',10,\Config::get('app.encode_chars'));
-        $issueIDHashID = new Hashids('issue id hash',10,\Config::get('app.encode_chars'));
-        $issueDocumentIDHashID = new Hashids('issue document id hash',10,\Config::get('app.encode_chars'));
-        $jobSkillIDHashID = new Hashids('job skills id hash',10,\Config::get('app.encode_chars'));
-        $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,\Config::get('app.encode_chars'));
-        $btcTransactionIDHashID = new Hashids('btc transaction id hash',10,\Config::get('app.encode_chars'));
+        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
+        $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+        $unitCategoryIDHashID = new Hashids('unit category id hash',10,Config::get('app.encode_chars'));
+        $objectiveIDHashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
+        $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
+        $taskDocumentIDHashID = new Hashids('task document id hash',10,Config::get('app.encode_chars'));
+        $issueIDHashID = new Hashids('issue id hash',10,Config::get('app.encode_chars'));
+        $issueDocumentIDHashID = new Hashids('issue document id hash',10,Config::get('app.encode_chars'));
+        $jobSkillIDHashID = new Hashids('job skills id hash',10,Config::get('app.encode_chars'));
+        $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,Config::get('app.encode_chars'));
+        $btcTransactionIDHashID = new Hashids('btc transaction id hash',10,Config::get('app.encode_chars'));
 
         $loggedInUser = 0;
         if(DB::connection()->getSchemaBuilder()->hasTable('users')){
@@ -90,6 +91,7 @@ class ViewComposerServiceProvider extends ServiceProvider
             $view->with('notificationCount',$notificationCount);
         });
 
+//        dd($unitIDHashID);
         /*view()->composer('elements.site_activities',function($view){
             $view->with('site_activity',SiteActivity::take(10)->orderBy('created_at','desc')->get());
         });*/

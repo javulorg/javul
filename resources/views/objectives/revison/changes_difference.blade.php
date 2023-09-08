@@ -24,8 +24,8 @@
         </div>
         <div class="col-md-8">
             <div class="panel panel-grey panel-default">
-                
-              
+
+
                 <div class="panel-heading current_objective_heading featured_unit_heading">
                     <div class="featured_unit current_objective">
                         <i class="fa fa-bullseye" style="font-size:18px"></i>
@@ -68,10 +68,10 @@
 <script src="{!! url('assets/plugins/jsdifflib-master/diffview.js') !!}" type="text/javascript"></script>
 <script type="text/javascript">
 diffUsingJS();
-function diffUsingJS(viewType) {
+function diffUsingJS(viewType)
+{
     "use strict";
-   
-    var getContent = function (id) { 
+    var getContent = function (id) {
         var oldHTML = $.trim($(id).html());
         return  oldHTML;
      },

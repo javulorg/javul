@@ -179,6 +179,7 @@ return [
         Barryvdh\Elfinder\ElfinderServiceProvider::class,
         Ixudra\Curl\CurlServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        App\Providers\ViewComposerServiceProvider::class,
 
     ])->toArray(),
 

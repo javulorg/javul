@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Forum;
 use App\Models\IssuesRevision;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Mc;
 use App\Models\UserMessages;
@@ -39,12 +40,12 @@ class IssuesController extends Controller
             if(!empty($issue_id)){
                 $issue_id = $issue_id[0];
                 $issueObj = Issue::with(['issue_documents'])->find($issue_id);
-                if(!empty($issueObj)  && count($issueObj) > 0){
+                if(!empty($issueObj)){
                     $unitObj = Unit::find($issueObj->unit_id);
                     view()->share('unitObj',$unitObj);
                     view()->share('issueObj',$issueObj);
                     $site_activity = SiteActivity::where('unit_id',$issueObj->unit_id)->orderBy('id','desc')
-                                    ->paginate(\Config::get('app.site_activity_page_limit'));
+                                    ->paginate(Config::get('app.site_activity_page_limit'));
 
                     $availableUnitFunds =Fund::getUnitDonatedFund($issueObj->unit_id);
                     $awardedUnitFunds =Fund::getUnitAwardedFund($issueObj->unit_id);

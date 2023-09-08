@@ -1,7 +1,7 @@
-@if((empty($unitObjForLeftBar) || \App\Task::isUnitAdminOfTask($taskObj->id)) && (!empty($taskDocumentsObj) && count($taskDocumentsObj) < 10))
+{{--@if((empty($unitObjForLeftBar) || \App\Models\Task::isUnitAdminOfTask($taskObj->id)) && (!empty($taskDocumentsObj) && count($taskDocumentsObj) < 10))--}}
 <tr>
     <td style="width:90%;" colspan="2">
-        <!-- <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+        <div class="fileinput fileinput-new input-group" data-provides="fileinput">
             <div class="form-control" data-trigger="fileinput">
                 <i class="glyphicon glyphicon-file fileinput-exists"></i>
                 <span class="fileinput-filename"></span>
@@ -12,10 +12,10 @@
                 <input type="file" name="documents[]">
             </span>
             <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput" style="line-height: 1;border-radius:0;">Remove</a>
-        </div> -->
+        </div>
         <input type="file" name="documents[]" class="file_input" multiple>
     </td>
-    <!-- <td>
+   <td>
         <span>
             <a href="#" class="remove-row text-danger hide" >
                 <i class="fa fa-remove"></i>
@@ -25,6 +25,6 @@
                 <i class="fa fa-plus plus"></i>
             </a>
         </span>
-    </td> -->
+    </td>
 </tr>
-@endif
+{{--@endif--}}

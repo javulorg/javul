@@ -62,7 +62,7 @@
                     <label class="control-label upper">UNIT CATEGORIES</label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
-                    <?php $category_names = \App\UnitCategory::getName($unitObj->category_id);
+                    <?php $category_names = \App\Models\UnitCategory::getName($unitObj->category_id);
                     $category_ids = explode(",",$unitObj->category_id);
                     $category_names  = explode(",",$category_names ); ?>
                         @if(count($category_ids) > 0 )
@@ -85,7 +85,7 @@
                 <div class="col-xs-8 paddingTB7">
                     <label class="control-label upper">
                         @if($unitObj->country_id != "247")
-                            {{\App\City::getName($unitObj->city_id)}}
+                            {{\App\Models\City::getName($unitObj->city_id)}}
                         @else
                             GLOBAL
                         @endif
@@ -132,8 +132,8 @@
                     </label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
-                    <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->parent_id).'/'.\App\Unit::getSlug($unitObj->parent_id)) !!}">
-                        {{\App\Unit::getUnitName($unitObj->parent_id)}}
+                    <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->parent_id).'/'.\App\Models\Unit::getSlug($unitObj->parent_id)) !!}">
+                        {{\App\Models\Unit::getUnitName($unitObj->parent_id)}}
                     </a>
                 </div>
             </div>
@@ -146,10 +146,10 @@
                     </label>
                 </div>
                 <div class="col-xs-8 paddingTB7">
-                    <?php $related_unit =\App\RelatedUnit::getRelatedUnitName($unitObj->id); $i=0; ?>
+                    <?php $related_unit =\App\Models\RelatedUnit::getRelatedUnitName($unitObj->id); $i=0; ?>
                     @if(count($related_unit) > 0)
-                        @foreach(\App\RelatedUnit::getRelatedUnitName($unitObj->id) as $index=>$val)
-                            <a href="{!! url('units/'.$unitIDHashID->encode($index).'/'.\App\Unit::getSlug($index)) !!}">
+                        @foreach(\App\Models\RelatedUnit::getRelatedUnitName($unitObj->id) as $index=>$val)
+                            <a href="{!! url('units/'.$unitIDHashID->encode($index).'/'.\App\Models\Unit::getSlug($index)) !!}">
                                 {{$val}}
                             </a>
                             @if($i == 0 && count($related_unit) > 1)
@@ -168,7 +168,7 @@
 </div>
 <script type="text/javascript">
     window.onload = function(){
-    
+
         function chatOnline(){
             $.ajax({
                 type:'post',

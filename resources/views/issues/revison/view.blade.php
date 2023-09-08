@@ -24,14 +24,14 @@
             </div>
             <div class="col-md-8">
             <div class="panel panel-grey panel-default">
-                
+
                 <div class="panel-heading current_issue_heading featured_unit_heading">
                     <div class="featured_unit current_issue">
                         <i class="fa fa-bug" style="font-size:18px"></i>
                     </div>
                     <h4>View History: {!! $issueObj->title !!} </h4>
                     <div class="button pull-right small-a">
-                       
+
                     </div>
                 </div>
                 <div class="panel-body list-group">
@@ -63,7 +63,7 @@
                                 <?php } ?>
                             </tbody>
                             <tfoot>
-                                
+
                             </tfoot>
                           </table>
                           <br>
@@ -77,8 +77,7 @@
                 </div>
                 <div class="clearfix"></div>
             </div>
-
-        </div>
+            </div>
         </div>
     </div>
     @include('elements.footer')
@@ -87,7 +86,7 @@
 <script type="text/javascript">
     var limit = 3;
     $('input.single-checkbox').on('change', function(evt) {
-       
+
         if($('input.single-checkbox:checked').length >= limit) {
             this.checked = false;
         }
@@ -101,7 +100,7 @@
     });
     var loc ='{!! url("issues") !!}/{!! $issue_id !!}/diff';
     var slug ='';
- 
+
     $(".btn-compare").click(function(){
         if($('input.single-checkbox:checked').length == 2) {
            var rev = $('input.single-checkbox:checked')[0].value;
