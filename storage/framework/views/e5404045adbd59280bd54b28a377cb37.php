@@ -1,0 +1,60 @@
+<div class="sidebar_block">
+    <div class="sidebar_block_ttl">
+        Unit Overview
+        <div class="arrow">
+            <img src="<?php echo e(asset('v2/assets/img/bottom_y.svg')); ?>" alt="">
+        </div>
+    </div>
+    <div class="sidebar_block_content">
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Type:
+            </div>
+            <div class="sidebar_block_right">
+                Community-owned
+            </div>
+        </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Issue Resolution:
+            </div>
+            <div class="sidebar_block_right">
+                <div class="blue_progress"></div> 94%
+            </div>
+        </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Location:
+            </div>
+            <div class="sidebar_block_right">
+                Worldwide
+            </div>
+        </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Operational Grade:
+            </div>
+            <div class="sidebar_block_right">
+                A+ <img src="<?php echo e(asset('v2/assets/img/question.svg')); ?>" alt="" class="question">
+            </div>
+        </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Funded:
+            </div>
+            <div class="sidebar_block_right">
+                <div class="green_progress"></div> 105%
+            </div>
+        </div>
+        <?php if(isset($unitObj)): ?>
+        <div class="sidebar_block_content_bottom">
+            <a href="<?php echo route('unit_revison',[$unitIDHashID->encode($unitObj->id)]); ?>"><i class="fa fa-history"></i></a>
+            <div class="separator"></div>
+            <a href="<?php echo url('units/'.$unitIDHashID->encode($unitObj->id).'/edit'); ?>"><i class="fa fa-edit"></i></a>
+            <div class="separator"></div>
+            <a class="add_to_my_watchlist" data-type="unit"  data-id="<?php echo e($unitIDHashID->encode($unitObj->id)); ?>" data-redirect="<?php echo e(url()->current()); ?>"><i class="fa fa-list"></i></a>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+<?php /**PATH C:\xampp\htdocs\javul\resources\views/layout/v2/global-unit-overview.blade.php ENDPATH**/ ?>
