@@ -624,7 +624,6 @@ class ObjectivesController extends Controller
 
     public function view($objective_id, Request $request)
     {
-
         if(!empty($objective_id))
         {
             $objectiveIDHashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
