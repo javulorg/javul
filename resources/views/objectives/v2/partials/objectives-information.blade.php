@@ -41,12 +41,12 @@
                                 <label class="control-label upper d-block">
                                     <span class="fund_icon">FUNDS</span>
                                     <span class="text-right float-end">
-                                                                <a href="{!! url('funds/donate/objective/'.$objectiveIDHashID->encode($objectiveObj->id))!!}">
-                                                                    <div class="fund_paid">
-                                                                        <i class="fa fa-plus plus"></i>
-                                                                    </div>
-                                                                </a>
-                                                             </span>
+                                        <a href="{!! url('funds/donate/objective/'.$objectiveIDHashID->encode($objectiveObj->id))!!}">
+                                            <div class="fund_paid">
+                                                <i class="fa fa-plus plus"></i>
+                                            </div>
+                                        </a>
+                                    </span>
                                 </label>
                             </div>
                             <div class="col-md-4 border-start" style="padding-top: 3px;">
