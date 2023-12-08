@@ -76,7 +76,7 @@
                                                 Medium
                                                 <div class="progress">
                                                     <div class="progress-bar" style="width:75%"></div>
-                                                </div> <a href="#" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""></a>
+                                                </div> <a href="<?php echo url('objectives/'.$objectiveIDHashID->encode($objectiveObj->id).'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""></a>
                                             </div>
                                         </div>
                                         <div class="sidebar_block_row">
