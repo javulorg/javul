@@ -193,8 +193,7 @@ class ForumController extends Controller
     }
     public function submitauto(Request $request)
     {
-        $inputData = $request->all();
-        $validator = Validator::make($inputData, [
+        $validator = Validator::make($request->all(), [
             'object_id'=> 'required',
             'desc'=> 'required',
             'unit_id'=> 'required',
@@ -206,9 +205,9 @@ class ForumController extends Controller
             ), 200);
         }
         $forumID =  Forum::checkTopic(array(
-            'unit_id' => $inputData['unit_id'],
-            'section_id' => $inputData['section_id'],
-            'object_id' => $inputData['object_id'],
+            'unit_id' => $request->unit_id,
+            'section_id' => $request->section_id,
+            'object_id' => $request->object_id,
         ));
 
 
@@ -216,32 +215,32 @@ class ForumController extends Controller
         if(empty($forumID))
         {
             $forumData = array();
-            if($inputData['section_id'] == 3){
-                $issueObj = Issue::with(['issue_documents'])->find($inputData['object_id']);
+            if($request->section_id == 3){
+                $issueObj = Issue::with(['issue_documents'])->find($request->object_id);
                 $forumData['title'] = $issueObj->title;
                 $forumData['unit_id'] = $issueObj->unit_id;
                 $forumData['desc'] = $issueObj->description;
                 $forumData['slug'] = substr(str_replace(" ","_",strtolower( $issueObj->title )),0,20);
-                $forumData['section_id'] = $inputData['section_id'];
-                $forumData['object_id'] = $inputData['object_id'];
+                $forumData['section_id'] = $request->section_id;
+                $forumData['object_id'] = $request->object_id;
             }
-            else if($inputData['section_id'] == 2){
-                $taskObj = Task::with(['objective','task_documents'])->find($inputData['object_id']);
+            else if($request->section_id == 2){
+                $taskObj = Task::with(['objective','task_documents'])->find($request->object_id);
                 $forumData['title'] = $taskObj->name;
                 $forumData['unit_id'] = $taskObj->unit_id;
                 $forumData['desc'] = $taskObj->description;
                 $forumData['slug'] = $taskObj->slug != '' ? $taskObj->slug : substr(str_replace(" ","_",strtolower( $taskObj->name )),0,20);
-                $forumData['section_id'] = $inputData['section_id'];
-                $forumData['object_id'] = $inputData['object_id'];
+                $forumData['section_id'] = $request->section_id;
+                $forumData['object_id'] = $request->object_id;
             }
-            else if($inputData['section_id'] == 1){
-                $Obj = Objective::where('id',$inputData['object_id'])->first();
+            else if($request->section_id == 1){
+                $Obj = Objective::where('id',$request->object_id)->first();
                 $forumData['title'] = $Obj->name;
                 $forumData['unit_id'] = $Obj->unit_id;
                 $forumData['desc'] = $Obj->description;
                 $forumData['slug'] = $Obj->slug != '' ? $Obj->slug : substr(str_replace(" ","_",strtolower( $Obj->name )),0,20);
-                $forumData['section_id'] = $inputData['section_id'];
-                $forumData['object_id'] = $inputData['object_id'];
+                $forumData['section_id'] = $request->section_id;
+                $forumData['object_id'] = $request->object_id;
             }
             if(!empty($forumData)){
                 $forumID = Forum::submit($forumData);
@@ -258,7 +257,7 @@ class ForumController extends Controller
 
         if($forumID){
             $commmentData = array(
-                'post' => $inputData['desc'],
+                'post' => $request->desc,
                 'topic_id' => $forumID,
                 'reply_id' => 0,
             );

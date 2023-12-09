@@ -81,7 +81,8 @@ class Forum extends Model
          }
     	return $topics;
     }
-    public static function checkTopic($filter = array()){
+    public static function checkTopic($filter = array())
+    {
         $extraWhere = array();
         if(isset($filter['unit_id'])){
             $extraWhere[] = array("forum_topic.unit_id","=",$filter['unit_id']);
@@ -92,7 +93,7 @@ class Forum extends Model
         if(isset($filter['object_id'])){
             $extraWhere[] = array("forum_topic.object_id","=",$filter['object_id']);
         }
-        $topic =   DB::table("forum_topic")
+        $topic = DB::table("forum_topic")
                     ->select(['topic_id','slug'])
                     ->where($extraWhere)
                     ->get();
@@ -102,24 +103,7 @@ class Forum extends Model
         }
         return array();
     }
-    /*public static function getTopic($topic_id){
-    	$topics = DB::table("forum_topic")
-    				->select(["forum_topic_updown.value as updownstatus","forum_topic.*","users.first_name","users.last_name" ,
-                        DB::raw("(SELECT sum(value) FROM forum_updown WHERE post_id IN (
-                            (SELECT post_id FROM forum_post WHERE  topic_id = forum_topic.topic_id
-                            ) ) ) as updownpoint "),
-                        DB::raw("(SELECT count(*) FROM forum_ideapoint WHERE post_id IN ( (SELECT post_id FROM forum_post WHERE topic_id = forum_topic.topic_id ) ) ) as ideascore "),
-                        DB::raw("(SELECT sum(value) FROM forum_topic_updown as tempud WHERE tempud.topic_id = forum_topic.topic_id AND tempud.user_id = ". Auth::user()->id ." ) as votecount"),
-                        ])
-                    ->leftJoin('forum_topic_updown', function($join){
-                        $join->on('forum_topic_updown.user_id', '=', DB::raw(Auth::user()->id) );
-                        $join->on('forum_topic_updown.topic_id', '=', 'forum_topic.topic_id' );
-                     })
-    				->join('users', 'users.id', '=', 'forum_topic.user_id')
-    				->where("forum_topic.topic_id","=",$topic_id)
-    				->get();
-    	return $topics;
-    }*/
+
     public static function getTopic($topic_id)
     {
         $topics = DB::table("forum_topic")
