@@ -10,6 +10,7 @@ use App\Models\SiteActivity;
 use App\Models\Task;
 use App\Models\Unit;
 use App\Models\User;
+use App\Services\Objectives\ObjectiveService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
@@ -624,6 +625,7 @@ class ObjectivesController extends Controller
 
     public function view($objective_id, Request $request)
     {
+        $service = new ObjectiveService();
         if(!empty($objective_id))
         {
             $objectiveIDHashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
@@ -689,8 +691,11 @@ class ObjectivesController extends Controller
 
                         if(!empty($forumID))
                         {
-                            view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
+                            view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ));
+                            $comments = $service->comments( $objectiveObj->unit_id, 1, $objectiveObj->id);
+                            view()->share('comments', $comments);
                         }
+
 
                         $add_wl = session()->get('add_to_wl');
                         if( $add_wl  != null ){
