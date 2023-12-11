@@ -263,19 +263,17 @@ class ForumController extends Controller
             );
             $commmentId = Forum::postSubmit($commmentData);
             if($commmentId){
-                $json['success'] = 'Comment submitted';
+                return response()->json(['message' => 'Comment submitted', 'status' => 201 ], 201);
             }
             else
             {
-                $json['error'] = "Something wrong try again..";
+                return response()->json(['message' => 'Something wrong try again..' , 'status' => 500], 500);
             }
         }
         else
         {
-            $json['error'] = "Something wrong try again..";
+            return response()->json(['message' => 'Something wrong try again..' , 'status' => 500 ], 500);
         }
-
-        echo json_encode($json);die;
     }
     public function submit(Request $request)
     {
