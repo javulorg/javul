@@ -625,6 +625,7 @@ class ObjectivesController extends Controller
 
     public function view($objective_id, Request $request)
     {
+        $objectiveHashID = $objective_id;
         $service = new ObjectiveService();
         if(!empty($objective_id))
         {
@@ -682,6 +683,7 @@ class ObjectivesController extends Controller
                         view()->share("unit_id", $objectiveObj->unit_id);
                         view()->share("section_id", 1);
                         view()->share("object_id",$objectiveObj->id);
+                        view()->share("object_hash_id",$objectiveHashID);
 
                         $forumID =  Forum::checkTopic(array(
                             'unit_id' => $objectiveObj->unit_id,

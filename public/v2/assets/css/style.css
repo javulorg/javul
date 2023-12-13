@@ -718,6 +718,7 @@ sidebar_block_content .sidebar_block_row:last-child {
 .objective_content_info {
     max-width: 273px;
     min-width: 273px;
+    flex: 1;
 }
 
 .objective_content_info_links {
@@ -742,6 +743,7 @@ sidebar_block_content .sidebar_block_row:last-child {
 .objective_content_row {
     display: flex;
     gap: 10px;
+    justify-content: space-between;
 }
 
 .objective_content p:last-child {

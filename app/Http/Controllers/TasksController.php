@@ -94,6 +94,67 @@ class TasksController extends Controller
     }
 
 
+    public function getObjectiveTask($objectiveId, $slug, $unitId)
+    {
+        $taskObjectiveObj = [];
+
+        $unitIDHashID= new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+        $objectiveIDHashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
+        $taskUnitObj= [];
+        $availableUnitFunds='';
+        $awardedUnitFunds='';
+
+        $task_objective_id = $objectiveIDHashID->decode($objectiveId);
+
+        $task_objective_id = $task_objective_id[0];
+
+        $taskUnitObj = Unit::find($unitId);
+        $taskObjectiveObj = Objective::find($task_objective_id);
+
+        $availableUnitFunds =Fund::getUnitDonatedFund($unitId);
+        $awardedUnitFunds =Fund::getUnitAwardedFund($unitId);
+
+        $taskObjectiveObj = Objective::where('unit_id',$unitId)->get();
+
+        view()->share('unitInfo',$taskUnitObj);
+        view()->share('availableUnitFunds',$availableUnitFunds);
+        view()->share('awardedUnitFunds',$awardedUnitFunds);
+        view()->share('task_unit_id',$unitId);
+        view()->share('task_objective_id',$task_objective_id);
+        view()->share('unit_activity_id',$task_objective_id);
+
+
+        $unitsObj = Unit::where('status','active')->pluck('name','id');
+        $task_skills = JobSkill::pluck('skill_name','id');
+        $assigned_toUsers = User::where('id','!=',Auth::user()->id)->where('role','!=','superadmin')->get();
+        $assigned_toUsers= $assigned_toUsers->pluck('full_name','id');
+        view()->share('assigned_toUsers',$assigned_toUsers);
+        view()->share('task_skills',$task_skills );
+        view()->share('unitsObj',$unitsObj);
+        view()->share('objectiveObj',$taskObjectiveObj );
+        view()->share('taskObj',[]);
+        view()->share('taskDocumentsObj',[]);
+        //view()->share('taskActionsObj',[]);
+        view()->share('exploded_task_list',[]);
+        view()->share('editFlag',false);
+        view()->share('actionListFlag',false);
+
+        $homeCheck = isset($request->home) ??  false;
+        $unitData = Unit::where('id', $unitId)->first();
+//        dd($unitData);
+        view()->share('unitData',$unitData);
+        view()->share('homeCheck',$homeCheck );
+        view()->share('availableFunds',$availableUnitFunds );
+        view()->share('awardedFunds',$awardedUnitFunds );
+
+        return view('tasks.create');
+    }
+    public function storeObjectiveTask($objectiveHashId)
+    {
+
+    }
+
+
     public function create(Request $request)
     {
         $segments =$request->segments();
@@ -765,8 +826,6 @@ class TasksController extends Controller
         }
         return view('errors.404');
     }
-
-
 
     public function edit(Request $request,$task_id,$change_status = false)
     {

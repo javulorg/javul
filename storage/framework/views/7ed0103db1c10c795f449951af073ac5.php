@@ -111,6 +111,9 @@
                     </div>
                 </div>
             </div>
+
+
+
             <div class="content_block">
                 <div class="table_block table_block_tasks">
                     <div class="table_block_head">
@@ -163,7 +166,10 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="<?php echo e(url('tasks/create')); ?>"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New</a>
+                    <a href="<?php echo url('objectives/' . $object_hash_id . '/' . $objectiveObj->slug . '/' . $unitData->id . '/tasks'); ?>">
+                        <img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt="">
+                        Add New
+                    </a>
                     <div class="separator"></div> <a href="#" class="see_more">See more</a>
                 </div>
             </div>
@@ -192,7 +198,10 @@
                                     <div class="comment_content">
                                         <div class="comment_info">
                                             <div class="comment_autor">
-                                                <?php echo e(\Illuminate\Support\Facades\Auth::user()->fullName); ?>
+                                                <?php
+                                                  $user = \App\Models\User::where('id', $comment->user_id)->select('first_name','last_name')->first();
+                                                ?>
+                                                <?php echo e($user->first_name . ' ' . $user->last_name); ?>
 
                                             </div>
                                             <div class="comment_time">
