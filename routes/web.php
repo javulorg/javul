@@ -296,6 +296,7 @@ Route::get('tasks/{unitid}/lists', [TasksController::class,'lists']);
 Route::post('tasks/search_tasks', [TasksController::class,'search_tasks']);
 Route::get('tasks/search_by_skills', [TasksController::class,'search_by_skills']);
 Route::get('tasks/search_by_status', [TasksController::class,'search_by_status']);
+Route::get('objectives/{objective_id}/{slug_id}/{unit_id}/tasks', [TasksController::class, 'getObjectiveTask']);
 
 //FundsController
 Route::get('funds/donate/unit/{unit_id}', [FundsController::class, 'donate_to_unit_objective_task']);
