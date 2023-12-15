@@ -292,11 +292,11 @@
                 $(this).closest(".input-group").find("input").focus();
             });
 
-            $('#description-summernote').summernote({
-                tabsize: 0,
-                height: 100,
-                focus: true
-            });
+            // $('#description-summernote').summernote({
+            //     tabsize: 0,
+            //     height: 100,
+            //     focus: true
+            // });
 
 
             $(document).off('click','.addMoreDocument').on('click',".addMoreDocument",function(){

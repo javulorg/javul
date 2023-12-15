@@ -113,7 +113,6 @@
             </div>
 
 
-
             <div class="content_block">
                 <div class="table_block table_block_tasks">
                     <div class="table_block_head">
@@ -174,7 +173,50 @@
                 </div>
             </div>
 
+            <div class="content_block">
+                <div class="table_block table_block_objective">
+                    <div class="table_block_head">
+                        <div class="table_block_icon">
+                            <img src="<?php echo e(asset('v2/assets/img/User_Rounded.svg')); ?>" alt="" class="img-fluid">
+                        </div>
+                        Parent Objectives
+                        <div class="arrow">
+                            <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
+                        </div>
+                    </div>
 
+                    <?php $objSlug = \App\Models\Objective::getSlug($objectiveObj->parent_id); ?>
+                    <div class="table_block_txt">
+                        <a style="font-weight: normal;" class="no-decoration" href="<?php echo url('objectives/'.$objectiveIDHashID->encode($objectiveObj->parent_id).'/'.$objSlug ); ?>">
+                            <?php echo e(\App\Models\Objective::getObjectiveName($objectiveObj->parent_id)); ?>
+
+                        </a>
+                    </div>
+                </div>
+                <div class="content_block_bottom">
+                    <a href="#"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                </div>
+            </div>
+
+            <div class="content_block">
+                <div class="table_block table_block_objective">
+                    <div class="table_block_head">
+                        <div class="table_block_icon">
+                            <img src="<?php echo e(asset('v2/assets/img/Users_Two_Rounded.svg')); ?>" alt="" class="img-fluid">
+                        </div>
+                        Child Objectives
+                        <div class="arrow">
+                            <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
+                        </div>
+                    </div>
+                    <div class="table_block_txt">
+
+                    </div>
+                </div>
+                <div class="content_block_bottom">
+                    <a href="#"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                </div>
+            </div>
 
             <div class="content_block_comments">
                 <div class="table_block table_block_comments">
