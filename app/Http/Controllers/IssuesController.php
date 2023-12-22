@@ -11,6 +11,7 @@ use App\Models\SiteActivity;
 use App\Models\Task;
 use App\Models\Unit;
 use App\Models\User;
+use App\Services\Issues\IssueService;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -796,6 +797,7 @@ class IssuesController extends Controller
     public function view(Request $request)
     {
         $issue_id  = $request->segment(2);
+        $service = new IssueService();
         if(!empty($issue_id))
         {
             $issueIDHashID = new Hashids('issue id hash',10,Config::get('app.encode_chars'));
@@ -860,7 +862,11 @@ class IssuesController extends Controller
 
                     if(!empty($forumID)){
                         view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
+                        $comments = $service->comments( $issueObj->unit_id, 1, $issueObj->id);
+                        view()->share('comments', $comments);
                     }
+                    $comments = $service->comments( $issueObj->unit_id, 1, $issueObj->id);
+                    view()->share('comments', $comments);
                     $add_wl = session()->get('add_to_wl');
                     if( $add_wl  != null ){
                         $add_to_watchlist = session()->get('add_to_wl');
