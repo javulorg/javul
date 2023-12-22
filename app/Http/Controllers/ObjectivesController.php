@@ -697,7 +697,8 @@ class ObjectivesController extends Controller
                             $comments = $service->comments( $objectiveObj->unit_id, 1, $objectiveObj->id);
                             view()->share('comments', $comments);
                         }
-
+                        $comments = $service->comments( $objectiveObj->unit_id, 1, $objectiveObj->id);
+                        view()->share('comments', $comments);
 
                         $add_wl = session()->get('add_to_wl');
                         if( $add_wl  != null ){
