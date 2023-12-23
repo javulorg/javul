@@ -865,7 +865,7 @@ class IssuesController extends Controller
                         $comments = $service->comments( $issueObj->unit_id, 1, $issueObj->id);
                         view()->share('comments', $comments);
                     }
-                    $comments = $service->comments( $issueObj->unit_id, 1, $issueObj->id);
+                    $comments = $service->comments( $issueObj->unit_id, 3, $issueObj->id);
                     view()->share('comments', $comments);
                     $add_wl = session()->get('add_to_wl');
                     if( $add_wl  != null ){
