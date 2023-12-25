@@ -23,6 +23,7 @@ use App\Models\TaskRatings;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\UserMessages;
+use App\Services\Tasks\TaskService;
 use DateTime;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
@@ -1587,6 +1588,7 @@ class TasksController extends Controller
 
     public function view($task_id,Request $request)
     {
+        $service = new TaskService();
         if(!empty($task_id))
         {
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
@@ -1671,9 +1673,14 @@ class TasksController extends Controller
                         'object_id' => $taskObj->id,
                     ));
 
-                    if(!empty($forumID)){
-                        view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ) );
+                    if(!empty($forumID))
+                    {
+                        view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ));
+                        $comments = $service->comments( $taskObj->unit_id, 2, $taskObj->id);
+                        view()->share('comments', $comments);
                     }
+                    $comments = $service->comments( $taskObj->unit_id, 2, $taskObj->id);
+                    view()->share('comments', $comments);
 
                     view()->share('skill_names',$skillNames);
 

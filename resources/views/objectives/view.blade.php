@@ -224,10 +224,13 @@
                     </div>
                     <div class="comments_content">
                         <div class="comment_stat">
-                            <b>{{ $comments->count() }} review</b> <a href="#">Write a review</a>
+{{--                            @if(isset($comments))--}}
+{{--                                <b>{{  $comments->count() }} review</b> <a href="#">Write a review</a>--}}
+{{--                            @endif--}}
+{{--                            <b>0 review</b> <a href="#">Write a review</a>--}}
                         </div>
 
-                        @if($comments->count() > 0)
+                        @if(isset($comments))
                             @foreach($comments as $comment)
                                 <div class="comment_container">
                                     <div class="comment_icon">
