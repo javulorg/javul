@@ -144,11 +144,127 @@
                     </div>
                 </div>
             </div>
+
+            <div class="content_block">
+                <div class="table_block table_block_objective">
+                    <div class="table_block_head">
+                        <div class="table_block_icon">
+                            <img src="{{ asset('v2/assets/img/User_Rounded.svg') }}" alt="" class="img-fluid">
+                        </div>
+                        Objectives
+                        <div class="arrow">
+                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                        </div>
+                    </div>
+
+                    <?php $objSlug = \App\Models\Objective::getSlug($taskObj->objective->id); ?>
+                    <div class="table_block_txt">
+                        <a style="font-weight: normal;" class="no-decoration" href="{!! url('objectives/'.$objectiveIDHashID->encode($taskObj->objective->id).'/'.$objSlug ) !!}">
+                            {{ $taskObj->objective->name }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content_block_comments">
+                <div class="table_block table_block_comments">
+                    <div class="table_block_head">
+                        <div class="table_block_icon">
+                            <img src="{{ asset('v2/assets/img/Dialog.svg') }}" alt="" class="img-fluid">
+                        </div>
+                        Comments
+                    </div>
+                    <div class="comments_content">
+                        <div class="comment_stat">
+                            {{--                            @if(isset($comments))--}}
+                            {{--                                <b>{{  $comments->count() }} review</b> <a href="#">Write a review</a>--}}
+                            {{--                            @endif--}}
+                            {{--                            <b>0 review</b> <a href="#">Write a review</a>--}}
+                        </div>
+
+                        @if(isset($comments))
+                            @foreach($comments as $comment)
+                                <div class="comment_container">
+                                    <div class="comment_icon">
+                                        <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
+                                    </div>
+                                    <div class="comment_content">
+                                        <div class="comment_info">
+                                            <div class="comment_autor">
+                                                @php
+                                                    $user = \App\Models\User::where('id', $comment->user_id)->select('first_name','last_name')->first();
+                                                @endphp
+                                                {{ $user->first_name . ' ' . $user->last_name }}
+                                            </div>
+                                            <div class="comment_time">
+                                                {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}
+
+                                            </div>
+                                        </div>
+                                        <div class="comment_txt">
+                                            {{ $comment->post }}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+
+
+
+                        <div class="comment_container">
+                            <div class="comment_icon">
+                                <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
+                            </div>
+                            <input type="hidden" name="unit_id" id="comment_unit_id" value="<?=  $unit_id ?>">
+                            <input type="hidden" name="section_id" id="comment_section_id" value="<?=  $section_id ?>">
+                            <input type="hidden" name="object_id" id="comment_object_id" value="<?=  $object_id ?>">
+                            <div class="comment_content">
+                                <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
+                                <button id="comment_form"  class="btn">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content_block_bottom">
+                    <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                </div>
+            </div>
+
         </div>
     </div>
 @endsection
 @section('scripts')
+    <script>
+        $(document).ready(function() {
+            $("#comment_form").click(function(e)
+            {
+                var unitId = $('#comment_unit_id').val();
+                var sectionId = $('#comment_section_id').val();
+                var objectId = $('#comment_object_id').val();
+                var desc = $('#comment').val();
 
+                $.ajax({
+                    type: "POST",
+                    url: '{{ url("/forum/submitauto") }}',
+                    data: {
+                        unit_id : unitId,
+                        section_id : sectionId,
+                        object_id : objectId,
+                        desc : desc,
+                        _token: $('input[name="_token"]').val(),
+                    },
+                    success: function (response, xhr, textStatus) {
+                        if (response.status === 201) {
+                            location.reload();
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseText);
+                    },
+                });
+            });
+        });
+    </script>
 @endsection
 
 

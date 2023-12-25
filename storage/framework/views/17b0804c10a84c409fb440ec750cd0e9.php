@@ -168,7 +168,7 @@
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
+            // $(".selectpicker").selectpicker('refresh');
             $("#country").on('change',function(){
                 var value = $(this).val();
                 var token = $('[name="_token"]').val();

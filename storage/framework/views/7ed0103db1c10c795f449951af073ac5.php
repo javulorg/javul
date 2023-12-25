@@ -228,10 +228,13 @@
                     </div>
                     <div class="comments_content">
                         <div class="comment_stat">
-                            <b><?php echo e($comments->count()); ?> review</b> <a href="#">Write a review</a>
+
+
+
+
                         </div>
 
-                        <?php if($comments->count() > 0): ?>
+                        <?php if(isset($comments)): ?>
                             <?php $__currentLoopData = $comments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="comment_container">
                                     <div class="comment_icon">
