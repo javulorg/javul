@@ -87,49 +87,78 @@
                                                 Status:
                                             </div>
                                             <div class="sidebar_block_right">
-                                                
-                                                
-                                                
-                                                
-                                                
+                                                <?php echo e(\App\Models\SiteConfigs::task_status($taskObj->status)); ?>
+
+                                                <?php if($taskObj->status == "open_for_bidding" && auth()->check()): ?>
+                                                    <?php if(\App\Models\TaskBidder::checkBid($taskObj->id)): ?>
+                                                        <a title="bid now" href="<?php echo url('tasks/bid_now/'.$taskIDHashID->encode($taskObj->id)).'#bid_now'; ?>" class="btn btn-primary btn-sm" style="color:#fff !important;">
+                                                            Bid now
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <a title="applied bid" class="btn btn-warning btn-sm" style="color:#fff !important;">
+                                                            Applied Bid
+                                                        </a>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
+
                                         <div class="sidebar_line"></div>
                                         <div class="sidebar_block_row">
                                             <div class="sidebar_block_left">
-                                                Support
+                                                Skills
                                             </div>
                                             <div class="sidebar_block_right">
-                                                
-                                                
-                                                
-                                                
+                                                <?php if(!empty($skill_names) && count($skill_names) > 0): ?>
+                                                      <?php echo e($skill_names[0]); ?>
 
-                                                
-                                                
-                                                
+                                                <?php else: ?>
+                                                   -
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
 
-                                                
-                                                
-                                                
-                                                
-                                                
-                                                
-                                                
+                                        <div class="sidebar_line"></div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Award
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                $ <?php echo e($taskObj->compensation); ?>
 
-                                                
+                                            </div>
+                                        </div>
 
-                                                
-                                                
-                                                
-                                                
-                                                
 
-                                                
-                                                
-                                                
-                                                
-                                                
+                                        <div class="sidebar_line"></div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Completion
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                <?php echo e($taskObj->completionTime); ?>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="sidebar_line"></div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Available
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                $ <?php echo e(number_format($availableFunds,2)); ?>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="sidebar_line"></div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Awarded
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                $ <?php echo e(number_format($availableFunds,2)); ?>
 
                                             </div>
                                         </div>
@@ -147,10 +176,10 @@
             </div>
 
             <div class="content_block">
-                <div class="table_block table_block_objective">
+                <div class="table_block table_block_objectives active">
                     <div class="table_block_head">
                         <div class="table_block_icon">
-                            <img src="<?php echo e(asset('v2/assets/img/User_Rounded.svg')); ?>" alt="" class="img-fluid">
+                            <img src="<?php echo e(asset('v2/assets/img/location.svg')); ?>" alt="" class="img-fluid">
                         </div>
                         Objectives
                         <div class="arrow">

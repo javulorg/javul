@@ -86,50 +86,73 @@
                                                 Status:
                                             </div>
                                             <div class="sidebar_block_right">
-                                                {{--                                                        <?php $verified_by ='';?>--}}
-                                                {{--                                                        @if($issueObj->status == "verified")--}}
-                                                {{--                                                                <?php $verified_by = " (by ".App\Models\User::getUserName($issueObj->verified_by).')';?>--}}
-                                                {{--                                                        @endif--}}
-                                                {{--                                                        {{ucfirst($issueObj->status. $verified_by )}}--}}
+                                                {{\App\Models\SiteConfigs::task_status($taskObj->status)}}
+                                                @if($taskObj->status == "open_for_bidding" && auth()->check())
+                                                    @if(\App\Models\TaskBidder::checkBid($taskObj->id))
+                                                        <a title="bid now" href="{!! url('tasks/bid_now/'.$taskIDHashID->encode($taskObj->id)).'#bid_now' !!}" class="btn btn-primary btn-sm" style="color:#fff !important;">
+                                                            Bid now
+                                                        </a>
+                                                    @else
+                                                        <a title="applied bid" class="btn btn-warning btn-sm" style="color:#fff !important;">
+                                                            Applied Bid
+                                                        </a>
+                                                    @endif
+                                                @endif
                                             </div>
                                         </div>
+
                                         <div class="sidebar_line"></div>
                                         <div class="sidebar_block_row">
                                             <div class="sidebar_block_left">
-                                                Support
+                                                Skills
                                             </div>
                                             <div class="sidebar_block_right">
-                                                {{--                                                        <?php--}}
-                                                {{--                                                        $voteClass = "";--}}
-                                                {{--                                                        $upvoteClass = "";--}}
-                                                {{--                                                        $downvoteClass = "";--}}
+                                                @if(!empty($skill_names) && count($skill_names) > 0)
+                                                      {{$skill_names[0]}}
+                                                @else
+                                                   -
+                                                @endif
+                                            </div>
+                                        </div>
 
-                                                {{--                                                        if (auth()->check()) {--}}
-                                                {{--                                                            $voteClass = "vote";--}}
-                                                {{--                                                            $flag = \App\Models\ImportanceLevel::checkImportanceLevel($issueObj->id, 'issue_id');--}}
+                                        <div class="sidebar_line"></div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Award
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                $ {{ $taskObj->compensation }}
+                                            </div>
+                                        </div>
 
-                                                {{--                                                            if ($flag == "1") {--}}
-                                                {{--                                                                $upvoteClass = "success-upvote";--}}
-                                                {{--                                                            } elseif ($flag == "-1") {--}}
-                                                {{--                                                                $downvoteClass = "success-downvote";--}}
-                                                {{--                                                            }--}}
-                                                {{--                                                        }--}}
-                                                {{--                                                        ?>--}}
 
-                                                {{--                                                        <div style="float:left;">{{ $importancePercentage }}%</div>--}}
+                                        <div class="sidebar_line"></div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Completion
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                {{ $taskObj->completionTime }}
+                                            </div>
+                                        </div>
 
-                                                {{--                                                        <div class="vote-buttons">--}}
-                                                {{--                                                <span class="fa fa-thumbs-up {{ $voteClass }} upvote {{ $upvoteClass }}"--}}
-                                                {{--                                                      @if (auth()->check()) data-id="{{ $issueIDHashID->encode($issueObj->id) }}" data-type="up" @endif--}}
-                                                {{--                                                      title="Upvote"></span>--}}
-                                                {{--                                                            {{ $upvotedCnt }}--}}
+                                        <div class="sidebar_line"></div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Available
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                $ {{ number_format($availableFunds,2) }}
+                                            </div>
+                                        </div>
 
-                                                {{--                                                            <span class="fa fa-thumbs-down {{ $voteClass }} downvote {{ $downvoteClass }}"--}}
-                                                {{--                                                                  @if (auth()->check()) data-id="{{ $issueIDHashID->encode($issueObj->id) }}" data-type="down" @endif--}}
-                                                {{--                                                                  title="Downvote"></span>--}}
-                                                {{--                                                            {{ $downvotedCnt }}--}}
-                                                {{--                                                        </div>--}}
-
+                                        <div class="sidebar_line"></div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Awarded
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                $ {{ number_format($availableFunds,2) }}
                                             </div>
                                         </div>
                                     </div>
@@ -146,10 +169,10 @@
             </div>
 
             <div class="content_block">
-                <div class="table_block table_block_objective">
+                <div class="table_block table_block_objectives active">
                     <div class="table_block_head">
                         <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/User_Rounded.svg') }}" alt="" class="img-fluid">
+                            <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
                         </div>
                         Objectives
                         <div class="arrow">
