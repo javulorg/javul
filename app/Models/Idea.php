@@ -25,4 +25,14 @@ class Idea extends Model
     {
         return $this->belongsTo(Unit::class, 'unit_id');
     }
+
+    public function issue()
+    {
+        return $this->belongsTo(Issue::class, 'issue_id');
+    }
+
+    public function task()
+    {
+        return $this->belongsTo(Task::class, 'task_id');
+    }
 }

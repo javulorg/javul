@@ -114,6 +114,7 @@ class IdeaController extends Controller
         $idea = Idea::findOrFail($ideaId[0]);
 
 
+
         $unitData = Unit::where('id', $idea->unit_id)->first();
         $availableFunds = Fund::getUnitDonatedFund($idea->unit_id);
         $awardedFunds = Fund::getUnitAwardedFund($idea->unit_id);
