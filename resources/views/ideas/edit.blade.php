@@ -130,16 +130,16 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
-        $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
-
-
-            $('#description').summernote({
-                tabsize: 0,
-                height: 100,
-                focus: true
-            });
-        });
+        // $(document).ready(function () {
+        //     $(".selectpicker").selectpicker('refresh');
+        //
+        //
+        //     $('#description').summernote({
+        //         tabsize: 0,
+        //         height: 100,
+        //         focus: true
+        //     });
+        // });
 
     </script>
 @endsection
