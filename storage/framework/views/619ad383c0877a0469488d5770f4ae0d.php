@@ -41,7 +41,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    <script src="<?php echo e(asset('v2/ckeditor5/ckeditor.js')); ?>"></script>
+
     <script src="<?php echo e(asset('v2/toastr-options.js')); ?>"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
