@@ -1,42 +1,41 @@
-@extends('layout.master')
-@section('title', 'Create Idea')
+<?php $__env->startSection('title', 'Create Idea'); ?>
 
-@section('site-name')
-    @if(isset($unitData))
-        <h1>{{ $unitData->name }}</h1>
-    @else
+<?php $__env->startSection('site-name'); ?>
+    <?php if(isset($unitData)): ?>
+        <h1><?php echo e($unitData->name); ?></h1>
+    <?php else: ?>
         <h1>Javul.org</h1>
-    @endif
+    <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
         Open-source Society
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('navbar')
-    @if(isset($unitData))
-        @include('layout.navbar', ['unitData' => $unitData])
-    @endif
-@endsection
+<?php $__env->startSection('navbar'); ?>
+    <?php if(isset($unitData)): ?>
+        <?php echo $__env->make('layout.navbar', ['unitData' => $unitData], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php endif; ?>
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="content_row">
         <div class="sidebar">
-            @if(isset($unitData))
-                @include('layout.v2.global-unit-overview')
+            <?php if(isset($unitData)): ?>
+                <?php echo $__env->make('layout.v2.global-unit-overview', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 <?php
                 $title = 'Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                @include('layout.v2.global-finances')
+                <?php echo $__env->make('layout.v2.global-finances', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                @include('layout.v2.global-about-site')
-            @else
+                <?php echo $__env->make('layout.v2.global-about-site', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php else: ?>
                 <?php
                 $title = 'Global Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
-            @endif
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php endif; ?>
         </div>
 
         <div class="panel panel-grey panel-default col-md-9">
@@ -45,12 +44,12 @@
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
-                    <form role="form" method="post"  action="{{ url('ideas') }}">
-                        @csrf
-                        @method('post')
+                    <form role="form" method="post"  action="<?php echo e(url('ideas')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('post'); ?>
                         <div class="row">
 
-                            <input type="hidden" name="unit_id" value="{{ $unitData->id }}">
+                            <input type="hidden" name="unit_id" value="<?php echo e($unitData->id); ?>">
 
                             <div class="col-md-12 form-group">
                                 <label class="control-label">Idea Name</label>
@@ -63,10 +62,10 @@
                                 <label class="control-label">Type</label>
                                 <div class="input-icon right">
                                     <select class="form-control selectpicker" data-live-search="true" name="type_id" id="type_id">
-                                        <option value="">{!! trans('messages.select') !!}</option>
-                                            @foreach($types as $type)
-                                                <option value="{{ $type->id }}">{{ $type->title  }}</option>
-                                            @endforeach
+                                        <option value=""><?php echo trans('messages.select'); ?></option>
+                                            <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($type->id); ?>"><?php echo e($type->title); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
@@ -75,10 +74,10 @@
                                 <label class="control-label">Task</label>
                                 <div class="input-icon right">
                                     <select class="form-control selectpicker" data-live-search="true" name="task_id" id="task_id">
-                                        <option value="">{!! trans('messages.select') !!}</option>
-                                            @foreach($tasks as $task)
-                                                <option value="{{ $task->id }}">{{ $task->name  }}</option>
-                                            @endforeach
+                                        <option value=""><?php echo trans('messages.select'); ?></option>
+                                            <?php $__currentLoopData = $tasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($task->id); ?>"><?php echo e($task->name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
@@ -87,10 +86,10 @@
                                 <label class="control-label">Issue</label>
                                 <div class="input-icon right">
                                     <select class="form-control selectpicker" data-live-search="true" name="issue_id" id="issue_id">
-                                        <option value="">{!! trans('messages.select') !!}</option>
-                                            @foreach($issues as $issue)
-                                                <option value="{{ $issue->id }}">{{ $issue->title  }}</option>
-                                            @endforeach
+                                        <option value=""><?php echo trans('messages.select'); ?></option>
+                                            <?php $__currentLoopData = $issues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($issue->id); ?>"><?php echo e($issue->title); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
@@ -132,8 +131,8 @@
             </div>
         </div>
     </div>
-@endsection
-@section('scripts')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         // $(document).ready(function () {
         //     $(".selectpicker").selectpicker('refresh');
@@ -147,4 +146,6 @@
         // });
 
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/ideas/create.blade.php ENDPATH**/ ?>
