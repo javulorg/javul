@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Idea;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Forum;
@@ -239,6 +240,15 @@ class ForumController extends Controller
                 $forumData['unit_id'] = $Obj->unit_id;
                 $forumData['desc'] = $Obj->description;
                 $forumData['slug'] = $Obj->slug != '' ? $Obj->slug : substr(str_replace(" ","_",strtolower( $Obj->name )),0,20);
+                $forumData['section_id'] = $request->section_id;
+                $forumData['object_id'] = $request->object_id;
+            }
+            else if($request->section_id == 4){
+                $idea = Idea::where('id',$request->object_id)->first();
+                $forumData['title'] = $idea->title;
+                $forumData['unit_id'] = $idea->unit_id;
+                $forumData['desc'] = $idea->description;
+                $forumData['slug'] = $idea->title != '' ? $idea->slug : substr(str_replace(" ","_",strtolower( $idea->title )),0,20);
                 $forumData['section_id'] = $request->section_id;
                 $forumData['object_id'] = $request->object_id;
             }

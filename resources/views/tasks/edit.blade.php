@@ -290,7 +290,7 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
+          
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,
@@ -307,11 +307,7 @@
                 $(this).closest(".input-group").find("input").focus();
             });
 
-            $('#description-summernote').summernote({
-                tabsize: 0,
-                height: 100,
-                focus: true
-            });
+
 
 
             $(document).off('click', '.addMoreDocument').on('click', ".addMoreDocument", function () {
@@ -392,10 +388,6 @@
                 return false
             });
         });
-        ClassicEditor
-            .create(document.querySelector('#task-summary'))
-            .catch(error => {
-                console.error(error);
-            });
+
     </script>
 @endsection

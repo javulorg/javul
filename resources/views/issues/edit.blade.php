@@ -39,161 +39,160 @@
             @endif
         </div>
 
-        <div class="row col-md">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Update Issue</h4>
-                </div>
-                <div class="card-body">
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <form role="form" method="post" action="{{ url('issues/'. $issueHashId) }}" enctype="multipart/form-data">
-                                @csrf
-                                @method('put')
 
-                                <div class="row">
 
-                                    <input type="hidden" name="unit_id" value="{{ $unitIDHashID->encode($unitData->id) }}">
 
-                                    <div class="col-sm-12 form-group {{ $errors->has('issue_title') ? ' has-error' : '' }}">
-                                        <label class="control-label">Issue Title</label>
-                                        <div class="input-icon right">
-                                            <input type="text" name="title" value="{{ (!empty($issueObj))? $issueObj->title : old('title') }}"
-                                                   class="form-control"
-                                                   placeholder="Issue Name"/>
-                                            @if ($errors->has('title'))
-                                                <span class="help-block">
+        <div class="panel panel-grey panel-default">
+            <div class="panel-heading">
+                <h4>Update Issue</h4>
+
+                <div class="panel-body list-group">
+                    <div class="list-group-item">
+                        <form role="form" method="post" action="{{ url('issues/'. $issueHashId) }}" enctype="multipart/form-data">
+                            @csrf
+                            @method('put')
+
+                            <div class="row">
+
+                                <input type="hidden" name="unit_id" value="{{ $unitIDHashID->encode($unitData->id) }}">
+
+                                <div class="col-md-12 form-group {{ $errors->has('issue_title') ? ' has-error' : '' }}">
+                                    <label class="control-label">Issue Title</label>
+                                    <div class="input-icon right">
+                                        <input type="text" name="title" value="{{ (!empty($issueObj))? $issueObj->title : old('title') }}"
+                                               class="form-control"
+                                               placeholder="Issue Name"/>
+                                        @if ($errors->has('title'))
+                                            <span class="help-block">
                                                 <strong>{{ $errors->first('title') }}</strong>
                                         </span>
-                                            @endif
-                                        </div>
+                                        @endif
                                     </div>
+                                </div>
 
 
 
-                                    <div class="col-sm-12 mt-3 form-group">
-                                        <label class="control-label">Select Objective</label>
-                                        <div class="input-icon right">
-                                            <select name="objective_id" id="objective_id" class="form-control selectpicker" data-live-search="true">
-                                                <option value="">Select</option>
-                                                @if(count($objectiveObj) > 0)
-                                                    @foreach($objectiveObj as $objective)
-                                                        <option value="{{$objectiveIDHashID->encode($objective->id)}}"
-                                                                @if(!empty($issueObj) && $objective->id == $issueObj->objective_id)
+                                <div class="col-md-12 mt-3 form-group">
+                                    <label class="control-label">Select Objective</label>
+                                    <div class="input-icon right">
+                                        <select name="objective_id" id="objective_id" class="form-control selectpicker" data-live-search="true">
+                                            <option value="">Select</option>
+                                            @if(count($objectiveObj) > 0)
+                                                @foreach($objectiveObj as $objective)
+                                                    <option value="{{$objectiveIDHashID->encode($objective->id)}}"
+                                                            @if(!empty($issueObj) && $objective->id == $issueObj->objective_id)
                                                                 selected=selected
-                                                            @endif>{{$objective->name}}</option>
-                                                    @endforeach
-                                                @endif
-                                            </select>
-                                        </div>
+                                                        @endif>{{$objective->name}}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
                                     </div>
-
-
-                                    @if(!empty($issueObj) && $user_can_change_status)
-                                        <div class="col-sm-12 mt-3 form-group">
-                                            <label class="control-label">Select Status</label>
-                                            <div class="input-icon right">
-                                                <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
-                                                    <option value="unverified" @if(!empty($issueObj) &&
-                                                $issueObj->status=="unverified") selected="selected" @endif>Unverified</option>
-                                                    <option value="verified" @if(!empty($issueObj) &&
-                                                $issueObj->status=="verified") selected="selected" @endif>Verified</option>
-                                                    <option value="resolved" @if(!empty($issueObj) &&
-                                                $issueObj->status=="resolved") selected="selected" @endif>Resolved</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    @endif
                                 </div>
 
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <label class="control-label">Select Task</label>
+                                @if(!empty($issueObj) && $user_can_change_status)
+                                    <div class="col-sm-12 mt-3 form-group">
+                                        <label class="control-label">Select Status</label>
                                         <div class="input-icon right">
-                                            <select name="task_id" id="task_id" class="form-control selectpicker" data-live-search="true">
-                                                <option value="">Select</option>
-                                                @if(!empty($taskObj))
-                                                    <?php $task_ids = explode(",",$issueObj->task_id); ?>
-                                                    @foreach($taskObj as $task)
-                                                        <option value="{{$taskIDHashID->encode($task->id)}}" @if(in_array($task->id,
-                                                        $task_ids)) selected @endif>{{$task->name}}</option>
-                                                    @endforeach
-                                                @endif
+                                            <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
+                                                <option value="unverified" @if(!empty($issueObj) &&
+                                                $issueObj->status=="unverified") selected="selected" @endif>Unverified</option>
+                                                <option value="verified" @if(!empty($issueObj) &&
+                                                $issueObj->status=="verified") selected="selected" @endif>Verified</option>
+                                                <option value="resolved" @if(!empty($issueObj) &&
+                                                $issueObj->status=="resolved") selected="selected" @endif>Resolved</option>
                                             </select>
                                         </div>
                                     </div>
+                                @endif
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <label class="control-label">Select Task</label>
+                                    <div class="input-icon right">
+                                        <select name="task_id" id="task_id" class="form-control selectpicker" data-live-search="true">
+                                            <option value="">Select</option>
+                                            @if(!empty($taskObj))
+                                                    <?php $task_ids = explode(",",$issueObj->task_id); ?>
+                                                @foreach($taskObj as $task)
+                                                    <option value="{{$taskIDHashID->encode($task->id)}}" @if(in_array($task->id,
+                                                        $task_ids)) selected @endif>{{$task->name}}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
                                 </div>
+                            </div>
 
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <div class="document_listing_div">
-                                            <div class="table-responsive">
-                                                <table class="documents table table-striped">
-                                                    <thead>
-                                                    <tr>
-                                                        <th style="border:0px;font-weight:normal;">Documents</th>
-                                                        <th style="border:0px;"></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <div class="document_listing_div">
+                                        <div class="table-responsive">
+                                            <table class="documents table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th style="border:0px;font-weight:normal;">Documents</th>
+                                                    <th style="border:0px;"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
 
-                                                    @if(!empty($issueDocumentsObj))
+                                                @if(!empty($issueDocumentsObj))
                                                         <?php $i=1; ?>
-                                                        @foreach($issueDocumentsObj as $document)
-                                                            @include('issues.partials.issue_document_listing',['document'=>$document,'issueObj'=>$issueObj,'fromEdit'=>'no'])
-                                                        @endforeach
-                                                        @if($issueObj->status != "resolved")
-                                                            @include('tasks.partials.document_upload')
-                                                        @endif
-                                                    @else
+                                                    @foreach($issueDocumentsObj as $document)
+                                                        @include('issues.partials.issue_document_listing',['document'=>$document,'issueObj'=>$issueObj,'fromEdit'=>'no'])
+                                                    @endforeach
+                                                    @if($issueObj->status != "resolved")
                                                         @include('tasks.partials.document_upload')
                                                     @endif
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                @else
+                                                    @include('tasks.partials.document_upload')
+                                                @endif
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <label class="control-label">Description</label>
-                                        <textarea class="form-control summernote" id="description-summernote"  name="description">@if(!empty($issueObj)) {{$issueObj->description}} @endif</textarea>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <label class="control-label">Description</label>
+                                    <textarea class="form-control summernote" id="description-summernote"  name="description">@if(!empty($issueObj)) {{$issueObj->description}} @endif</textarea>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <label class="control-label">Resolution</label>
-                                        <textarea class="form-control summernote_resolution" id="resolution-summernote" name="resolution">@if(!empty($issueObj))
-                                                {{$issueObj->resolution}} @endif</textarea>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <label class="control-label">Resolution</label>
+                                    <textarea class="form-control summernote_resolution" id="resolution-summernote" name="resolution">@if(!empty($issueObj))
+                                            {{$issueObj->resolution}} @endif</textarea>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <label class="control-label">Comment</label>
-                                        <input class="form-control" name="comment" value="{{ $issueObj->comment }}">
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <label class="control-label">Comment</label>
+                                    <input class="form-control" name="comment" value="{{ $issueObj->comment }}">
                                 </div>
+                            </div>
 
-                                <div class="row justify-content-center mt-3">
-                                    <div class="col-md-6 col-lg-4">
-                                        <button class="btn btn-secondary btn-block" type="submit">
-                                            <i class="fa fa-plus"></i> <span class="plus_text">Update Issue</span>
-                                        </button>
-                                    </div>
+                            <div class="row justify-content-center mt-3">
+                                <div class="col-md-6 col-lg-4">
+                                    <button class="btn btn-secondary btn-block" type="submit">
+                                        <i class="fa fa-plus"></i> <span class="plus_text">Update Issue</span>
+                                    </button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
 
@@ -202,7 +201,7 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
+
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,
@@ -325,18 +324,6 @@
                 return false
             });
         });
-
-        ClassicEditor
-            .create( document.querySelector('#resolution-summernote') )
-            .catch( error => {
-                console.error(error);
-            } );
-
-        ClassicEditor
-            .create( document.querySelector('#description-summernote') )
-            .catch( error => {
-                console.error(error);
-            } );
 
 
 
