@@ -290,7 +290,7 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-          
+
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,
