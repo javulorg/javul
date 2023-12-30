@@ -38,161 +38,160 @@
             <?php endif; ?>
         </div>
 
-        <div class="row col-md">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Update Issue</h4>
-                </div>
-                <div class="card-body">
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <form role="form" method="post" action="<?php echo e(url('issues/'. $issueHashId)); ?>" enctype="multipart/form-data">
-                                <?php echo csrf_field(); ?>
-                                <?php echo method_field('put'); ?>
 
-                                <div class="row">
 
-                                    <input type="hidden" name="unit_id" value="<?php echo e($unitIDHashID->encode($unitData->id)); ?>">
 
-                                    <div class="col-sm-12 form-group <?php echo e($errors->has('issue_title') ? ' has-error' : ''); ?>">
-                                        <label class="control-label">Issue Title</label>
-                                        <div class="input-icon right">
-                                            <input type="text" name="title" value="<?php echo e((!empty($issueObj))? $issueObj->title : old('title')); ?>"
-                                                   class="form-control"
-                                                   placeholder="Issue Name"/>
-                                            <?php if($errors->has('title')): ?>
-                                                <span class="help-block">
+        <div class="panel panel-grey panel-default">
+            <div class="panel-heading">
+                <h4>Update Issue</h4>
+
+                <div class="panel-body list-group">
+                    <div class="list-group-item">
+                        <form role="form" method="post" action="<?php echo e(url('issues/'. $issueHashId)); ?>" enctype="multipart/form-data">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('put'); ?>
+
+                            <div class="row">
+
+                                <input type="hidden" name="unit_id" value="<?php echo e($unitIDHashID->encode($unitData->id)); ?>">
+
+                                <div class="col-md-12 form-group <?php echo e($errors->has('issue_title') ? ' has-error' : ''); ?>">
+                                    <label class="control-label">Issue Title</label>
+                                    <div class="input-icon right">
+                                        <input type="text" name="title" value="<?php echo e((!empty($issueObj))? $issueObj->title : old('title')); ?>"
+                                               class="form-control"
+                                               placeholder="Issue Name"/>
+                                        <?php if($errors->has('title')): ?>
+                                            <span class="help-block">
                                                 <strong><?php echo e($errors->first('title')); ?></strong>
                                         </span>
-                                            <?php endif; ?>
-                                        </div>
+                                        <?php endif; ?>
                                     </div>
+                                </div>
 
 
 
-                                    <div class="col-sm-12 mt-3 form-group">
-                                        <label class="control-label">Select Objective</label>
-                                        <div class="input-icon right">
-                                            <select name="objective_id" id="objective_id" class="form-control selectpicker" data-live-search="true">
-                                                <option value="">Select</option>
-                                                <?php if(count($objectiveObj) > 0): ?>
-                                                    <?php $__currentLoopData = $objectiveObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo e($objectiveIDHashID->encode($objective->id)); ?>"
-                                                                <?php if(!empty($issueObj) && $objective->id == $issueObj->objective_id): ?>
+                                <div class="col-md-12 mt-3 form-group">
+                                    <label class="control-label">Select Objective</label>
+                                    <div class="input-icon right">
+                                        <select name="objective_id" id="objective_id" class="form-control selectpicker" data-live-search="true">
+                                            <option value="">Select</option>
+                                            <?php if(count($objectiveObj) > 0): ?>
+                                                <?php $__currentLoopData = $objectiveObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($objectiveIDHashID->encode($objective->id)); ?>"
+                                                            <?php if(!empty($issueObj) && $objective->id == $issueObj->objective_id): ?>
                                                                 selected=selected
-                                                            <?php endif; ?>><?php echo e($objective->name); ?></option>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                <?php endif; ?>
-                                            </select>
-                                        </div>
+                                                        <?php endif; ?>><?php echo e($objective->name); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?>
+                                        </select>
                                     </div>
-
-
-                                    <?php if(!empty($issueObj) && $user_can_change_status): ?>
-                                        <div class="col-sm-12 mt-3 form-group">
-                                            <label class="control-label">Select Status</label>
-                                            <div class="input-icon right">
-                                                <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
-                                                    <option value="unverified" <?php if(!empty($issueObj) &&
-                                                $issueObj->status=="unverified"): ?> selected="selected" <?php endif; ?>>Unverified</option>
-                                                    <option value="verified" <?php if(!empty($issueObj) &&
-                                                $issueObj->status=="verified"): ?> selected="selected" <?php endif; ?>>Verified</option>
-                                                    <option value="resolved" <?php if(!empty($issueObj) &&
-                                                $issueObj->status=="resolved"): ?> selected="selected" <?php endif; ?>>Resolved</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
                                 </div>
 
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <label class="control-label">Select Task</label>
+                                <?php if(!empty($issueObj) && $user_can_change_status): ?>
+                                    <div class="col-sm-12 mt-3 form-group">
+                                        <label class="control-label">Select Status</label>
                                         <div class="input-icon right">
-                                            <select name="task_id" id="task_id" class="form-control selectpicker" data-live-search="true">
-                                                <option value="">Select</option>
-                                                <?php if(!empty($taskObj)): ?>
-                                                    <?php $task_ids = explode(",",$issueObj->task_id); ?>
-                                                    <?php $__currentLoopData = $taskObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo e($taskIDHashID->encode($task->id)); ?>" <?php if(in_array($task->id,
-                                                        $task_ids)): ?> selected <?php endif; ?>><?php echo e($task->name); ?></option>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                <?php endif; ?>
+                                            <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
+                                                <option value="unverified" <?php if(!empty($issueObj) &&
+                                                $issueObj->status=="unverified"): ?> selected="selected" <?php endif; ?>>Unverified</option>
+                                                <option value="verified" <?php if(!empty($issueObj) &&
+                                                $issueObj->status=="verified"): ?> selected="selected" <?php endif; ?>>Verified</option>
+                                                <option value="resolved" <?php if(!empty($issueObj) &&
+                                                $issueObj->status=="resolved"): ?> selected="selected" <?php endif; ?>>Resolved</option>
                                             </select>
                                         </div>
                                     </div>
+                                <?php endif; ?>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <label class="control-label">Select Task</label>
+                                    <div class="input-icon right">
+                                        <select name="task_id" id="task_id" class="form-control selectpicker" data-live-search="true">
+                                            <option value="">Select</option>
+                                            <?php if(!empty($taskObj)): ?>
+                                                    <?php $task_ids = explode(",",$issueObj->task_id); ?>
+                                                <?php $__currentLoopData = $taskObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($taskIDHashID->encode($task->id)); ?>" <?php if(in_array($task->id,
+                                                        $task_ids)): ?> selected <?php endif; ?>><?php echo e($task->name); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </div>
                                 </div>
+                            </div>
 
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <div class="document_listing_div">
-                                            <div class="table-responsive">
-                                                <table class="documents table table-striped">
-                                                    <thead>
-                                                    <tr>
-                                                        <th style="border:0px;font-weight:normal;">Documents</th>
-                                                        <th style="border:0px;"></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <div class="document_listing_div">
+                                        <div class="table-responsive">
+                                            <table class="documents table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th style="border:0px;font-weight:normal;">Documents</th>
+                                                    <th style="border:0px;"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
 
-                                                    <?php if(!empty($issueDocumentsObj)): ?>
+                                                <?php if(!empty($issueDocumentsObj)): ?>
                                                         <?php $i=1; ?>
-                                                        <?php $__currentLoopData = $issueDocumentsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $document): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <?php echo $__env->make('issues.partials.issue_document_listing',['document'=>$document,'issueObj'=>$issueObj,'fromEdit'=>'no'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        <?php if($issueObj->status != "resolved"): ?>
-                                                            <?php echo $__env->make('tasks.partials.document_upload', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-                                                        <?php endif; ?>
-                                                    <?php else: ?>
+                                                    <?php $__currentLoopData = $issueDocumentsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $document): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php echo $__env->make('issues.partials.issue_document_listing',['document'=>$document,'issueObj'=>$issueObj,'fromEdit'=>'no'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php if($issueObj->status != "resolved"): ?>
                                                         <?php echo $__env->make('tasks.partials.document_upload', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                                                     <?php endif; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                <?php else: ?>
+                                                    <?php echo $__env->make('tasks.partials.document_upload', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                                <?php endif; ?>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <label class="control-label">Description</label>
-                                        <textarea class="form-control summernote" id="description-summernote"  name="description"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->description); ?> <?php endif; ?></textarea>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <label class="control-label">Description</label>
+                                    <textarea class="form-control summernote" id="description-summernote"  name="description"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->description); ?> <?php endif; ?></textarea>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <label class="control-label">Resolution</label>
-                                        <textarea class="form-control summernote_resolution" id="resolution-summernote" name="resolution"><?php if(!empty($issueObj)): ?>
-                                                <?php echo e($issueObj->resolution); ?> <?php endif; ?></textarea>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <label class="control-label">Resolution</label>
+                                    <textarea class="form-control summernote_resolution" id="resolution-summernote" name="resolution"><?php if(!empty($issueObj)): ?>
+                                            <?php echo e($issueObj->resolution); ?> <?php endif; ?></textarea>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-sm-12 mt-2 mb-2 form-group">
-                                        <label class="control-label">Comment</label>
-                                        <input class="form-control" name="comment" value="<?php echo e($issueObj->comment); ?>">
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                    <label class="control-label">Comment</label>
+                                    <input class="form-control" name="comment" value="<?php echo e($issueObj->comment); ?>">
                                 </div>
+                            </div>
 
-                                <div class="row justify-content-center mt-3">
-                                    <div class="col-md-6 col-lg-4">
-                                        <button class="btn btn-secondary btn-block" type="submit">
-                                            <i class="fa fa-plus"></i> <span class="plus_text">Update Issue</span>
-                                        </button>
-                                    </div>
+                            <div class="row justify-content-center mt-3">
+                                <div class="col-md-6 col-lg-4">
+                                    <button class="btn btn-secondary btn-block" type="submit">
+                                        <i class="fa fa-plus"></i> <span class="plus_text">Update Issue</span>
+                                    </button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
 
@@ -201,7 +200,7 @@
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
+
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,
@@ -324,18 +323,6 @@
                 return false
             });
         });
-
-        ClassicEditor
-            .create( document.querySelector('#resolution-summernote') )
-            .catch( error => {
-                console.error(error);
-            } );
-
-        ClassicEditor
-            .create( document.querySelector('#description-summernote') )
-            .catch( error => {
-                console.error(error);
-            } );
 
 
 

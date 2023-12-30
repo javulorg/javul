@@ -277,7 +277,6 @@
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,
@@ -388,19 +387,6 @@
                 return false
             });
         });
-
-        ClassicEditor
-            .create( document.querySelector('#resolution-summernote') )
-            .catch( error => {
-                console.error(error);
-            } );
-
-        ClassicEditor
-            .create( document.querySelector('#description-summernote') )
-            .catch( error => {
-                console.error(error);
-            } );
-
     </script>
 <?php $__env->stopSection(); ?>
 

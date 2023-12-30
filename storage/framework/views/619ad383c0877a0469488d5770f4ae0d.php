@@ -29,14 +29,11 @@
 
     <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.5.2/js/fileinput.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.5.2/js/locales/LANG.js"></script>
-    <script src="<?php echo e(asset('v2/summernote/summernote.min.js')); ?>"></script>
-    <script src="<?php echo e(asset('v2/tooltipster/dist/js/tooltipster.bundle.min.js')); ?>"></script>
-    <script src="<?php echo e(asset('v2/jquery/jquery-validation/dist/jquery.validate.min.js')); ?>"></script>
-    <script src="<?php echo e(asset('v2/jquery/jquery-validation/dist/additional-methods.min.js')); ?>"></script>
-    <script src="<?php echo e(asset('v2/fontawesome/js/all.min.js')); ?>"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -48,4 +45,8 @@
     <script src="<?php echo e(asset('v2/assets/js/main.js')); ?>"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
 
+    <script src="<?php echo e(asset('v2/tooltipster/dist/js/tooltipster.bundle.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('v2/jquery/jquery-validation/dist/jquery.validate.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('v2/jquery/jquery-validation/dist/additional-methods.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('v2/fontawesome/js/all.min.js')); ?>"></script>
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/layout/footer.blade.php ENDPATH**/ ?>

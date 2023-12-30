@@ -226,7 +226,7 @@
                 </div>
                 <div class="comments_content">
                     <div class="comment_stat">
-                        <b></b> <a href="#">Write a review</a>
+                        
                     </div>
 
                     <?php if(isset($comments)): ?>
@@ -270,7 +270,7 @@
                         <input type="hidden" name="object_id" id="comment_object_id" value="<?=  $object_id ?>">
                         <div class="comment_content">
                             <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
-                            <button id="comment_form"  class="btn">Send</button>
+                            <button id="comment_form"  class="btn">Submit</button>
                         </div>
                     </div>
                 </div>

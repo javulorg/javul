@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Forum;
 use App\Models\Fund;
 use App\Models\Idea;
 use App\Models\Issue;
 use App\Models\Task;
 use App\Models\Type;
 use App\Models\Unit;
+use App\Services\Ideas\IdeaService;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -109,6 +111,7 @@ class IdeaController extends Controller
 
     public function show($ideaHashId)
     {
+        $service = new IdeaService();
         $hash = new Hashids('idea id hash',10,Config::get('app.encode_chars'));
         $ideaId = $hash->decode($ideaHashId);
         $idea = Idea::findOrFail($ideaId[0]);
@@ -118,6 +121,27 @@ class IdeaController extends Controller
         $unitData = Unit::where('id', $idea->unit_id)->first();
         $availableFunds = Fund::getUnitDonatedFund($idea->unit_id);
         $awardedFunds = Fund::getUnitAwardedFund($idea->unit_id);
+
+
+
+        $forumID =  Forum::checkTopic(array(
+            'unit_id'    => $idea->unit_id,
+            'section_id' => 2,
+            'object_id'  =>  $idea->id,
+        ));
+
+        if(!empty($forumID))
+        {
+            view()->share('addComments', url('forum/post/'. $forumID->topic_id .'/'. $forumID->slug ));
+            $comments = $service->comments( $idea->unit_id, 4, $idea->id);
+            view()->share('comments', $comments);
+        }
+        $comments = $service->comments( $idea->unit_id, 4, $idea->id);
+        view()->share('comments', $comments);
+
+        view()->share("unit_id", $idea->unit_id);
+        view()->share("section_id", 4);
+        view()->share("object_id",$idea->id);
 
         view()->share('availableFunds',$availableFunds);
         view()->share('awardedFunds',$awardedFunds);

@@ -90,7 +90,7 @@
 
                             <div class="col-sm-12 mt-3 form-group">
                                 <label class="control-label">Objective Description</label>
-                                <textarea class="form-control" id="objective-description" name="description">
+                                <textarea class="form-control" id="objective_description" name="description">
                                     @if(!empty($objectiveObj)) {{$objectiveObj->description}} @endif
                                 </textarea>
                             </div>
@@ -117,14 +117,18 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
-        $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
-
-            ClassicEditor
-                .create( document.querySelector('#objective-description') )
-                .catch( error => {
-                    console.error(error);
-                } );
+        $('#objective_description').summernote({
+            tabsize: 1,
+            height: 100,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
         });
     </script>
 @endsection
