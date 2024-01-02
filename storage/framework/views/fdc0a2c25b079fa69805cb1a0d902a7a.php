@@ -6,37 +6,18 @@
 <meta content="" name="author" />
 
 <script src="https://www.google.com/recaptcha/api.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="<?php echo e(asset('v2/assets/css/style.css')); ?>">
-
-<link rel="stylesheet" type="text/css" href="<?php echo e(asset('v2/tooltipster/dist/css/tooltipster.bundle.min.css')); ?>">
-
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<!-- Bootstrap Fileinput CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css">
-
-<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.5.2/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
-<style>
-    .dataTables_wrapper .dataTables_info {
-        padding-left : 10px !important;
-    }
-    table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
-        border-bottom : 0px solid rgba(0, 0, 0, 0.3)!important;
-    }
-</style>
-<?php echo $__env->yieldContent('style'); ?>
-
-
-
-
-
-
-
-
+<link rel="stylesheet" type="text/css" href="<?php echo e(asset('v2/assets/css/style.css')); ?>">
+<link rel="stylesheet" type="text/css" href="<?php echo e(asset('v2/tooltipster/dist/css/tooltipster.bundle.min.css')); ?>">
+<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.5.2/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
 
 
 <link rel="shortcut icon" href="<?php echo url('favicon.ico'); ?>" type="image/icon">
@@ -56,6 +37,18 @@
 <link rel="icon" type="image/png" sizes="32x32" href="<?php echo url('assets/images/favicon-32x32.png'); ?>">
 <link rel="icon" type="image/png" sizes="96x96" href="<?php echo url('assets/images/favicon-96x96.png'); ?>">
 <link rel="icon" type="image/png" sizes="16x16" href="<?php echo url('assets/images/favicon-16x16.png'); ?>">
+
+
+<style>
+    .dataTables_wrapper .dataTables_info {
+        padding-left : 10px !important;
+    }
+    table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
+        border-bottom : 0px solid rgba(0, 0, 0, 0.3)!important;
+    }
+</style>
+<?php echo $__env->yieldContent('style'); ?>
+
 
 
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/layout/header-dependencies.blade.php ENDPATH**/ ?>

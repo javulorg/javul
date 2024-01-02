@@ -187,7 +187,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="control-label">{{ __('messages.unit_category') }} <span class="text-danger">*</span></label>
-                                    <select class="form-control selectpicker" data-live-search="true" name="unit_category[]" id="unit_category" multiple>
+                                    <select class="form-select"  name="unit_category[]" id="unit_category" multiple>
                                         @foreach($unit_category_arr as $id=>$val)
                                             <option value="{{ $id }}">{{ $val }}</option>
                                         @endforeach
@@ -197,7 +197,7 @@
 
                             <div class="col-sm-4 form-group">
                                 <label class="control-label">Country<span class="text-danger">*</span></label>
-                                <select class="form-control selectpicker" data-live-search="true" id="country" name="country">
+                                <select class="form-control"  id="country" name="country">
                                     <option value="">{!! trans('messages.select') !!}</option>
                                     @if(count($countries) > 0)
                                         @foreach($countries as $id=>$val)
@@ -211,11 +211,10 @@
                                 </select>
                             </div>
 
-                            <!-- More Fields and Controls... -->
-                            <!-- State and City Section -->
-                            <div class="col-sm-4 form-group">
+
+                            <div class="col-sm-4 mt-3 form-group">
                                 <label class="control-label">State<span class="text-danger">*</span></label>
-                                <select class="form-control selectpicker" data-live-search="true" name="state" id="state" @if(!empty($unitObj) && $unitObj->country_id == "global") disabled @endif>
+                                <select class="form-control" name="state" id="state" @if(!empty($unitObj) && $unitObj->country_id == "global") disabled @endif>
                                     @if(!empty($unitObj))
                                         @foreach($states as $id=>$val)
                                             <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->state_id == $id) selected=selected @endif>{{$val}}</option>
@@ -227,9 +226,9 @@
                                 <span class="states_loader location_loader" style="display: none"><img src="{!! url('assets/images/small_loader.gif') !!}"/></span>
                             </div>
 
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-4 mt-3 form-group">
                                 <label class="control-label">City<span class="text-danger">*</span></label>
-                                <select class="form-control selectpicker" name="city" id="city" @if(!empty($unitObj) && $unitObj->country_id == "global") disabled @endif>
+                                <select class="form-control" name="city" id="city" @if(!empty($unitObj) && $unitObj->country_id == "global") disabled @endif>
                                     @if(!empty($unitObj))
                                         @if(!empty($state_name_as_city_for_field))
                                             <option value="{{$state_name_as_city_for_field->id}}" selected>{{$state_name_as_city_for_field->name}}</option>
@@ -245,13 +244,13 @@
                                 <input type="hidden" name="empty_city_state_name" id="empty_city_state_name"
                                        @if(!empty($state_name_as_city_for_field)) value="{{$unitObj->state_id_for_city_not_exits}}" @endif/>
                                 <span class="cities_loader location_loader" style="display: none"><img src="{!! url('assets/images/small_loader.gif') !!}"/>
-    </span>
+                                 </span>
                             </div>
 
                             <!-- Unit Credibility Section -->
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-4 mt-3 form-group">
                                 <label class="control-label">{{ __('messages.unit_credibility') }}<span class="text-danger">*</span></label>
-                                <select class="form-control selectpicker" data-live-search="true" name="credibility">
+                                <select class="form-control"  name="credibility">
                                     <option value="">{!! trans('messages.select') !!}</option>
                                     @if(count($unit_credibility_arr) > 0)
                                         @foreach($unit_credibility_arr as $id=>$val)
@@ -262,9 +261,9 @@
                             </div>
 
                             <!-- Parent Unit and Status Section -->
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-4 mt-3 form-group">
                                 <label class="control-label">Parent Unit</label>
-                                <select class="form-control selectpicker" data-live-search="true" name="parent_unit" id="parent_unit">
+                                <select class="form-control" name="parent_unit" id="parent_unit">
                                     <option value="">Select</option>
                                     @if(count($parentUnitsObj) > 0 )
                                         @foreach($parentUnitsObj as $id=>$parent)
@@ -272,6 +271,17 @@
                                         @endforeach
                                     @endif
                                 </select>
+                            </div>
+                            <!-- Related Units and Status Section -->
+                            <div class="col-sm-4 mt-3 form-group">
+                                    <label class="control-label">Related To</label>
+                                    <select class="form-control" name="related_to[]" id="related_to">
+                                        @if(count($relatedUnitsObj) > 0 )
+                                            @foreach($relatedUnitsObj as $id=>$relate)
+                                                <option value="{{$id}}" @if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) && in_array($id,$relatedUnitsofUnitObj)) selected=selected @endif>{{$relate}}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
                             </div>
 
                             @if(!empty($unitObj) && $authUserObj->role == "superadmin")
@@ -284,33 +294,11 @@
                         </div>
 
                         <!-- Description and Comments Section -->
-                        <div class="col-sm-12 form-group">
+                        <div class="col-sm-12 mt-3 form-group">
                             <label class="control-label">Unit Description</label>
-                            <textarea class="form-control" id="summernote" name="description">
-                        @if(!empty($unitObj)) {{ $unitObj->description }} @endif
-                    </textarea>
-                        </div>
-
-                        <div class="col-sm-12 form-group">
-                            <label class="control-label">Comment</label>
-                            <input class="form-control" name="comment" @if(!empty($unitObj) && !empty($unitObj->comment)) value="{{$unitObj->comment}}" @endif>
-                        </div>
-
-                        <!-- Related Units and Status Section -->
-                        <div class="row form-group">
-                            <div class="col-sm-4 form-group">
-                                <label class="control-label">Related To</label>
-                                <select class="form-control selectpicker" data-live-search="true" name="related_to[]" id="related_to" multiple>
-                                    @if(count($relatedUnitsObj) > 0 )
-                                        @foreach($relatedUnitsObj as $id=>$relate)
-                                            <option value="{{$id}}" @if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) && in_array($id,$relatedUnitsofUnitObj)) selected=selected @endif>{{$relate}}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-
-                            <!-- More Fields and Controls... -->
-
+                            <textarea class="form-control" id="description" name="description">
+                                 @if(!empty($unitObj)) {{ $unitObj->description }} @endif
+                            </textarea>
                         </div>
 
                         <!-- Submit Button -->
@@ -332,8 +320,22 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-            // $(".selectpicker").selectpicker('refresh');
+            $("#unit_category").select2({
+                theme: "bootstrap-5",
+                containerCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
+            });
+
+            ClassicEditor
+                .create( document.querySelector( '#description' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
+
             $("#country").on('change',function(){
+                $("#state").val('');
+                $("#empty_city_state_name").val('');
+                $("#city").val('');
                 var value = $(this).val();
                 var token = $('[name="_token"]').val();
                 if($.trim(value) == "" && value != 247){
@@ -368,7 +370,6 @@
                                     html+='<option value="'+index+'">'+val+'</option>'
                                 });
                                 $("#state").append(html);
-                                $('.selectpicker').selectpicker('refresh');
                             }
                         }
                     })
@@ -403,13 +404,11 @@
                                         html ='<option value="'+index+'">'+val+'</option>'
                                     });
                                     $("#city").append(html);
-                                    $('.selectpicker').selectpicker('refresh');
                                     $("#empty_city_state_name").val('');
                                 }else{
                                     var html ='<option value="'+value+'">'+resp.state_name+'</option>';
 
                                     $("#city").append(html);
-                                    $('.selectpicker').selectpicker('refresh');
                                     $("#empty_city_state_name").val(JSON.stringify([{"id":value,"name":resp.state_name}]));
                                 }
                             }
