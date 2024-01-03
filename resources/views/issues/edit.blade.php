@@ -56,7 +56,7 @@
 
                                 <input type="hidden" name="unit_id" value="{{ $unitIDHashID->encode($unitData->id) }}">
 
-                                <div class="col-md-12 form-group {{ $errors->has('issue_title') ? ' has-error' : '' }}">
+                                <div class="form-group {{ $errors->has('issue_title') ? ' has-error' : '' }}">
                                     <label class="control-label">Issue Title</label>
                                     <div class="input-icon right">
                                         <input type="text" name="title" value="{{ (!empty($issueObj))? $issueObj->title : old('title') }}"
@@ -72,7 +72,7 @@
 
 
 
-                                <div class="col-md-12 mt-3 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Select Objective</label>
                                     <div class="input-icon right">
                                         <select name="objective_id" id="objective_id" class="form-control selectpicker" data-live-search="true">
@@ -91,7 +91,7 @@
 
 
                                 @if(!empty($issueObj) && $user_can_change_status)
-                                    <div class="col-sm-12 mt-3 form-group">
+                                    <div class="mt-3 form-group">
                                         <label class="control-label">Select Status</label>
                                         <div class="input-icon right">
                                             <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
@@ -105,11 +105,8 @@
                                         </div>
                                     </div>
                                 @endif
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Select Task</label>
                                     <div class="input-icon right">
                                         <select name="task_id" id="task_id" class="form-control selectpicker" data-live-search="true">
@@ -124,11 +121,8 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <div class="document_listing_div">
                                         <div class="table-responsive">
                                             <table class="documents table table-striped">
@@ -156,26 +150,19 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Description</label>
-                                    <textarea class="form-control summernote" id="description-summernote"  name="description">@if(!empty($issueObj)) {{$issueObj->description}} @endif</textarea>
+                                    <textarea class="form-control" id="description"  name="description">@if(!empty($issueObj)) {{$issueObj->description}} @endif</textarea>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Resolution</label>
-                                    <textarea class="form-control summernote_resolution" id="resolution-summernote" name="resolution">@if(!empty($issueObj))
+                                    <textarea class="form-control" id="resolution" name="resolution">@if(!empty($issueObj))
                                             {{$issueObj->resolution}} @endif</textarea>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Comment</label>
                                     <input class="form-control" name="comment" value="{{ $issueObj->comment }}">
                                 </div>
@@ -202,6 +189,17 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            ClassicEditor
+                .create( document.querySelector( '#description' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
+
+            ClassicEditor
+                .create( document.querySelector( '#resolution' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,

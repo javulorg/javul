@@ -55,7 +55,7 @@
 
                                 <input type="hidden" name="unit_id" value="<?php echo e($unitIDHashID->encode($unitData->id)); ?>">
 
-                                <div class="col-md-12 form-group <?php echo e($errors->has('issue_title') ? ' has-error' : ''); ?>">
+                                <div class="form-group <?php echo e($errors->has('issue_title') ? ' has-error' : ''); ?>">
                                     <label class="control-label">Issue Title</label>
                                     <div class="input-icon right">
                                         <input type="text" name="title" value="<?php echo e((!empty($issueObj))? $issueObj->title : old('title')); ?>"
@@ -71,7 +71,7 @@
 
 
 
-                                <div class="col-md-12 mt-3 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Select Objective</label>
                                     <div class="input-icon right">
                                         <select name="objective_id" id="objective_id" class="form-control selectpicker" data-live-search="true">
@@ -90,7 +90,7 @@
 
 
                                 <?php if(!empty($issueObj) && $user_can_change_status): ?>
-                                    <div class="col-sm-12 mt-3 form-group">
+                                    <div class="mt-3 form-group">
                                         <label class="control-label">Select Status</label>
                                         <div class="input-icon right">
                                             <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
@@ -104,11 +104,8 @@
                                         </div>
                                     </div>
                                 <?php endif; ?>
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Select Task</label>
                                     <div class="input-icon right">
                                         <select name="task_id" id="task_id" class="form-control selectpicker" data-live-search="true">
@@ -123,11 +120,8 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <div class="document_listing_div">
                                         <div class="table-responsive">
                                             <table class="documents table table-striped">
@@ -155,26 +149,19 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Description</label>
-                                    <textarea class="form-control summernote" id="description-summernote"  name="description"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->description); ?> <?php endif; ?></textarea>
+                                    <textarea class="form-control" id="description"  name="description"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->description); ?> <?php endif; ?></textarea>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Resolution</label>
-                                    <textarea class="form-control summernote_resolution" id="resolution-summernote" name="resolution"><?php if(!empty($issueObj)): ?>
+                                    <textarea class="form-control" id="resolution" name="resolution"><?php if(!empty($issueObj)): ?>
                                             <?php echo e($issueObj->resolution); ?> <?php endif; ?></textarea>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-12 mt-2 mb-2 form-group">
+                                <div class="mt-3 form-group">
                                     <label class="control-label">Comment</label>
                                     <input class="form-control" name="comment" value="<?php echo e($issueObj->comment); ?>">
                                 </div>
@@ -201,6 +188,17 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            ClassicEditor
+                .create( document.querySelector( '#description' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
+
+            ClassicEditor
+                .create( document.querySelector( '#resolution' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,

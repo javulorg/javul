@@ -44,15 +44,15 @@
             <div class="panel-body list-group">
                 <div class="list-group-item">
                     <form role="form" method="post" id="form_sample_2" action="<?php echo e(url('units/' . $unitHashId)); ?>">
-                                <?php echo csrf_field(); ?>
-                                <?php echo method_field('put'); ?>
-                                <div class="row">
-                                    <div class="col-sm-4 form-group">
-                                        <label class="control-label"><?php echo e(__('messages.unit_name')); ?></label>
-                                        <div class="input-icon right">
-                                            <input type="text" name="unit_name" value="<?php echo e((!empty($unitObj))? $unitObj->name : old('unit_name')); ?>" class="form-control" placeholder="<?php echo e(__('messages.unit_name')); ?>"/>
-                                        </div>
-                                    </div>
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('put'); ?>
+                        <div class="row">
+                              <div class="form-group">
+                                  <label class="control-label"><?php echo e(__('messages.unit_name')); ?></label>
+                                  <div class="input-icon right">
+                                      <input type="text" name="unit_name" value="<?php echo e((!empty($unitObj))? $unitObj->name : old('unit_name')); ?>" class="form-control" placeholder="<?php echo e(__('messages.unit_name')); ?>"/>
+                                  </div>
+                              </div>
 
                                     <?php
                                     $edit_unit_category = [];
@@ -200,7 +200,7 @@
                                     </div>
 
                                 </div>
-                            </form>
+                    </form>
                 </div>
             </div>
         </div>
