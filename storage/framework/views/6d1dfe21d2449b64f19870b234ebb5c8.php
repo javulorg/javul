@@ -193,85 +193,101 @@
 
 
 
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Create Issue</h4>
+
+
+
+        <div class="panel panel-grey panel-default">
+            <div class="panel-heading">
+                <h4>Create Issue</h4>
+            </div>
+
+            <div class="panel-body list-group">
+                <div class="list-group-item">
+                    <form role="form" method="post" id="form_sample_2" action="<?php echo e(url('issues')); ?>" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
+                        <div class="form-group">
+                            <input type="hidden" name="unit_id" value="<?php echo e($unitIDHashID->encode($unitObj->id)); ?>"/>
                         </div>
-                        <div class="card-body">
-                            <form role="form" method="post" id="form_sample_2" action="<?php echo e(url('issues')); ?>" enctype="multipart/form-data">
-                                <?php echo csrf_field(); ?>
-                                <div class="form-group">
-                                    <input type="hidden" name="unit_id" value="<?php echo e($unitIDHashID->encode($unitObj->id)); ?>"/>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Issue Title</label>
-                                    <input type="text" name="title" value="<?php echo e((!empty($issueObj))? $issueObj->title : old('title')); ?>" class="form-control" placeholder="Issue Name"/>
-                                    <?php if($errors->has('title')): ?>
-                                        <span class="help-block">
+                        <div class="row">
+
+                            <div class="form-group">
+                                <label class="control-label">Issue Title</label>
+                                <input type="text" name="title" value="<?php echo e((!empty($issueObj))? $issueObj->title : old('title')); ?>" class="form-control" placeholder="Issue Name"/>
+                                <?php if($errors->has('title')): ?>
+                                    <span class="help-block">
                                     <strong><?php echo e($errors->first('title')); ?></strong>
                                 </span>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Select Objective</label>
-                                    <select name="objective_id" id="objective_id" class="form-control selectpicker" data-live-search="true">
-                                        <option value="">Select</option>
-                                        <?php if(count($objectiveObj) > 0): ?>
-                                            <?php $__currentLoopData = $objectiveObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($objectiveIDHashID->encode($objective->id)); ?>" <?php if(!empty($issueObj) && $objective->id == $issueObj->objective_id): ?> selected="selected" <?php endif; ?>><?php echo e($objective->name); ?></option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        <?php endif; ?>
-                                    </select>
-                                </div>
-                                <?php if(!empty($issueObj) && $user_can_change_status): ?>
-                                    <div class="form-group">
-                                        <label class="control-label">Select Status</label>
-                                        <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
-                                            <option value="unverified" <?php if(!empty($issueObj) && $issueObj->status == "unverified"): ?> selected="selected" <?php endif; ?>>Unverified</option>
-                                            <option value="verified" <?php if(!empty($issueObj) && $issueObj->status == "verified"): ?> selected="selected" <?php endif; ?>>Verified</option>
-                                            <option value="resolved" <?php if(!empty($issueObj) && $issueObj->status == "resolved"): ?> selected="selected" <?php endif; ?>>Resolved</option>
-                                        </select>
-                                    </div>
                                 <?php endif; ?>
-                                <div class="form-group">
-                                    <label class="control-label">Select Task</label>
-                                    <select name="task_id" id="task_id" class="form-control selectpicker" data-live-search="true">
-                                        <option value="">Select</option>
-                                        <?php if(!empty($taskObj)): ?>
-                                                <?php $task_ids = explode(",", $issueObj->task_id); ?>
-                                            <?php $__currentLoopData = $taskObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($taskIDHashID->encode($task->id)); ?>" <?php if(in_array($task->id, $task_ids)): ?> selected <?php endif; ?>><?php echo e($task->name); ?></option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        <?php endif; ?>
+                            </div>
+
+
+                            <div class="mt-3 form-group">
+                                <label class="control-label">Select Objective</label>
+                                <select name="objective_id" id="objective_id" class="form-control selectpicker" data-live-search="true">
+                                    <option value="">Select</option>
+                                    <?php if(count($objectiveObj) > 0): ?>
+                                        <?php $__currentLoopData = $objectiveObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($objectiveIDHashID->encode($objective->id)); ?>" <?php if(!empty($issueObj) && $objective->id == $issueObj->objective_id): ?> selected="selected" <?php endif; ?>><?php echo e($objective->name); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+
+
+                            <?php if(!empty($issueObj) && $user_can_change_status): ?>
+                                <div class="mt-3 form-group">
+                                    <label class="control-label">Select Status</label>
+                                    <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
+                                        <option value="unverified" <?php if(!empty($issueObj) && $issueObj->status == "unverified"): ?> selected="selected" <?php endif; ?>>Unverified</option>
+                                        <option value="verified" <?php if(!empty($issueObj) && $issueObj->status == "verified"): ?> selected="selected" <?php endif; ?>>Verified</option>
+                                        <option value="resolved" <?php if(!empty($issueObj) && $issueObj->status == "resolved"): ?> selected="selected" <?php endif; ?>>Resolved</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label">Description</label>
-                                    <textarea class="form-control summernote" id="description-summernote" name="description"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->description); ?> <?php endif; ?></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Resolution</label>
-                                    <textarea class="form-control summernote_resolution" id="resolution-summernote" name="resolution"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->resolution); ?> <?php endif; ?></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Comment</label>
-                                    <input class="form-control" name="comment">
-                                </div>
-                                <div class="form-group text-center">
-                                    <button class="btn btn-secondary" type="submit" id="create_issue">
-                                        <i class="fa fa-plus"></i> <span class="plus_text">Create Issue</span>
-                                    </button>
-                                </div>
-                            </form>
+                            <?php endif; ?>
+
+
+                            <div class="mt-3 form-group">
+                                <label class="control-label">Select Task</label>
+                                <select name="task_id" id="task_id" class="form-control selectpicker" data-live-search="true">
+                                    <option value="">Select</option>
+                                    <?php if(!empty($taskObj)): ?>
+                                            <?php $task_ids = explode(",", $issueObj->task_id); ?>
+                                        <?php $__currentLoopData = $taskObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($taskIDHashID->encode($task->id)); ?>" <?php if(in_array($task->id, $task_ids)): ?> selected <?php endif; ?>><?php echo e($task->name); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+
+
+                            <div class="mt-3 form-group">
+                                <label class="control-label">Description</label>
+                                <textarea class="form-control" id="description" name="description"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->description); ?> <?php endif; ?></textarea>
+                            </div>
+
+
+                            <div class="mt-3 form-group">
+                                <label class="control-label">Resolution</label>
+                                <textarea class="form-control" id="resolution" name="resolution"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->resolution); ?> <?php endif; ?></textarea>
+                            </div>
+
+
+
+
+
+
+
+
+                            <div class="mt-3 form-group text-center">
+                                <button class="btn btn-secondary" type="submit" id="create_issue">
+                                    <i class="fa fa-plus"></i> <span class="plus_text">Create Issue</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-
     </div>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
@@ -386,6 +402,18 @@
                 })
                 return false
             });
+
+            ClassicEditor
+                .create( document.querySelector( '#description' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
+
+            ClassicEditor
+                .create( document.querySelector( '#resolution' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
         });
     </script>
 <?php $__env->stopSection(); ?>
