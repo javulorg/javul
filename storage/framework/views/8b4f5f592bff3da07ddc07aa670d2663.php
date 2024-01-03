@@ -226,7 +226,7 @@
                 </div>
                 <div class="comments_content">
                     <div class="comment_stat">
-                        
+
                     </div>
 
                     <?php if(isset($comments)): ?>

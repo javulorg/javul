@@ -319,8 +319,6 @@
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         $(document).ready(function () {
-
-
             $("#unit_category").select2({
                 theme: "bootstrap-5",
                 containerCssClass: "select2--small",
