@@ -130,17 +130,11 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
-        // $(document).ready(function () {
-        //     $(".selectpicker").selectpicker('refresh');
-        //
-        //
-        //     $('#description').summernote({
-        //         tabsize: 0,
-        //         height: 100,
-        //         focus: true
-        //     });
-        // });
-
+        ClassicEditor
+            .create( document.querySelector( '#description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
     </script>
 <?php $__env->stopSection(); ?>
 

@@ -95,7 +95,7 @@
                             </div>
                         </div>
 
-                        <div class="row mt-2">
+                        <div class="row mt-4">
                             <div class="col-sm-4 form-group <?php echo e($errors->has('task_skills') ? ' has-error' : ''); ?>">
                                 <label class="control-label">Task Skills <span
                                         class="text-danger">*</span></label>
@@ -146,7 +146,7 @@
                             </div>
                         </div>
 
-                        <div class="row mt-2">
+                        <div class="row mt-4">
                             <div class="col-sm-4 form-group">
                                 <label class="control-label">Compensation <span
                                         class="text-danger">*</span></label>
@@ -197,7 +197,7 @@
                         </div>
 
 
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-sm-12 mt-1 mb-2 form-group">
                                 <label class="control-label">Summary</label>
                                 <textarea class="form-control" id="task-summary" name="summary"><?php if(!empty($taskObj)): ?> <?php echo e($taskObj->summary); ?> <?php endif; ?></textarea>
@@ -205,7 +205,7 @@
 
                             <div class="col-sm-12 mt-1 mb-2 form-group">
                                 <label class="control-label">Description <span id="desc-error"></span></label>
-                                <textarea class="form-control" id="description-summernote" name="description"><?php if(!empty($taskObj)): ?> <?php echo e($taskObj->description); ?> <?php endif; ?></textarea>
+                                <textarea class="form-control" id="description" name="description"><?php if(!empty($taskObj)): ?> <?php echo e($taskObj->description); ?> <?php endif; ?></textarea>
                             </div>
 
                             <div class="col-sm-12 mt-1 mb-2 form-group">
@@ -220,7 +220,7 @@
                         </div>
 
 
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-sm-12 form-group">
                                 <div class="document_listing_div">
                                     <div class="table-responsive overflow-hidden">
@@ -252,12 +252,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12 form-group">
-                                <label class="control-label">Comment</label>
-                                <input class="form-control" name="comment">
-                            </div>
-                        </div>
+
+
+
+
+
+
 
                         <div class="row justify-content-center mt-3">
                             <div class="col-md-6 col-lg-4">
@@ -291,12 +291,6 @@
             $("#calendar-icon-to").on("click", function() {
                 $(this).closest(".input-group").find("input").focus();
             });
-
-            // $('#description-summernote').summernote({
-            //     tabsize: 0,
-            //     height: 100,
-            //     focus: true
-            // });
 
 
             $(document).off('click','.addMoreDocument').on('click',".addMoreDocument",function(){
@@ -387,6 +381,18 @@
             .create( document.querySelector('#task-summary') )
             .catch( error => {
                 console.error(error);
+            } );
+
+        ClassicEditor
+            .create( document.querySelector( '#description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+
+        ClassicEditor
+            .create( document.querySelector( '#action_items' ) )
+            .catch( error => {
+                console.error( error );
             } );
 
     </script>

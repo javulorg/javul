@@ -81,16 +81,16 @@
 
                             <div class="col-sm-12 mt-3 form-group">
                                 <label class="control-label">Objective Description</label>
-                                <textarea class="form-control" id="objective_description" name="description">
+                                <textarea class="form-control" id="description" name="description">
                                     @if(!empty($objectiveObj)) {{$objectiveObj->description}} @endif
                                 </textarea>
                             </div>
 
 
-                            <div class="col-sm-12 mt-3 form-group">
-                                <label class="control-label">Comment</label>
-                                <input class="form-control" type="text" name="comment">
-                            </div>
+{{--                            <div class="col-sm-12 mt-3 form-group">--}}
+{{--                                <label class="control-label">Comment</label>--}}
+{{--                                <input class="form-control" type="text" name="comment">--}}
+{{--                            </div>--}}
 
                         </div>
                         <div class="row justify-content-center mt-3">
@@ -109,19 +109,11 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#objective_description').summernote({
-                tabsize: 1,
-                height: 100,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'underline', 'clear']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ]
-            });
+            ClassicEditor
+                .create( document.querySelector( '#description' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
         });
     </script>
 @endsection

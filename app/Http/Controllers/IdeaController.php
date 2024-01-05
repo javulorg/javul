@@ -84,7 +84,7 @@ class IdeaController extends Controller
            'task_id'      => 'nullable',
            'issue_id'     => 'nullable',
            'description'  => 'required',
-           'comment'      => 'required',
+           'comment'      => 'nullable',
            'file'         => 'nullable',
         ]);
         if($validator->fails())
@@ -195,7 +195,7 @@ class IdeaController extends Controller
             'task_id'      => 'nullable',
             'issue_id'     => 'nullable',
             'description'  => 'required',
-            'comment'      => 'required',
+            'comment'      => 'nullable',
             'file'         => 'nullable',
         ]);
         if($validator->fails())

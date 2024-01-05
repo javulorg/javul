@@ -104,12 +104,6 @@
 
 
                             <div class="col-sm-12 mt-3 form-group">
-                                <label class="control-label">Comment</label>
-                                <input class="form-control" type="text" name="comment">
-                            </div>
-
-
-                            <div class="col-sm-12 mt-3 form-group">
                                 <input class="form-control" type="file" name="file">
                             </div>
 
@@ -135,16 +129,10 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
-        // $(document).ready(function () {
-        //     $(".selectpicker").selectpicker('refresh');
-        //
-        //
-        //     $('#description').summernote({
-        //         tabsize: 0,
-        //         height: 100,
-        //         focus: true
-        //     });
-        // });
-
+        ClassicEditor
+            .create( document.querySelector( '#description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
     </script>
 @endsection
