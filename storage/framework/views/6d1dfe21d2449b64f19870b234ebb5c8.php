@@ -271,13 +271,6 @@
                                 <textarea class="form-control" id="resolution" name="resolution"><?php if(!empty($issueObj)): ?> <?php echo e($issueObj->resolution); ?> <?php endif; ?></textarea>
                             </div>
 
-
-
-
-
-
-
-
                             <div class="mt-3 form-group text-center">
                                 <button class="btn btn-secondary" type="submit" id="create_issue">
                                     <i class="fa fa-plus"></i> <span class="plus_text">Create Issue</span>

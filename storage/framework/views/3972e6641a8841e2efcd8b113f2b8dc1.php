@@ -90,7 +90,7 @@
 
                             <div class="col-sm-12 mt-3 form-group">
                                 <label class="control-label">Objective Description</label>
-                                <textarea class="form-control" id="objective_description" name="description">
+                                <textarea class="form-control" id="description" name="description">
                                     <?php if(!empty($objectiveObj)): ?> <?php echo e($objectiveObj->description); ?> <?php endif; ?>
                                 </textarea>
                             </div>
@@ -117,18 +117,12 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
-        $('#objective_description').summernote({
-            tabsize: 1,
-            height: 100,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']]
-            ]
+        $(document).ready(function () {
+            ClassicEditor
+                .create( document.querySelector( '#description' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
         });
     </script>
 <?php $__env->stopSection(); ?>

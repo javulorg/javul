@@ -293,7 +293,7 @@
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         $(document).ready(function () {
-          
+
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,
