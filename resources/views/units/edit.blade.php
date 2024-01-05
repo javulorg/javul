@@ -48,19 +48,19 @@
                         @csrf
                         @method('put')
                         <div class="row">
-                              <div class="form-group">
+                                     <div class="col-sm-4 form-group">
                                   <label class="control-label">{{ __('messages.unit_name') }}</label>
                                   <div class="input-icon right">
                                       <input type="text" name="unit_name" value="{{ (!empty($unitObj))? $unitObj->name : old('unit_name') }}" class="form-control" placeholder="{{ __('messages.unit_name') }}"/>
                                   </div>
                               </div>
 
-                                    <?php
-                                    $edit_unit_category = [];
-                                    if(!empty($unitObj))
-                                        $edit_unit_category = explode(",",$unitObj->category_id);
-                                    ?>
-                                    <div class="col-sm-4">
+                                        <?php
+                                        $edit_unit_category = [];
+                                        if(!empty($unitObj))
+                                            $edit_unit_category = explode(",",$unitObj->category_id);
+                                        ?>
+                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="control-label">{{ __('messages.unit_category') }} <span
                                                     class="text-danger">*</span></label>
@@ -91,9 +91,9 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-4 form-group">
+                                    <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">State<span class="text-danger">*</span></label>
-                                        <select class="form-control selectpicker" data-live-search="true" name="state" id="state" @if(!empty($unitObj) && $unitObj->country_id == "global") disabled @endif>
+                                        <select class="form-control" data-live-search="true" name="state" id="state" @if(!empty($unitObj) && $unitObj->country_id == "global") disabled @endif>
                                             @if(!empty($unitObj))
                                                 @foreach($states as $id=>$val)
                                                     <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->state_id == $id)
@@ -106,9 +106,9 @@
                                         <span class="states_loader location_loader" style="display: none"><img src="{!! url('assets/images/small_loader.gif') !!}"/></span>
                                     </div>
 
-                                    <div class="col-sm-4 form-group">
+                                    <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">City<span class="text-danger">*</span></label>
-                                        <select class="form-control selectpicker" name="city" id="city" @if(!empty($unitObj) && $unitObj->country_id == "global")
+                                        <select class="form-control" name="city" id="city" @if(!empty($unitObj) && $unitObj->country_id == "global")
                                         disabled @endif>
                                             @if(!empty($unitObj))
                                                 @if(!empty($state_name_as_city_for_field))
@@ -129,9 +129,9 @@
                                 </span>
                                     </div>
 
-                                    <div class="col-sm-4 form-group">
+                                    <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">{{ __('messages.unit_credibility') }}<span class="text-danger">*</span></label>
-                                        <select class="form-control selectpicker" data-live-search="true" name="credibility">
+                                        <select class="form-control" data-live-search="true" name="credibility">
                                             <option value="">{!! trans('messages.select') !!}</option>
                                             @if(count($unit_credibility_arr) > 0)
                                                 @foreach($unit_credibility_arr as $id=>$val)
@@ -142,55 +142,51 @@
                                         </select>
                                     </div>
 
-
-                                    <div class="col-sm-12 form-group">
-                                        <label class="control-label">Unit Description</label>
-                                        <textarea class="form-control" id="summernote" name="description">
-                                    @if(!empty($unitObj)) {{ $unitObj->description }} @endif
-                                </textarea>
-                                    </div>
-
-
-                                    <div class="col-sm-12 form-group">
-                                        <label class="control-label">Comment</label>
-                                        <input class="form-control" name="comment" @if(!empty($unitObj) && !empty($unitObj->comment))
-                                        value="{{$unitObj->comment}}" @endif>
-                                    </div>
-
-
-                                    <div class="col-sm-4 form-group">
+                                    <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">Related To</label>
                                         <select class="form-control selectpicker" data-live-search="true" name="related_to[]" id="related_to" multiple>
                                             @if(count($relatedUnitsObj) > 0 )
                                                 @foreach($relatedUnitsObj as $id=>$relate)
                                                     <option value="{{$id}}" @if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) &&
-                        					in_array($id,$relatedUnitsofUnitObj)) selected=selected @endif>{{$relate}}</option>
+                                                    in_array($id,$relatedUnitsofUnitObj)) selected=selected @endif>{{$relate}}</option>
                                                 @endforeach
                                             @endif
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-4 form-group">
+                                    <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">Parent Unit</label>
                                         <select class="form-control selectpicker" data-live-search="true" name="parent_unit" id="parent_unit">
                                             <option value="">Select</option>
                                             @if(count($parentUnitsObj) > 0 )
                                                 @foreach($parentUnitsObj as $id=>$parent)
                                                     <option value="{{$id}}" @if(!empty($unitObj) && $id == $unitObj->parent_id)
-                                                    selected=selected @endif>{{$parent}}</option>
+                                                        selected=selected @endif>{{$parent}}</option>
                                                 @endforeach
                                             @endif
                                         </select>
+                                    </div>
+
+                                    <div class="col-sm-12 mt-3 form-group">
+                                        <label class="control-label">Unit Description</label>
+                                        <textarea class="form-control" id="description" name="description">
+                                              @if(!empty($unitObj)) {{ $unitObj->description }} @endif
+                                         </textarea>
+                                    </div>
+
+                                    <div class="col-sm-12 mt-3 form-group">
+                                        <label class="control-label">Comment</label>
+                                        <input class="form-control" name="comment" @if(!empty($unitObj) && !empty($unitObj->comment))
+                                        value="{{$unitObj->comment}}" @endif>
                                     </div>
 
                                     @if(!empty($unitObj) && $authUserObj->role == "superadmin")
                                         <div class="col-sm-4 form-group">
                                             <label class="control-label" style="width: 100%;">Status</label>
                                             <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status" @if(!empty($unitObj) &&
-                            $unitObj->status == "active") checked @elseif(empty($unitObj)) checked @endif>
+                                                  $unitObj->status == "active") checked @elseif(empty($unitObj)) checked @endif>
                                         </div>
                                     @endif
-
 
                                     <div class="row justify-content-center mt-3">
                                         <div class="col-md-6 col-lg-4">
@@ -199,8 +195,7 @@
                                             </button>
                                         </div>
                                     </div>
-
-                                </div>
+                            </div>
                     </form>
                 </div>
             </div>
@@ -211,7 +206,12 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
+            ClassicEditor
+                .create( document.querySelector( '#description' ) )
+                .catch( error => {
+                    console.error( error );
+                } );
+
             $("#country").on('change',function(){
                 var value = $(this).val();
                 var token = $('[name="_token"]').val();

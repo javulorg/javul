@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('skills');
             $table->dateTime('estimated_completion_time_start');
             $table->dateTime('estimated_completion_time_end');
-            $table->decimal('compensation',10,2);
+            $table->decimal('compensation',10,2)->nullable();
             $table->text('updatedFields')->nullable();
             $table->softDeletes();
             $table->timestamps();

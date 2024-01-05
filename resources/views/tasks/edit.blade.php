@@ -216,13 +216,13 @@
                                           name="summary">@if(!empty($taskObj)) {{$taskObj->summary}} @endif</textarea>
                             </div>
 
-                            <div class="col-sm-12 mt-1 mb-2 form-group">
+                            <div class="col-sm-12 mt-3 mb-2 form-group">
                                 <label class="control-label">Description <span id="desc-error"></span></label>
-                                <textarea class="form-control" id="description-summernote"
+                                <textarea class="form-control" id="description"
                                           name="description">@if(!empty($taskObj)) {{$taskObj->description}} @endif</textarea>
                             </div>
 
-                            <div class="col-sm-12 mt-1 mb-2 form-group">
+                            <div class="col-sm-12 mt-3 mb-2 form-group">
                                 <label class="control-label">Action Items</label>
                                 <textarea class="form-control" name="action_items" id="action_items">
                                     @if(!empty($taskObj))
@@ -291,7 +291,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-
             $(".datetimepicker").flatpickr({
                 enableTime: true,
                 position: "above",
@@ -306,9 +305,6 @@
             $("#calendar-icon-to").on("click", function () {
                 $(this).closest(".input-group").find("input").focus();
             });
-
-
-
 
             $(document).off('click', '.addMoreDocument').on('click', ".addMoreDocument", function () {
                 cloneTR();
@@ -389,5 +385,23 @@
             });
         });
 
+
+        ClassicEditor
+            .create( document.querySelector('#task-summary') )
+            .catch( error => {
+                console.error(error);
+            } );
+
+        ClassicEditor
+            .create( document.querySelector( '#description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+
+        ClassicEditor
+            .create( document.querySelector( '#action_items' ) )
+            .catch( error => {
+                console.error( error );
+            } );
     </script>
 @endsection

@@ -272,7 +272,6 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".selectpicker").selectpicker('refresh');
 
             $(".datetimepicker").flatpickr({
                 enableTime: true,
@@ -285,10 +284,10 @@
             $("#calendar-icon-from").on("click", function() {
                 $(this).closest(".input-group").find("input").focus();
             });
+
             $("#calendar-icon-to").on("click", function() {
                 $(this).closest(".input-group").find("input").focus();
             });
-
 
             $(document).off('click','.addMoreDocument').on('click',".addMoreDocument",function(){
                 cloneTR();
@@ -373,6 +372,8 @@
                 return false
             });
         });
+
+
 
         ClassicEditor
             .create( document.querySelector('#task-summary') )
