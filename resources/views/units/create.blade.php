@@ -201,11 +201,11 @@
                                     <option value="">{!! trans('messages.select') !!}</option>
                                     @if(count($countries) > 0)
                                         @foreach($countries as $id=>$val)
-                                            @if($val == "dash_line" || $val == "dash_line1")
-                                                <option value="{{$id}}" disabled></option>
-                                            @else
+{{--                                            @if($val == "dash_line" || $val == "dash_line1")--}}
+{{--                                                <option value="{{$id}}" disabled></option>--}}
+{{--                                            @else--}}
                                                 <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->country_id == $id) selected=selected @endif>{{$val}}</option>
-                                            @endif
+{{--                                            @endif--}}
                                         @endforeach
                                     @endif
                                 </select>
