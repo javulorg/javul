@@ -64,7 +64,7 @@
                                         <div class="form-group">
                                             <label class="control-label">{{ __('messages.unit_category') }} <span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control selectpicker" data-live-search="true" name="unit_category[]" id="unit_category" multiple>
+                                            <select class="form-control" data-live-search="true" name="unit_category[]" id="unit_category" multiple>
                                                 @if(count($unit_category_arr) > 0)
                                                     @foreach($unit_category_arr as $id=>$val)
                                                         <option value="{{$id}}" @if(!empty($edit_unit_category) && in_array($id,$edit_unit_category)) selected=selected @endif>{{$val}}</option>
@@ -76,16 +76,16 @@
 
                                     <div class="col-sm-4 form-group">
                                         <label class="control-label">Country<span class="text-danger">*</span></label>
-                                        <select class="form-control selectpicker" data-live-search="true" id="country" name="country">
+                                        <select class="form-control" data-live-search="true" id="country" name="country">
                                             <option value="">{!! trans('messages.select') !!}</option>
                                             @if(count($countries) > 0)
                                                 @foreach($countries as $id=>$val)
-                                                    @if($val == "dash_line" || $val == "dash_line1")
-                                                        <option value="{{$id}}" disabled></option>
-                                                    @else
+{{--                                                    @if($val == "dash_line" || $val == "dash_line1")--}}
+{{--                                                        <option value="{{$id}}" disabled></option>--}}
+{{--                                                    @else--}}
                                                         <option value="{{$id}}" @if(!empty($unitObj) && $unitObj->country_id == $id)
                                                         selected=selected @endif>{{$val}}</option>
-                                                    @endif
+{{--                                                    @endif--}}
                                                 @endforeach
                                             @endif
                                         </select>
@@ -144,7 +144,7 @@
 
                                     <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">Related To</label>
-                                        <select class="form-control selectpicker" data-live-search="true" name="related_to[]" id="related_to" multiple>
+                                        <select class="form-control" data-live-search="true" name="related_to[]" id="related_to" multiple>
                                             @if(count($relatedUnitsObj) > 0 )
                                                 @foreach($relatedUnitsObj as $id=>$relate)
                                                     <option value="{{$id}}" @if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) &&
@@ -156,7 +156,7 @@
 
                                     <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">Parent Unit</label>
-                                        <select class="form-control selectpicker" data-live-search="true" name="parent_unit" id="parent_unit">
+                                        <select class="form-control" data-live-search="true" name="parent_unit" id="parent_unit">
                                             <option value="">Select</option>
                                             @if(count($parentUnitsObj) > 0 )
                                                 @foreach($parentUnitsObj as $id=>$parent)
@@ -247,7 +247,6 @@
                                     html+='<option value="'+index+'">'+val+'</option>'
                                 });
                                 $("#state").append(html);
-                                $('.selectpicker').selectpicker('refresh');
                             }
                         }
                     })
@@ -282,13 +281,11 @@
                                         html ='<option value="'+index+'">'+val+'</option>'
                                     });
                                     $("#city").append(html);
-                                    $('.selectpicker').selectpicker('refresh');
                                     $("#empty_city_state_name").val('');
                                 }else{
                                     var html ='<option value="'+value+'">'+resp.state_name+'</option>';
 
                                     $("#city").append(html);
-                                    $('.selectpicker').selectpicker('refresh');
                                     $("#empty_city_state_name").val(JSON.stringify([{"id":value,"name":resp.state_name}]));
                                 }
                             }

@@ -200,11 +200,11 @@
                                     <option value=""><?php echo trans('messages.select'); ?></option>
                                     <?php if(count($countries) > 0): ?>
                                         <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <?php if($val == "dash_line" || $val == "dash_line1"): ?>
-                                                <option value="<?php echo e($id); ?>" disabled></option>
-                                            <?php else: ?>
+
+
+
                                                 <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && $unitObj->country_id == $id): ?> selected=selected <?php endif; ?>><?php echo e($val); ?></option>
-                                            <?php endif; ?>
+
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endif; ?>
                                 </select>

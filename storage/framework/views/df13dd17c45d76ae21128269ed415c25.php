@@ -63,7 +63,7 @@
                                         <div class="form-group">
                                             <label class="control-label"><?php echo e(__('messages.unit_category')); ?> <span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control selectpicker" data-live-search="true" name="unit_category[]" id="unit_category" multiple>
+                                            <select class="form-control" data-live-search="true" name="unit_category[]" id="unit_category" multiple>
                                                 <?php if(count($unit_category_arr) > 0): ?>
                                                     <?php $__currentLoopData = $unit_category_arr; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                         <option value="<?php echo e($id); ?>" <?php if(!empty($edit_unit_category) && in_array($id,$edit_unit_category)): ?> selected=selected <?php endif; ?>><?php echo e($val); ?></option>
@@ -75,16 +75,16 @@
 
                                     <div class="col-sm-4 form-group">
                                         <label class="control-label">Country<span class="text-danger">*</span></label>
-                                        <select class="form-control selectpicker" data-live-search="true" id="country" name="country">
+                                        <select class="form-control" data-live-search="true" id="country" name="country">
                                             <option value=""><?php echo trans('messages.select'); ?></option>
                                             <?php if(count($countries) > 0): ?>
                                                 <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php if($val == "dash_line" || $val == "dash_line1"): ?>
-                                                        <option value="<?php echo e($id); ?>" disabled></option>
-                                                    <?php else: ?>
+
+
+
                                                         <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && $unitObj->country_id == $id): ?>
                                                         selected=selected <?php endif; ?>><?php echo e($val); ?></option>
-                                                    <?php endif; ?>
+
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             <?php endif; ?>
                                         </select>
@@ -143,7 +143,7 @@
 
                                     <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">Related To</label>
-                                        <select class="form-control selectpicker" data-live-search="true" name="related_to[]" id="related_to" multiple>
+                                        <select class="form-control" data-live-search="true" name="related_to[]" id="related_to" multiple>
                                             <?php if(count($relatedUnitsObj) > 0 ): ?>
                                                 <?php $__currentLoopData = $relatedUnitsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$relate): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) &&
@@ -155,7 +155,7 @@
 
                                     <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">Parent Unit</label>
-                                        <select class="form-control selectpicker" data-live-search="true" name="parent_unit" id="parent_unit">
+                                        <select class="form-control" data-live-search="true" name="parent_unit" id="parent_unit">
                                             <option value="">Select</option>
                                             <?php if(count($parentUnitsObj) > 0 ): ?>
                                                 <?php $__currentLoopData = $parentUnitsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$parent): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -246,7 +246,6 @@
                                     html+='<option value="'+index+'">'+val+'</option>'
                                 });
                                 $("#state").append(html);
-                                $('.selectpicker').selectpicker('refresh');
                             }
                         }
                     })
@@ -281,13 +280,11 @@
                                         html ='<option value="'+index+'">'+val+'</option>'
                                     });
                                     $("#city").append(html);
-                                    $('.selectpicker').selectpicker('refresh');
                                     $("#empty_city_state_name").val('');
                                 }else{
                                     var html ='<option value="'+value+'">'+resp.state_name+'</option>';
 
                                     $("#city").append(html);
-                                    $('.selectpicker').selectpicker('refresh');
                                     $("#empty_city_state_name").val(JSON.stringify([{"id":value,"name":resp.state_name}]));
                                 }
                             }
