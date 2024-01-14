@@ -18,8 +18,30 @@ class Unit extends Model
     protected $table = 'units';
 
 
-    protected $fillable = ['user_id','category_id','name','description','credibility','country_id','state_id','city_id','status',
-        'parent_id','modified_by','slug','featured_unit','state_id_for_city_not_exits'];
+    protected $fillable = [
+        'unit_type',
+        'product_name',
+        'service_name',
+        'business_model',
+        'operational_grade',
+        'company',
+        'scope',
+
+        'user_id',
+        'category_id',
+        'name',
+        'description',
+        'credibility',
+        'country_id',
+        'state_id',
+        'city_id',
+        'status',
+        'parent_id',
+        'modified_by',
+        'slug',
+        'featured_unit',
+        'state_id_for_city_not_exits'
+    ];
 
 
     public function category()
@@ -43,58 +65,6 @@ class Unit extends Model
     {
         return $this->hasManyThrough(Task::class,Objective::class);
     }
-
-
-
-//    public static function getUnitWithCategories($unit_id='')
-//    {
-//        $where = ' WHERE units.deleted_at IS NULL ';
-//        if(!empty($unit_id))
-//            $where .= " and units.id='".$unit_id."' ";
-//
-//        $unitsObj = DB::select(DB::raw("SELECT cr.total_member,units.*,GROUP_CONCAT(unit_category.name SEPARATOR ', ') as category_name,
-//            (SELECT count(*) FROM forum_topic WHERE unit_id = units.id ) as totaltopic
-//            FROM units INNER JOIN unit_category ON  (units.category_id IS NOT NULL and FIND_IN_SET(unit_category.id,units.category_id) > 0  )
-//            LEFT JOIN chat_room cr ON (cr.unit_id = units.id )
-//            $where GROUP BY units.id"));
-//
-//
-//        $extraWhere = array();
-//        $extraWhere[] = array("wiki_pages.unit_id","=",$unit_id);
-//        $extraWhere[] = array("wiki_pages.is_wikihome","=",3);
-//
-//
-//        $wiki = DB::table("wiki_pages")
-//                        ->select("page_content")
-//                        ->where($extraWhere)
-//                        ->get();
-//
-//        if(!empty($wiki) && $wiki->count() > 0){
-//            $wiki[0]->page_content = Wiki::parse($wiki[0]->page_content);
-//        }
-//
-//        if(count($unitsObj) == 1)
-//        {
-//            $unitsObjTmp = $unitsObj[0];
-//            if(!empty($unit_id)){
-//
-//                $unitsObjTmp->other_menulink = $wiki->count() == 0 ? "Other Link" : $wiki[0]->page_content;
-//                return $unitsObjTmp;
-//            }
-//            $unitsObj= array_filter((array)$unitsObj[0]);
-//            if(!empty($unitsObj)){
-//                $temp[] =(object)$unitsObjTmp ;
-//                return $temp;
-//            }
-//        }
-//
-//       if(count($unitsObj) > 1){
-//           return $unitsObj[0];
-//       }
-//        return $unitsObj;
-//    }
-
-
 
     public static function getUnitWithCategories($unit_id = '')
     {
