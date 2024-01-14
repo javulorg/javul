@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('units', function (Blueprint $table) {
             $table->id();
+
+            $table->tinyInteger('unit_type')->nullable()->comment('0 => product, 1 => service, 2 => Peoples Government');
+            $table->string('product_name')->nullable();
+            $table->string('service_name')->nullable();
+            $table->tinyInteger('business_model')->nullable()->comment('0=> Community-owned, 1=> Corporate');
+            $table->string('operational_grade')->nullable();
+            $table->string('company')->nullable();
+            $table->tinyInteger('scope')->nullable()->comment('0=> City,1=> County,2=> State,3=> National,4=> International');
+
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 
