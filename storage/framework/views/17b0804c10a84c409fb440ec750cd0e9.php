@@ -4,167 +4,6 @@
     <div class="content_row">
         <?php echo $__env->make('layout.v2.global-sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div class="panel panel-grey panel-default">
             <div class="panel-heading">
                 <h4>Create Unit</h4>
@@ -177,7 +16,7 @@
                         <!-- Unit Information Section -->
                         <div class="row">
                             <div class="col-sm-4 form-group">
-                                <label class="control-label"><?php echo e(__('messages.unit_name')); ?></label>
+                                <label class="control-label mb-1"><?php echo e(__('messages.unit_name')); ?></label>
                                 <div class="input-icon right">
                                     <input type="text" name="unit_name" value="<?php echo e((!empty($unitObj))? $unitObj->name : old('unit_name')); ?>" class="form-control" placeholder="<?php echo e(__('messages.unit_name')); ?>"/>
                                 </div>
@@ -185,7 +24,7 @@
 
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="control-label"><?php echo e(__('messages.unit_category')); ?> <span class="text-danger">*</span></label>
+                                    <label class="control-label mb-1"><?php echo e(__('messages.unit_category')); ?> <span class="text-danger">*</span></label>
                                     <select class="form-select"  name="unit_category[]" id="unit_category" multiple>
                                         <?php $__currentLoopData = $unit_category_arr; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <option value="<?php echo e($id); ?>"><?php echo e($val); ?></option>
@@ -194,7 +33,19 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label mb-1">Unit Type <span class="text-danger">*</span></label>
+                                    <select class="form-select"  name="unit_type" id="unit_type">
+                                        <option selected disabled>Select Type</option>
+                                        <option value="0">Product</option>
+                                        <option value="1">Service</option>
+                                        <option value="2">People’s Government</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4 form-group mt-3">
                                 <label class="control-label">Country<span class="text-danger">*</span></label>
                                 <select class="form-control"  id="country" name="country">
                                     <option value=""><?php echo trans('messages.select'); ?></option>
