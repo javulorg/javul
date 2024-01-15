@@ -6,7 +6,9 @@ use App\Models\ActivityPoint;
 use App\Models\RelatedUnit;
 use App\Models\SiteActivity;
 use App\Models\Unit;
+use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class UnitService
@@ -17,6 +19,7 @@ class UnitService
             $unit = $this->saveUnit($request);
             $this->saveRelatedUnit($request, $unit);
             $this->saveActivityPoint($unit);
+            $this->saveSiteActivity($unit, $request);
         });
     }
 
@@ -24,6 +27,7 @@ class UnitService
     {
         return Unit::create([
             'user_id'                     => Auth::user()->id,
+            'unit_type'                    => $request->unit_type,
             'name'                        => $request->unit_name,
             'slug'                        => substr(str_replace(" ","_",strtolower($request->unit_name)),0,20),
             'category_id'                 => implode(",",$request->unit_category),
@@ -60,8 +64,16 @@ class UnitService
         ]);
     }
 
-    private function saveSiteActivity()
+    private function saveSiteActivity($unit, $request)
     {
+        $userIDHashID = new Hashids('user id hash',10,Config::get('app.encode_chars'));
+        $userId      = $userIDHashID->encode(Auth::user()->id);
+        $userName = Auth::user()->first_name.' '.Auth::user()->last_name;
+        if(!empty(Auth::user()->username))
+            $userName = Auth::user()->username;
+        $slug = substr(str_replace(" ","_",strtolower($request->unit_name)),0,20);
+        $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+        $unitId = $unitIDHashID->encode($unit->id);
         SiteActivity::create([
             'user_id'        => Auth::user()->id,
             'unit_id'        => $unit->id,

@@ -15,10 +15,11 @@ class UnitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'unit_name' => 'required',
-            'unit_category' => 'required',
-            'credibility' => 'required',
-            'country' => 'required'
+            'unit_name'       => 'required',
+            'unit_type'        => 'required|in:0,1,2',
+            'unit_category'   => 'required',
+            'credibility'     => 'required',
+            'country'         => 'required'
         ];
     }
 }

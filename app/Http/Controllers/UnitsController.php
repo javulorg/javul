@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UnitRequest;
 use App\Models\ActivityPoint;
 use App\Models\City;
 use App\Models\Country;
@@ -18,6 +19,7 @@ use App\Models\Unit;
 use App\Models\UnitRevision;
 use App\Models\UnitCategory;
 use App\Models\User;
+use App\Services\Units\UnitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
@@ -31,10 +33,13 @@ use Illuminate\Support\Facades\Validator;
 class UnitsController extends Controller
 {
     public $user_messages;
-    public function __construct()
+    private $service;
+
+    public function __construct(UnitService $service)
     {
         $this->middleware('auth',['except'=>['index','view','get_units_paginate','search_by_category','search_units','get_state',
             'get_city', 'categoryView']]);
+        $this->service = $service;
         $this->user_messages = new UserMessages();
     }
 
@@ -102,100 +107,9 @@ class UnitsController extends Controller
         return view('units.create');
     }
 
-    public function store(Request $request)
+    public function store(UnitRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'unit_name' => 'required',
-            'unit_category' => 'required',
-            'credibility' => 'required',
-            'country' => 'required'
-        ]);
-        if ($validator->fails())
-            return redirect()->back()->withErrors($validator)->withInput();
-
-        $status = $request->status;
-        if(empty($status))
-            $status="disabled";
-        else
-            $status="active";
-
-        $slug = substr(str_replace(" ","_",strtolower($request->input('unit_name'))),0,20);
-        $empty_city_state_name = $request->empty_city_state_name;
-
-        $city = $request->city;
-        if(!empty($empty_city_state_name))
-        {
-            $city = null;
-        }
-
-        $unit = Unit::create([
-            'user_id'                     => Auth::user()->id,
-            'name'                        => $request->unit_name,
-            'slug'                        => $slug,
-            'category_id'                 => implode(",",$request->unit_category),
-            'description'                 => trim($request->description),
-            'credibility'                 => $request->credibility,
-            'country_id'                  => $request->country,
-            'state_id'                    => $request->state,
-            'city_id'                     => $city,
-            'status'                      => 'active',
-            'parent_id'                   => $request->parent_unit,
-            'state_id_for_city_not_exits' => $empty_city_state_name
-        ]);
-
-
-        // After Created Unit send mail to site admin
-        $siteAdminEmails = User::where('role','superadmin')->pluck('email')->all();
-        $unitCreator = User::find(Auth::user()->id);
-
-        $toEmail = $unitCreator->email;
-        $toName  = $unitCreator->first_name.' '.$unitCreator->last_name;
-        $subject = "Unit Created";
-
-//        Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use ($toEmail,$toName,$subject,$siteAdminEmails)
-//        {
-//            $message->to($toEmail,$toName)->subject($subject);
-//            if(!empty($siteAdminEmails))
-//                $message->bcc($siteAdminEmails,"Admin")->subject($subject);
-//
-//            $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-//        });
-
-        $relatedUnit = $request->related_to;
-        if(!empty($relatedUnit))
-        {
-            RelatedUnit::create([
-                'unit_id'     => $unit->id,
-                'related_to'  =>implode(",",$relatedUnit)
-            ]);
-        }
-        // add activity point for created unit and user.
-        ActivityPoint::create([
-            'user_id'      => Auth::user()->id,
-            'unit_id'      => $unit->id,
-            'points'       => 2,
-            'comments'     => 'Unit Created',
-            'type'         => 'unit'
-        ]);
-        // add site activity record for global statistics.
-        $userIDHashID = new Hashids('user id hash',10,Config::get('app.encode_chars'));
-        $userId      = $userIDHashID->encode(Auth::user()->id);
-
-        $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
-        $unitId = $unitIDHashID->encode($unit->id);
-
-        $userName = Auth::user()->first_name.' '.Auth::user()->last_name;
-        if(!empty(Auth::user()->username))
-            $userName = Auth::user()->username;
-
-        SiteActivity::create([
-            'user_id'        => Auth::user()->id,
-            'unit_id'        => $unit->id,
-            'comment'        => '<a href="'.url('userprofiles/'.$userId.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                .$userName.'</a>
-                created
-                 unit <a href="'.url('units/'.$unitId.'/'.$slug).'">'.$request->input('unit_name').'</a>'
-        ]);
+        $this->service->store($request);
         return redirect()->to('units?home=true');
     }
 
@@ -330,10 +244,6 @@ class UnitsController extends Controller
         }
         return view('errors.404');
     }
-
-
-
-
 
     public function get_state(Request $request)
     {
