@@ -63,8 +63,8 @@
                                     <label for="businessModel">Business Model <span class="text-danger">*</span></label>
                                     <select class="form-control" id="businessModel" name="business_model">
                                         <option selected disabled>Business Model</option>
-                                        <option value="Community-owned">Community-owned</option>
-                                        <option value="Corporate">Corporate</option>
+                                        <option value="0">Community-owned</option>
+                                        <option value="1">Corporate</option>
                                     </select>
                                 </div>
 
@@ -86,11 +86,11 @@
                                 <label for="scope">Scope <span class="text-danger">*</span></label>
                                 <select class="form-control" id="scope" name="scope">
                                     <option selected disabled>Select Scope</option>
-                                    <option value="City">City</option>
-                                    <option value="County">County</option>
-                                    <option value="State">State</option>
-                                    <option value="National">National</option>
-                                    <option value="International">International</option>
+                                    <option value="0">City</option>
+                                    <option value="1">County</option>
+                                    <option value="2">State</option>
+                                    <option value="3">National</option>
+                                    <option value="4">International</option>
                                 </select>
                             </div>
 
@@ -196,7 +196,7 @@
 
                         <!-- Description and Comments Section -->
                         <div class="col-sm-12 mt-3 form-group">
-                            <label class="control-label">Unit Description</label>
+                            <label class="control-label mb-2">About This Unit <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="description" name="description">
                                  @if(!empty($unitObj)) {{ $unitObj->description }} @endif
                             </textarea>
