@@ -36,7 +36,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="control-label mb-1">Unit Type <span class="text-danger">*</span></label>
-                                    <select class="form-select"  name="unit_type" id="unit_type">
+                                    <select class="form-select"  name="unit_type" id="unitType">
                                         <option selected disabled>Select Type</option>
                                         <option value="0">Product</option>
                                         <option value="1">Service</option>
@@ -44,6 +44,56 @@
                                     </select>
                                 </div>
                             </div>
+
+
+
+                            <div class="row mt-3" id="product-service-div">
+                                <div class="form-group col-sm-4" id="productNameDiv">
+                                    <label for="productName">Product Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="productName" placeholder="Product Name" name="product_name">
+                                </div>
+
+                                <div class="form-group col-sm-4" id="serviceNameDiv">
+                                    <label for="serviceName">Service Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="serviceName" placeholder="Service Name" name="service_name">
+                                </div>
+
+                                <div class="form-group col-sm-4">
+                                    <label for="businessModel">Business Model <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="businessModel" name="business_model">
+                                        <option selected disabled>Business Model</option>
+                                        <option value="Community-owned">Community-owned</option>
+                                        <option value="Corporate">Corporate</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-sm-4 mt-3" id="operationalGradeDiv">
+                                    <label for="operationalGrade">Operational Grade <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="operationalGrade" placeholder="Enter Operational Grade" name="operational_grade">
+                                </div>
+
+                                <!-- Company -->
+                                <div class="form-group col-sm-4 mt-3">
+                                    <label for="company">Company <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="company" placeholder="Enter Company Name" name="company">
+                                </div>
+                            </div>
+
+
+                            <!-- Scope (Only for People's Government) -->
+                            <div class="form-group col-sm-4 mt-3" id="scopeDiv">
+                                <label for="scope">Scope <span class="text-danger">*</span></label>
+                                <select class="form-control" id="scope" name="scope">
+                                    <option selected disabled>Select Scope</option>
+                                    <option value="City">City</option>
+                                    <option value="County">County</option>
+                                    <option value="State">State</option>
+                                    <option value="National">National</option>
+                                    <option value="International">International</option>
+                                </select>
+                            </div>
+
+
 
                             <div class="col-sm-4 form-group mt-3">
                                 <label class="control-label">Country<span class="text-danger">*</span></label>
@@ -225,6 +275,7 @@
                     })
                 }
             });
+
             $("#state").on('change',function(){
                 var value = $(this).val();
                 var token = $('[name="_token"]').val();
@@ -264,6 +315,25 @@
                             }
                         }
                     })
+                }
+            });
+
+
+            $("#product-service-div").hide();
+            $("#scopeDiv").hide();
+
+            $("#unitType").change(function () {
+                var selectedOption = $(this).val();
+
+                $("#product-service-div").hide();
+                $("#scopeDiv").hide();
+
+                if (selectedOption == 0) {
+                    $("#product-service-div").show();
+                } else if (selectedOption == 1) {
+                    $("#product-service-div").show();
+                } else if (selectedOption == 2) {
+                    $("#scopeDiv").show();
                 }
             });
         });
