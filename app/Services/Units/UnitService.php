@@ -27,7 +27,13 @@ class UnitService
     {
         return Unit::create([
             'user_id'                     => Auth::user()->id,
-            'unit_type'                    => $request->unit_type,
+            'unit_type'                   => $request->unit_type,
+            'product_name'                => $request->product_name,
+            'service_name'                => $request->service_name,
+            'business_model'              => $request->business_model,
+            'operational_grade'           => $request->operational_grade,
+            'company'                     => $request->company,
+            'scope'                       => $request->scope,
             'name'                        => $request->unit_name,
             'slug'                        => substr(str_replace(" ","_",strtolower($request->unit_name)),0,20),
             'category_id'                 => implode(",",$request->unit_category),

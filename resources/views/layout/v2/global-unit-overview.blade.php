@@ -11,7 +11,13 @@
                 Type:
             </div>
             <div class="sidebar_block_right">
-                Community-owned
+                @if(isset($unitObj) && $unitObj->unit_type == 0)
+                    Product
+                @elseif(isset($unitObj) && $unitObj->unit_type == 1)
+                    Service
+                @else
+                    People’s Government
+                @endif
             </div>
         </div>
         <div class="sidebar_block_row">
