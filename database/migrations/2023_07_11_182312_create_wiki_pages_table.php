@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('wiki_pages', function (Blueprint $table) {
             $table->id();
-//            $table->increments('wiki_page_id');
             $table->integer('wiki_page_id')->nullable();
             $table->unsignedBigInteger('unit_id');
             $table->string('wiki_page_title',255);
             $table->text('page_content');
-            $table->string('edit_comment',255);
+            $table->string('edit_comment',255)->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('is_wikihome');
             $table->dateTime('time_stamp');

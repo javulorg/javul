@@ -6,6 +6,7 @@ use App\Models\ActivityPoint;
 use App\Models\RelatedUnit;
 use App\Models\SiteActivity;
 use App\Models\Unit;
+use App\Traits\WikiTrait;
 use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -13,10 +14,12 @@ use Illuminate\Support\Facades\DB;
 
 class UnitService
 {
+    use WikiTrait;
     public function store($request)
     {
         DB::transaction(function () use($request) {
             $unit = $this->saveUnit($request);
+            $this->saveUnitWikiPage($unit);
             $this->saveRelatedUnit($request, $unit);
             $this->saveActivityPoint($unit);
             $this->saveSiteActivity($unit, $request);
