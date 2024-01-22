@@ -20,6 +20,75 @@
                 <?php endif; ?>
             </div>
         </div>
+
+        <?php if(isset($unitObj) && ( $unitObj->unit_type == 0 || $unitObj->unit_type == 1) ): ?>
+            <div class="sidebar_block_row">
+                <div class="sidebar_block_left">
+                    Product Name:
+                </div>
+                <div class="sidebar_block_right">
+                   <?php echo e($unitObj->product_name); ?>
+
+                </div>
+            </div>
+
+            <div class="sidebar_block_row">
+                <div class="sidebar_block_left">
+                    Service Name:
+                </div>
+                <div class="sidebar_block_right">
+                    <?php echo e($unitObj->service_name); ?>
+
+                </div>
+            </div>
+
+            <div class="sidebar_block_row">
+                <div class="sidebar_block_left">
+                    Business Model:
+                </div>
+                <div class="sidebar_block_right">
+                    <?php if($unitObj->business_model == 0): ?>
+                        Community-owned
+                    <?php else: ?>
+                        Corporate
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="sidebar_block_row">
+                <div class="sidebar_block_left">
+                    Operational Grade:
+                </div>
+                <div class="sidebar_block_right">
+                    <?php echo e($unitObj->operational_grade); ?> <img src="<?php echo e(asset('v2/assets/img/question.svg')); ?>" alt="" class="question">
+                </div>
+            </div>
+
+            <div class="sidebar_block_row">
+                <div class="sidebar_block_left">
+                   Company :
+                </div>
+                <div class="sidebar_block_right">
+                    <?php echo e($unitObj->company); ?>
+
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="sidebar_block_row">
+                <div class="sidebar_block_left">
+                    Scope :
+                </div>
+                <div class="sidebar_block_right">
+                    <?php echo e($unitObj->scope); ?>
+
+                </div>
+            </div>
+        <?php endif; ?>
+
+
+
+
+
         <div class="sidebar_block_row">
             <div class="sidebar_block_left">
                 Issue Resolution:
@@ -36,14 +105,7 @@
                 Worldwide
             </div>
         </div>
-        <div class="sidebar_block_row">
-            <div class="sidebar_block_left">
-                Operational Grade:
-            </div>
-            <div class="sidebar_block_right">
-                A+ <img src="<?php echo e(asset('v2/assets/img/question.svg')); ?>" alt="" class="question">
-            </div>
-        </div>
+
         <div class="sidebar_block_row">
             <div class="sidebar_block_left">
                 Funded:

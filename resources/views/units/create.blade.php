@@ -62,7 +62,7 @@
                                 <div class="form-group col-sm-4">
                                     <label for="businessModel">Business Model <span class="text-danger">*</span></label>
                                     <select class="form-control" id="businessModel" name="business_model">
-                                        <option selected disabled>Business Model</option>
+                                        <option selected disabled>Select Business Model</option>
                                         <option value="0">Community-owned</option>
                                         <option value="1">Corporate</option>
                                     </select>
