@@ -70,13 +70,22 @@
                     {{ $unitObj->company }}
                 </div>
             </div>
-        @else
+        @elseif(isset($unitObj) && ($unitObj->unit_type == 2))
             <div class="sidebar_block_row">
                 <div class="sidebar_block_left">
                     Scope :
                 </div>
                 <div class="sidebar_block_right">
                     {{ $unitObj->scope }}
+                </div>
+            </div>
+        @else
+            <div class="sidebar_block_row">
+                <div class="sidebar_block_left">
+                    Scope :
+                </div>
+                <div class="sidebar_block_right">
+
                 </div>
             </div>
         @endif
@@ -90,7 +99,7 @@
                 Issue Resolution:
             </div>
             <div class="sidebar_block_right">
-                <div class="blue_progress"></div> 94%
+                <div class="blue_progress"></div> {{ $totalIssueResolutions }} %
             </div>
         </div>
         <div class="sidebar_block_row">

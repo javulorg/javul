@@ -4,6 +4,8 @@
 namespace App\Services\Issues;
 
 
+use Hashids\Hashids;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class IssueService
@@ -24,4 +26,16 @@ class IssueService
         }
         return $comments;
     }
+
+    public function store($request)
+    {
+
+    }
+
+    public function update($request, $issueId)
+    {
+
+    }
+
+
 }

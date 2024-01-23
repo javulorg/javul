@@ -20,6 +20,7 @@ use App\Models\UnitRevision;
 use App\Models\UnitCategory;
 use App\Models\User;
 use App\Services\Units\UnitService;
+use App\Traits\UnitTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
@@ -32,6 +33,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UnitsController extends Controller
 {
+    use UnitTrait;
     public $user_messages;
     private $service;
 
@@ -494,6 +496,10 @@ class UnitsController extends Controller
                     $unitData = Unit::where('id', $unit_id)->first();
                     $availableUnitFunds = Fund::getUnitDonatedFund($unit_id);
                     $awardedUnitFunds   = Fund::getUnitAwardedFund($unit_id);
+
+                    $issueResolutions = $this->calculateIssueResolution($unit_id);
+
+                    view()->share('totalIssueResolutions',$issueResolutions);
                     view()->share('unitData',$unitData);
                     view()->share('unitObj',$unitData);
                     view()->share('homeCheck',$homeCheck );
@@ -510,7 +516,6 @@ class UnitsController extends Controller
 
     public function update(Request $request, $unitHashId)
     {
-//        dd();
         $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
         $unitId = $unitIDHashID->decode($unitHashId);
         $unit = Unit::getUnitWithCategories($unitId);
@@ -685,6 +690,9 @@ class UnitsController extends Controller
                         ->orderByDesc('id')
                         ->get();
 
+                    $issueResolutions = $this->calculateIssueResolution($unit_id);
+
+                    view()->share('totalIssueResolutions',$issueResolutions);
                     view()->share('objectives',$objectives);
                     view()->share('tasks',$tasks);
                     view()->share('issues',$issues);

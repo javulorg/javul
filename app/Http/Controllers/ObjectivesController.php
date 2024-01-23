@@ -11,6 +11,7 @@ use App\Models\Task;
 use App\Models\Unit;
 use App\Models\User;
 use App\Services\Objectives\ObjectiveService;
+use App\Traits\UnitTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ObjectivesController extends Controller
 {
+    use UnitTrait;
     public $user_messages;
 
     public function __construct()
@@ -58,6 +60,9 @@ class ObjectivesController extends Controller
             $availableFunds = Fund::getUnitDonatedFund($request->unit);
             $awardedFunds = Fund::getUnitAwardedFund($request->unit);
 
+            $issueResolutions = $this->calculateIssueResolution($request->unit);
+
+            view()->share('totalIssueResolutions',$issueResolutions);
             view()->share('availableFunds',$availableFunds );
             view()->share('awardedFunds',$awardedFunds );
             view()->share('unitData',$unitData);
@@ -117,6 +122,9 @@ class ObjectivesController extends Controller
         view()->share('unit_activity_id',$unit_id );
         view()->share('unitInfo',$unitInfo);
 
+        $issueResolutions = $this->calculateIssueResolution($unit_id);
+
+        view()->share('totalIssueResolutions',$issueResolutions);
 
 
         $homeCheck = isset($request->home) ??  false;
@@ -376,6 +384,9 @@ class ObjectivesController extends Controller
                         $availableFunds = Fund::getUnitDonatedFund($objectiveObj->unit->id);
                         $awardedFunds = Fund::getUnitAwardedFund($objectiveObj->unit->id);
 
+                        $issueResolutions = $this->calculateIssueResolution($objectiveObj->unit->id);
+
+                        view()->share('totalIssueResolutions',$issueResolutions);
                         view()->share('availableFunds',$availableFunds );
                         view()->share('awardedFunds',$awardedFunds );
                         view()->share('unitData',$unitData);
@@ -428,6 +439,9 @@ class ObjectivesController extends Controller
                         $availableUnitFunds =Fund::getUnitDonatedFund($objectiveObj->unit_id);
                         $awardedUnitFunds =Fund::getUnitAwardedFund($objectiveObj->unit_id);
 
+                        $issueResolutions = $this->calculateIssueResolution($objectiveObj->unit_id);
+
+                        view()->share('totalIssueResolutions',$issueResolutions);
                         view()->share('availableUnitFunds',$availableUnitFunds );
                         view()->share('awardedUnitFunds',$awardedUnitFunds );
 
@@ -510,6 +524,10 @@ class ObjectivesController extends Controller
                     $unitData = Unit::where('id', $objectiveObj->unit->id)->first();
                     $availableFunds = Fund::getUnitDonatedFund($objectiveObj->unit->id);
                     $awardedFunds = Fund::getUnitAwardedFund($objectiveObj->unit->id);
+
+                    $issueResolutions = $this->calculateIssueResolution($objectiveObj->unit->id);
+
+                    view()->share('totalIssueResolutions',$issueResolutions);
 
                     view()->share('availableFunds',$availableFunds);
                     view()->share('awardedFunds',$awardedFunds);
@@ -671,6 +689,9 @@ class ObjectivesController extends Controller
                         $availableUnitFunds =Fund::getUnitDonatedFund($objectiveObj->unit_id);
                         $awardedUnitFunds =Fund::getUnitAwardedFund($objectiveObj->unit_id);
 
+                        $issueResolutions = $this->calculateIssueResolution($objectiveObj->unit_id);
+
+                        view()->share('totalIssueResolutions',$issueResolutions);
                         view()->share('availableUnitFunds',$availableUnitFunds );
                         view()->share('awardedUnitFunds',$awardedUnitFunds );
 

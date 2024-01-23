@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\StoreIssueRequest;
 use App\Models\ActivityPoint;
 use App\Models\Fund;
 use App\Models\ImportanceLevel;
@@ -12,6 +13,7 @@ use App\Models\Task;
 use App\Models\Unit;
 use App\Models\User;
 use App\Services\Issues\IssueService;
+use App\Traits\UnitTrait;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,11 +29,14 @@ use Illuminate\Support\Facades\Validator;
 
 class IssuesController extends Controller
 {
+    use UnitTrait;
     public $user_messages;
-    public function __construct()
+    private $service;
+    public function __construct(IssueService $service)
     {
         $this->middleware('auth',['except'=>['index','lists','view','report_concern_email','reset_captcha_after_close']]);
         $this->user_messages = new UserMessages();
+        $this->service = $service;
     }
 
     public function index(Request $request)
@@ -59,6 +64,9 @@ class IssuesController extends Controller
             $unitData = Unit::where('id', $request->unit)->first();
             $availableFunds = Fund::getUnitDonatedFund($request->unit);
             $awardedFunds = Fund::getUnitAwardedFund($request->unit);
+            $issueResolutions = $this->calculateIssueResolution($request->unit);
+
+            view()->share('totalIssueResolutions',$issueResolutions);
 
             view()->share('availableFunds',$availableFunds );
             view()->share('awardedFunds',$awardedFunds );
@@ -85,8 +93,6 @@ class IssuesController extends Controller
         view()->share('site_activity',[]);
         view()->share('unitsObj',$unitsObj);
 
-
-
         view()->share('objectiveObj',[]);
         view()->share('taskObj',[]);
         view()->share('user_can_change_status',false);
@@ -107,6 +113,9 @@ class IssuesController extends Controller
         $availableUnitFunds = Fund::getUnitDonatedFund($unit_id);
         $awardedUnitFunds   = Fund::getUnitAwardedFund($unit_id);
         $objectiveObj = Objective::where('unit_id',$unit_id)->get();
+        $issueResolutions = $this->calculateIssueResolution($unit_id);
+
+        view()->share('totalIssueResolutions',$issueResolutions);
         view()->share('objectiveObj',$objectiveObj);
         view()->share('unitData',$unitData);
         view()->share('unitObj',$unitData);
@@ -116,23 +125,13 @@ class IssuesController extends Controller
         return view('issues.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreIssueRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title'         => 'required',
-            'description'   => 'required'
-        ]);
-
-        if ($validator->fails())
-            return redirect()->back()->withErrors($validator)->withInput();
-
-
         if(isset($request->objective_id))
         {
             $objectiveIDHashID= new Hashids('objective id hash',10,Config::get('app.encode_chars'));
             $selected_objective_id = $objectiveIDHashID->decode($request->objective_id);
         }
-
 
         if(isset($request->task_id))
         {
@@ -247,6 +246,10 @@ class IssuesController extends Controller
                     view()->share('unit_activity_id',$issueObj->unit_id);
                     view()->share('site_activity_text','unit activity log');
 
+                    $issueResolutions = $this->calculateIssueResolution($issueObj->unit_id);
+
+                    view()->share('totalIssueResolutions',$issueResolutions);
+
                      // Forum Object coading
                     view()->share("unit_id", $issueObj->unit_id);
                     view()->share("section_id", 3);
@@ -332,6 +335,9 @@ class IssuesController extends Controller
                     view()->share('unit_activity_id',$issueObj->unit_id);
                     view()->share('site_activity_text','unit activity log');
 
+                    $issueResolutions = $this->calculateIssueResolution($issueObj->unit_id);
+
+                    view()->share('totalIssueResolutions',$issueResolutions);
                      // Forum Object coading
                     view()->share("unit_id", $issueObj->unit_id);
                     view()->share("section_id", 3);
@@ -418,6 +424,9 @@ class IssuesController extends Controller
                     view()->share('unit_activity_id',$issueObj->unit_id);
                     view()->share('site_activity_text','unit activity log');
 
+                    $issueResolutions = $this->calculateIssueResolution($issueObj->unit_id);
+
+                    view()->share('totalIssueResolutions',$issueResolutions);
                      // Forum Object coading
                     view()->share("unit_id", $issueObj->unit_id);
                     view()->share("section_id", 3);
@@ -552,6 +561,9 @@ class IssuesController extends Controller
 //            User::SendEmailAndOnSiteAlert($content,$email_subject,$watchlistUserObj,$onlyemail=false,'watched_items');
 
 
+            $issueResolutions = $this->calculateIssueResolution($unit_id);
+
+            view()->share('totalIssueResolutions',$issueResolutions);
             SiteActivity::create([
                 'user_id'       => Auth::user()->id,
                 'unit_id'       =>$unit_id,
@@ -566,6 +578,7 @@ class IssuesController extends Controller
             $request->session()->flash('msg_val', $this->user_messages->getMessage('ISSUE_CREATED')['text']);
             return redirect('issues');
         }
+
         view()->share('site_activity',[]);
         view()->share('unitObj',Unit::all());
         view()->share('objectiveObj',[]);
@@ -644,6 +657,9 @@ class IssuesController extends Controller
                     view()->share('availableFunds',$availableFunds);
                     view()->share('awardedFunds',$awardedFunds);
                     view()->share('unitData',$unitData);
+                    $issueResolutions = $this->calculateIssueResolution($issueObj->unit_id);
+
+                    view()->share('totalIssueResolutions',$issueResolutions);
                     return view('issues.edit');
                 }
             }
@@ -658,11 +674,13 @@ class IssuesController extends Controller
 
     public function update(Request $request, $issueHashId)
     {
+
         $unit_id = $request->segment(2);
         $unitIDEncoded = $unit_id;
         $validator = Validator::make($request->all(), [
             'title'        => 'required',
             'description'  => 'required',
+            'verified'     => 'required',
         ]);
 
         if ($validator->fails())
@@ -735,16 +753,16 @@ class IssuesController extends Controller
             'task_id'       => $selectedTaskId[0] ?? null,
             'verified_by'   => Auth::user()->id,
             'resolved_by'   => Auth::user()->id,
-            'resolution'    => $status == "verified" ? NULL : $request->resolution,
-            'deleted_at'    => NULL
+            'resolution'    => $request->verified == 1 ? NULL : $request->resolution,
+            'deleted_at'    => NULL,
+            'verified'      => $request->verified
         ]);
 
 
-        // upload issue documents
         IssueDocuments::uploadDocuments($issueObj->id,$request);
-            // upload finish
 
-        if($status == "verified")
+
+        if($request->verified == 1)
         {
             ActivityPoint::create([
                 'user_id' => Auth::user()->id,
@@ -815,6 +833,9 @@ class IssuesController extends Controller
 
                     $availableUnitFunds =Fund::getUnitDonatedFund($issueObj->unit_id);
                     $awardedUnitFunds =Fund::getUnitAwardedFund($issueObj->unit_id);
+
+                    $issueResolutions = $this->calculateIssueResolution($issueObj->unit_id);
+                    view()->share('totalIssueResolutions',$issueResolutions);
 
                     $upvotedCnt = 0;
                     $downvotedCnt = 0;

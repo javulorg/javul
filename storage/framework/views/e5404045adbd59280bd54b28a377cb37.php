@@ -73,13 +73,22 @@
 
                 </div>
             </div>
-        <?php else: ?>
+        <?php elseif(isset($unitObj) && ($unitObj->unit_type == 2)): ?>
             <div class="sidebar_block_row">
                 <div class="sidebar_block_left">
                     Scope :
                 </div>
                 <div class="sidebar_block_right">
                     <?php echo e($unitObj->scope); ?>
+
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="sidebar_block_row">
+                <div class="sidebar_block_left">
+                    Scope :
+                </div>
+                <div class="sidebar_block_right">
 
                 </div>
             </div>
@@ -94,7 +103,7 @@
                 Issue Resolution:
             </div>
             <div class="sidebar_block_right">
-                <div class="blue_progress"></div> 94%
+                <div class="blue_progress"></div> <?php echo e($totalIssueResolutions); ?> %
             </div>
         </div>
         <div class="sidebar_block_row">
