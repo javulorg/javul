@@ -90,17 +90,41 @@
                                 </div>
 
 
+{{--                                @if(!empty($issueObj) && $user_can_change_status)--}}
+{{--                                    <div class="mt-3 form-group">--}}
+{{--                                        <label class="control-label">Select Status</label>--}}
+{{--                                        <div class="input-icon right">--}}
+{{--                                            <select name="status" id="status" class="form-control selectpicker" data-live-search="true">--}}
+{{--                                                <option value="unverified" @if(!empty($issueObj) &&--}}
+{{--                                                $issueObj->status=="unverified") selected="selected" @endif>Unverified</option>--}}
+{{--                                                <option value="verified" @if(!empty($issueObj) &&--}}
+{{--                                                $issueObj->status=="verified") selected="selected" @endif>Verified</option>--}}
+{{--                                                <option value="resolved" @if(!empty($issueObj) &&--}}
+{{--                                                $issueObj->status=="resolved") selected="selected" @endif>Resolved</option>--}}
+{{--                                            </select>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                @endif--}}
+
+                                <div class="mt-3 form-group">
+                                    <label class="control-label">Verified</label>
+                                    <div class="input-icon right">
+                                        <select name="verified" id="verified" class="form-control" data-live-search="true">
+                                            <option disabled selected>Select Verified Status</option>
+                                            <option value="1" {{ $issueObj->verified == 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ $issueObj->verified == 0 ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 @if(!empty($issueObj) && $user_can_change_status)
                                     <div class="mt-3 form-group">
                                         <label class="control-label">Select Status</label>
                                         <div class="input-icon right">
                                             <select name="status" id="status" class="form-control selectpicker" data-live-search="true">
-                                                <option value="unverified" @if(!empty($issueObj) &&
-                                                $issueObj->status=="unverified") selected="selected" @endif>Unverified</option>
-                                                <option value="verified" @if(!empty($issueObj) &&
-                                                $issueObj->status=="verified") selected="selected" @endif>Verified</option>
-                                                <option value="resolved" @if(!empty($issueObj) &&
-                                                $issueObj->status=="resolved") selected="selected" @endif>Resolved</option>
+                                                <option disabled selected>Select Status</option>
+                                                <option value="1" {{ $issueObj->status == 1 ? 'selected' : '' }}>Resolved</option>
+                                                <option value="2" {{ $issueObj->status == 2 ? 'selected' : '' }}>Assigned to Task</option>
                                             </select>
                                         </div>
                                     </div>

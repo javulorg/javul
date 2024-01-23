@@ -29,10 +29,14 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('comment')->nullable();
             $table->text('file_attachments')->nullable();
-            $table->string('status');
+
             $table->text('resolution')->nullable();
             $table->integer('verified_by')->nullable();
             $table->integer('resolved_by')->nullable();
+
+//            $table->string('status')->comment('0 => Assigned to Task, 1 => Resolved');
+            $table->tinyInteger('status')->comment('0 => Assigned to Task, 1 => Resolved');
+            $table->tinyInteger('verified')->comment('0 => No, 1 => Yes')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

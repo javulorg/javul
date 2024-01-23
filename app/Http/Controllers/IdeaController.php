@@ -10,6 +10,7 @@ use App\Models\Task;
 use App\Models\Type;
 use App\Models\Unit;
 use App\Services\Ideas\IdeaService;
+use App\Traits\UnitTrait;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 
 class IdeaController extends Controller
 {
+    use UnitTrait;
     public function __construct()
     {
         $this->middleware('auth',['except'=>['index','view']]);
@@ -30,7 +32,9 @@ class IdeaController extends Controller
             $unitData = Unit::where('id', $request->unit)->first();
             $availableFunds = Fund::getUnitDonatedFund($request->unit);
             $awardedFunds = Fund::getUnitAwardedFund($request->unit);
+            $issueResolutions = $this->calculateIssueResolution($request->unit);
 
+            view()->share('totalIssueResolutions',$issueResolutions);
             view()->share('availableFunds',$availableFunds);
             view()->share('awardedFunds',$awardedFunds);
             view()->share('unitData',$unitData);
@@ -62,6 +66,9 @@ class IdeaController extends Controller
         $homeCheck = isset($request->home) ??  false;
         $availableUnitFunds = Fund::getUnitDonatedFund($unitHash->decode($unitId));
         $awardedUnitFunds   = Fund::getUnitAwardedFund($unitHash->decode($unitId));
+        $issueResolutions = $this->calculateIssueResolution($unitId);
+
+        view()->share('totalIssueResolutions',$issueResolutions);
         view()->share('unitData',$unitData);
         view()->share('homeCheck',$homeCheck);
         view()->share('availableFunds',$availableUnitFunds);
@@ -137,6 +144,10 @@ class IdeaController extends Controller
             view()->share('comments', $comments);
         }
         $comments = $service->comments( $idea->unit_id, 4, $idea->id);
+        $issueResolutions = $this->calculateIssueResolution($idea->unit_id);
+
+        view()->share('totalIssueResolutions',$issueResolutions);
+
         view()->share('comments', $comments);
 
         view()->share("unit_id", $idea->unit_id);
@@ -172,7 +183,9 @@ class IdeaController extends Controller
 
         $availableFunds = Fund::getUnitDonatedFund($idea->unit_id);
         $awardedFunds = Fund::getUnitAwardedFund($idea->unit_id);
+        $issueResolutions = $this->calculateIssueResolution($idea->unit_id);
 
+        view()->share('totalIssueResolutions',$issueResolutions);
         view()->share('availableFunds',$availableFunds);
         view()->share('awardedFunds',$awardedFunds);
         view()->share('unitData',$unitData);

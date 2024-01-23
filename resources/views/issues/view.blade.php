@@ -86,10 +86,10 @@
                                         </div>
                                         <div class="sidebar_block_right">
                                             <?php $verified_by ='';?>
-                                            @if($issueObj->status == "verified")
+                                            @if($issueObj->status == 1)
                                                     <?php $verified_by = " (by ".App\Models\User::getUserName($issueObj->verified_by).')';?>
                                             @endif
-                                            {{ucfirst($issueObj->status. $verified_by )}}
+                                            {{ucfirst($issueObj->status == 1 ? 'Resolved' : 'Assigned To Task'. $verified_by )}}
                                         </div>
                                     </div>
                                     <div class="sidebar_line"></div>

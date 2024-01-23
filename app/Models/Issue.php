@@ -21,7 +21,8 @@ class Issue extends Model
         'status',
         'resolution',
         'verified_by',
-        'resolved_by'
+        'resolved_by',
+        'verified'
     ];
 
 

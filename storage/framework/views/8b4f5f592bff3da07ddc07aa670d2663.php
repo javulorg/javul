@@ -87,10 +87,10 @@
                                         </div>
                                         <div class="sidebar_block_right">
                                             <?php $verified_by ='';?>
-                                            <?php if($issueObj->status == "verified"): ?>
+                                            <?php if($issueObj->status == 1): ?>
                                                     <?php $verified_by = " (by ".App\Models\User::getUserName($issueObj->verified_by).')';?>
                                             <?php endif; ?>
-                                            <?php echo e(ucfirst($issueObj->status. $verified_by )); ?>
+                                            <?php echo e(ucfirst($issueObj->status == 1 ? 'Resolved' : 'Assigned To Task'. $verified_by )); ?>
 
                                         </div>
                                     </div>
