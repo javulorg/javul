@@ -56,6 +56,7 @@ class ObjectivesController extends Controller
         if(isset($request->unit))
         {
             $objectivesTotal = $objectives->where('unit_id', $request->unit)->get()->count();
+            $unit = Unit::getUnitWithCategories( $request->unit);
             $unitData = Unit::where('id', $request->unit)->first();
             $availableFunds = Fund::getUnitDonatedFund($request->unit);
             $awardedFunds = Fund::getUnitAwardedFund($request->unit);
@@ -66,6 +67,7 @@ class ObjectivesController extends Controller
             view()->share('availableFunds',$availableFunds );
             view()->share('awardedFunds',$awardedFunds );
             view()->share('unitData',$unitData);
+            view()->share('unitObj',$unitData);
             $unitObjectives = Objective::query()
                 ->with('unit')
                 ->where('unit_id', $request->unit)
@@ -73,6 +75,7 @@ class ObjectivesController extends Controller
                 ->get();
             view()->share('unitObjectives',$unitObjectives);
         }
+
         $objectivesTotal = $objectives->get()->count();
         $homeCheck = isset($request->home) ??  false;
         return view('objectives.index', compact('homeCheck','objectivesTotal'));
@@ -129,8 +132,8 @@ class ObjectivesController extends Controller
 
         $homeCheck = isset($request->home) ??  false;
         $unitData = Unit::where('id', $unit_id)->first();
-//        dd($unitData);
         view()->share('unitData',$unitData);
+        view()->share('unitObj',$unitData);
         view()->share('homeCheck',$homeCheck );
         view()->share('availableFunds',$availableUnitFunds );
         view()->share('awardedFunds',$awardedUnitFunds );
@@ -307,7 +310,7 @@ class ObjectivesController extends Controller
                             view()->share('availableFunds',$availableFunds);
                             view()->share('awardedFunds',$awardedFunds);
                             view()->share('unitData',$unitData);
-
+                            view()->share('unitObj',$unitData);
                             return view("objectives.revison.changes_difference");
                         }
 
@@ -390,7 +393,7 @@ class ObjectivesController extends Controller
                         view()->share('availableFunds',$availableFunds );
                         view()->share('awardedFunds',$awardedFunds );
                         view()->share('unitData',$unitData);
-
+                        view()->share('unitObj',$unitData);
                         return view('objectives.revison.view');
                     }
                 }
@@ -478,7 +481,7 @@ class ObjectivesController extends Controller
                             view()->share('availableFunds',$availableFunds);
                             view()->share('awardedFunds',$awardedFunds);
                             view()->share('unitData',$unitData);
-
+                            view()->share('unitObj',$unitData);
                             return view('objectives.revison.view_revision');
                         }
                     }
@@ -532,6 +535,7 @@ class ObjectivesController extends Controller
                     view()->share('availableFunds',$availableFunds);
                     view()->share('awardedFunds',$awardedFunds);
                     view()->share('unitData',$unitData);
+                    view()->share('unitObj',$unitData);
                     return view('objectives.edit');
                 }
             }
@@ -742,6 +746,7 @@ class ObjectivesController extends Controller
                             view()->share('availableFunds',$availableFunds);
                             view()->share('awardedFunds',$awardedFunds);
                             view()->share('unitData',$unitData);
+                             view()->share('unitObj',$unitData);
 
                         return view('objectives.view');
                     }

@@ -38,6 +38,7 @@ class IdeaController extends Controller
             view()->share('availableFunds',$availableFunds);
             view()->share('awardedFunds',$awardedFunds);
             view()->share('unitData',$unitData);
+            view()->share('unitObj',$unitData);
             view()->share('ideasTotal',$ideasTotal);
 
             $unitIdea = Idea::query()
@@ -77,6 +78,7 @@ class IdeaController extends Controller
         view()->share('types', $types);
         view()->share('tasks', $tasks);
         view()->share('issues', $issues);
+        view()->share('unitObj',$unitData);
         return view('ideas.create');
     }
 
@@ -159,7 +161,7 @@ class IdeaController extends Controller
         view()->share('unitData',$unitData);
         view()->share('idea',$idea);
         view()->share('ideaHashId',$ideaHashId);
-
+        view()->share('unitObj',$unitData);
 
         return view('ideas.show');
     }
@@ -194,7 +196,7 @@ class IdeaController extends Controller
         view()->share('types', $types);
         view()->share('tasks', $tasks);
         view()->share('issues', $issues);
-
+        view()->share('unitObj',$unitData);
         return view('ideas.edit');
     }
 

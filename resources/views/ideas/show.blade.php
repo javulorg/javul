@@ -43,12 +43,6 @@
 
         <div class="main_content">
             <div class="content_block">
-{{--                <div class="row form-group">--}}
-{{--                    <div class="col-md-12 order-md-2">--}}
-{{--                        @include('ideas.partials.idea-information')--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-
                 <div class="table_block table_block_ideas active">
                     <div class="table_block_head">
                         <div class="table_block_icon">

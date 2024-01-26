@@ -79,7 +79,7 @@
 
                                                 <div class="progress">
                                                     <div class="progress-bar" style="width:75%"></div>
-                                                </div> <a href="<?php echo url('tasks/'.$taskIDHashID->encode($taskObj->id).'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""></a>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="sidebar_block_row">
@@ -165,9 +165,11 @@
                                     </div>
                                 </div>
                                 <div class="objective_content_info_links">
-                                    <a class="add_to_my_watchlist edit_icon" data-type="task" data-id="<?php echo e($taskIDHashID->encode($taskObj->id)); ?>"" data-redirect="<?php echo e(url()->current()); ?>"><img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" alt=""></a>
+                                    <a class="add_to_my_watchlist edit_icon" data-type="task" data-id="<?php echo e($taskIDHashID->encode($taskObj->id)); ?>" data-redirect="<?php echo e(url()->current()); ?>"><img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" alt=""></a>
                                     <div class="separat"></div>
-                                    <a href="<?php echo route('tasks_revison',[$taskIDHashID->encode($taskObj->id)]); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""> Revision History</a>
+                                    <a href="<?php echo route('tasks_revison',[$taskIDHashID->encode($taskObj->id)]); ?>" class="edit_icon"> Revision History</a>
+                                    <div class="separat"></div>
+                                    <a href="<?php echo url('tasks/'.$taskIDHashID->encode($taskObj->id).'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""></a>
                                 </div>
                             </div>
                         </div>
