@@ -42,12 +42,6 @@
 
         <div class="main_content">
             <div class="content_block">
-
-
-
-
-
-
                 <div class="table_block table_block_ideas active">
                     <div class="table_block_head">
                         <div class="table_block_icon">

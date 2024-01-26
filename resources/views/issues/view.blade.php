@@ -1,8 +1,12 @@
 @extends('layout.master')
 @section('title', 'Issue: ' . $issueObj->title)
 @section('style')
-
-
+    <style>
+        a.modal-link {
+            font-size: 13px;
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
 @endsection
 @section('site-name')
         @if(isset($unitData))
@@ -43,6 +47,10 @@
     </div>
 
     <div class="main_content">
+
+        <input type="hidden" id="issue_id" name="issue_id" value="{{ $issueObj->id }}">
+        <input type="hidden" id="unit_id" name="unit_id" value="{{ $unitData->id }}">
+
         <div class="content_block">
             <div class="table_block table_block_issues active">
                 <div class="table_block_head">
@@ -72,13 +80,60 @@
                                 <div class="sidebar_block_content">
                                     <div class="sidebar_block_row">
                                         <div class="sidebar_block_left">
+                                            Priority:
                                         </div>
                                         <div class="sidebar_block_right">
-
+                                            Medium
                                             <div class="progress">
                                                 <div class="progress-bar" style="width:75%"></div>
-                                            </div> <a href="{!! url('issues/'.$issueIDHashID->encode($issueObj->id).'/edit')!!}" class="edit_icon"><img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt=""></a>
+                                            </div>
                                         </div>
+
+                                        <div class="sidebar_block_right">
+                                            <a href="#" class="modal-link" data-bs-toggle="modal" data-bs-target="#exampleModal">Rate</a>
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Priority</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form id="ratingForm">
+                                                                <div class="form-group">
+                                                                    <label for="rating">Select rating:</label><br>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input type="radio" class="form-check-input" id="rating1" name="rating" value="1">
+                                                                        <label class="form-check-label" for="rating1">Low</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input type="radio" class="form-check-input" id="rating2" name="rating" value="2">
+                                                                        <label class="form-check-label" for="rating2">Medium-Low</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input type="radio" class="form-check-input" id="rating3" name="rating" value="3">
+                                                                        <label class="form-check-label" for="rating3">Medium</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input type="radio" class="form-check-input" id="rating4" name="rating" value="4">
+                                                                        <label class="form-check-label" for="rating4">Medium-High</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input type="radio" class="form-check-input" id="rating5" name="rating" value="5">
+                                                                        <label class="form-check-label" for="rating5">High</label>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" id="submitRating" class="btn btn-primary">Save changes</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="sidebar_block_row">
                                         <div class="sidebar_block_left">
@@ -136,7 +191,9 @@
                             <div class="objective_content_info_links">
                                 <a class="add_to_my_watchlist edit_icon" data-type="issue" data-id="{{$issueIDHashID->encode($issueObj->id)}}" data-redirect="{{url()->current()}}"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a>
                                 <div class="separat"></div>
-                                <a href="{!! route('issues_revison',[$issueIDHashID->encode($issueObj->id)]) !!}" class="edit_icon"><img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt=""> Revision History</a>
+                                <a href="{!! route('issues_revison',[$issueIDHashID->encode($issueObj->id)]) !!}" class="edit_icon"> Revision History</a>
+                                <div class="separat"></div>
+                                <a href="{!! url('issues/'.$issueIDHashID->encode($issueObj->id).'/edit')!!}" class="edit_icon"><img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt=""></a>
                             </div>
                         </div>
                     </div>
@@ -273,17 +330,49 @@
 
     </div>
 
-
-
-
-
-
 </div>
 @endsection
 
 @section('scripts')
     <script>
         $(document).ready(function() {
+            $('.modal-link').click(function() {
+                var modalId = $(this).data('modal-id');
+                $('#modalIdSpan').text(modalId);
+            });
+
+            $('#submitRating').click(function() {
+                var selectedRating = $("input[name='rating']:checked").val();
+                if (selectedRating !== undefined) {
+
+                    var unitId = $('#unit_id').val();
+                    var typeId = $('#issue_id').val();
+                    $.ajax({
+                        url: '{{ url("priorities") }}',
+                        type: 'POST',
+                        data: {
+                            type_value   : 1,
+                            rating :selectedRating,
+                            unit_id : unitId,
+                            type_id : typeId,
+                            _token: $('input[name="_token"]').val(),
+                        },
+                        success: function (response, xhr, textStatus) {
+                            if (response.status === 201) {
+                                $('#exampleModal').modal('hide');
+                                location.reload();
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log(xhr.responseText);
+                        },
+                    });
+                }else {
+                    alert("Please select a rating.");
+                }
+
+            });
+
             $("#comment_form").click(function(e)
             {
                 var unitId = $('#comment_unit_id').val();
@@ -314,139 +403,3 @@
         });
     </script>
 @endsection
-
-
-
-
-
-
-
-
-
-
-{{--@extends('layout.master')--}}
-{{--@section('title', 'Issue: ' . $issueObj->title)--}}
-{{--@section('style')--}}
-{{--    <style>--}}
-{{--        .importance-div {--}}
-{{--            line-height: 30px;--}}
-{{--            padding-top: 4px;--}}
-{{--            padding-bottom: 2px;--}}
-{{--        }--}}
-{{--        .control-label {--}}
-{{--            font-weight: 400;--}}
-{{--            margin-top: 12px;--}}
-{{--        }--}}
-{{--        .upper {--}}
-{{--            text-transform: uppercase;--}}
-{{--        }--}}
-
-{{--        .downvote {--}}
-{{--            padding: -2px;--}}
-{{--            cursor: pointer;--}}
-{{--            color: #7878f5;--}}
-{{--        }--}}
-{{--        .upvote {--}}
-{{--            padding: -2px;--}}
-{{--            cursor: pointer;--}}
-{{--            color: #d97d43;--}}
-{{--        }--}}
-
-{{--        .colorLightBlue, .colorLightBlue a {--}}
-{{--            color: #58a0e0 !important;--}}
-{{--        }--}}
-{{--        .colorLightGreen {--}}
-{{--            color: #84b660 !important;--}}
-{{--        }--}}
-
-{{--    </style>--}}
-{{--@endsection--}}
-{{--@section('site-name')--}}
-{{--    @if(isset($unitData))--}}
-{{--        <h1>{{ $unitData->name }}</h1>--}}
-{{--    @else--}}
-{{--        <h1>Javul.org</h1>--}}
-{{--    @endif--}}
-{{--    <div class="banner_desc d-md-block d-none">--}}
-{{--        Open-source Society--}}
-{{--    </div>--}}
-{{--@endsection--}}
-
-{{--@section('navbar')--}}
-{{--    @if(isset($unitData))--}}
-{{--        @include('layout.navbar', ['unitData' => $unitData])--}}
-{{--    @endif--}}
-{{--@endsection--}}
-{{--@section('content')--}}
-{{--    <div class="content_row">--}}
-{{--        <div class="sidebar">--}}
-{{--            @if(isset($unitData))--}}
-{{--                @include('layout.v2.global-unit-overview')--}}
-{{--                <?php--}}
-{{--                $title = 'Activity Log';--}}
-{{--                ?>--}}
-{{--                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])--}}
-
-{{--                @include('layout.v2.global-finances')--}}
-
-{{--                @include('layout.v2.global-about-site')--}}
-{{--            @else--}}
-{{--                <?php--}}
-{{--                $title = 'Global Activity Log';--}}
-{{--                ?>--}}
-{{--                @include('layout.v2.global-activity-log',['title' => $title])--}}
-{{--            @endif--}}
-{{--        </div>--}}
-
-{{--        <div class="main_content">--}}
-{{--            <div class="content_block">--}}
-{{--                <div class="row form-group">--}}
-{{--                    <div class="col-md-12 order-md-2">--}}
-
-{{--                        @include('issues.v2.partials.issue-information')--}}
-
-{{--                        @include('issues.v2.partials.file-attachments')--}}
-
-{{--                        @if($issueObj->status == "resolved")--}}
-{{--                            <div class="card mb-3">--}}
-{{--                                <div class="card-header">--}}
-{{--                                    Resolution--}}
-{{--                                </div>--}}
-{{--                                <div class="card-body">--}}
-{{--                                    <div class="list-group">--}}
-{{--                                        <div class="list-group-item">--}}
-{{--                                            <div class="row">--}}
-{{--                                                <div class="col-sm-12">--}}
-{{--                                                    {!! $issueObj->resolution !!}--}}
-{{--                                                </div>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        @endif--}}
-
-
-{{--                        @include('issues.v2.partials.relation-objectives-tasks')--}}
-
-
-{{--                        @include('issues.v2.partials.comments')--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--@endsection--}}
-
-{{--@section('scripts')--}}
-{{--    <script type="text/javascript">--}}
-{{--        $(document).ready(function () {--}}
-{{--            ClassicEditor--}}
-{{--                .create( document.querySelector('#comment') )--}}
-{{--                .catch( error => {--}}
-{{--                    console.error(error);--}}
-{{--                } );--}}
-{{--        });--}}
-{{--    </script>--}}
-
-{{--@endsection--}}

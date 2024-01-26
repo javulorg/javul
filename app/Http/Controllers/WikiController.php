@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use App\Traits\UnitTrait;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Wiki;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class WikiController extends Controller
 {
+    use UnitTrait;
 	public function __construct()
     {
         $this->middleware('auth',['except'=>['home','view']]);
@@ -33,6 +35,9 @@ class WikiController extends Controller
                 $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
                 $availableFunds =Fund::getUnitDonatedFund($unit_id);
                 $awardedFunds =Fund::getUnitAwardedFund($unit_id);
+                $issueResolutions = $this->calculateIssueResolution($unit_id);
+
+                view()->share('totalIssueResolutions',$issueResolutions);
                 view()->share('unitObj',$unit );
                 view()->share('unitData',$unit);
                 view()->share('unit_activity_id',$unit_id);
@@ -113,6 +118,9 @@ class WikiController extends Controller
                 view()->share('unit_activity_id',$unit_id);
                 view()->share('availableFunds',$availableFunds );
                 view()->share('awardedFunds',$awardedFunds );
+                $issueResolutions = $this->calculateIssueResolution($unit_id);
+
+                view()->share('totalIssueResolutions',$issueResolutions);
                 view()->share('site_activity',$site_activity);
                 $filter = array(
                     'unit_id' => $unit_id,

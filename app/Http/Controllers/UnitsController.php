@@ -79,7 +79,6 @@ class UnitsController extends Controller
             view()->share('category_search', $category_search);
         }
         $homeCheck = $request->home;
-//        return view('units.units');
         return view('units.index', compact('homeCheck'));
     }
 
@@ -632,7 +631,7 @@ class UnitsController extends Controller
                     view()->share('taskForBidding',$taskForBidding);
                     view()->share('cityName',$cityName);
                     view()->share('related_units',$related_units);
-                    view()->share('unitObj',$unit );
+                    view()->share('unitObj',$unit);
                     view()->share('objectivesObj',$objectives );
 
                     $availableFunds =Fund::getUnitDonatedFund($unit_id);

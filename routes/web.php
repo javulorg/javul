@@ -342,3 +342,5 @@ Route::post('/account/request-to-transfer-zcash', [AccountController::class, 're
 
 // V2
 Route::resource('activities', SiteActivityController::class);
+
+Route::post('priorities', [\App\Http\Controllers\V2\PriorityController::class, 'store']);

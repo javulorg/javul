@@ -11,7 +11,7 @@
                 Type:
             </div>
             <div class="sidebar_block_right">
-                <?php if(isset($unitObj) && $unitObj->unit_type == 0): ?>
+                <?php if(isset($unitObj) && $unitObj->unit_type == 0 ): ?>
                     Product
                 <?php elseif(isset($unitObj) && $unitObj->unit_type == 1): ?>
                     Service

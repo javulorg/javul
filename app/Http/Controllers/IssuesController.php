@@ -71,6 +71,7 @@ class IssuesController extends Controller
             view()->share('availableFunds',$availableFunds );
             view()->share('awardedFunds',$awardedFunds );
             view()->share('unitData',$unitData );
+            view()->share('unitObj',$unitData);
 
             $unitIssues = Issue::query()
                 ->with('unit')
@@ -276,7 +277,7 @@ class IssuesController extends Controller
                     view()->share('availableFunds',$availableFunds);
                     view()->share('awardedFunds',$awardedFunds);
                     view()->share('unitData',$unitData);
-
+                    view()->share('unitObj',$unitData);
                     return view('issues.revison.view');
                 }
             }
@@ -366,7 +367,7 @@ class IssuesController extends Controller
                         view()->share('availableFunds',$availableFunds);
                         view()->share('awardedFunds',$awardedFunds);
                         view()->share('unitData',$unitData);
-
+                        view()->share('unitObj',$unitData);
                         return view('issues.revison.view_revision');
                     }
                 }
@@ -454,7 +455,7 @@ class IssuesController extends Controller
                         view()->share('availableFunds',$availableFunds);
                         view()->share('awardedFunds',$awardedFunds);
                         view()->share('unitData',$unitData);
-
+                        view()->share('unitObj',$unitData);
                         return view("issues.revison.changes_difference");
                     }
 
@@ -658,7 +659,7 @@ class IssuesController extends Controller
                     view()->share('awardedFunds',$awardedFunds);
                     view()->share('unitData',$unitData);
                     $issueResolutions = $this->calculateIssueResolution($issueObj->unit_id);
-
+                    view()->share('unitObj',$unitData);
                     view()->share('totalIssueResolutions',$issueResolutions);
                     return view('issues.edit');
                 }

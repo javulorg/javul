@@ -82,6 +82,7 @@ class TasksController extends Controller
             view()->share('availableFunds',$availableFunds );
             view()->share('awardedFunds',$awardedFunds );
             view()->share('unitData',$unitData);
+            view()->share('unitObj',$unitData);
             $issueResolutions = $this->calculateIssueResolution($request->unit);
             view()->share('totalIssueResolutions',$issueResolutions);
             $unitTasks = Task::query()
@@ -147,6 +148,7 @@ class TasksController extends Controller
         $unitData = Unit::where('id', $unitId)->first();
 //        dd($unitData);
         view()->share('unitData',$unitData);
+        view()->share('unitObj',$unitData);
         view()->share('homeCheck',$homeCheck );
         view()->share('availableFunds',$availableUnitFunds );
         view()->share('awardedFunds',$awardedUnitFunds );
@@ -214,6 +216,7 @@ class TasksController extends Controller
                 {
                     $unit_id = $unit_id[0];
                     $taskUnitObj = Unit::find($unit_id);
+                    view()->share('unitObj',$taskUnitObj);
                     if(!empty($taskUnitObj))
                     {
                         $availableUnitFunds =Fund::getUnitDonatedFund($unit_id);
@@ -242,6 +245,7 @@ class TasksController extends Controller
         view()->share('assigned_toUsers',$assigned_toUsers);
         view()->share('task_skills',$task_skills );
         view()->share('unitsObj',$unitsObj);
+
         view()->share('objectiveObj',$taskObjectiveObj );
         view()->share('taskObj',[]);
         view()->share('taskDocumentsObj',[]);
@@ -557,9 +561,7 @@ class TasksController extends Controller
         SiteActivity::create([
             'user_id'            => Auth::user()->id,
             'unit_id'            => $unit_id,
-            'unit_id'            => 1,
             'objective_id'       => $objective_id,
-            'objective_id'       => 1,
             'task_id'            => $integerTaskId,
             'comment'            =>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                     .$user_name.'</a>
@@ -645,6 +647,7 @@ class TasksController extends Controller
                     view()->share('availableFunds',$availableFunds);
                     view()->share('awardedFunds',$awardedFunds);
                     view()->share('unitData',$unitData);
+                    view()->share('unitObj',$unitData);
                     return view('tasks.revison.view');
                 }
             }
@@ -731,6 +734,7 @@ class TasksController extends Controller
                         view()->share('availableFunds',$availableFunds);
                         view()->share('awardedFunds',$awardedFunds);
                         view()->share('unitData',$unitData);
+                        view()->share('unitObj',$unitData);
                         return view('tasks.revison.view_revision');
                     }
                 }
@@ -1229,6 +1233,7 @@ class TasksController extends Controller
                 view()->share('availableFunds',$availableFunds);
                 view()->share('awardedFunds',$awardedFunds);
                 view()->share('unitData',$unitData);
+                view()->share('unitObj',$unitData);
                 view()->share('taskHashId',$taskHashId);
                 return view('tasks.edit');
             }
@@ -1703,7 +1708,7 @@ class TasksController extends Controller
                         view()->share('availableFunds',$availableFunds);
                         view()->share('awardedFunds',$awardedFunds);
                         view()->share('unitData',$unitData);
-
+                    view()->share('unitObj',$unitData);
                     return view('tasks.view');
                 }
             }
