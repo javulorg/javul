@@ -5,6 +5,7 @@ use App\Models\Fund;
 use App\Models\Issue;
 use App\Models\SiteActivity;
 use App\Models\Unit;
+use App\Traits\UnitTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Config;
 
 class ChatController extends Controller
 {
+    use UnitTrait;
     public function __construct()
     {
         $this->middleware('auth',['except'=>['index','view','get_units_paginate']]);
@@ -45,7 +47,6 @@ class ChatController extends Controller
 
     public function chatroom($roomId , Request $request)
     {
-
     	if($roomId)
     	{
     		view()->share("smily",$this->smilyTable());
@@ -56,9 +57,7 @@ class ChatController extends Controller
 
         	if(!empty($roomId))
         	{
-
                 $roomId     = $roomId[0];
-
                 $roomDetail = Chat::room($roomId);
                 if($roomDetail)
                 {
@@ -89,6 +88,9 @@ class ChatController extends Controller
                         $availableFunds  = Fund::getUnitDonatedFund($unit_id);
                         $awardedFunds    = Fund::getUnitAwardedFund($unit_id);
 
+                        $issueResolutions = $this->calculateIssueResolution($unit_id);
+                        view()->share('unitObj',$unit);
+                        view()->share('totalIssueResolutions',$issueResolutions);
                         view()->share('availableFunds',$availableFunds);
                         view()->share('awardedFunds',$awardedFunds);
                         view()->share('unitData',$unitData);
@@ -209,6 +211,7 @@ class ChatController extends Controller
 
     public function create_room(Request $request)
     {
+
     		$json = array();
     		$unit_id = $request->input("unit_id");
     		$unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));

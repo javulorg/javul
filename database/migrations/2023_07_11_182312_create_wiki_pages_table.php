@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('wiki_pages', function (Blueprint $table) {
             $table->id();
+            $table->boolean('is_unit_page')->default(0);
             $table->integer('wiki_page_id')->nullable();
             $table->unsignedBigInteger('unit_id');
             $table->string('wiki_page_title',255);

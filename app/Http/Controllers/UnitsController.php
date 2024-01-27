@@ -192,6 +192,8 @@ class UnitsController extends Controller
                 view()->share('userIDHashID', $userIDHashID);
                 view()->share('Carbon', new Carbon);
                 view()->share('revisions',$revisions );
+                $issueResolutions = $this->calculateIssueResolution($unit_id);
+                view()->share('totalIssueResolutions',$issueResolutions);
 
                 return view("units.revison.view");
 
