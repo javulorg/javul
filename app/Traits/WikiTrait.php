@@ -19,6 +19,7 @@ trait WikiTrait
             'page_content'      => $unit->description,
             'edit_comment'      => null,
             'user_id'           => Auth::user()->id,
+            'is_unit_page'      => 1
         );
         $wiki_pages['time_stamp'] = date("Y-m-d H:i:s");
         $wiki_page_id =  DB::table('wiki_pages')->insertGetId($wiki_pages);

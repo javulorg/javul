@@ -162,6 +162,9 @@ class WikiController extends Controller
                 view()->share('awardedFunds',$awardedFunds );
                 view()->share('site_activity',$site_activity);
 
+                $issueResolutions = $this->calculateIssueResolution($unit_id);
+                view()->share('totalIssueResolutions',$issueResolutions);
+
                 $filter = array(
                     'unit_id' => $unit_id,
                     'wiki_page_id' => $wiki_page_id,
@@ -230,6 +233,9 @@ class WikiController extends Controller
                     view()->share('availableFunds', $availableFunds);
                     view()->share('awardedFunds', $awardedFunds);
                     view()->share('unitData', $unitData);
+                    $issueResolutions = $this->calculateIssueResolution($unit_id);
+                    view()->share('totalIssueResolutions',$issueResolutions);
+                    view()->share('unitObj',$unitData);
                     return view("wiki.history_single_page");
 
                 }
@@ -281,6 +287,9 @@ class WikiController extends Controller
                     view()->share('availableFunds', $availableFunds);
                     view()->share('awardedFunds', $awardedFunds);
                     view()->share('unitData', $unitData);
+                    view()->share('unitObj',$unitData);
+                    $issueResolutions = $this->calculateIssueResolution($unit_id);
+                    view()->share('totalIssueResolutions',$issueResolutions);
                     return view("wiki.changes_list");
 
                 }
@@ -326,6 +335,9 @@ class WikiController extends Controller
                     view()->share('availableFunds', $availableFunds);
                     view()->share('awardedFunds', $awardedFunds);
                     view()->share('unitData', $unitData);
+                    $issueResolutions = $this->calculateIssueResolution($unit_id);
+                    view()->share('totalIssueResolutions',$issueResolutions);
+                    view()->share('unitObj',$unitData);
                     return view("wiki.changes_difference");
                 }
             }
@@ -372,7 +384,9 @@ class WikiController extends Controller
                     view()->share('availableFunds', $availableFunds);
                     view()->share('awardedFunds', $awardedFunds);
                     view()->share('unitData', $unitData);
-
+                    $issueResolutions = $this->calculateIssueResolution($unit_id);
+                    view()->share('totalIssueResolutions',$issueResolutions);
+                    view()->share('unitObj',$unitData);
 	        	    return view("wiki.changes_difference");
                 }
 	        }
@@ -418,7 +432,9 @@ class WikiController extends Controller
                     view()->share('availableFunds', $availableFunds);
                     view()->share('awardedFunds', $awardedFunds);
                     view()->share('unitData', $unitData);
-
+                    $issueResolutions = $this->calculateIssueResolution($unit_id);
+                    view()->share('totalIssueResolutions',$issueResolutions);
+                    view()->share('unitObj',$unitData);
                     return view("wiki.revision_view");
                 }
             }
@@ -450,6 +466,8 @@ class WikiController extends Controller
 	        	$wikiHistory = Wiki::detailHistory($filter);
 	        	view()->share("wiki",$wiki);
 	        	view()->share("wikiHistory",$wikiHistory);
+                $issueResolutions = $this->calculateIssueResolution($unit_id);
+                view()->share('totalIssueResolutions',$issueResolutions);
 	        	return view("wiki.history");
 	        }
         }
@@ -494,7 +512,21 @@ class WikiController extends Controller
                 }
                 $inputData['unit_id'] = $unit_id;
                 $inputData['slug'] = $slug;
+
                 $wiki_page_id_return = Wiki::updateData($inputData);
+                $checkWikiUnitPage = DB::table('wiki_pages')
+                    ->where('id', $inputData['id'])
+                    ->where('wiki_page_id', $inputData['id'])
+                    ->where('unit_id', $unit_id)
+                    ->where('is_unit_page', 1)
+                    ->first();
+                if($checkWikiUnitPage)
+                {
+                    Unit::query()->where('id', $unit_id)
+                        ->update([
+                            'description'  => $inputData['description']
+                        ]);
+                }
                 $json['success'] = "Save Successfully";
                 $json['location'] = url("wiki")."/all_pages/".$unit_id_hash."/".$slug;
 
@@ -511,7 +543,8 @@ class WikiController extends Controller
                 view()->share('availableFunds',$availableFunds );
                 view()->share('awardedFunds',$awardedFunds );
                 view()->share('site_activity',$site_activity);
-
+                $issueResolutions = $this->calculateIssueResolution($unit_id);
+                view()->share('totalIssueResolutions',$issueResolutions);
                 $edit = false;
                 if($wiki_page_id > 0)
                 {

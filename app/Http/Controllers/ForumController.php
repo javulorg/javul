@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Idea;
 use App\Models\User;
+use App\Traits\UnitTrait;
 use Illuminate\Http\Request;
 use App\Models\Forum;
 use Hashids\Hashids;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ForumController extends Controller
 {
+    use UnitTrait;
     public function __construct()
     {
         $this->middleware('auth',['except'=>['index']]);
@@ -86,6 +88,10 @@ class ForumController extends Controller
     			view()->share("unit",$unit);
 
                 view()->share('unitData',$unit);
+
+                $issueResolutions = $this->calculateIssueResolution($unit_id);
+                view()->share('unitObj',$unit);
+                view()->share('totalIssueResolutions',$issueResolutions);
     			return view("forum.forum_home");
 	        }
         }
@@ -93,7 +99,6 @@ class ForumController extends Controller
     }
     public function view($unit_id,$section_name)
     {
-//        dd($section_name);
     	view()->share("unit_id",$unit_id);
     	$section_id= 0;
         if($section_name == 'objectives'){
@@ -124,7 +129,6 @@ class ForumController extends Controller
                 $site_activity = SiteActivity::where('unit_id',$unit_id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
                 $availableFunds =Fund::getUnitDonatedFund($unit_id);
                 $awardedFunds =Fund::getUnitAwardedFund($unit_id);
-//
 
                 view()->share('unit_activity_id',$unit_id);
                 view()->share('availableFunds',$availableFunds );
@@ -134,42 +138,11 @@ class ForumController extends Controller
 
     			$allTopics  = array();
                 $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
-//
-//                foreach ($topics->items() as $key => $value)
-//                {
-//                    $user_id = $userIDHashID->encode($value->user_id);
-//                    $lastReply = substr($value->lastReply, 0, strpos($value->lastReply, ':'));
-//                    $reuser_id = $userIDHashID->encode(substr($value->lastReply,  (strpos($value->lastReply, ':') + 1) ));
-//    				$allTopics[] = array(
-//	    				'topic_id' => $value->topic_id,
-//			            'title' => $value->title,
-//			            'user_id' => $value->user_id,
-//                        'unit_id' => $value->unit_id,
-//                        'slug' => $value->slug,
-//                        'first_name' => $value->first_name ,
-//			            'last_name' => $value->last_name ,
-//			            'created_time' => Carbon::createFromFormat('Y-m-d H:i:s', $value->created_time)->diffForHumans(),
-//                        'link_user' => url('userprofiles/'. $user_id .'/'.strtolower($value->first_name.'_'.$value->last_name)),
-//                        'link_reply' => url('userprofiles/'. $reuser_id .'/'.str_replace(' ', '_', $lastReply)),
-//                        'post' => $value->post,
-//                        'updownstatus' => $value->updownstatus,
-//                        'lastReply' => substr($value->lastReply, 0, strpos($value->lastReply, ':')),
-//			            'votecount' => (int)$value->votecount,
-//			        );
-//    			}
-                $start = 0;
-//                if(isset($_GET['page']))
-//                {
-//                    $start = ( ((int)$_GET['page'] -1) * 10);
-//                }
-
-//                view()->share("start",$start);
-//                dd($topics->items());
                 view()->share("topics",$topics->items());
                 view()->share("section_name",$section_name);
-//                view()->share("pagination",$topics->links());
-//    			view()->share("unit",$unit);
-
+                $issueResolutions = $this->calculateIssueResolution($unit_id);
+                view()->share('unitObj',$unit);
+                view()->share('totalIssueResolutions',$issueResolutions);
 
     			return view("forum.topic_list", compact('unitObj'));
 	        }
