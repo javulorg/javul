@@ -826,6 +826,7 @@ class IssuesController extends Controller
                 $issue_id = $issue_id[0];
                 $issueObj = Issue::with(['issue_documents'])->find($issue_id);
                 if(!empty($issueObj)  && $issueObj->count() > 0){
+
                     $unitObj = Unit::find($issueObj->unit_id);
                     view()->share('unitObj',$unitObj);
                     view()->share('issueObj',$issueObj);
@@ -837,6 +838,9 @@ class IssuesController extends Controller
 
                     $issueResolutions = $this->calculateIssueResolution($issueObj->unit_id);
                     view()->share('totalIssueResolutions',$issueResolutions);
+
+                    $ratingResult = $this->calculateRate(1, $issue_id, $issueObj->unit_id);
+                    view()->share('ratingResult',$ratingResult);
 
                     $upvotedCnt = 0;
                     $downvotedCnt = 0;

@@ -83,14 +83,39 @@
                                         <div class="sidebar_block_left">
                                             Priority:
                                         </div>
-                                        <div class="sidebar_block_right">
-                                            Medium
-                                            <div class="progress">
-                                                <div class="progress-bar" style="width:75%"></div>
+                                        <?php if(isset($ratingResult) && $ratingResult >= 3.5): ?>
+                                            <div class="sidebar_block_right">
+                                                High
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult > 2.5)): ?>
+                                            <div class="sidebar_block_right">
+                                                Medium
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                </div>
+                                            </div>
+                                        <?php elseif(isset($ratingResult) && ($ratingResult < 2.5)): ?>
+                                            <div class="sidebar_block_right">
+                                                Low
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                </div>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="sidebar_block_right">
+                                                Low
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
 
-                                        <div class="sidebar_block_right">
+
+                                        <?php if(auth()->guard()->check()): ?>
+                                            <div class="sidebar_block_right">
                                             <a href="#" class="modal-link" data-bs-toggle="modal" data-bs-target="#exampleModal">Rate</a>
                                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg">
@@ -134,7 +159,7 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                        <?php endif; ?>
                                     </div>
                                     <div class="sidebar_block_row">
                                         <div class="sidebar_block_left">

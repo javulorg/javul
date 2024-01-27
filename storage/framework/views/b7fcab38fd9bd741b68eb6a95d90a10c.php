@@ -38,64 +38,64 @@
         <div class="main_content">
             <?php if(isset($unitData)): ?>
                 <div class="content_block">
-                <div class="table_block table_block_ideas">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="<?php echo e(asset('v2/assets/img/humbleicons_bulb.svg')); ?>" alt="" class="img-fluid">
-                        </div>
-                        Ideas (<?php echo e($ideasTotal); ?>)
-                        <div class="arrow">
-                            <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
-                        </div>
-                </div>
-                <div class="table_block_body">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th class="title_col">Idea Name</th>
-                            <th class="type_col">Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php if(count($unitIdea) > 0): ?>
-                            <?php $__currentLoopData = $unitIdea; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <tr>
-                                    <td class="title_col">
-                                        <a href="<?php echo url('ideas/'.$ideaHashID->encode($idea->id)); ?>">
-                                            <?php echo e($idea->title); ?>
-
-                                        </a>
-                                    </td>
-                                    <?php if($idea->status == 1): ?>
-                                        <td class="type_col"> Draft</td>
-                                    <?php elseif($idea->status == 2): ?>
-                                        <td class="type_col">Assigned to Task</td>
-                                    <?php else: ?>
-                                        <td class="type_col">Implemented</td>
-                                    <?php endif; ?>
-                                </tr>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        <?php else: ?>
+                    <div class="table_block table_block_ideas">
+                        <div class="table_block_head">
+                            <div class="table_block_icon">
+                                <img src="<?php echo e(asset('v2/assets/img/humbleicons_bulb.svg')); ?>" alt="" class="img-fluid">
+                            </div>
+                            Ideas (<?php echo e($ideasTotal); ?>)
+                            <div class="arrow">
+                                <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
+                            </div>
+                    </div>
+                    <div class="table_block_body">
+                        <table>
+                            <thead>
                             <tr>
-                                <td colspan="5">No record(s) found.</td>
+                                <th class="title_col">Idea Name</th>
+                                <th class="type_col">Status</th>
                             </tr>
-                        <?php endif; ?>
-                        </tbody>
-                    </table>
-                    <div class="mob_table d-sm-none d-block">
+                            </thead>
+                            <tbody>
+                            <?php if(count($unitIdea) > 0): ?>
+                                <?php $__currentLoopData = $unitIdea; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr>
+                                        <td class="title_col">
+                                            <a href="<?php echo url('ideas/'.$ideaHashID->encode($idea->id)); ?>">
+                                                <?php echo e($idea->title); ?>
+
+                                            </a>
+                                        </td>
+                                        <?php if($idea->status == 1): ?>
+                                            <td class="type_col"> Draft</td>
+                                        <?php elseif($idea->status == 2): ?>
+                                            <td class="type_col">Assigned to Task</td>
+                                        <?php else: ?>
+                                            <td class="type_col">Implemented</td>
+                                        <?php endif; ?>
+                                    </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="5">No record(s) found.</td>
+                                </tr>
+                            <?php endif; ?>
+                            </tbody>
+                        </table>
+                        <div class="mob_table d-sm-none d-block">
+                        </div>
                     </div>
                 </div>
-            </div>
-                <div class="d-flex justify-content-between mt-2">
-                    <div class="pagination-left">
-                    </div>
-                    <div class="pagination-right">
-                        <?php if(isset($unitData)): ?>
-                        <a href="<?php echo url('ideas/'.$unitIDHashID->encode($unitData->id).'/add'); ?>"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New</a>
-                        <?php endif; ?>
+                    <div class="d-flex justify-content-between mt-2">
+                        <div class="pagination-left">
+                        </div>
+                        <div class="pagination-right">
+                            <?php if(isset($unitData)): ?>
+                            <a href="<?php echo url('ideas/'.$unitIDHashID->encode($unitData->id).'/add'); ?>"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New</a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-        </div>
             <?php else: ?>
                 <div class="content_block">
                     <div class="table_block table_block_ideas">
