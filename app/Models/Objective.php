@@ -37,6 +37,11 @@ class Objective extends Model
         return $this->hasManyThrough('App\Issue','App\Task');
     }
 
+    public function ideas()
+    {
+        return $this->belongsToMany(Idea::class,'objective_ideas');
+    }
+
     public static function getObjectivesWithUnits($data = []){
         $objectives = [];
         if(empty($data)){
