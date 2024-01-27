@@ -148,6 +148,10 @@ class IdeaController extends Controller
         $comments = $service->comments( $idea->unit_id, 4, $idea->id);
         $issueResolutions = $this->calculateIssueResolution($idea->unit_id);
 
+        $ratingResult = $this->calculateRate(2, $idea->id, $idea->unit_id);
+
+        view()->share('ratingResult',$ratingResult);
+
         view()->share('totalIssueResolutions',$issueResolutions);
 
         view()->share('comments', $comments);
@@ -224,10 +228,11 @@ class IdeaController extends Controller
                 'user_id'        => auth()->user()->id,
                 'task_id'        => $request->task_id,
                 'issue_id'       => $request->issue_id,
-                'type_id'        => $request->type_id,
+//                'type_id'        => $request->type_id,
+                'type_id'        => null,
                 'description'    => $request->description,
                 'comment'        => $request->comment,
-                'status'         => 1,
+                'status'         => $request->status,
         ]);
 
         if($idea)

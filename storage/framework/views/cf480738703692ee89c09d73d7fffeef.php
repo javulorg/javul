@@ -72,6 +72,18 @@
                             </div>
 
                             <div class="col-md-12 mt-3 form-group">
+                                <label class="control-label">Status</label>
+                                <div class="input-icon right">
+                                    <select class="form-control selectpicker" data-live-search="true" name="status" id="status">
+                                        <option selected disabled>Select Idea Status</option>
+                                        <option value="1" <?php echo e($idea->status == 1 ? 'selected' : ''); ?>>Draft</option>
+                                        <option value="2" <?php echo e($idea->status == 2 ? 'selected' : ''); ?>> Assigned to Task</option>
+                                        <option value="3" <?php echo e($idea->status == 3 ? 'selected' : ''); ?>> Implemented</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-3 form-group">
                                 <label class="control-label">Task</label>
                                 <div class="input-icon right">
                                     <select class="form-control selectpicker" data-live-search="true" name="task_id" id="task_id">
