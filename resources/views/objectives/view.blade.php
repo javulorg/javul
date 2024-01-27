@@ -289,7 +289,7 @@
                         </div>
                     </div>
                     <div class="table_block_txt">
-{{--                        <b>Task Name</b>--}}
+
                     </div>
                 </div>
                 <div class="content_block_bottom">

@@ -544,20 +544,24 @@ class ObjectivesController extends Controller
                     view()->share('unit_activity_id',$objectiveObj->unit->id);
                     view()->share('objectiveId', $objectiveHashId);
 
-
-
                     $unitData = Unit::where('id', $objectiveObj->unit->id)->first();
                     $availableFunds = Fund::getUnitDonatedFund($objectiveObj->unit->id);
                     $awardedFunds = Fund::getUnitAwardedFund($objectiveObj->unit->id);
-
                     $issueResolutions = $this->calculateIssueResolution($objectiveObj->unit->id);
-
                     view()->share('totalIssueResolutions',$issueResolutions);
-
                     view()->share('availableFunds',$availableFunds);
                     view()->share('awardedFunds',$awardedFunds);
                     view()->share('unitData',$unitData);
                     view()->share('unitObj',$unitData);
+
+
+                    $ideas = Idea::query()->where('unit_id', $objectiveObj->unit->id)->get();
+                    $relatedIdeas = ObjectiveIdea::query()
+                        ->where('objective_id', $objectiveObj->id)
+                        ->pluck('idea_id')
+                        ->toArray();
+                    view()->share('relatedIdeas',$relatedIdeas);
+                    view()->share('ideas',$ideas);
                     return view('objectives.edit');
                 }
             }
@@ -660,6 +664,26 @@ class ObjectivesController extends Controller
                     .$userName.'</a>
                         updated objective <a href="'.url('objectives/'.$objectiveHashId.'/'.$slug).'">'.$request->objective_name.'</a>'
             ]);
+
+
+            if(isset($request->idea_id))
+            {
+                ObjectiveIdea::where('objective_id', $objectiveObj->id)
+                    ->delete();
+                foreach ($request->idea_id as $item => $value)
+                {
+                    ObjectiveIdea::updateOrCreate(
+                        [
+                            'objective_id'   => $objectiveObj->id,
+                            'idea_id'        => $value
+                        ],
+                        [
+                            'objective_id'   => $objectiveObj->id,
+                            'idea_id'        => $value
+                        ]
+                    );
+                }
+            }
 
             return redirect('objectives/'.$objectiveHashId.'/'.$objectiveObj->slug);
 

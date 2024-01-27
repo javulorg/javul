@@ -95,6 +95,15 @@
                                 </textarea>
                             </div>
 
+                            <div class="col-sm-6 mt-3 form-group">
+                                <label class="control-label mb-1">Idea</label>
+                                <select class="form-select" name="idea_id[]" id="idea_id" multiple>
+                                    @foreach($ideas as $idea)
+                                        <option value="{{ $idea->id }}" {{ in_array($idea->id, $relatedIdeas) ? 'selected' : '' }}>{{ $idea->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
 
                             <div class="col-sm-12 mt-3 form-group">
                                 <label class="control-label">Comment</label>
@@ -118,6 +127,12 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
+            $("#idea_id").select2({
+                theme: "bootstrap-5",
+                containerCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
+            });
+
             ClassicEditor
                 .create( document.querySelector( '#description' ) )
                 .catch( error => {
