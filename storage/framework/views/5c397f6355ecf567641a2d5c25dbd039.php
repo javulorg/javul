@@ -40,6 +40,9 @@
             <?php endif; ?>
         </div>
 
+        <input type="hidden" id="idea_id" name="idea_id" value="<?php echo e($idea->id); ?>">
+        <input type="hidden" id="unit_id" name="unit_id" value="<?php echo e($unitData->id); ?>">
+
         <div class="main_content">
             <div class="content_block">
                 <div class="table_block table_block_ideas active">
@@ -73,6 +76,88 @@
                                     <div class="sidebar_block_content">
                                         <div class="sidebar_block_row">
                                             <div class="sidebar_block_left">
+                                                Priority:
+                                            </div>
+                                            <?php if(isset($ratingResult) && $ratingResult >= 3.5): ?>
+                                                <div class="sidebar_block_right">
+                                                    High
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                    </div>
+                                                </div>
+                                            <?php elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult > 2.5)): ?>
+                                                <div class="sidebar_block_right">
+                                                    Medium
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                    </div>
+                                                </div>
+                                            <?php elseif(isset($ratingResult) && ($ratingResult < 2.5)): ?>
+                                                <div class="sidebar_block_right">
+                                                    Low
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                    </div>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="sidebar_block_right">
+                                                    Low
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+
+
+                                            <?php if(auth()->guard()->check()): ?>
+                                                <div class="sidebar_block_right">
+                                                    <a href="#" class="modal-link" data-bs-toggle="modal" data-bs-target="#exampleModal">Rate</a>
+                                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Priority</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form id="ratingForm">
+                                                                        <div class="form-group">
+                                                                            <label for="rating">Select rating:</label><br>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating1" name="rating" value="1">
+                                                                                <label class="form-check-label" for="rating1">Low</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating2" name="rating" value="2">
+                                                                                <label class="form-check-label" for="rating2">Medium-Low</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating3" name="rating" value="3">
+                                                                                <label class="form-check-label" for="rating3">Medium</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating4" name="rating" value="4">
+                                                                                <label class="form-check-label" for="rating4">Medium-High</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating5" name="rating" value="5">
+                                                                                <label class="form-check-label" for="rating5">High</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="button" id="submitRating" class="btn btn-primary">Save changes</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
                                                 Status:
                                             </div>
                                             <div class="sidebar_block_right">
@@ -83,9 +168,6 @@
                                                 <?php else: ?>
                                                     Implemented
                                                 <?php endif; ?>
-                                                <div class="progress">
-
-                                                </div> <a href="<?php echo url('ideas/'. $ideaHashId .'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""></a>
                                             </div>
                                         </div>
                                     </div>
@@ -93,7 +175,10 @@
                                 <div class="objective_content_info_links">
                                     <a href="<?php echo url('ideas/'. $ideaHashId .'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" alt=""></a>
                                     <div class="separat"></div>
-                                    <a href="<?php echo url('ideas/'. $ideaHashId .'/history'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""> Revision History</a>
+                                    <a href="<?php echo url('ideas/'. $ideaHashId .'/history'); ?>" class="edit_icon"> Revision History</a>
+                                    <div class="separat"></div>
+                                    <a href="<?php echo url('ideas/'. $ideaHashId .'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""></a>
+
                                 </div>
                             </div>
                         </div>
@@ -299,6 +384,42 @@
         <?php $__env->startSection('scripts'); ?>
             <script>
                 $(document).ready(function() {
+                    $('.modal-link').click(function() {
+                        var modalId = $(this).data('modal-id');
+                        $('#modalIdSpan').text(modalId);
+                    });
+
+                    $('#submitRating').click(function() {
+                        var selectedRating = $("input[name='rating']:checked").val();
+                        if (selectedRating !== undefined) {
+
+                            var unitId = $('#unit_id').val();
+                            var typeId = $('#idea_id').val();
+                            $.ajax({
+                                url: '<?php echo e(url("priorities")); ?>',
+                                type: 'POST',
+                                data: {
+                                    type_value   : 2,
+                                    rating :selectedRating,
+                                    unit_id : unitId,
+                                    type_id : typeId,
+                                    _token: $('input[name="_token"]').val(),
+                                },
+                                success: function (response, xhr, textStatus) {
+                                    if (response.status === 201) {
+                                        $('#exampleModal').modal('hide');
+                                        location.reload();
+                                    }
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    console.log(xhr.responseText);
+                                },
+                            });
+                        }else {
+                            alert("Please select a rating.");
+                        }
+
+                    });
                     $("#comment_form").click(function(e)
                     {
                         var unitId = $('#comment_unit_id').val();
