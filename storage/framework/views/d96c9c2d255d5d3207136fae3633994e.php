@@ -48,7 +48,6 @@
                         <?php echo csrf_field(); ?>
 
                         <div class="row">
-
                                 <input type="hidden" name="unit" value="<?php echo e($unitIDHashID->encode($unitData->id)); ?>">
                                 <div class="col-md-12 form-group">
                                     <label class="control-label">Objective Name</label>
@@ -86,11 +85,14 @@
                             </div>
 
 
-
-
-
-
-
+                            <div class="col-sm-6 mt-3 form-group">
+                                    <label class="control-label mb-1">Idea</label>
+                                    <select class="form-select"  name="idea_id[]" id="idea_id" multiple>
+                                        <?php $__currentLoopData = $ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($idea->id); ?>"><?php echo e($idea->title); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                            </div>
                         </div>
                         <div class="row justify-content-center mt-3">
                             <div class="col-md-6 col-lg-4">
@@ -108,6 +110,12 @@
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         $(document).ready(function () {
+            $("#idea_id").select2({
+                theme: "bootstrap-5",
+                containerCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
+            });
+
             ClassicEditor
                 .create( document.querySelector( '#description' ) )
                 .catch( error => {

@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityPoint;
 use App\Models\Fund;
+use App\Models\Idea;
 use App\Models\ImportanceLevel;
 use App\Models\Objective;
+use App\Models\ObjectiveIdea;
 use App\Models\SiteActivity;
 use App\Models\Task;
 use App\Models\Unit;
 use App\Models\User;
 use App\Services\Objectives\ObjectiveService;
 use App\Traits\UnitTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Hashids\Hashids;
@@ -132,6 +135,9 @@ class ObjectivesController extends Controller
 
         $homeCheck = isset($request->home) ??  false;
         $unitData = Unit::where('id', $unit_id)->first();
+        $ideas = Idea::query()->where('unit_id', $unit_id)->get();
+
+        view()->share('ideas',$ideas);
         view()->share('unitData',$unitData);
         view()->share('unitObj',$unitData);
         view()->share('homeCheck',$homeCheck );
@@ -202,6 +208,22 @@ class ObjectivesController extends Controller
             'type'             => 'objective'
         ]);
 
+        if(isset($request->idea_id))
+        {
+            foreach ($request->idea_id as $item => $value)
+            {
+                ObjectiveIdea::updateOrCreate(
+                  [
+                      'objective_id'   => $objective->id,
+                      'idea_id'        => $value
+                  ],
+                  [
+                      'objective_id'   => $objective->id,
+                      'idea_id'        => $value
+                  ]
+                );
+            }
+        }
         $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
         $user_id = $userIDHashID->encode(Auth::user()->id);
 
@@ -647,6 +669,7 @@ class ObjectivesController extends Controller
 
     public function view($objective_id, Request $request)
     {
+
         $objectiveHashID = $objective_id;
         $service = new ObjectiveService();
         if(!empty($objective_id))
@@ -656,6 +679,7 @@ class ObjectivesController extends Controller
             if(!empty($objective_id))
             {
                 $objective_id = $objective_id[0];
+
                 $obj = Objective::checkObjectiveExist($objective_id,false);
                 if($obj)
                 {
@@ -664,6 +688,8 @@ class ObjectivesController extends Controller
                     $objectiveObj->unit = Unit::getUnitWithCategories($objectiveObj->unit_id);
                     $upvotedCnt = 0;
                     $downvotedCnt = 0;
+                    $ratingResult = $this->calculateRate(3, $objectiveObj->id, $objectiveObj->unit_id);
+                    view()->share('ratingResult',$ratingResult);
                     if(Auth::check())
                     {
                         $upvotedCnt = ImportanceLevel::where('objective_id', $objective_id)->where('user_id', Auth::user()->id)->where('importance_level', '+1')->count();
@@ -747,7 +773,8 @@ class ObjectivesController extends Controller
                             view()->share('awardedFunds',$awardedFunds);
                             view()->share('unitData',$unitData);
                              view()->share('unitObj',$unitData);
-
+                         $objectiveIdeas = Objective::with('ideas')->where('id', $objectiveObj->id)->first();
+                        view()->share('objectiveIdeas',$objectiveIdeas);
                         return view('objectives.view');
                     }
                 }

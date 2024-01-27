@@ -80,57 +80,83 @@
                                             <div class="sidebar_block_left">
                                                 Priority:
                                             </div>
-                                            <div class="sidebar_block_right">
-                                                Medium
-                                                <div class="progress">
-                                                    <div class="progress-bar" style="width:75%"></div>
-                                                </div>
-                                            </div>
 
-                                            <div class="sidebar_block_right">
-                                                <a href="#" class="modal-link" data-bs-toggle="modal" data-bs-target="#exampleModal">Rate</a>
-                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Priority</h1>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form id="ratingForm">
-                                                                    <div class="form-group">
-                                                                        <label for="rating">Select rating:</label><br>
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input type="radio" class="form-check-input" id="rating1" name="rating" value="1">
-                                                                            <label class="form-check-label" for="rating1">Low</label>
+                                            @if(isset($ratingResult) && $ratingResult >= 3.5)
+                                                <div class="sidebar_block_right">
+                                                    High
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            @elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult > 2.5))
+                                                <div class="sidebar_block_right">
+                                                    Medium
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            @elseif(isset($ratingResult) && ($ratingResult < 2.5))
+                                                <div class="sidebar_block_right">
+                                                    Low
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="sidebar_block_right">
+                                                    Low
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @auth()
+                                                <div class="sidebar_block_right">
+                                                    <a href="#" class="modal-link" data-bs-toggle="modal" data-bs-target="#exampleModal">Rate</a>
+                                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Priority</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form id="ratingForm">
+                                                                        <div class="form-group">
+                                                                            <label for="rating">Select rating:</label><br>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating1" name="rating" value="1">
+                                                                                <label class="form-check-label" for="rating1">Low</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating2" name="rating" value="2">
+                                                                                <label class="form-check-label" for="rating2">Medium-Low</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating3" name="rating" value="3">
+                                                                                <label class="form-check-label" for="rating3">Medium</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating4" name="rating" value="4">
+                                                                                <label class="form-check-label" for="rating4">Medium-High</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input type="radio" class="form-check-input" id="rating5" name="rating" value="5">
+                                                                                <label class="form-check-label" for="rating5">High</label>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input type="radio" class="form-check-input" id="rating2" name="rating" value="2">
-                                                                            <label class="form-check-label" for="rating2">Medium-Low</label>
-                                                                        </div>
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input type="radio" class="form-check-input" id="rating3" name="rating" value="3">
-                                                                            <label class="form-check-label" for="rating3">Medium</label>
-                                                                        </div>
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input type="radio" class="form-check-input" id="rating4" name="rating" value="4">
-                                                                            <label class="form-check-label" for="rating4">Medium-High</label>
-                                                                        </div>
-                                                                        <div class="form-check form-check-inline">
-                                                                            <input type="radio" class="form-check-input" id="rating5" name="rating" value="5">
-                                                                            <label class="form-check-label" for="rating5">High</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" id="submitRating" class="btn btn-primary">Save changes</button>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="button" id="submitRating" class="btn btn-primary">Save changes</button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            @endauth
 
                                         </div>
                                         <div class="sidebar_block_row">
@@ -270,6 +296,60 @@
                     <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
                 </div>
             </div>
+
+            <div class="content_block">
+                <div class="table_block table_block_ideas">
+                    <div class="table_block_head">
+                        <div class="table_block_icon">
+                            <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt="" class="img-fluid">
+                        </div>
+                        Ideas
+                        <div class="arrow">
+                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                        </div>
+                    </div>
+                    <div class="table_block_body">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th class="title_col">Idea Name</th>
+                                <th class="type_col">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @if(isset($objectiveIdeas->ideas))
+                                @foreach($objectiveIdeas->ideas as $idea)
+                                    <tr>
+                                        <td class="title_col">
+                                            <a href="{!! url('ideas/'.$ideaHashID->encode($idea->id)) !!}">
+                                                {{ $idea->title }}
+                                            </a>
+                                        </td>
+                                        @if($idea->status == 1)
+                                            <td class="type_col"> Draft</td>
+                                        @elseif($idea->status == 2)
+                                            <td class="type_col">Assigned to Task</td>
+                                        @else
+                                            <td class="type_col">Implemented</td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="5">No record(s) found.</td>
+                                </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                        <div class="mob_table d-sm-none d-block">
+                        </div>
+                    </div>
+                </div>
+                <div class="content_block_bottom">
+                    <a href="#"><img src="{!! url('ideas/'.$unitIDHashID->encode($unitData->id).'/add') !!}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                </div>
+            </div>
+
 
             <div class="content_block_comments">
                 <div class="table_block table_block_comments">
