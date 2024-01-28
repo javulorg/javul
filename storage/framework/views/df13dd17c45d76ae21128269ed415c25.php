@@ -47,23 +47,23 @@
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('put'); ?>
                         <div class="row">
-                                     <div class="col-sm-4 form-group">
+                            <div class="col-sm-4 form-group">
                                   <label class="control-label"><?php echo e(__('messages.unit_name')); ?></label>
                                   <div class="input-icon right">
                                       <input type="text" name="unit_name" value="<?php echo e((!empty($unitObj))? $unitObj->name : old('unit_name')); ?>" class="form-control" placeholder="<?php echo e(__('messages.unit_name')); ?>"/>
                                   </div>
                               </div>
 
-                                        <?php
-                                        $edit_unit_category = [];
-                                        if(!empty($unitObj))
-                                            $edit_unit_category = explode(",",$unitObj->category_id);
-                                        ?>
-                                     <div class="col-sm-4">
+                            <?php
+                                $edit_unit_category = [];
+                                if(!empty($unitObj))
+                                    $edit_unit_category = explode(",",$unitObj->category_id);
+                            ?>
+                            <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="control-label"><?php echo e(__('messages.unit_category')); ?> <span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-control" data-live-search="true" name="unit_category[]" id="unit_category" multiple>
+                                            <select class="form-control"  name="unit_category[]" id="unit_category" multiple>
                                                 <?php if(count($unit_category_arr) > 0): ?>
                                                     <?php $__currentLoopData = $unit_category_arr; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                         <option value="<?php echo e($id); ?>" <?php if(!empty($edit_unit_category) && in_array($id,$edit_unit_category)): ?> selected=selected <?php endif; ?>><?php echo e($val); ?></option>
@@ -73,7 +73,66 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4 form-group">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label mb-1">Unit Type <span class="text-danger">*</span></label>
+                                    <select class="form-select"  name="unit_type" id="unitType">
+                                        <option selected disabled>Select Type</option>
+                                        <option value="0" <?php echo e($unitObj->unit_type == 0 ? 'selected' : ''); ?>>Product</option>
+                                        <option value="1" <?php echo e($unitObj->unit_type == 1 ? 'selected' : ''); ?>>Service</option>
+                                        <option value="2" <?php echo e($unitObj->unit_type == 2 ? 'selected' : ''); ?>>People’s Government</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3" id="product-service-div">
+                                <div class="form-group col-sm-4" id="productNameDiv">
+                                    <label for="productName">Product Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="<?php echo e($unitObj->product_name); ?>" id="productName" placeholder="Product Name" name="product_name">
+                                </div>
+
+                                <div class="form-group col-sm-4" id="serviceNameDiv">
+                                    <label for="serviceName">Service Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="<?php echo e($unitObj->service_name); ?>" id="serviceName" placeholder="Service Name" name="service_name">
+                                </div>
+
+                                <div class="form-group col-sm-4">
+                                    <label for="businessModel">Business Model <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="businessModel" name="business_model">
+                                        <option selected disabled>Select Business Model</option>
+                                        <option value="0" <?php echo e($unitObj->business_model == 0 ? 'selected' : ''); ?>>Community-owned</option>
+                                        <option value="1" <?php echo e($unitObj->business_model == 1 ? 'selected' : ''); ?>>Corporate</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-sm-4 mt-3" id="operationalGradeDiv">
+                                    <label for="operationalGrade">Operational Grade <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="<?php echo e($unitObj->operational_grade); ?>" id="operationalGrade" placeholder="Enter Operational Grade" name="operational_grade">
+                                </div>
+
+                                <!-- Company -->
+                                <div class="form-group col-sm-4 mt-3">
+                                    <label for="company">Company <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="<?php echo e($unitObj->company); ?>" id="company" placeholder="Enter Company Name" name="company">
+                                </div>
+                            </div>
+
+
+                            <!-- Scope (Only for People's Government) -->
+                            <div class="form-group col-sm-4 mt-3" id="scopeDiv">
+                                <label for="scope">Scope <span class="text-danger">*</span></label>
+                                <select class="form-control" id="scope" name="scope">
+                                    <option selected disabled>Select Scope</option>
+                                    <option value="0" <?php echo e($unitObj->scope == 0 && $unitObj->scope != null ? 'selected' : ''); ?>>City</option>
+                                    <option value="1" <?php echo e($unitObj->scope == 1 && $unitObj->scope != null ? 'selected' : ''); ?>>County</option>
+                                    <option value="2" <?php echo e($unitObj->scope == 2 && $unitObj->scope != null ? 'selected' : ''); ?>>State</option>
+                                    <option value="3" <?php echo e($unitObj->scope == 3 && $unitObj->scope != null ? 'selected' : ''); ?>>National</option>
+                                    <option value="4" <?php echo e($unitObj->scope == 4 && $unitObj->scope != null ? 'selected' : ''); ?>>International</option>
+                                </select>
+                            </div>
+
+
+                            <div class="col-sm-4 form-group">
                                         <label class="control-label">Country<span class="text-danger">*</span></label>
                                         <select class="form-control" data-live-search="true" id="country" name="country">
                                             <option value=""><?php echo trans('messages.select'); ?></option>
@@ -90,7 +149,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-4 mt-3 form-group">
+                            <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">State<span class="text-danger">*</span></label>
                                         <select class="form-control" data-live-search="true" name="state" id="state" <?php if(!empty($unitObj) && $unitObj->country_id == "global"): ?> disabled <?php endif; ?>>
                                             <?php if(!empty($unitObj)): ?>
@@ -105,7 +164,7 @@
                                         <span class="states_loader location_loader" style="display: none"><img src="<?php echo url('assets/images/small_loader.gif'); ?>"/></span>
                                     </div>
 
-                                    <div class="col-sm-4 mt-3 form-group">
+                            <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">City<span class="text-danger">*</span></label>
                                         <select class="form-control" name="city" id="city" <?php if(!empty($unitObj) && $unitObj->country_id == "global"): ?>
                                         disabled <?php endif; ?>>
@@ -128,7 +187,7 @@
                                 </span>
                                     </div>
 
-                                    <div class="col-sm-4 mt-3 form-group">
+                            <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label"><?php echo e(__('messages.unit_credibility')); ?><span class="text-danger">*</span></label>
                                         <select class="form-control" data-live-search="true" name="credibility">
                                             <option value=""><?php echo trans('messages.select'); ?></option>
@@ -141,9 +200,9 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-4 mt-3 form-group">
+                            <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">Related To</label>
-                                        <select class="form-control" data-live-search="true" name="related_to[]" id="related_to" multiple>
+                                        <select class="form-control"  name="related_to[]" id="related_to" multiple>
                                             <?php if(count($relatedUnitsObj) > 0 ): ?>
                                                 <?php $__currentLoopData = $relatedUnitsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$relate): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) &&
@@ -153,7 +212,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-4 mt-3 form-group">
+                            <div class="col-sm-4 mt-3 form-group">
                                         <label class="control-label">Parent Unit</label>
                                         <select class="form-control" data-live-search="true" name="parent_unit" id="parent_unit">
                                             <option value="">Select</option>
@@ -166,20 +225,20 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-12 mt-3 form-group">
+                            <div class="col-sm-12 mt-3 form-group">
                                         <label class="control-label">Unit Description</label>
                                         <textarea class="form-control" id="description" name="description">
                                               <?php if(!empty($unitObj)): ?> <?php echo e($unitObj->description); ?> <?php endif; ?>
                                          </textarea>
                                     </div>
 
-                                    <div class="col-sm-12 mt-3 form-group">
+                            <div class="col-sm-12 mt-3 form-group">
                                         <label class="control-label">Comment</label>
                                         <input class="form-control" name="comment" <?php if(!empty($unitObj) && !empty($unitObj->comment)): ?>
                                         value="<?php echo e($unitObj->comment); ?>" <?php endif; ?>>
                                     </div>
 
-                                    <?php if(!empty($unitObj) && $authUserObj->role == "superadmin"): ?>
+                            <?php if(!empty($unitObj) && $authUserObj->role == "superadmin"): ?>
                                         <div class="col-sm-4 form-group">
                                             <label class="control-label" style="width: 100%;">Status</label>
                                             <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status" <?php if(!empty($unitObj) &&
@@ -187,14 +246,15 @@
                                         </div>
                                     <?php endif; ?>
 
-                                    <div class="row justify-content-center mt-3">
+                            <div class="row justify-content-center mt-3">
                                         <div class="col-md-6 col-lg-4">
                                             <button class="btn btn-secondary btn-block" type="submit" id="update_unit">
                                                 <i class="fa fa-plus"></i> <span class="plus_text">Update Unit</span>
                                             </button>
                                         </div>
                                     </div>
-                            </div>
+
+                        </div>
                     </form>
                 </div>
             </div>
@@ -205,11 +265,22 @@
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         $(document).ready(function () {
+            $("#unit_category").select2({
+                theme: "bootstrap-5",
+                containerCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
+            });
+            $("#related_to").select2({
+                theme: "bootstrap-5",
+                containerCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
+            });
+
             ClassicEditor
-                .create( document.querySelector( '#description' ) )
-                .catch( error => {
+                .create(document.querySelector('#description'))
+                .catch(error => {
                     console.error( error );
-                } );
+                });
 
             $("#country").on('change',function(){
                 var value = $(this).val();
@@ -292,6 +363,23 @@
                     })
                 }
             });
+
+
+            $('#unitType').change(function() {
+                var selectedOption = $(this).val();
+
+                $('#product-service-div').hide();
+                $('#scopeDiv').hide();
+
+                if (selectedOption == '0' || selectedOption == '1') {
+                    $('#product-service-div').show();
+                } else if (selectedOption == '2') {
+                    $('#scopeDiv').show();
+                }
+            });
+
+            // Trigger the change event on page load to initialize the visibility based on the selected "Unit Type"
+            $('#unitType').trigger('change');
         });
     </script>
 <?php $__env->stopSection(); ?>

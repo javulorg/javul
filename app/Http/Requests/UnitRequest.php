@@ -16,7 +16,6 @@ class UnitRequest extends FormRequest
     {
         return [
             'unit_name'           => 'required',
-            'unit_name'           => 'required',
             'unit_type'           => 'required|in:0,1,2',
             'product_name'        => 'nullable|max:128',
             'service_name'        => 'nullable|max:128',
