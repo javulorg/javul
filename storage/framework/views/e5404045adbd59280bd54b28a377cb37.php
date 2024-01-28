@@ -79,8 +79,19 @@
                     Scope :
                 </div>
                 <div class="sidebar_block_right">
-                    <?php echo e($unitObj->scope); ?>
-
+                    <?php if($unitObj->scope == 0): ?>
+                        City
+                    <?php elseif($unitObj->scope == 1): ?>
+                        County
+                    <?php elseif($unitObj->scope == 2): ?>
+                        State
+                    <?php elseif($unitObj->scope == 3): ?>
+                        National
+                    <?php elseif($unitObj->scope == 4): ?>
+                        International
+                    <?php else: ?>
+                    <?php endif; ?>
+                    
                 </div>
             </div>
         <?php else: ?>

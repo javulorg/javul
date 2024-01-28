@@ -76,7 +76,19 @@
                     Scope :
                 </div>
                 <div class="sidebar_block_right">
-                    {{ $unitObj->scope }}
+                    @if($unitObj->scope == 0)
+                        City
+                    @elseif($unitObj->scope == 1)
+                        County
+                    @elseif($unitObj->scope == 2)
+                        State
+                    @elseif($unitObj->scope == 3)
+                        National
+                    @elseif($unitObj->scope == 4)
+                        International
+                    @else
+                    @endif
+                    
                 </div>
             </div>
         @else

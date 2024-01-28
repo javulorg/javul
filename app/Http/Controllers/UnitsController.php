@@ -522,10 +522,17 @@ class UnitsController extends Controller
         $unit = Unit::getUnitWithCategories($unitId);
 
         $validator = Validator::make($request->all(), [
-            'unit_name'        => 'required',
-            'unit_category'    => 'required',
-            'credibility'      => 'required',
-            'country'          => 'required'
+            'unit_name'           => 'required',
+            'unit_type'           => 'required|in:0,1,2',
+            'product_name'        => 'nullable|max:128',
+            'service_name'        => 'nullable|max:128',
+            'business_model'      => 'nullable|in:0,1',
+            'operational_grade'   => 'nullable|max:5',
+            'company'             => 'nullable|max:128',
+            'scope'               => 'nullable|in:0,1,2,3',
+            'unit_category'       => 'required',
+            'credibility'         => 'required',
+            'country'             => 'required'
         ]);
         if ($validator->fails())
             return redirect()->back()->withErrors($validator)->withInput();
@@ -571,6 +578,13 @@ class UnitsController extends Controller
         Unit::where('id', $unitId)->update(
             [
             'name'                         => $request->unit_name,
+            'unit_type'                   => $request->unit_type,
+            'product_name'                => $request->product_name,
+            'service_name'                => $request->service_name,
+            'business_model'              => $request->business_model,
+            'operational_grade'           => $request->operational_grade,
+            'company'                     => $request->company,
+            'scope'                       => $request->scope,
             'slug'                         => $slug,
             'category_id'                  => implode(",",$request->unit_category),
             'description'                  => trim($request->description),
