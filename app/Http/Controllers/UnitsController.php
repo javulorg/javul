@@ -578,13 +578,13 @@ class UnitsController extends Controller
         Unit::where('id', $unitId)->update(
             [
             'name'                         => $request->unit_name,
-            'unit_type'                   => $request->unit_type,
-            'product_name'                => $request->product_name,
-            'service_name'                => $request->service_name,
-            'business_model'              => $request->business_model,
-            'operational_grade'           => $request->operational_grade,
-            'company'                     => $request->company,
-            'scope'                       => $request->scope,
+            'unit_type'                    => $request->unit_type,
+            'product_name'                 => $request->product_name,
+            'service_name'                 => $request->service_name,
+            'business_model'               => $request->business_model,
+            'operational_grade'            => $request->operational_grade,
+            'company'                      => $request->company,
+            'scope'                        => $request->scope,
             'slug'                         => $slug,
             'category_id'                  => implode(",",$request->unit_category),
             'description'                  => trim($request->description),
@@ -598,6 +598,13 @@ class UnitsController extends Controller
             'state_id_for_city_not_exits'  => $empty_city_state_name,
             'modified_by'                  => Auth::user()->id
         ]);
+
+        $checkWikiUnitPage = DB::table('wiki_pages')
+            ->where('unit_id', $unitId)
+            ->where('is_unit_page', 1)
+            ->update([
+                'page_content'  => trim($request->description)
+            ]);
         return redirect('units/'.$unitHashId.'/'.$slug);
     }
 
