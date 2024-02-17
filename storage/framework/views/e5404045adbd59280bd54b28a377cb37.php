@@ -141,6 +141,13 @@
             <a href="<?php echo url('units/'.$unitIDHashID->encode($unitObj->id).'/edit'); ?>"><i class="fa fa-edit"></i></a>
             <div class="separator"></div>
             <a class="add_to_my_watchlist" data-type="unit"  data-id="<?php echo e($unitIDHashID->encode($unitObj->id)); ?>" data-redirect="<?php echo e(url()->current()); ?>"><i class="fa fa-list"></i></a>
+
+            <?php if(auth()->guard()->check()): ?>
+                <?php if(Auth::user()->role == "superadmin"): ?>
+                    <div class="separator"></div>
+                    <a href="<?php echo url('admin/settings/'.$unitIDHashID->encode($unitObj->id)); ?>"><i class="fa fa-cogs"></i></a>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
     </div>

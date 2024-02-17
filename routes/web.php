@@ -65,6 +65,10 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
 
 //    Route::post('/account/logout', 'AccountController@logout')->name("logout");
     Auth::routes();
+
+    // Admin
+    Route::get('admin/settings/{unit_id}', [\App\Http\Controllers\V2\Admin\SettingController::class, 'index']);
+
     Route::get('/account/check_user_login', [AccountController::class, 'check_user_login']);
     Route::post('/account/upload_profile', [AccountController::class, 'upload_profile']);
     Route::post('/account/remove_profile_pic', [AccountController::class, 'remove_profile_pic']);
