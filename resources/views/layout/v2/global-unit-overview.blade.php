@@ -138,6 +138,13 @@
             <a href="{!! url('units/'.$unitIDHashID->encode($unitObj->id).'/edit') !!}"><i class="fa fa-edit"></i></a>
             <div class="separator"></div>
             <a class="add_to_my_watchlist" data-type="unit"  data-id="{{$unitIDHashID->encode($unitObj->id)}}" data-redirect="{{url()->current()}}"><i class="fa fa-list"></i></a>
+
+            @auth
+                @if(Auth::user()->role == "superadmin")
+                    <div class="separator"></div>
+                    <a href="{!! url('admin/settings/'.$unitIDHashID->encode($unitObj->id)) !!}"><i class="fa fa-cogs"></i></a>
+                @endif
+            @endauth
         </div>
         @endif
     </div>
