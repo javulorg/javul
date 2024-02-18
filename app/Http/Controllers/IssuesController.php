@@ -156,7 +156,8 @@ class IssuesController extends Controller
             'unit_id'          => $unit_id[0],
             'objective_id'     => $selected_objective_id[0] ?? null,
             'task_id'          => $selected_task_id_arr[0] ?? null,
-            'comment'          => $request->comment
+            'comment'          => $request->comment,
+            'category_id'      => $request->category_id,
         ])->id;
 
         $integerIssueId = $issue_id;

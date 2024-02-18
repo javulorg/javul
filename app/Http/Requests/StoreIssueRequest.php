@@ -18,7 +18,8 @@ class StoreIssueRequest extends FormRequest
     {
         return [
             'title'         => 'required',
-            'description'   => 'required'
+            'description'   => 'required',
+            'category_id'  => 'nullable',
         ];
     }
 }

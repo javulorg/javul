@@ -180,7 +180,7 @@ class IdeaController extends Controller
         $idea = Idea::findOrFail($ideaId[0]);
         $unitData = Unit::where('id', $idea->unit_id)->first();
 
-        $types = Type::all();
+        $types = Category::where('unit_id', $idea->unit_id)->get();
         $tasks = Task::query()
             ->where('unit_id', $unitData->id)
             ->get();
@@ -231,8 +231,7 @@ class IdeaController extends Controller
                 'user_id'        => auth()->user()->id,
                 'task_id'        => $request->task_id,
                 'issue_id'       => $request->issue_id,
-//                'type_id'        => $request->type_id,
-                'type_id'        => null,
+                'category_id'    => $request->category_id,
                 'description'    => $request->description,
                 'comment'        => $request->comment,
                 'status'         => $request->status,
