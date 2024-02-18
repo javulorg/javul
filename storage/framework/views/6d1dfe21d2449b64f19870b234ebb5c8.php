@@ -62,6 +62,17 @@
                                 <?php endif; ?>
                             </div>
 
+                            <div class="mt-3 form-group">
+                                <label class="control-label">Type</label>
+                                <div class="input-icon right">
+                                    <select class="form-control" data-live-search="true" name="category_id" id="category_id">
+                                        <option value=""><?php echo trans('messages.select'); ?></option>
+                                        <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($type->id); ?>"><?php echo e($type->title); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="mt-3 form-group">
                                 <label class="control-label">Select Objective</label>
