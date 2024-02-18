@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->foreignId('issue_id')->nullable()->constrained('issues');
 
-            $table->foreignId('type_id')->nullable()->constrained('types');
+            $table->bigInteger('category_id')->nullable();
 
             $table->string('title');
             $table->text('description')->nullable();

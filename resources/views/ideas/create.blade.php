@@ -62,7 +62,7 @@
                             <div class="col-md-12 mt-3 form-group">
                                 <label class="control-label">Type</label>
                                 <div class="input-icon right">
-                                    <select class="form-control selectpicker" data-live-search="true" name="type_id" id="type_id">
+                                    <select class="form-control" data-live-search="true" name="category_id" id="category_id">
                                         <option value="">{!! trans('messages.select') !!}</option>
                                             @foreach($types as $type)
                                                 <option value="{{ $type->id }}">{{ $type->title  }}</option>

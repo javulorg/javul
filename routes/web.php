@@ -68,6 +68,10 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
 
     // Admin
     Route::get('admin/settings/{unit_id}', [\App\Http\Controllers\V2\Admin\SettingController::class, 'index']);
+    Route::get('admin/categories/create/{unit_id}', [\App\Http\Controllers\V2\Admin\CategoryController::class, 'create']);
+    Route::post('admin/categories', [\App\Http\Controllers\V2\Admin\CategoryController::class, 'store']);
+    Route::get('admin/categories/{category_id}/{unit_id}', [\App\Http\Controllers\V2\Admin\CategoryController::class, 'edit']);
+    Route::put('admin/categories/{category_id}', [\App\Http\Controllers\V2\Admin\CategoryController::class, 'update']);
 
     Route::get('/account/check_user_login', [AccountController::class, 'check_user_login']);
     Route::post('/account/upload_profile', [AccountController::class, 'upload_profile']);

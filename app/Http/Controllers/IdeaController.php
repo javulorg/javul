@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Forum;
 use App\Models\Fund;
 use App\Models\Idea;
@@ -55,7 +56,9 @@ class IdeaController extends Controller
     {
         $unitHash = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
         $unitData = Unit::where('id', $unitHash->decode($unitId))->first();
-        $types = Type::all();
+
+        $unitId = $unitHash->decode($unitId);
+        $types = Category::where('unit_id', $unitId[0])->get();
         $tasks = Task::query()
             ->where('unit_id', $unitData->id)
             ->get();
@@ -65,9 +68,9 @@ class IdeaController extends Controller
             ->get();
 
         $homeCheck = isset($request->home) ??  false;
-        $availableUnitFunds = Fund::getUnitDonatedFund($unitHash->decode($unitId));
-        $awardedUnitFunds   = Fund::getUnitAwardedFund($unitHash->decode($unitId));
-        $issueResolutions = $this->calculateIssueResolution($unitId);
+        $availableUnitFunds = Fund::getUnitDonatedFund($unitId[0]);
+        $awardedUnitFunds   = Fund::getUnitAwardedFund($unitId[0]);
+        $issueResolutions = $this->calculateIssueResolution($unitId[0]);
 
         view()->share('totalIssueResolutions',$issueResolutions);
         view()->share('unitData',$unitData);
@@ -89,7 +92,7 @@ class IdeaController extends Controller
         $unit = Unit::where('id', $request->unit_id)->first();
         $validator = Validator::make($request->all(),[
            'title'        => 'required',
-           'type_id'      => 'nullable',
+           'category_id'  => 'nullable',
            'task_id'      => 'nullable',
            'issue_id'     => 'nullable',
            'description'  => 'required',
@@ -107,7 +110,7 @@ class IdeaController extends Controller
            'unit_id'        => $request->unit_id,
            'task_id'        => $request->task_id,
            'issue_id'       => $request->issue_id,
-           'type_id'        => $request->type_id,
+           'category_id'    => $request->category_id,
            'description'    => $request->description,
            'comment'        => $request->comment,
            'status'         => 1,

@@ -14,7 +14,7 @@ class Idea extends Model
       'unit_id',
       'task_id',
       'issue_id',
-      'type_id',
+      'category_id',
       'description',
       'comment',
       'status',
