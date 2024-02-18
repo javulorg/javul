@@ -22,7 +22,8 @@ class Issue extends Model
         'resolution',
         'verified_by',
         'resolved_by',
-        'verified'
+        'verified',
+        'category_id'
     ];
 
 
