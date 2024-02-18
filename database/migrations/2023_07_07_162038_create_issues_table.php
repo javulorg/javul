@@ -25,6 +25,8 @@ return new class extends Migration
             $table->unsignedBigInteger('task_id')->nullable();
             $table->foreign('task_id')->references('id')->on('tasks');
 
+            $table->bigInteger('category_id')->nullable();
+
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('comment')->nullable();

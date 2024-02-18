@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Requests\StoreIssueRequest;
 use App\Models\ActivityPoint;
+use App\Models\Category;
 use App\Models\Fund;
 use App\Models\ImportanceLevel;
 use App\Models\Issue;
@@ -110,12 +111,13 @@ class IssuesController extends Controller
         $unit_id = $unitIDHashID->decode($unit_id);
         $homeCheck = isset($request->home) ??  false;
 
-        $unitData = Unit::where('id', $unit_id)->first();
-        $availableUnitFunds = Fund::getUnitDonatedFund($unit_id);
-        $awardedUnitFunds   = Fund::getUnitAwardedFund($unit_id);
-        $objectiveObj = Objective::where('unit_id',$unit_id)->get();
-        $issueResolutions = $this->calculateIssueResolution($unit_id);
-
+        $unitData = Unit::where('id', $unit_id[0])->first();
+        $availableUnitFunds = Fund::getUnitDonatedFund($unit_id[0]);
+        $awardedUnitFunds   = Fund::getUnitAwardedFund($unit_id[0]);
+        $objectiveObj = Objective::where('unit_id',$unit_id[0])->get();
+        $issueResolutions = $this->calculateIssueResolution($unit_id[0]);
+        $types = Category::where('unit_id', $unit_id[0])->get();
+        view()->share('types', $types);
         view()->share('totalIssueResolutions',$issueResolutions);
         view()->share('objectiveObj',$objectiveObj);
         view()->share('unitData',$unitData);
