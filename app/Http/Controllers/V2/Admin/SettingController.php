@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V2\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Fund;
 use App\Models\Unit;
 use App\Traits\UnitTrait;
@@ -21,6 +22,9 @@ class SettingController extends Controller
         $unit = Unit::findOrFail($unitId[0]);
         $availableFunds =Fund::getUnitDonatedFund($unitId[0]);
         $awardedFunds =Fund::getUnitAwardedFund($unitId[0]);
+        $categories = Category::query()
+            ->where('unit_id', $unitId[0])
+            ->get();
 
         $issueResolutions = $this->calculateIssueResolution($unitId[0]);
 
@@ -28,6 +32,7 @@ class SettingController extends Controller
         view()->share('availableFunds',$availableFunds );
         view()->share('awardedFunds',$awardedFunds );
         view()->share('unitObj',$unit);
+        view()->share('categories',$categories);
         return view('admin.settings.index');
     }
 }

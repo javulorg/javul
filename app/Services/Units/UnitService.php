@@ -3,6 +3,7 @@
 namespace App\Services\Units;
 
 use App\Models\ActivityPoint;
+use App\Models\Category;
 use App\Models\RelatedUnit;
 use App\Models\SiteActivity;
 use App\Models\Unit;
@@ -23,6 +24,7 @@ class UnitService
             $this->saveRelatedUnit($request, $unit);
             $this->saveActivityPoint($unit);
             $this->saveSiteActivity($unit, $request);
+            $this->saveUnitCategory($unit->id);
         });
     }
 
@@ -90,6 +92,14 @@ class UnitService
                 .$userName.'</a>
                 created
                  unit <a href="'.url('units/'.$unitId.'/'.$slug).'">'.$request->input('unit_name').'</a>'
+        ]);
+    }
+
+    private function saveUnitCategory($uniId) : void
+    {
+        Category::create([
+            'unit_id'   => $uniId,
+            'title'     => 'uncategorized',
         ]);
     }
 }
