@@ -116,7 +116,7 @@ class IssuesController extends Controller
         $awardedUnitFunds   = Fund::getUnitAwardedFund($unit_id[0]);
         $objectiveObj = Objective::where('unit_id',$unit_id[0])->get();
         $issueResolutions = $this->calculateIssueResolution($unit_id[0]);
-        $types = Category::where('unit_id', $unit_id[0])->get();
+        $types = Category::where('unit_id', $unit_id[0])->where('status', 1)->get();
         view()->share('types', $types);
         view()->share('totalIssueResolutions',$issueResolutions);
         view()->share('objectiveObj',$objectiveObj);
@@ -657,7 +657,8 @@ class IssuesController extends Controller
                     $unitData = Unit::where('id', $issueObj->unit_id)->first();
                     $availableFunds = Fund::getUnitDonatedFund($issueObj->unit_id);
                     $awardedFunds = Fund::getUnitAwardedFund($issueObj->unit_id);
-
+                    $types = Category::where('unit_id', $issueObj->unit_id)->where('status', 1)->get();
+                    view()->share('types', $types);
                     view()->share('availableFunds',$availableFunds);
                     view()->share('awardedFunds',$awardedFunds);
                     view()->share('unitData',$unitData);
@@ -759,6 +760,7 @@ class IssuesController extends Controller
             'resolved_by'   => Auth::user()->id,
             'resolution'    => $request->verified == 1 ? NULL : $request->resolution,
             'deleted_at'    => NULL,
+            'category_id'   => $request->category_id,
             'verified'      => $request->verified
         ]);
 

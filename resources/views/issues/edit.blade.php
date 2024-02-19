@@ -71,6 +71,17 @@
                                 </div>
 
 
+                                <div class="mt-3 form-group">
+                                    <label class="control-label">Category : </label>
+                                    <div class="input-icon right">
+                                        <select class="form-control" data-live-search="true" name="category_id" id="category_id">
+                                            <option value="">{!! trans('messages.select') !!}</option>
+                                            @foreach($types as $type)
+                                                <option value="{{ $type->id }}" {{ $type->id == $issueObj->category_id ? 'selected' : '' }}>{{ $type->title  }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="mt-3 form-group">
                                     <label class="control-label">Select Objective</label>
