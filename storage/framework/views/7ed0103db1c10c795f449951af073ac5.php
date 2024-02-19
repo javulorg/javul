@@ -96,7 +96,7 @@
                                                         <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
                                                     </div>
                                                 </div>
-                                            <?php elseif(isset($ratingResult) && ($ratingResult < 2.5)): ?>
+                                            <?php elseif(isset($ratingResult) && ($ratingResult < 2.5) && ($ratingResult > 2)): ?>
                                                 <div class="sidebar_block_right">
                                                     Low
                                                     <div class="progress">
@@ -105,9 +105,9 @@
                                                 </div>
                                             <?php else: ?>
                                                 <div class="sidebar_block_right">
-                                                    Low
+                                                    Medium
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                        <div class="progress-bar" style="width: <?php echo e((2.5 / 5) * 100); ?>%"></div>
                                                     </div>
                                                 </div>
                                             <?php endif; ?>
@@ -126,26 +126,31 @@
                                                                     <form id="ratingForm">
                                                                         <div class="form-group">
                                                                             <label for="rating">Select rating:</label><br>
-                                                                            <div class="form-check form-check-inline">
-                                                                                <input type="radio" class="form-check-input" id="rating1" name="rating" value="1">
-                                                                                <label class="form-check-label" for="rating1">Low</label>
-                                                                            </div>
-                                                                            <div class="form-check form-check-inline">
-                                                                                <input type="radio" class="form-check-input" id="rating2" name="rating" value="2">
-                                                                                <label class="form-check-label" for="rating2">Medium-Low</label>
-                                                                            </div>
-                                                                            <div class="form-check form-check-inline">
-                                                                                <input type="radio" class="form-check-input" id="rating3" name="rating" value="3">
-                                                                                <label class="form-check-label" for="rating3">Medium</label>
-                                                                            </div>
-                                                                            <div class="form-check form-check-inline">
-                                                                                <input type="radio" class="form-check-input" id="rating4" name="rating" value="4">
-                                                                                <label class="form-check-label" for="rating4">Medium-High</label>
-                                                                            </div>
-                                                                            <div class="form-check form-check-inline">
+
+                                                                            <div class="form-check mt-3">
                                                                                 <input type="radio" class="form-check-input" id="rating5" name="rating" value="5">
                                                                                 <label class="form-check-label" for="rating5">High</label>
                                                                             </div>
+                                                                            <div class="form-check">
+                                                                                <input type="radio" class="form-check-input" id="rating4" name="rating" value="4">
+                                                                                <label class="form-check-label" for="rating4">Medium-High</label>
+                                                                            </div>
+
+                                                                            <div class="form-check">
+                                                                                <input type="radio" class="form-check-input" id="rating3" name="rating" value="3">
+                                                                                <label class="form-check-label" for="rating3">Medium</label>
+                                                                            </div>
+
+                                                                            <div class="form-check">
+                                                                                <input type="radio" class="form-check-input" id="rating2" name="rating" value="2">
+                                                                                <label class="form-check-label" for="rating2">Medium-Low</label>
+                                                                            </div>
+
+                                                                            <div class="form-check">
+                                                                                <input type="radio" class="form-check-input" id="rating1" name="rating" value="1">
+                                                                                <label class="form-check-label" for="rating1">Low</label>
+                                                                            </div>
+
                                                                         </div>
                                                                     </form>
                                                                 </div>

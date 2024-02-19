@@ -58,7 +58,7 @@ class IdeaController extends Controller
         $unitData = Unit::where('id', $unitHash->decode($unitId))->first();
 
         $unitId = $unitHash->decode($unitId);
-        $types = Category::where('unit_id', $unitId[0])->get();
+        $types = Category::where('unit_id', $unitId[0])->where('status', 1)->get();
         $tasks = Task::query()
             ->where('unit_id', $unitData->id)
             ->get();
@@ -180,7 +180,7 @@ class IdeaController extends Controller
         $idea = Idea::findOrFail($ideaId[0]);
         $unitData = Unit::where('id', $idea->unit_id)->first();
 
-        $types = Category::where('unit_id', $idea->unit_id)->get();
+        $types = Category::where('unit_id', $idea->unit_id)->where('status', 1)->get();
         $tasks = Task::query()
             ->where('unit_id', $unitData->id)
             ->get();

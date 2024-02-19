@@ -74,13 +74,6 @@
     </div>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
-    <script type="text/javascript">
-        ClassicEditor
-            .create( document.querySelector( '#description' ) )
-            .catch( error => {
-                console.error( error );
-            } );
-    </script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/admin/settings/create.blade.php ENDPATH**/ ?>

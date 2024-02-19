@@ -64,7 +64,7 @@
                             </div>
 
                             <div class="mt-3 form-group">
-                                <label class="control-label">Type</label>
+                                <label class="control-label">Category : </label>
                                 <div class="input-icon right">
                                     <select class="form-control" data-live-search="true" name="category_id" id="category_id">
                                         <option value="">{!! trans('messages.select') !!}</option>
