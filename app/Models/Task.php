@@ -17,9 +17,25 @@ class Task extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','unit_id','objective_id','name','description','skills','compensation',
-                           'assign_to','status','estimated_completion_time_start','estimated_completion_time_end',
-                           'modified_by','task_action','summary','slug', 'comment'];
+    protected $fillable = [
+        'user_id',
+        'unit_id',
+        'objective_id',
+        'idea_id',
+        'name',
+        'description',
+        'skills',
+        'compensation',
+        'assign_to',
+        'status',
+        'estimated_completion_time_start',
+        'estimated_completion_time_end',
+        'modified_by',
+        'task_action',
+        'summary',
+        'slug',
+        'comment'
+    ];
 
 
 

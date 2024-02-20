@@ -85,7 +85,7 @@
                             </div>
 
 
-                            <div class="col-sm-6 mt-3 form-group">
+                            <div class="col-sm-12 mt-3 form-group">
                                     <label class="control-label mb-1">Idea</label>
                                     <select class="form-select"  name="idea_id[]" id="idea_id" multiple>
                                         <?php $__currentLoopData = $ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>

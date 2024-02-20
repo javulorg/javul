@@ -177,6 +177,20 @@
                                             {{ucfirst($issueObj->status == 1 ? 'Resolved' : 'Assigned To Task'. $verified_by )}}
                                         </div>
                                     </div>
+
+                                    <div class="sidebar_block_row">
+                                        <div class="sidebar_block_left">
+                                            Category:
+                                        </div>
+                                        <div class="sidebar_block_right">
+                                           @if(isset($issueObj->category_id))
+                                                <?php $category =App\Models\Category::where('id', $issueObj->category_id)->first();?>
+                                                {{ucfirst($category->title )}}
+                                            @else
+                                               -
+                                           @endif
+                                        </div>
+                                    </div>
 {{--                                    <div class="sidebar_line"></div>--}}
 {{--                                    <div class="sidebar_block_row">--}}
 {{--                                        <div class="sidebar_block_left">--}}

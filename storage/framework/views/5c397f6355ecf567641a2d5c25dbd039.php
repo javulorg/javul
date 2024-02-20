@@ -175,6 +175,21 @@
                                                 <?php endif; ?>
                                             </div>
                                         </div>
+
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Category:
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                <?php if(isset($idea->category_id)): ?>
+                                                        <?php $category =App\Models\Category::where('id', $idea->category_id)->first();?>
+                                                    <?php echo e(ucfirst($category->title )); ?>
+
+                                                <?php else: ?>
+                                                    -
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="objective_content_info_links">
