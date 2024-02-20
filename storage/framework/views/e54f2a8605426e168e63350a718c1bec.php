@@ -97,13 +97,23 @@
                                             </span>
                                 <?php endif; ?>
                             </div>
+
+                            <div class="col-sm-12 mt-3 form-group">
+                                <label class="control-label mb-1">Idea</label>
+                                <select class="form-select"  name="idea_id" id="idea_id">
+                                    <option selected disabled>Select Idea</option>
+                                    <?php $__currentLoopData = $ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($idea->id); ?>" <?php echo e($idea->id == $taskObj->idea_id ? 'selected' : ''); ?>><?php echo e($idea->title); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="row mt-3">
                             <div class="col-sm-4  form-group <?php echo e($errors->has('task_skills') ? ' has-error' : ''); ?>">
                                 <label class="control-label">Task Skills <span
                                         class="text-danger">*</span></label>
-                                <select name="task_skills[]" class="form-control selectpicker" data-live-search="true"
+                                <select name="task_skills[]" class="form-control" data-live-search="true"
                                         id="task_skills" multiple>
                                     <option value="">Select</option>
                                     <?php if(!empty($task_skills)): ?>
@@ -159,7 +169,7 @@
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-4 mt-1 form-group">
                                 <label class="control-label">Compensation <span
                                         class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
@@ -300,6 +310,12 @@
                 mode: "multiple",
                 minuteIncrement: 1,
                 enableSeconds: true,
+            });
+
+            $("#task_skills").select2({
+                theme: "bootstrap-5",
+                containerCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
             });
 
             $("#calendar-icon-from").on("click", function () {

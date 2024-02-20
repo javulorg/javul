@@ -94,13 +94,23 @@
                                             </span>
                                 @endif
                             </div>
+
+                            <div class="col-sm-12 mt-3 form-group">
+                                <label class="control-label mb-1">Idea</label>
+                                <select class="form-select"  name="idea_id" id="idea_id">
+                                    <option selected disabled>Select Idea</option>
+                                    @foreach($ideas as $idea)
+                                        <option value="{{ $idea->id }}">{{ $idea->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="row mt-4">
                             <div class="col-sm-4 form-group {{ $errors->has('task_skills') ? ' has-error' : '' }}">
                                 <label class="control-label">Task Skills <span
                                         class="text-danger">*</span></label>
-                                <select name="task_skills[]" class="form-control selectpicker" data-live-search="true" id="task_skills" multiple>
+                                <select name="task_skills[]" class="form-control" data-live-search="true" id="task_skills" multiple>
                                     <option value="">Select</option>
                                     @if(!empty($task_skills))
                                         @foreach($task_skills as $skill_id=>$skill)
@@ -148,7 +158,7 @@
                         </div>
 
                         <div class="row mt-4">
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-12 form-group">
                                 <label class="control-label">Compensation <span
                                         class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
@@ -249,12 +259,6 @@
                                 </div>
                             </div>
                         </div>
-{{--                        <div class="row">--}}
-{{--                            <div class="col-sm-12 form-group">--}}
-{{--                                <label class="control-label">Comment</label>--}}
-{{--                                <input class="form-control" name="comment">--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
 
                         <div class="row justify-content-center mt-3">
                             <div class="col-md-6 col-lg-4">
@@ -279,6 +283,12 @@
                 mode : "multiple",
                 minuteIncrement : 1,
                 enableSeconds : true,
+            });
+
+            $("#task_skills").select2({
+                theme: "bootstrap-5",
+                containerCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
             });
 
             $("#calendar-icon-from").on("click", function() {

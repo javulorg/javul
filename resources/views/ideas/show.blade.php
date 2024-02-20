@@ -174,6 +174,20 @@
                                                 @endif
                                             </div>
                                         </div>
+
+                                        <div class="sidebar_block_row">
+                                            <div class="sidebar_block_left">
+                                                Category:
+                                            </div>
+                                            <div class="sidebar_block_right">
+                                                @if(isset($idea->category_id))
+                                                        <?php $category =App\Models\Category::where('id', $idea->category_id)->first();?>
+                                                    {{ucfirst($category->title )}}
+                                                @else
+                                                    -
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="objective_content_info_links">

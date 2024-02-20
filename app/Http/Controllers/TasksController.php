@@ -6,6 +6,7 @@ use App\Library\Helpers;
 use App\Models\ActivityPoint;
 use App\Models\Alerts;
 use App\Models\Fund;
+use App\Models\Idea;
 use App\Models\Issue;
 use App\Models\JobSkill;
 use App\Models\Objective;
@@ -242,6 +243,7 @@ class TasksController extends Controller
         $task_skills = JobSkill::pluck('skill_name','id');
         $assigned_toUsers = User::where('id','!=',Auth::user()->id)->where('role','!=','superadmin')->get();
         $assigned_toUsers= $assigned_toUsers->pluck('full_name','id');
+        $ideas = Idea::all();
         view()->share('assigned_toUsers',$assigned_toUsers);
         view()->share('task_skills',$task_skills );
         view()->share('unitsObj',$unitsObj);
@@ -420,6 +422,7 @@ class TasksController extends Controller
         view()->share('homeCheck',$homeCheck );
         view()->share('availableFunds',$availableUnitFunds );
         view()->share('awardedFunds',$awardedUnitFunds );
+        view()->share('ideas',$ideas);
         return view('tasks.create');
     }
 
@@ -489,7 +492,8 @@ class TasksController extends Controller
             'estimated_completion_time_end'   => date('Y-m-d h:i',$end_date),
             'task_action'                     => $request->action_items,
             'compensation'                    => $request->compensation,
-            'status'                          =>'editable'
+            'status'                          =>'editable',
+            'idea_id'                         => $request->idea_id
         ])->id;
 
         $integerTaskId = $task_id;
@@ -1229,12 +1233,14 @@ class TasksController extends Controller
                 $unitData = Unit::where('id', $taskObj->unit_id)->first();
                 $availableFunds = Fund::getUnitDonatedFund($taskObj->unit_id);
                 $awardedFunds = Fund::getUnitAwardedFund($taskObj->unit_id);
+                $ideas = Idea::all();
 
                 view()->share('availableFunds',$availableFunds);
                 view()->share('awardedFunds',$awardedFunds);
                 view()->share('unitData',$unitData);
                 view()->share('unitObj',$unitData);
                 view()->share('taskHashId',$taskHashId);
+                view()->share('ideas',$ideas);
                 return view('tasks.edit');
             }
         }
@@ -1344,6 +1350,7 @@ class TasksController extends Controller
             'task_action'                     => trim($request->action_items),
             'compensation'                    => $request->compensation,
             'status'                          => 'editable',
+            'idea_id'                         => $request->idea_id
         ]);
 
         if(Task::isUnitAdminOfTask($task_id))

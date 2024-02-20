@@ -22,6 +22,8 @@ return new class extends Migration
             $table->unsignedBigInteger('objective_id')->unsigned()->nullable();
             $table->foreign('objective_id')->references('id')->on('objectives');
 
+            $table->bigInteger('idea_id')->nullable();
+
             $table->string('name');
             $table->string('slug');
             $table->text('description');
