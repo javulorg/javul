@@ -13,6 +13,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">System Improvements</a>
             </li>
+
+            <?php if(auth()->guard()->check()): ?>
+                <?php if(Auth::user()->role == "super_admin"): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Site Administration</a>
+                    </li>
+                <?php endif; ?>
+            <?php endif; ?>
         </ul>
     </div>
 
