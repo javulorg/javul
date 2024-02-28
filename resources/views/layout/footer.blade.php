@@ -13,6 +13,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">System Improvements</a>
             </li>
+
+            @auth()
+                @if(Auth::user()->role == "super_admin")
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Site Administration</a>
+                    </li>
+                @endif
+            @endauth
         </ul>
     </div>
 

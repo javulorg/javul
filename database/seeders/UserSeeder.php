@@ -15,18 +15,30 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'first_name'   => "Javul",
+            'first_name'   => "Unit",
             'last_name'    =>'Admin',
-            'username'     =>'AdminJavul',
-            'email'        => 'admin@javul.org',
+            'username'     =>'Unit_Admin',
+            'email'        => 'unit_admin@javul.org',
             'password'     => Hash::make(123456789),
             'phone'        =>'9925633210',
             'mobile'       =>'9963256320',
             'address'      =>'Address',
-//            'country_id'   => 231,
-//            'state_id'     => 3924,
-//            'city_id'      => 43070,
-            'role'         =>'superadmin'
+            'role'         =>'unit_admin'
+//            'role'         =>'superadmin'
+        ]);
+
+
+        User::create([
+            'first_name'   => "Site",
+            'last_name'    =>'Admin',
+            'username'     =>'site_Admin',
+            'email'        => 'site_admin@javul.org',
+            'password'     => Hash::make(123456789),
+            'phone'        =>'9925633210',
+            'mobile'       =>'9963256322',
+            'address'      =>'Address',
+            'role'         =>'super_admin'
+//            'role'         =>'superadmin'
         ]);
     }
 }
