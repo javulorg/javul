@@ -73,6 +73,10 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::get('admin/categories/{category_id}/{unit_id}', [\App\Http\Controllers\V2\Admin\CategoryController::class, 'edit']);
     Route::put('admin/categories/{category_id}', [\App\Http\Controllers\V2\Admin\CategoryController::class, 'update']);
 
+    // Site Admin Routes
+    Route::get('site-admin/settings', [\App\Http\Controllers\V2\SuperAdmin\GlobalHomeController::class, 'index']);
+    Route::get('site-admin/users/create', [\App\Http\Controllers\V2\SuperAdmin\UserController::class, 'create']);
+
     Route::get('/account/check_user_login', [AccountController::class, 'check_user_login']);
     Route::post('/account/upload_profile', [AccountController::class, 'upload_profile']);
     Route::post('/account/remove_profile_pic', [AccountController::class, 'remove_profile_pic']);

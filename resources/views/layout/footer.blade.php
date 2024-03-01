@@ -17,7 +17,7 @@
             @auth()
                 @if(Auth::user()->role == "super_admin")
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Site Administration</a>
+                        <a class="nav-link" href="{{ url('site-admin/settings') }}">Site Administration</a>
                     </li>
                 @endif
             @endauth
