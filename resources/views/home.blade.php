@@ -6,51 +6,6 @@
         </div>
         <div class="row">
             <div class="col-md-8 col-md-push-4">
-                {{--
-                     <div class="row form-group">
-                    <div class="col-sm-12">
-                        <div class="panel panel-grey panel-default">
-                            <div class="panel-heading featured_unit_heading">
-                                <div class="featured_unit">
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <h4>FEATURED UNIT</h4>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-8 featured_heading">
-                                        <h4 class="colorLightGreen">
-                                            @if(!empty($featured_unit) && count($featured_unit) > 0)
-                                                {{$featured_unit->name }}
-                                            @else
-                                                No featured unit.
-                                            @endif
-                                        </h4>
-                                    </div>
-                                    <div class="col-sm-4 featured_heading text-right colorLightBlue">
-                                        @if(!empty($featured_unit) && count($featured_unit) > 0)
-                                            <i class="fa fa-home"></i>
-                                            <a href="{!! url('units/'.$unitIDHashID->encode($featured_unit->id).'/'.$featured_unit->slug) !!}">
-                                                UNIT HOME PAGE
-                                            </a>
-                                        @endif
-                                    </div>
-                                </div>
-                                <hr style="margin-top: 0px;">
-                                <p>
-                                    @if(!empty($featured_unit) && count($featured_unit) > 0)
-                                        {!!  $featured_unit->description !!}
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
-                        @if(count($recentUnits) > 5)
-                        <!--<a class="btn orange-bg" href="{!! url('') !!}">{!! Lang::get('messages.all_units') !!}</a>-->
-                        @endif
-                        <!--<a class="btn orange-bg" href="{!! url('units/create') !!}">{!! Lang::get('messages.create_units') !!}</a>-->
-                    </div>
-                </div>
-                --}}
                 <div class="row form-group">
                     <div class="col-sm-12">
                         <div class="panel panel-grey panel-default">

@@ -17,7 +17,7 @@
             <?php if(auth()->guard()->check()): ?>
                 <?php if(Auth::user()->role == "super_admin"): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Site Administration</a>
+                        <a class="nav-link" href="<?php echo e(url('site-admin/settings')); ?>">Site Administration</a>
                     </li>
                 <?php endif; ?>
             <?php endif; ?>
