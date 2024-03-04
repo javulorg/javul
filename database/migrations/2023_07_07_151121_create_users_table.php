@@ -35,7 +35,7 @@ return new class extends Migration
 
             $table->string('job_skills')->nullable()->comment("reference to job_skill table. multiple with comma.");
             $table->string('area_of_interest')->nullable()->comment("reference to area_of_interest table. multiple with comma.");
-            $table->string('role')->nullable();
+            $table->tinyInteger('role')->nullable();
             $table->string('profile_pic')->nullable();
             $table->bigInteger('loggedin')->nullable();
             $table->string('paypal_email')->nullable();

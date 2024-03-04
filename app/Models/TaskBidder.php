@@ -40,7 +40,8 @@ class TaskBidder extends Model
         return true;
     }
 
-    public static function getCountDown($task_id){
+    public static function getCountDown($task_id)
+    {
         $firstUserSubmitted = Task::join('task_bidders','tasks.id','=','task_bidders.task_id')
                             ->where('task_id',$task_id)->where('task_bidders.user_id','!=',\Auth::user()->id)
                             ->where('first_to_bid','yes')->where('tasks.status','!=','awaiting_assignment')
@@ -48,7 +49,8 @@ class TaskBidder extends Model
                             ->first();
 
         $availableDays ='';
-        if(count($firstUserSubmitted) > 0){
+        if($firstUserSubmitted)
+        {
             $submittedDate = strtotime($firstUserSubmitted->created_at);
             $availableDays = time() - $submittedDate;
             $availableDays = 8 - (int)date('d',$availableDays );

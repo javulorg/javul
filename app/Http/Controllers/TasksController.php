@@ -1915,21 +1915,27 @@ class TasksController extends Controller
 
     public function bid_now(Request $request,$task_id)
     {
-        if(!empty($task_id)){
+
+        if(!empty($task_id))
+        {
             $task_id_encoded = $task_id;
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
 
-            if(!empty($task_id)){
+            if(!empty($task_id))
+            {
                 $task_id = $task_id[0];
                 $taskObj = Task::find($task_id);
-                if($taskObj->status != "open_for_bidding"){
+                if($taskObj->status != "open_for_bidding")
+                {
                     return Redirect::to('/tasks');
                 }
-                if(!empty($taskObj)){
-                    if($request->isMethod('post')){
-
-                        Validator::extend('isCurrency', function($field,$value,$parameters){
+                if(!empty($taskObj))
+                {
+                    if($request->isMethod('post'))
+                    {
+                        Validator::extend('isCurrency', function($field,$value,$parameters)
+                        {
                             //return true if field value is foo
                             return Helpers::isCurrency($value);
                         });
@@ -2053,6 +2059,19 @@ class TasksController extends Controller
                         view()->share('daysRemainingTobid',$daysRemainingTobid);
                         view()->share('taskBidder',$taskBidder );
                         view()->share('taskObj',$taskObj);
+
+                        $unitData = Unit::where('id', $taskObj->unit_id)->first();
+                        $availableFunds = Fund::getUnitDonatedFund($taskObj->unit_id);
+                        $awardedFunds = Fund::getUnitAwardedFund($taskObj->unit_id);
+
+                        $issueResolutions = $this->calculateIssueResolution($taskObj->unit_id);
+
+                        view()->share('totalIssueResolutions',$issueResolutions);
+                        view()->share('availableFunds',$availableFunds );
+                        view()->share('awardedFunds',$awardedFunds );
+                        view()->share('unitData',$unitData);
+                        view()->share('unitObj',$unitData);
+
                         return view('tasks.bid_now');
                     }
                 }

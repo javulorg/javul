@@ -140,7 +140,7 @@
             <a class="add_to_my_watchlist" data-type="unit"  data-id="{{$unitIDHashID->encode($unitObj->id)}}" data-redirect="{{url()->current()}}"><i class="fa fa-list"></i></a>
 
             @auth
-                @if(Auth::user()->role == "unit_admin")
+                @if(Auth::user()->role == 2)
                     <div class="separator"></div>
                     <a href="{!! url('admin/settings/'.$unitIDHashID->encode($unitObj->id)) !!}"><i class="fa fa-cogs"></i></a>
                 @endif

@@ -28,13 +28,19 @@
                     @foreach($users as $user)
                         <tr>
                             <td class="title_col">
-                                {{ $user->first_name . '  ' . $user->last_name }}
+                                <a href="{{ url('site-admin/users/'.$user->id.'/edit') }}">{{ $user->first_name . '  ' . $user->last_name }}</a>
                             </td>
                             <td class="last_reply_col">
                               {{ $user->email }}
                             </td>
                             <td class="last_reply_col">
-                              {{ $user->role }}
+                              @if($user->role == 2)
+                                    Unit Admin
+                                @elseif($user->role == 3)
+                                  Task Admin
+                                @else
+
+                              @endif
                             </td>
                             <td class="views_col">
                                 @if($user->status == 1)
