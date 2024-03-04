@@ -76,6 +76,9 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     // Site Admin Routes
     Route::get('site-admin/settings', [\App\Http\Controllers\V2\SuperAdmin\GlobalHomeController::class, 'index']);
     Route::get('site-admin/users/create', [\App\Http\Controllers\V2\SuperAdmin\UserController::class, 'create']);
+    Route::post('site-admin/users/store', [\App\Http\Controllers\V2\SuperAdmin\UserController::class, 'store']);
+    Route::get('site-admin/users/{user_id}/edit', [\App\Http\Controllers\V2\SuperAdmin\UserController::class, 'edit']);
+    Route::post('site-admin/users/{user_id}/update', [\App\Http\Controllers\V2\SuperAdmin\UserController::class, 'update']);
 
     Route::get('/account/check_user_login', [AccountController::class, 'check_user_login']);
     Route::post('/account/upload_profile', [AccountController::class, 'upload_profile']);

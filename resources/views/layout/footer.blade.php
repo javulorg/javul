@@ -15,12 +15,13 @@
             </li>
 
             @auth()
-                @if(Auth::user()->role == "super_admin")
+                @if(Auth::user()->role == 1)
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('site-admin/settings') }}">Site Administration</a>
                     </li>
                 @endif
             @endauth
+            
         </ul>
     </div>
 
