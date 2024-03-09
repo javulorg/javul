@@ -1,10 +1,39 @@
 @extends('layout.master')
 @section('title', $taskObj->name)
 @section('style')
+    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
+
     <style>
         .custom-orange-text {
             color: orange;
         }
+
+        .badge-success {
+            color: #fff;
+            background-color: #198754;
+        }
+        .badge-primary {
+            color: #fff;
+            background-color: #0d6efd;
+        }
+        .badge-info {
+            color: #212529;
+            background-color: #0dcaf0;
+        }
+        .badge-warning {
+            color: #212529;
+            background-color: #ffc107;
+        }
+        .badge-danger {
+            color: #fff;
+            background-color: #dc3545;
+        }
+        .badge-secondary {
+            color: #fff;
+            background-color: #6c757d;
+        }
+
     </style>
 @endsection
 @section('site-name')
@@ -208,16 +237,28 @@
                                             <div class="row form-group">
                                                 <div class="col-sm-12">
                                                     <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <label class="control-label" style="margin-bottom:0px">Task Completion Ratings: Quality of works :<span
-                                                                    class="stars" style="display:inline-block">{{$quality_of_work}}</span>
-                                                                ({{$quality_of_work}}/5)
-                                                                Timeliness :<span class="stars"
-                                                                                  style="display:inline-block">{{$timeliness}}</span>({{$timeliness}}/5)</label>
+                                                        <div class="col-12">
+{{--                                                            <label class="control-label" style="margin-bottom:0px">Task Completion Ratings: Quality of works :--}}
+{{--                                                                <span class="stars" style="display:inline-block">{{$quality_of_work}}</span>({{$quality_of_work}}/5)--}}
+{{--                                                                Timeliness :--}}
+{{--                                                                <span class="stars" style="display:inline-block">{{$timeliness}}</span>--}}
+{{--                                                                ({{$timeliness}}/5)--}}
+{{--                                                            </label>--}}
+                                                            <label>Task Completion Ratings:</label>
+                                                            <div>
+                                                                <label>Quality of works :</label>
+                                                                <input id="input-1-ltr-star-xs" name="input-1-ltr-star-xs" class="stelle rating-loading" value="{{ $quality_of_work }}" dir="ltr" data-size="xs">
+                                                            </div>
+                                                            <div>
+                                                                <label>Timeliness :</label>
+                                                                <input id="input-1-ltr-star-xs" name="input-1-ltr-star-xs" class="stelle rating-loading" value="{{ $timeliness }}" dir="ltr" data-size="xs">
+                                                            </div>
                                                         </div>
+
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div class="row form-group">
                                                 <div class="col-xs-6 col-sm-4  {{ $errors->has('amount') ? ' has-error' : '' }}">
                                                     <div class="input-icon right">
@@ -282,8 +323,20 @@
     </div>
 @endsection
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/js/star-rating.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/themes/krajee-svg/theme.js"></script>
+
     <script>
         $(document).ready(function(){
+            // $(".stars").rating({min:1, max:5, step:2, size:'sm'});
+            $(document).ready(function() {
+                $(".stelle").rating({
+                    hoverOnClear: false,
+                    theme: "krajee-svg",
+                    containerClass: "is-star",
+                    language: "it"
+                });
+            });
             $('.nav-tabs a').click(function(){
                 $(this).tab('show');
             });
