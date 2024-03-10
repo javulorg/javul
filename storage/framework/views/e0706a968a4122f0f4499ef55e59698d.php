@@ -3,6 +3,8 @@
     <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
 
+
+
     <style>
         .custom-orange-text {
             color: orange;
@@ -259,8 +261,6 @@
                                                             </div>
                                                         </div>
 
-
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -279,26 +279,26 @@
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
-                                                <div class="col-xs-6 col-sm-3">
+                                                <div class="col-xs-6 col-sm-3 mt-2">
                                                     <div class="input-icon right">
                                                         <label for="amount" class="control-label">&nbsp;</label>
-                                                        <input class="toggle" <?php if(!empty($taskBidder) && $taskBidder->charge_type == "amount"): ?> checked
+                                                        <input id="amount-toggle" <?php if(!empty($taskBidder) && $taskBidder->charge_type == "amount"): ?> checked
                                                                disabled
                                                                <?php endif; ?>
-                                                               data-on="Amount"
-                                                               data-off="Points"
+                                                               data-on="Amount" data-off="Points"
+                                                               data-toggle="toggle" data-width="100" data-height="40" data-onstyle="primary"
                                                                type="checkbox" name="charge_type">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row form-group">
+                                            <div class="row form-group mt-2">
                                                 <div class="col-sm-12 <?php echo e($errors->has('comment') ? ' has-error' : ''); ?>">
                                                     <div class="input-icon right">
                                                         <label for="amount" class="control-label">Comment</label>
                                                         <?php if(!empty($taskBidder)): ?>
                                                             <span class="bid_comment"><?php echo $taskBidder->comment; ?></span>
                                                         <?php else: ?>
-                                                            <textarea class="form-control summernote" id="comment" name="comment"><?php echo e(old('comment')); ?></textarea>
+                                                            <textarea class="form-control" id="comment" name="comment"><?php echo e(old('comment')); ?></textarea>
                                                             <?php if($errors->has('comment')): ?>
                                                                 <span class="help-block">
                                                         <strong><?php echo e($errors->first('comment')); ?></strong>
@@ -309,7 +309,7 @@
                                                 </div>
                                             </div>
                                             <?php if(empty($taskBidder)): ?>
-                                                <div class="row form-group">
+                                                <div class="row form-group mt-3">
                                                     <div class="col-sm-12">
                                                         <button type="submit" class="btn usermenu-btns orange-bg">Bid</button>
                                                     </div>
@@ -332,9 +332,10 @@
     <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/js/star-rating.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/themes/krajee-svg/theme.js"></script>
 
+
     <script>
         $(document).ready(function(){
-            // $(".stars").rating({min:1, max:5, step:2, size:'sm'});
+
             $(document).ready(function() {
                 $(".stelle").rating({
                     hoverOnClear: false,
@@ -346,6 +347,12 @@
             $('.nav-tabs a').click(function(){
                 $(this).tab('show');
             });
+
+            ClassicEditor
+                .create( document.querySelector('#comment') )
+                .catch( error => {
+                    console.error(error);
+                } );
         });
     </script>
 <?php $__env->stopSection(); ?>
