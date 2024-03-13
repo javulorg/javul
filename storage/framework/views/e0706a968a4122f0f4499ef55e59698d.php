@@ -2,7 +2,7 @@
 <?php $__env->startSection('style'); ?>
     <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
-
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap2-toggle.min.css" rel="stylesheet">
 
 
     <style>
@@ -143,185 +143,148 @@
             </div>
 
                 <div class="content_block">
-                    <div class="row">
-                        <?php
-                            $active = $errors->has('amount') || $errors->has('comment') ? 'bid_now' : 'task_details';
-                        ?>
-
-                        <div class="col-12">
+                    <div class="col-md-12">
                             <div class="container mt-3">
-                                <!-- Nav tabs -->
-                                <ul class="nav nav-tabs">
-                                    <li class="nav-item">
-                                        <a class="nav-link <?php echo e($active == 'task_details' ? 'active' : ''); ?>" data-toggle="tab" href="#task_details">
-                                            Task Details
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#task_actions">
-                                            Task Actions
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link <?php echo e($active == 'bid_now' ? 'active' : ''); ?>" data-toggle="tab" href="#bid_now">
-                                            <?php echo e(!empty($taskBidder) ? 'Bid Details' : 'Bid Now'); ?>
-
-                                        </a>
-                                    </li>
-                                </ul>
-
-                                <!-- Tab panes -->
-                                <div class="tab-content">
-                                    <div id="task_details" class="container tab-pane fade <?php echo e($active == 'task_details' ? 'show active' : ''); ?>"><br>
+                                <!-- Task Details Section -->
+                                <section id="task_details" class="mt-4">
+                                    <div class="list-group">
                                         <div class="list-group-item">
-                                            <h4 class="text-orange"><?php echo strtoupper(trans('messages.task_status')); ?></h4>
+                                            <h2 class="text-orange">Task Details</h2>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <h4>Status</h4>
                                             <?php if(empty($taskObj->assigned_to)): ?>
-                                                <div>Unassigned</div>
+                                                <p>Unassigned</p>
                                             <?php elseif($taskObj->status == "completed"): ?>
-                                                <div>Completed</div>
-                                                <div>Completed On: date 23/05/2016</div>
+                                                <p>Completed</p>
+                                                <p>Completed On: 23/05/2016</p>
                                             <?php else: ?>
-                                                <div>assigned to user X</div>
+                                                <p>Assigned to user X</p>
                                             <?php endif; ?>
                                         </div>
                                         <div class="list-group-item">
-                                            <h4 class="text-orange"><?php echo strtoupper(trans('messages.task_award')); ?></h4>
-                                            <div>xx $</div>
+                                            <h4>Award</h4>
+                                            <p>xx $</p>
                                         </div>
                                         <div class="list-group-item">
-                                            <h4 class="text-orange"><?php echo strtoupper(trans('messages.task_summary')); ?></h4>
-                                            <div><?php echo $taskObj->summary; ?></div>
+                                            <h4>Summary</h4>
+                                            <p><?php echo $taskObj->summary; ?></p>
                                         </div>
                                         <div class="list-group-item">
-                                            <h4 class="text-orange"><?php echo strtoupper(trans('messages.long_description')); ?></h4>
-                                            <div><?php echo $taskObj->description; ?></div>
+                                            <h4>Description</h4>
+                                            <p><?php echo $taskObj->description; ?></p>
                                         </div>
                                         <div class="list-group-item">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <h4 class="text-orange">Task Documents</h4>
-                                                    <?php if(!empty($taskObj->task_documents)): ?>
-                                                        <?php $__currentLoopData = $taskObj->task_documents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $document): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <?php $extension = pathinfo($document->file_path, PATHINFO_EXTENSION); ?>
-                                                            <?php if($extension == "pdf"): ?> <?php $extension="pdf"; ?>
-                                                            <?php elseif($extension == "doc" || $extension == "docx"): ?> <?php $extension="docx"; ?>
-                                                            <?php elseif($extension == "jpg" || $extension == "jpeg"): ?> <?php $extension="jpeg"; ?>
-                                                            <?php elseif($extension == "ppt" || $extension == "pptx"): ?> <?php $extension="pptx"; ?>
-                                                            <?php else: ?> <?php $extension="file"; ?> <?php endif; ?>
-                                                            <div class="file_documents">
-                                                                <a class="files_image" href="<?php echo url($document->file_path); ?>" target="_blank">
-                                                                    <img src="<?php echo url('assets/images/file_types/'.$extension.'.png'); ?>" style="height:50px;">
-                                                                    <span style="display:block">
-                                        <?php if(empty($document->file_name)): ?>
-                                                                            &nbsp;
-                                                                        <?php else: ?>
-                                                                            <?php echo e($document->file_name); ?>
-
-                                                                        <?php endif; ?>
-                                    </span>
-                                                                </a>
-                                                            </div>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-
+                                            <h4>Task Documents</h4>
+                                            <!-- Document Listing -->
                                         </div>
                                     </div>
-                                    <div id="task_actions" class="container tab-pane"><br>
+                                </section>
+
+                                <!-- Task Actions Section -->
+                                <section id="task_actions" class="mt-4">
+                                    <div class="list-group">
                                         <div class="list-group-item">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <h4 class="text-orange">TASK ACTIONS</h4>
-                                                    <div><?php echo $taskObj->task_action; ?></div>
-                                                </div>
-                                            </div>
+                                            <h2 class="text-orange">Task Actions</h2>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div><?php echo $taskObj->task_action; ?></div>
                                         </div>
                                     </div>
-                                    <div id="bid_now" class="container tab-pane fade <?php echo e($active == 'bid_now' ? 'show active' : ''); ?>"><br>
+                                </section>
+
+                                <!-- Bid Now/Bid Details Section -->
+                                <section id="bid_now" class="mt-4">
+                                    <form role="form" method="post" action="<?php echo e(url('tasks/bid_now/' . $taskIDHashID->encode($taskObj->id))); ?>" id="form_sample_2"  novalidate="novalidate" enctype="multipart/form-data">
+                                        <?php echo csrf_field(); ?>
+                                        <div class="list-group">
                                         <div class="list-group-item">
-                                            <div class="row form-group">
-                                                <div class="col-sm-12">
-                                                    <div class="row">
-                                                        <div class="col-12">
-
-
-
-
-
-
-                                                            <label>Task Completion Ratings:</label>
-                                                            <div>
-                                                                <label>Quality of works :</label>
-                                                                <input id="input-1-ltr-star-xs" name="input-1-ltr-star-xs" class="stelle rating-loading" value="<?php echo e($quality_of_work); ?>" dir="ltr" data-size="xs">
+                                            <h2 class="text-orange"><?php echo e(!empty($taskBidder) ? 'Bid Details' : 'Bid Now'); ?></h2>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="list-group-item">
+                                                <div class="row form-group">
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <label class="control-label" style="margin-bottom:0px">Task Completion Ratings: Quality of works :
+                                                                    <span class="stars" style="display:inline-block"><?php echo e($quality_of_work); ?></span>(<?php echo e($quality_of_work); ?>/5)
+                                                                    Timeliness :
+                                                                    <span class="stars" style="display:inline-block"><?php echo e($timeliness); ?></span>
+                                                                    (<?php echo e($timeliness); ?>/5)
+                                                                </label>
+                                                                <label>Task Completion Ratings:</label>
+                                                                <div>
+                                                                    <label>Quality of works :</label>
+                                                                    <input id="input-1-ltr-star-xs" name="input-1-ltr-star-xs" class="stelle rating-loading" value="<?php echo e($quality_of_work); ?>" dir="ltr" data-size="xs">
+                                                                </div>
+                                                                <div>
+                                                                    <label>Timeliness :</label>
+                                                                    <input id="input-1-ltr-star-xs" name="input-1-ltr-star-xs" class="stelle rating-loading" value="<?php echo e($timeliness); ?>" dir="ltr" data-size="xs">
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <label>Timeliness :</label>
-                                                                <input id="input-1-ltr-star-xs" name="input-1-ltr-star-xs" class="stelle rating-loading" value="<?php echo e($timeliness); ?>" dir="ltr" data-size="xs">
-                                                            </div>
+
                                                         </div>
-
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="row form-group">
-                                                <div class="col-xs-6 col-sm-4  <?php echo e($errors->has('amount') ? ' has-error' : ''); ?>">
-                                                    <div class="input-icon right">
-                                                        <label for="amount" class="control-label">Amount</label>
-                                                        <input name="amount" type="text" required id="amount" class="form-control"
-                                                               <?php if(!empty($taskBidder)): ?> value="<?php echo e($taskBidder->amount); ?>" <?php else: ?> value="<?php echo e(old('amount')); ?>" <?php endif; ?>
-                                                               <?php if(!empty($taskBidder)): ?> disabled <?php endif; ?>/>
-                                                        <?php if($errors->has('amount')): ?>
-                                                            <span class="help-block">
+                                                <div class="row form-group">
+                                                    <div class="col-xs-6 col-sm-4  <?php echo e($errors->has('amount') ? ' has-error' : ''); ?>">
+                                                        <div class="input-icon right">
+                                                            <label for="amount" class="control-label">Amount</label>
+                                                            <input name="amount" type="text" required id="amount" class="form-control"
+                                                                   <?php if(!empty($taskBidder)): ?> value="<?php echo e($taskBidder->amount); ?>" <?php else: ?> value="<?php echo e(old('amount')); ?>" <?php endif; ?>
+                                                                   <?php if(!empty($taskBidder)): ?> disabled <?php endif; ?>/>
+                                                            <?php if($errors->has('amount')): ?>
+                                                                <span class="help-block">
                                                 <strong><?php echo e($errors->first('amount')); ?></strong>
                                             </span>
-                                                        <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-3 mt-2">
+                                                        <div class="input-icon right">
+                                                            <label for="amount" class="control-label">&nbsp;</label>
+                                                            <input id="amount-toggle" <?php if(!empty($taskBidder) && $taskBidder->charge_type == "amount"): ?> checked
+                                                                   disabled
+                                                                   <?php endif; ?>
+                                                                   data-on="Amount" data-off="Points"
+                                                                   data-toggle="toggle" data-width="100" data-height="40" data-onstyle="primary"
+                                                                   type="checkbox" name="charge_type">
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-xs-6 col-sm-3 mt-2">
-                                                    <div class="input-icon right">
-                                                        <label for="amount" class="control-label">&nbsp;</label>
-                                                        <input id="amount-toggle" <?php if(!empty($taskBidder) && $taskBidder->charge_type == "amount"): ?> checked
-                                                               disabled
-                                                               <?php endif; ?>
-                                                               data-on="Amount" data-off="Points"
-                                                               data-toggle="toggle" data-width="100" data-height="40" data-onstyle="primary"
-                                                               type="checkbox" name="charge_type">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group mt-2">
-                                                <div class="col-sm-12 <?php echo e($errors->has('comment') ? ' has-error' : ''); ?>">
-                                                    <div class="input-icon right">
-                                                        <label for="amount" class="control-label">Comment</label>
-                                                        <?php if(!empty($taskBidder)): ?>
-                                                            <span class="bid_comment"><?php echo $taskBidder->comment; ?></span>
-                                                        <?php else: ?>
-                                                            <textarea class="form-control" id="comment" name="comment"><?php echo e(old('comment')); ?></textarea>
-                                                            <?php if($errors->has('comment')): ?>
-                                                                <span class="help-block">
+                                                <div class="row form-group mt-2">
+                                                    <div class="col-sm-12 <?php echo e($errors->has('comment') ? ' has-error' : ''); ?>">
+                                                        <div class="input-icon right">
+                                                            <label for="amount" class="control-label">Comment</label>
+                                                            <?php if(!empty($taskBidder)): ?>
+                                                                <span class="bid_comment"><?php echo $taskBidder->comment; ?></span>
+                                                            <?php else: ?>
+                                                                <textarea class="form-control" id="comment" name="comment"><?php echo e(old('comment')); ?></textarea>
+                                                                <?php if($errors->has('comment')): ?>
+                                                                    <span class="help-block">
                                                         <strong><?php echo e($errors->first('comment')); ?></strong>
                                                     </span>
+                                                                <?php endif; ?>
                                                             <?php endif; ?>
-                                                        <?php endif; ?>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <?php if(empty($taskBidder)): ?>
+                                                    <div class="row form-group mt-3">
+                                                        <div class="col-sm-12">
+                                                            <button type="submit" class="btn usermenu-btns orange-bg">Bid</button>
+                                                        </div>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
-                                            <?php if(empty($taskBidder)): ?>
-                                                <div class="row form-group mt-3">
-                                                    <div class="col-sm-12">
-                                                        <button type="submit" class="btn usermenu-btns orange-bg">Bid</button>
-                                                    </div>
-                                                </div>
-                                            <?php endif; ?>
                                         </div>
                                     </div>
-                                </div>
+                                    </form>
+                                </section>
                             </div>
                         </div>
-                    </div>
-
                 </div>
 
             </div>
@@ -356,5 +319,257 @@
         });
     </script>
 <?php $__env->stopSection(); ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/tasks/bid_now.blade.php ENDPATH**/ ?>

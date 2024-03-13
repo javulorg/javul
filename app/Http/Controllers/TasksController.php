@@ -1915,7 +1915,6 @@ class TasksController extends Controller
 
     public function bid_now(Request $request,$task_id)
     {
-
         if(!empty($task_id))
         {
             $task_id_encoded = $task_id;
@@ -2000,35 +1999,8 @@ class TasksController extends Controller
                                 .$taskObj->name.'</a>'
                         ]);
 
-                        $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
                         $unitCreator = User::find(Auth::user()->id);
 
-                        // mail send
-                        /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                        if(!empty($alertObj) && $alertObj->task_management == 1) {
-                            $toEmail = Auth::user()->email;
-                            $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                            $subject = 'Task updated successfully. ';
-
-                            Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                                $message->to($toEmail, $toName)->subject($subject);
-                                $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                            });
-                        }*/
-
-
-                        $toEmail = $unitCreator->email;
-                        $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
-                        $subject="Task bid by".Auth::user()->first_name.' '.Auth::user()->last_name;
-
-//                        Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
-//                        {
-//                            $message->to($toEmail,$toName)->subject($subject);
-//                            if(!empty($siteAdminemails))
-//                                $message->bcc($siteAdminemails,"Admin")->subject($subject);
-//
-//                            $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-//                        });
 
                         $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_BID')['text']);
                         return redirect('tasks');
