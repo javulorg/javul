@@ -44,10 +44,11 @@
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
-                    <form role="form" method="post" id="form_sample_2" action="<?php echo e(url('tasks/'. $taskHashId)); ?>" enctype="multipart/form-data">
+                    <form role="form" method="post" id="task_form" action="<?php echo e(url('tasks/'. $taskHashId)); ?>" enctype="multipart/form-data">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('put'); ?>
 
+                        <input type="hidden" id="current_task_status" value="<?php echo e($taskObj->status); ?>">
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 <label class="control-label">Task Name</label>
@@ -169,7 +170,7 @@
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-sm-4 mt-1 form-group">
+                            <div class="col-sm-6 mt-1 form-group">
                                 <label class="control-label">Compensation <span
                                         class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
@@ -180,44 +181,15 @@
                                     <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
-                                <?php if(!empty($taskObj)): ?>
-                                    <div class="col-sm-4 mt-1 mb-2 form-group">
-                                        <label class="control-label">Status</label>
-                                        <div class="input-icon right">
-                                            <?php if(!empty($change_task_status) || \App\Models\Task::isUnitAdminOfTask($taskObj->id)): ?>
-                                                <select name="task_status" class="form-control selectpicker"
-                                                        data-live-search="true" id="task_status">
-                                                    <?php $__currentLoopData = \App\Models\SiteConfigs::task_status(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index=>$status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option <?php if($taskObj->status == $index): ?> selected=selected
-                                                                <?php endif; ?> value="<?php echo e($index); ?>"><?php echo e($status); ?></option>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                </select>
-                                            <?php else: ?>
-                                                <span>
-                                                <?php echo e(\App\Models\SiteConfigs::task_status($taskObj->status)); ?>
-
-
-                                                    <?php if($taskObj->status == "editable" && !empty($taskEditor) && $taskEditor->submit_for_approval == "not_submitted"): ?>
-                                                        <?php if(count($otherEditorsDone) > 0): ?>
-                                                            (<?php echo e(count($otherEditorsDone).' task editor submitted this task for Approval'); ?>
-
-                                                            <?php if(!empty($availableDays)): ?>
-                                                                <?php echo e("Time left for editing: ".$availableDays." days."); ?>)
-                                                            <?php endif; ?>
-                                                        <?php endif; ?>
-                                                        <a href="#" class="submit_for_approval" data-task_id="<?php echo e($taskIDHashID->encode($taskObj->id)); ?>">Submit for Approval</a><?php elseif($taskObj->status == "editable" && count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted"): ?>
-                                                                                    ( You changed this task status to
-                                                                                    "Awaiting Approval". Waiting
-                                                                                    for <?php echo e(count($otherRemainEditors)); ?>
-
-                                                                                    other editors to do the same)
-                                                    <?php endif; ?>
-                                                    <?php endif; ?>
-                                                </span>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
+                            <div class="col-sm-6 mt-1">
+                                <div class="form-group">
+                                    <label class="control-label">Status</label>
+                                        <select name="task_status" class="form-control"  id="task_status">
+                                            <?php $__currentLoopData = \App\Models\SiteConfigs::task_status(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index=>$status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($index); ?>" <?php echo e($taskObj->status == $index ? 'selected' : ''); ?>><?php echo e($status); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                </div>
                             </div>
                         </div>
 
@@ -292,6 +264,7 @@
                                 </button>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -301,6 +274,8 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('scripts'); ?>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -402,6 +377,22 @@
                 }
                 return false
             });
+
+
+            $('#task_form').on('submit', function(e) {
+                var currentTaskStatus = $('#current_task_status').val();
+                var inputValue = $('#task_status').val();
+
+                if (currentTaskStatus === 'waiting_for_approval') {
+                    // Prevent the form from submitting
+                    e.preventDefault();
+
+                    // Show SweetAlert
+                    swal("Oops!", "You must fill out the form!", "error");
+                }
+
+                // If the condition isn't met, the form will submit normally.
+            });
         });
 
 
@@ -422,6 +413,8 @@
             .catch( error => {
                 console.error( error );
             } );
+
+
     </script>
 <?php $__env->stopSection(); ?>
 
