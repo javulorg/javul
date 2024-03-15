@@ -26,11 +26,32 @@ class SiteConfigs extends Model
            return $credibility_types;
    }
 
-    public static function task_status($status=''){
-        $task_status = ['editable'=>'Editable','awaiting_approval'=>'Awaiting Approval','approval'=>'Approval',
-            'open_for_bidding'=>'Open for Bidding','assigned'=>'Assigned','awaiting_assignment'=>'Awaiting Assignment',
-            'in_progress'=>'In Progress','completion_evaluation'=>'Completion Evaluation','completed'=>'Completed',
-            'cancelled'=>'Cancelled'];
+    public static function task_status($status='')
+    {
+        $task_status = [
+//            'draft'                 =>'Draft',
+//            'editable'              =>'Editable',
+//            'awaiting_approval'     =>'Awaiting Approval',
+//            'approval'              =>'Approval',
+//            'open_for_bidding'      =>'Open for Bidding',
+//            'assigned'              =>'Assigned',
+//            'awaiting_assignment'   =>'Awaiting Assignment',
+//            'in_progress'           =>'In Progress',
+//            'completion_evaluation' =>'Completion Evaluation',
+//            'completed'             =>'Completed',
+//            'cancelled'             =>'Cancelled'
+
+
+            'draft'                         => 'Draft',
+            'waiting_for_approval'          => 'Waiting for Approval',
+            'open_for_bidding'              => 'Open for Bidding',
+            'bid_selection'                 => 'Bid Selection',
+            'assigned'                      => 'Assigned',
+            'in_progress'                   => 'In Progress',
+            'completed_under_evaluation'    => 'Completed (Under Evaluation)',
+            'completed'                     => 'Completed',
+            'archived'                      => 'Archived',
+        ];
         if(!empty($status) && isset($task_status[$status]))
             return $task_status[$status];
         return $task_status;

@@ -167,43 +167,40 @@
                                     <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
-                                <?php if(!empty($taskObj)): ?>
-                                <div class="col-sm-4 mt-1 mb-2 form-group">
-                                    <label class="control-label">Status</label>
-                                    <div class="input-icon right">
-                                        <?php if(!empty($change_task_status) || \App\Models\Task::isUnitAdminOfTask($taskObj->id)): ?>
-                                            <select name="task_status" class="form-control selectpicker" data-live-search="true" id="task_status">
-                                                <?php $__currentLoopData = \App\Models\SiteConfigs::task_status(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index=>$status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option <?php if($taskObj->status == $index): ?> selected=selected <?php endif; ?> value="<?php echo e($index); ?>"><?php echo e($status); ?></option>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </select>
-                                    <?php else: ?>
-                                            <span>
-                                                <?php echo e(\App\Models\SiteConfigs::task_status($taskObj->status)); ?>
 
-                                                <!--</span>-->
-                                                    <?php if($taskObj->status == "editable" && !empty($taskEditor) && $taskEditor->submit_for_approval == "not_submitted"): ?>
-                                                        <?php if(count($otherEditorsDone) > 0): ?>
-                                                            (<?php echo e(count($otherEditorsDone).' task editor submitted this task for Approval'); ?>
 
-                                                            <?php if(!empty($availableDays)): ?>
-                                                                <?php echo e("Time left for editing: ".$availableDays." days."); ?>)
-                                                            <?php endif; ?>
-                                                        <?php endif; ?>
-                                                        <a href="#" class="submit_for_approval"  data-task_id="<?php echo e($taskIDHashID->encode($taskObj->id)); ?>">Submit for Approval</a>
 
-                                                    <?php elseif($taskObj->status == "editable" && count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted"): ?>
-                                                        ( You changed this task status to "Awaiting Approval". Waiting for <?php echo e(count($otherRemainEditors)); ?>
 
-                                                        other editors to do the same)
-                                                    <?php endif; ?>
-                                                    <?php endif; ?>
-                                            </span>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         </div>
 
 

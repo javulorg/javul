@@ -492,7 +492,7 @@ class TasksController extends Controller
             'estimated_completion_time_end'   => date('Y-m-d h:i',$end_date),
             'task_action'                     => $request->action_items,
             'compensation'                    => $request->compensation,
-            'status'                          =>'editable',
+            'status'                          => 'draft',
             'idea_id'                         => $request->idea_id
         ])->id;
 
@@ -1269,13 +1269,12 @@ class TasksController extends Controller
         $task          = Task::find($task_id);
 
         $unit_id       = $request->unit;
-        $unitIDEncoded = $unit_id;
+
         $flag          = Unit::checkUnitExist($unit_id ,true);
         if(!$flag)
             return redirect()->back()->withErrors(['unit'=>'Unit doesn\'t exist in database.'])->withInput();
 
         $objective_id       = $request->input('objective');
-        $objectiveIDEncoded = $objective_id;
         $flag               = Objective::checkObjectiveExist($objective_id ,true); // pass objective_id and true for decode the string
         if(!$flag)
             return redirect()->back()->withErrors(['objective'=>'Objective doesn\'t exist in database.'])->withInput();
@@ -1286,8 +1285,6 @@ class TasksController extends Controller
         $objectiveIDHashID  = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
         $objective_id       = $objectiveIDHashID->decode($objective_id);
 
-        $start_date         = '';
-        $end_date           = '';
 
         try {
             $start_date     = new DateTime($request->input('estimated_completion_time_start'));
@@ -1477,7 +1474,7 @@ class TasksController extends Controller
         $objective_id = $objective_id[0];
         $unit_id      = $unit_id[0];
 
-        $watchlistUserObj = DB::table('my_watchlist')
+        DB::table('my_watchlist')
             ->join('users','my_watchlist.user_id','=','users.id')
             ->where('my_watchlist.user_id','!=',Auth::user()->id)
             ->where(function ($query) use($objective_id,$unit_id,$task_id_decoded)
@@ -1487,7 +1484,6 @@ class TasksController extends Controller
                     ->orWhere('task_id',$task_id_decoded);
             })->get();
 
-        $objectiveObj = Objective::find($objective_id);
 
         SiteActivity::create([
             'user_id'            => Auth::user()->id,
