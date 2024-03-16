@@ -50,6 +50,7 @@
                         @method('put')
 
                         <input type="hidden" id="current_task_status" value="{{ $taskObj->status }}">
+                        <input type="hidden" id="auth_user" value="{{ auth()->user()->role }}">
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 <label class="control-label">Task Name</label>
@@ -250,6 +251,7 @@
                             </div>
                         </div>
 
+
                         <div class="row mt-3">
                             <div class="col-sm-12 form-group">
                                 <label class="control-label">Comment</label>
@@ -379,20 +381,63 @@
             });
 
 
+            // $('#task_form').on('submit', function(e) {
+            //     var currentTaskStatus = $('#current_task_status').val();
+            //     var inputValue = $('#task_status').val();
+            //     var authUser = $('#auth_user').val();
+            //
+            //     if (authUser != 4 && authUser != 1) {
+            //         if (currentTaskStatus === 'waiting_for_approval') {
+            //             e.preventDefault();
+            //             swal("Oops!", "Task can't be edited anymore!", "error");
+            //         }
+            //     }
+            //
+            //     // Use && for the correct logic
+            //     if (currentTaskStatus === 'bid_selection' && (authUser !== '4' && authUser !== '1')) {
+            //         e.preventDefault();
+            //         swal("Oops!", "You must fill out the form!", "error");
+            //     }
+            // });
+
+
+
             $('#task_form').on('submit', function(e) {
                 var currentTaskStatus = $('#current_task_status').val();
-                var inputValue = $('#task_status').val();
+                var newTaskStatus = $('#task_status').val(); // Get the new status the user wants to change to
+                var authUser = $('#auth_user').val();
 
-                if (currentTaskStatus === 'waiting_for_approval') {
-                    // Prevent the form from submitting
+                // Convert authUser to a number to ensure strict comparison works as expected
+                var authUserId = parseInt(authUser, 10);
+
+                // Define the order of task statuses for comparison
+                var statusOrder = {
+                    'draft': 0,
+                    'waiting_for_approval': 1,
+                    'open_for_bidding': 2,
+                    'bid_selection': 3,
+                    'assigned': 4,
+                    'in_progress': 5,
+                    'completed_under_evaluation': 6,
+                    'completed': 7,
+                    'archived': 8,
+                };
+
+                if ((authUserId !== 1 && authUserId !== 3) && currentTaskStatus === 'waiting_for_approval') {
                     e.preventDefault();
-
-                    // Show SweetAlert
-                    swal("Oops!", "You must fill out the form!", "error");
+                    swal("Oops!", "Task can't be edited anymore!", "error");
+                }else if ((authUserId !== 1 && authUserId !== 3) && currentTaskStatus === 'bid_selection') {
+                    e.preventDefault();
+                    swal("Oops!", "Task can't be edited anymore!", "error");
                 }
-
-                // If the condition isn't met, the form will submit normally.
+                else if (statusOrder[newTaskStatus] < statusOrder[currentTaskStatus]) {
+                    e.preventDefault();
+                    swal("Error", "You cannot change the task status to a previous stage.", "error");
+                }
             });
+
+
+
         });
 
 
