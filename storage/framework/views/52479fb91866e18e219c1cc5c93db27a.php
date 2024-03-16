@@ -32,7 +32,7 @@
                                 </a>
                             </td>
                             <td class="type_col">
-                                <?php if($obj->status == "editable"): ?>
+                                <?php if($obj->status == "draft"): ?>
                                     <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($obj->status)); ?></span>
                                 <?php else: ?>
                                     <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($obj->status)); ?></span>

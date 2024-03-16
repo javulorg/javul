@@ -31,7 +31,7 @@
                                 </a>
                             </td>
                             <td class="type_col">
-                                @if($obj->status == "editable")
+                                @if($obj->status == "draft")
                                     <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($obj->status)}}</span>
                                 @else
                                     <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($obj->status)}}</span>

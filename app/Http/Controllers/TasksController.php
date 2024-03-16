@@ -574,7 +574,257 @@ class TasksController extends Controller
 
         return redirect()->to('units/'.$request->unit.'/'.$unitObj->slug);
     }
+    public function update(Request $request, $taskHashId)
+    {
+        $validator = Validator::make($request->all(), [
+            'objective'                       => 'required',
+            'task_name'                       => 'required',
+            'task_skills'                     => 'required',
+            'estimated_completion_time_start' => 'required',
+            'estimated_completion_time_end'   => 'required',
+            'description'                     => 'required'
+        ]);
 
+        if ($validator->fails())
+            return redirect()->back()->withErrors($validator)->withInput();
+        $updatedFields = $request->changed_items;
+
+        $taskIDHashID  = new Hashids('task id hash',10,Config::get('app.encode_chars'));
+        $task_id       = $taskIDHashID->decode($taskHashId);
+
+        $task_id       = $task_id[0];
+        $task          = Task::find($task_id);
+
+        $unit_id       = $request->unit;
+
+        $flag          = Unit::checkUnitExist($unit_id ,true);
+        if(!$flag)
+            return redirect()->back()->withErrors(['unit'=>'Unit doesn\'t exist in database.'])->withInput();
+
+        $objective_id       = $request->input('objective');
+        $flag               = Objective::checkObjectiveExist($objective_id ,true); // pass objective_id and true for decode the string
+        if(!$flag)
+            return redirect()->back()->withErrors(['objective'=>'Objective doesn\'t exist in database.'])->withInput();
+
+        $unitIDHashID       = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+        $unit_id            = $unitIDHashID->decode($unit_id);
+
+        $objectiveIDHashID  = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
+        $objective_id       = $objectiveIDHashID->decode($objective_id);
+
+
+        try {
+            $start_date     = new DateTime($request->input('estimated_completion_time_start'));
+            $end_date       = new DateTime($request->input('estimated_completion_time_end'));
+        } catch (\Exception $e)
+        {
+            echo $e->getMessage();
+            exit(1);
+        }
+
+        $start_date  = $start_date->getTimestamp();
+        $end_date    = $end_date->getTimestamp();
+
+
+        $slug             = substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
+        $task_skills      = $request->input('task_skills');
+        if(!empty($task_skills))
+            $task_skills  = implode(",",$task_skills);
+
+
+        $bytes         = TasksRevision::strBytes( str_replace(' ', '', strip_tags($request->input('description'))) );
+        $oldBytes      = TasksRevision::strBytes( str_replace(' ', '', strip_tags($task->description)) );
+
+        $TasksRevision                                  = new TasksRevision;
+        $TasksRevision->user_id                         = $task->user_id;
+        $TasksRevision->unit_id                         = $task->unit_id;
+        $TasksRevision->objective_id                    = $task->objective_id;
+        $TasksRevision->name                            = $task->name;
+        $TasksRevision->description                     = $task->description;
+        $TasksRevision->task_action                     = $task->task_action;
+        $TasksRevision->summary                         = $task->summary;
+        $TasksRevision->skills                          = $task->skills;
+        $TasksRevision->estimated_completion_time_start = $task->estimated_completion_time_start;
+        $TasksRevision->estimated_completion_time_end   = $task->estimated_completion_time_end;
+        $TasksRevision->compensation                    = $task->compensation;
+        $TasksRevision->assign_to                       = (int)$task->assign_to;
+        $TasksRevision->status                          = $task->status;
+        $TasksRevision->modified_by                     = Auth::user()->id;
+        $TasksRevision->created_at                      = date("Y-m-d H:i:s");;
+        $TasksRevision->updated_at                      = $task->created_at;
+        $TasksRevision->deleted_at                      = $task->created_at;
+        $TasksRevision->comment                         = $task->comment. " ";
+        $TasksRevision->task_id                         = $task->id;
+        $TasksRevision->size                            = ($bytes - $oldBytes);
+
+        $TasksRevision->save();
+
+        Task::where('id',$task_id)->update([
+            'user_id'                         => Auth::user()->id ?? null,
+            'unit_id'                         => $unit_id[0],
+            'objective_id'                    => $objective_id[0],
+            'name'                            => $request->task_name,
+            'slug'                            => $slug,
+            'description'                     => $request->description,
+            'summary'                         => $request->summary,
+            'comment'                         => $request->comment,
+            'skills'                          => $task_skills,
+            'estimated_completion_time_start' => date('Y-m-d h:i',$start_date),
+            'estimated_completion_time_end'   => date('Y-m-d h:i',$end_date),
+            'task_action'                     => trim($request->action_items),
+            'compensation'                    => $request->compensation,
+            'status'                          => $request->task_status,
+            'idea_id'                         => $request->idea_id
+        ]);
+
+//        if(Task::isUnitAdminOfTask($task_id))
+//        {
+//            Task::where('id',$task_id)->update([
+//                'status' => $request->task_status
+//            ]);
+//        }
+
+        $task_id_decoded   = $task_id;
+        $taskObjTemp       = Task::find($task_id);
+        $taskIDHashID      = new Hashids('task id hash',10,Config::get('app.encode_chars'));
+        $task_id           = $taskIDHashID->encode($task_id);
+
+        $task_documents = [];
+        if($request->hasFile('documents'))
+        {
+            $files = $request->file('documents');
+            if(count($files) > 0)
+            {
+                DB::enableQueryLog();
+                $totalAvailableDocs = TaskDocuments::where('task_id',$task_id_decoded)->get();
+                $totalAvailableDocs= count($totalAvailableDocs) + 1;
+                foreach($files as $index=>$file){
+                    if(!empty($file)){
+
+                        $rules = ['document' => 'required', 'extension' => 'required|in:doc,docx,pdf,txt,jpg,png,ppt,pptx,jpeg,doc,xls,xlsx'];
+                        $fileData = ['document' => $file, 'extension' => strtolower($file->getClientOriginalExtension())];
+
+                        // doing the validation, passing post data, rules and the messages
+                        $validator = Validator::make($fileData, $rules);
+                        if (!$validator->fails()) {
+                            if ($file->isValid()) {
+                                $destinationPath = base_path().'/uploads/tasks/'.$task_id; // upload path
+                                if(!File::exists($destinationPath)){
+                                    $oldumask = umask(0);
+                                    @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
+                                    umask($oldumask);
+                                }
+
+                                $file_name =$file->getClientOriginalName();
+                                $extension = $file->getClientOriginalExtension(); // getting image extension
+                                $fileName = $task_id.'_'.$totalAvailableDocs . '.' . $extension; // renaming image
+                                $file->move($destinationPath, $fileName); // uploading file to given path
+
+                                // insert record into task_documents table
+                                $task_documents[]=['task_id'=>$task_id_decoded,'file_name'=>$file_name,
+                                    'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName];
+
+                                TaskDocuments::create([
+                                    'task_id'=>$task_id_decoded,
+                                    'file_name'=>$file_name,
+                                    'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName
+                                ]);
+                                $totalAvailableDocs++;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        $taskHistoryObj = TaskEditor::join('task_history','task_editors.task_history_id','=','task_history.id')
+            ->where('task_editors.user_id',Auth::user()->id)
+            ->where('task_id',$task_id_decoded)
+            ->orderBy('task_history.id','desc')
+            ->first();
+
+        if(!empty($taskHistoryObj))
+        {
+            $oldUpdatedFields  = json_decode($taskHistoryObj->updatedFields);
+            if(!empty($oldUpdatedFields) && !empty($updatedFields))
+                $updatedFields = array_merge($updatedFields,$oldUpdatedFields );
+        }
+
+        $task_history_id = TaskHistory::create([
+            'unit_id'                         => $unit_id[0],
+            'objective_id'                    => $objective_id[0],
+            'name'                            => $request->task_name,
+            'description'                     => $request->description,
+            'summary'                         => $request->summary,
+            'skills'                          => implode(",",$request->task_skills),
+            'estimated_completion_time_start' => date('Y-m-d h:i',$start_date),
+            'estimated_completion_time_end'   => date('Y-m-d h:i',$end_date),
+            'task_action'                     => trim($request->action_items),
+            'task_documents'                  => json_encode($task_documents),
+            'compensation'                    => $request->compensation,
+            'updatedFields'                   => json_encode($updatedFields)
+        ])->id;
+
+        $taskEditorObj = TaskEditor::where('task_id',$task_id_decoded)->where('user_id',Auth::user()->id)->count();
+        if($taskEditorObj > 0)
+        {
+            TaskEditor::where('task_id',$task_id_decoded)->where('user_id',Auth::user()->id)
+                ->update([
+                    'task_history_id'=>$task_history_id
+                ]);
+        }
+        else {
+            TaskEditor::create([
+                'task_id'             => $task_id_decoded,
+                'task_history_id'     => $task_history_id,
+                'user_id'             => Auth::user()->id,
+                'submit_for_approval' => 'not_submitted'
+            ]);
+        }
+
+        ActivityPoint::create([
+            'user_id'         => Auth::user()->id,
+            'task_id'         => $task_id_decoded,
+            'points'          => 2,
+            'comments'        => 'Task Updated',
+            'type'            => 'task'
+        ]);
+
+        $userIDHashID  = new Hashids('user id hash',10,Config::get('app.encode_chars'));
+        $user_id       = $userIDHashID->encode(Auth::user()->id);
+
+        $user_name     = Auth::user()->first_name.' '.Auth::user()->last_name;
+        if(!empty(Auth::user()->username))
+            $user_name = Auth::user()->username;
+
+        $objective_id = $objective_id[0];
+        $unit_id      = $unit_id[0];
+
+        DB::table('my_watchlist')
+            ->join('users','my_watchlist.user_id','=','users.id')
+            ->where('my_watchlist.user_id','!=',Auth::user()->id)
+            ->where(function ($query) use($objective_id,$unit_id,$task_id_decoded)
+            {
+                $query->where('objective_id',$objective_id)
+                    ->orWhere('unit_id',$unit_id)
+                    ->orWhere('task_id',$task_id_decoded);
+            })->get();
+
+
+        SiteActivity::create([
+            'user_id'            => Auth::user()->id,
+            'unit_id'            => $unit_id,
+            'objective_id'       => $objective_id,
+            'task_id'            => $task_id_decoded,
+            'comment'            => '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
+                .$user_name.'</a>
+                        updated task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->task_name.'</a>'
+        ]);
+
+        $unitObj = Unit::find($unit_id);
+        return redirect()->to('units/'. $request->unit .'/'.$unitObj->slug);
+    }
     public function revison($task_id)
     {
         view()->share('task_id',$task_id);
@@ -1035,8 +1285,6 @@ class TasksController extends Controller
                         }
                     }
 
-                    // if user edited record second time or more than get updatedFields of last edited record and merge with new
-                    // updatefields and store into new history. because we will display only updated value to unit admin.
 
                     $taskHistoryObj = TaskEditor::join('task_history','task_editors.task_history_id','=','task_history.id')
                         ->where('task_editors.user_id',Auth::user()->id)
@@ -1091,8 +1339,6 @@ class TasksController extends Controller
                         'type'=>'task'
                     ]);
 
-                    // add site activity record for global statistics.
-
 
                     $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
@@ -1132,19 +1378,6 @@ class TasksController extends Controller
                             .$user_name.'</a>
                         updated task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->input('task_name').'</a>'
                     ]);
-
-                    // mail send
-                   /* $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                    if(!empty($alertObj) && $alertObj->task_management == 1) {
-                        $toEmail = Auth::user()->email;
-                        $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                        $subject = 'Task updated successfully. ';
-
-                        Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                            $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                        });
-                    }*/
 
 
                     // After Created Unit send mail to site admin
@@ -1247,257 +1480,6 @@ class TasksController extends Controller
         return view('errors.404');
     }
 
-    public function update(Request $request, $taskHashId)
-    {
-        $validator = Validator::make($request->all(), [
-            'objective'                       => 'required',
-            'task_name'                       => 'required',
-            'task_skills'                     => 'required',
-            'estimated_completion_time_start' => 'required',
-            'estimated_completion_time_end'   => 'required',
-            'description'                     => 'required'
-        ]);
-
-        if ($validator->fails())
-            return redirect()->back()->withErrors($validator)->withInput();
-        $updatedFields = $request->changed_items;
-
-        $taskIDHashID  = new Hashids('task id hash',10,Config::get('app.encode_chars'));
-        $task_id       = $taskIDHashID->decode($taskHashId);
-
-        $task_id       = $task_id[0];
-        $task          = Task::find($task_id);
-
-        $unit_id       = $request->unit;
-
-        $flag          = Unit::checkUnitExist($unit_id ,true);
-        if(!$flag)
-            return redirect()->back()->withErrors(['unit'=>'Unit doesn\'t exist in database.'])->withInput();
-
-        $objective_id       = $request->input('objective');
-        $flag               = Objective::checkObjectiveExist($objective_id ,true); // pass objective_id and true for decode the string
-        if(!$flag)
-            return redirect()->back()->withErrors(['objective'=>'Objective doesn\'t exist in database.'])->withInput();
-
-        $unitIDHashID       = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
-        $unit_id            = $unitIDHashID->decode($unit_id);
-
-        $objectiveIDHashID  = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
-        $objective_id       = $objectiveIDHashID->decode($objective_id);
-
-
-        try {
-            $start_date     = new DateTime($request->input('estimated_completion_time_start'));
-            $end_date       = new DateTime($request->input('estimated_completion_time_end'));
-        } catch (\Exception $e)
-        {
-            echo $e->getMessage();
-            exit(1);
-        }
-
-        $start_date  = $start_date->getTimestamp();
-        $end_date    = $end_date->getTimestamp();
-
-
-        $slug             = substr(str_replace(" ","_",strtolower($request->input('task_name'))),0,20);
-        $task_skills      = $request->input('task_skills');
-        if(!empty($task_skills))
-            $task_skills  = implode(",",$task_skills);
-
-
-        $bytes         = TasksRevision::strBytes( str_replace(' ', '', strip_tags($request->input('description'))) );
-        $oldBytes      = TasksRevision::strBytes( str_replace(' ', '', strip_tags($task->description)) );
-
-        $TasksRevision                                  = new TasksRevision;
-        $TasksRevision->user_id                         = $task->user_id;
-        $TasksRevision->unit_id                         = $task->unit_id;
-        $TasksRevision->objective_id                    = $task->objective_id;
-        $TasksRevision->name                            = $task->name;
-        $TasksRevision->description                     = $task->description;
-        $TasksRevision->task_action                     = $task->task_action;
-        $TasksRevision->summary                         = $task->summary;
-        $TasksRevision->skills                          = $task->skills;
-        $TasksRevision->estimated_completion_time_start = $task->estimated_completion_time_start;
-        $TasksRevision->estimated_completion_time_end   = $task->estimated_completion_time_end;
-        $TasksRevision->compensation                    = $task->compensation;
-        $TasksRevision->assign_to                       = (int)$task->assign_to;
-        $TasksRevision->status                          = $task->status;
-        $TasksRevision->modified_by                     = Auth::user()->id;
-        $TasksRevision->created_at                      = date("Y-m-d H:i:s");;
-        $TasksRevision->updated_at                      = $task->created_at;
-        $TasksRevision->deleted_at                      = $task->created_at;
-        $TasksRevision->comment                         = $task->comment. " ";
-        $TasksRevision->task_id                         = $task->id;
-        $TasksRevision->size                            = ($bytes - $oldBytes);
-
-        $TasksRevision->save();
-
-        Task::where('id',$task_id)->update([
-            'user_id'                         => Auth::user()->id ?? null,
-            'unit_id'                         => $unit_id[0],
-            'objective_id'                    => $objective_id[0],
-            'name'                            => $request->task_name,
-            'slug'                            => $slug,
-            'description'                     => $request->description,
-            'summary'                         => $request->summary,
-            'comment'                         => $request->comment,
-            'skills'                          => $task_skills,
-            'estimated_completion_time_start' => date('Y-m-d h:i',$start_date),
-            'estimated_completion_time_end'   => date('Y-m-d h:i',$end_date),
-            'task_action'                     => trim($request->action_items),
-            'compensation'                    => $request->compensation,
-            'status'                          => 'editable',
-            'idea_id'                         => $request->idea_id
-        ]);
-
-        if(Task::isUnitAdminOfTask($task_id))
-        {
-            Task::where('id',$task_id)->update([
-                'status' => $request->task_status
-            ]);
-        }
-
-        $task_id_decoded   = $task_id;
-        $taskObjTemp       = Task::find($task_id);
-        $taskIDHashID      = new Hashids('task id hash',10,Config::get('app.encode_chars'));
-        $task_id           = $taskIDHashID->encode($task_id);
-
-        $task_documents = [];
-        if($request->hasFile('documents'))
-        {
-            $files = $request->file('documents');
-            if(count($files) > 0)
-            {
-                DB::enableQueryLog();
-                $totalAvailableDocs = TaskDocuments::where('task_id',$task_id_decoded)->get();
-                $totalAvailableDocs= count($totalAvailableDocs) + 1;
-                foreach($files as $index=>$file){
-                    if(!empty($file)){
-
-                        $rules = ['document' => 'required', 'extension' => 'required|in:doc,docx,pdf,txt,jpg,png,ppt,pptx,jpeg,doc,xls,xlsx'];
-                        $fileData = ['document' => $file, 'extension' => strtolower($file->getClientOriginalExtension())];
-
-                        // doing the validation, passing post data, rules and the messages
-                        $validator = Validator::make($fileData, $rules);
-                        if (!$validator->fails()) {
-                            if ($file->isValid()) {
-                                $destinationPath = base_path().'/uploads/tasks/'.$task_id; // upload path
-                                if(!File::exists($destinationPath)){
-                                    $oldumask = umask(0);
-                                    @mkdir($destinationPath, 0775); // or even 01777 so you get the sticky bit set
-                                    umask($oldumask);
-                                }
-
-                                $file_name =$file->getClientOriginalName();
-                                $extension = $file->getClientOriginalExtension(); // getting image extension
-                                $fileName = $task_id.'_'.$totalAvailableDocs . '.' . $extension; // renaming image
-                                $file->move($destinationPath, $fileName); // uploading file to given path
-
-                                // insert record into task_documents table
-                                $task_documents[]=['task_id'=>$task_id_decoded,'file_name'=>$file_name,
-                                    'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName];
-
-                                TaskDocuments::create([
-                                    'task_id'=>$task_id_decoded,
-                                    'file_name'=>$file_name,
-                                    'file_path'=>'uploads/tasks/'.$task_id.'/'.$fileName
-                                ]);
-                                $totalAvailableDocs++;
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-
-        $taskHistoryObj = TaskEditor::join('task_history','task_editors.task_history_id','=','task_history.id')
-            ->where('task_editors.user_id',Auth::user()->id)
-            ->where('task_id',$task_id_decoded)
-            ->orderBy('task_history.id','desc')
-            ->first();
-
-        if(!empty($taskHistoryObj))
-        {
-            $oldUpdatedFields  = json_decode($taskHistoryObj->updatedFields);
-            if(!empty($oldUpdatedFields) && !empty($updatedFields))
-                $updatedFields = array_merge($updatedFields,$oldUpdatedFields );
-        }
-
-        $task_history_id = TaskHistory::create([
-            'unit_id'                         => $unit_id[0],
-            'objective_id'                    => $objective_id[0],
-            'name'                            => $request->task_name,
-            'description'                     => $request->description,
-            'summary'                         => $request->summary,
-            'skills'                          => implode(",",$request->task_skills),
-            'estimated_completion_time_start' => date('Y-m-d h:i',$start_date),
-            'estimated_completion_time_end'   => date('Y-m-d h:i',$end_date),
-            'task_action'                     => trim($request->action_items),
-            'task_documents'                  => json_encode($task_documents),
-            'compensation'                    => $request->compensation,
-            'updatedFields'                   => json_encode($updatedFields)
-        ])->id;
-
-        $taskEditorObj = TaskEditor::where('task_id',$task_id_decoded)->where('user_id',Auth::user()->id)->count();
-        if($taskEditorObj > 0)
-        {
-            TaskEditor::where('task_id',$task_id_decoded)->where('user_id',Auth::user()->id)
-                ->update([
-                    'task_history_id'=>$task_history_id
-                ]);
-        }
-        else {
-            TaskEditor::create([
-                'task_id'             => $task_id_decoded,
-                'task_history_id'     => $task_history_id,
-                'user_id'             => Auth::user()->id,
-                'submit_for_approval' => 'not_submitted'
-            ]);
-        }
-
-        ActivityPoint::create([
-            'user_id'         => Auth::user()->id,
-            'task_id'         => $task_id_decoded,
-            'points'          => 2,
-            'comments'        => 'Task Updated',
-            'type'            => 'task'
-        ]);
-
-        $userIDHashID  = new Hashids('user id hash',10,Config::get('app.encode_chars'));
-        $user_id       = $userIDHashID->encode(Auth::user()->id);
-
-        $user_name     = Auth::user()->first_name.' '.Auth::user()->last_name;
-        if(!empty(Auth::user()->username))
-            $user_name = Auth::user()->username;
-
-        $objective_id = $objective_id[0];
-        $unit_id      = $unit_id[0];
-
-        DB::table('my_watchlist')
-            ->join('users','my_watchlist.user_id','=','users.id')
-            ->where('my_watchlist.user_id','!=',Auth::user()->id)
-            ->where(function ($query) use($objective_id,$unit_id,$task_id_decoded)
-            {
-                $query->where('objective_id',$objective_id)
-                    ->orWhere('unit_id',$unit_id)
-                    ->orWhere('task_id',$task_id_decoded);
-            })->get();
-
-
-        SiteActivity::create([
-            'user_id'            => Auth::user()->id,
-            'unit_id'            => $unit_id,
-            'objective_id'       => $objective_id,
-            'task_id'            => $task_id_decoded,
-            'comment'            => '<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                .$user_name.'</a>
-                        updated task <a href="'.url('tasks/'.$task_id.'/'.$slug).'">'.$request->task_name.'</a>'
-        ]);
-
-        $unitObj = Unit::find($unit_id);
-        return redirect()->to('units/'. $request->unit .'/'.$unitObj->slug);
-    }
 
     public function remove_task_documents(Request $request)
     {
