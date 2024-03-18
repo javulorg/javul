@@ -236,11 +236,11 @@
                                                 @foreach($taskDocumentsObj as $document)
                                                     @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'no'])
                                                 @endforeach
-                                                @if(empty($taskObj) || ($taskObj->status == "editable"))
+                                                @if(empty($taskObj) || ($taskObj->status == "draft"))
                                                     @include('tasks.partials.document_upload')
                                                 @endif
                                             @else
-                                                @if(empty($taskObj) || ($taskObj->status == "editable"))
+                                                @if(empty($taskObj) || ($taskObj->status == "draft"))
                                                     @include('tasks.partials.document_upload')
                                                 @endif
                                             @endif
@@ -282,11 +282,11 @@
         $(document).ready(function () {
 
             $(".datetimepicker").flatpickr({
-                enableTime: true,
+                enableTime: false,
                 position: "above",
                 mode: "multiple",
-                minuteIncrement: 1,
-                enableSeconds: true,
+                // minuteIncrement: 1,
+                enableSeconds: false,
             });
 
             $("#task_skills").select2({
@@ -381,27 +381,6 @@
             });
 
 
-            // $('#task_form').on('submit', function(e) {
-            //     var currentTaskStatus = $('#current_task_status').val();
-            //     var inputValue = $('#task_status').val();
-            //     var authUser = $('#auth_user').val();
-            //
-            //     if (authUser != 4 && authUser != 1) {
-            //         if (currentTaskStatus === 'waiting_for_approval') {
-            //             e.preventDefault();
-            //             swal("Oops!", "Task can't be edited anymore!", "error");
-            //         }
-            //     }
-            //
-            //     // Use && for the correct logic
-            //     if (currentTaskStatus === 'bid_selection' && (authUser !== '4' && authUser !== '1')) {
-            //         e.preventDefault();
-            //         swal("Oops!", "You must fill out the form!", "error");
-            //     }
-            // });
-
-
-
             $('#task_form').on('submit', function(e) {
                 var currentTaskStatus = $('#current_task_status').val();
                 var newTaskStatus = $('#task_status').val(); // Get the new status the user wants to change to
@@ -430,7 +409,7 @@
                     e.preventDefault();
                     swal("Oops!", "Task can't be edited anymore!", "error");
                 }
-                else if (statusOrder[newTaskStatus] < statusOrder[currentTaskStatus]) {
+                else if (statusOrder[newTaskStatus] < statusOrder[currentTaskStatus] && (authUserId !== 1 && authUserId !== 3)) {
                     e.preventDefault();
                     swal("Error", "You cannot change the task status to a previous stage.", "error");
                 }
