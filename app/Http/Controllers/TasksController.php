@@ -1111,7 +1111,7 @@ class TasksController extends Controller
                 if($request->isMethod('post') && !empty($task))
                 {
                     //change task status if user unitAdmin
-                    if($change_status || (Task::isUnitAdminOfTask($task_id) && $task->status != "editable"))
+                    if($change_status || (Task::isUnitAdminOfTask($task_id) && $task->status != "draft"))
                     {
                         Task::where('id',$task_id)->update([
                             'status'=> $request->input('task_status')
@@ -1749,19 +1749,6 @@ class TasksController extends Controller
                         deleted task '.$tasktempObj->name
                     ]);
 
-                    // mail send
-                    /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                    if(!empty($alertObj) && $alertObj->task_management == 1) {
-                        $toEmail = Auth::user()->email;
-                        $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                        $subject = 'Task updated successfully. ';
-
-                        Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                            $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                        });
-                    }*/
-
                     // After deleted task send mail to unit creator
                     $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
                     $unitCreator = User::find(Auth::user()->id);
@@ -1811,16 +1798,9 @@ class TasksController extends Controller
 
                     $taskEditorObj =  TaskEditor::where('task_id',$task_id)->where('submit_for_approval','not_submitted')->count();
                     if($taskEditorObj == 0){
-                        //$taskObj = Task::find($task_id);
                         if(!empty($taskObj)){
-                            //$taskObj->update(['status'=>'awaiting_approval']);
-                            //$taskObj->update(['status'=>'approval']);
-                            //update task status if only on editor of an task
                             $taskObj->update(['status'=>'open_for_bidding']);
 
-
-
-                            // add activity point for submit for approval task.
                             ActivityPoint::create([
                                 'user_id'=>Auth::user()->id,
                                 'task_id'=>$task_id,
@@ -1846,38 +1826,6 @@ class TasksController extends Controller
                                     .'</a> submitted task approval <a href="'.url('tasks/'.$task_id_encoded.'/'.$taskObj->slug).'">'
                                     .$taskObj->name.'</a>'
                             ]);
-
-                            // mail send
-                            /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                            if(!empty($alertObj) && $alertObj->task_management == 1) {
-                                $toEmail = Auth::user()->email;
-                                $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                                $subject = 'Task updated successfully. ';
-
-                                Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                                    $message->to($toEmail, $toName)->subject($subject);
-                                    $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                                });
-                            }*/
-
-                            // After Created Unit send mail to site admin
-                            $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
-                            $unitCreator = User::find(Auth::user()->id);
-
-                            $toEmail = $unitCreator->email;
-                            $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
-                            $subject="Task approval submitted by".Auth::user()->first_name.' '.Auth::user()->last_name;
-
-//                            Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use
-//                            ($toEmail,$toName,
-//                                $subject,$siteAdminemails)
-//                            {
-//                                $message->to($toEmail,$toName)->subject($subject);
-//                                if(!empty($siteAdminemails))
-//                                    $message->bcc($siteAdminemails,"Admin")->subject($subject);
-//
-//                                $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-//                            });
 
                             return response()->json(['success'=>true,'status'=>'awaiting_approval']);
                         }
@@ -2101,21 +2049,6 @@ class TasksController extends Controller
                                 .$userObj->first_name.' '.$userObj->last_name
                                 .'</a>'
                         ]);
-
-                        // mail send
-                        /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                        if(!empty($alertObj) && $alertObj->task_management == 1) {
-                            $toEmail = Auth::user()->email;
-                            $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                            $subject = 'Task updated successfully. ';
-
-                            Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                                $message->to($toEmail, $toName)->subject($subject);
-                                $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                            });
-                        }*/
-
-
                     }
                     return response()->json(['success'=>true]);
                 }
