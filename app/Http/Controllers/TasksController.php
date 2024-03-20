@@ -99,7 +99,6 @@ class TasksController extends Controller
         return view('tasks.index', compact('homeCheck','tasksTotal'));
     }
 
-
     public function getObjectiveTask($objectiveId, $slug, $unitId)
     {
         $taskObjectiveObj = [];
@@ -156,11 +155,6 @@ class TasksController extends Controller
 
         return view('tasks.create');
     }
-    public function storeObjectiveTask($objectiveHashId)
-    {
-
-    }
-
 
     public function create(Request $request)
     {
@@ -677,6 +671,12 @@ class TasksController extends Controller
             'idea_id'                         => $request->idea_id
         ]);
 
+        if($request->task_status == "open_for_bidding")
+        {
+            Task::where('id',$task_id)->update([
+                'open_for_bidding_date'  => Carbon::now()->format('Y-m-d')
+            ]);
+        }
 //        if(Task::isUnitAdminOfTask($task_id))
 //        {
 //            Task::where('id',$task_id)->update([
