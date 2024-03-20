@@ -16,6 +16,7 @@ use App\Models\Unit;
 use App\Models\User;
 use App\Models\UserMessages;
 use App\Models\UserNotification;
+use Carbon\Carbon;
 use Hashids\Hashids;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -173,6 +174,19 @@ class ViewComposerServiceProvider extends ServiceProvider
             ->orderBy('id', 'DESC')
             ->get();
 
+        $changeOpenForBiddingTasks = Task::where('status', 'open_for_bidding')
+            ->where('open_for_bidding_date', '<', Carbon::now()->format('Y-m-d'))
+            ->get();
+        if($changeOpenForBiddingTasks)
+        {
+            foreach ($changeOpenForBiddingTasks as $task)
+            {
+                $task->update([
+                   'status'    => 'bid_selection',
+                    'open_for_bidding_date'  => null
+                ]);
+            }
+        }
 
         view()->share('issuesMaster',$issuesMaster);
         view()->share('issuesMasterTotal',$issuesMasterTotal);

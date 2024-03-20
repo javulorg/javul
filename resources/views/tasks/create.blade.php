@@ -168,40 +168,40 @@
                                     <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
-                                @if(!empty($taskObj))
-                                <div class="col-sm-4 mt-1 mb-2 form-group">
-                                    <label class="control-label">Status</label>
-                                    <div class="input-icon right">
-                                        @if(!empty($change_task_status) || \App\Models\Task::isUnitAdminOfTask($taskObj->id))
-                                            <select name="task_status" class="form-control selectpicker" data-live-search="true" id="task_status">
-                                                @foreach(\App\Models\SiteConfigs::task_status() as $index=>$status)
-                                                    <option @if($taskObj->status == $index) selected=selected @endif value="{{$index}}">{{ $status }}</option>
-                                                @endforeach
-                                            </select>
-                                         @else
-                                            <span>
-                                                {{\App\Models\SiteConfigs::task_status($taskObj->status)}}
-                                                <!--</span>-->
-                                                    @if($taskObj->status == "editable" && !empty($taskEditor) && $taskEditor->submit_for_approval == "not_submitted")
-                                                        @if(count($otherEditorsDone) > 0)
-                                                            ({{count($otherEditorsDone).' task editor submitted this task for Approval'}}
-                                                            @if(!empty($availableDays))
-                                                                {{"Time left for editing: ".$availableDays." days."}})
-                                                            @endif
-                                                        @endif
-                                                        <a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a>
+{{--                            <div class="col-sm-8">--}}
+{{--                                @if(!empty($taskObj))--}}
+{{--                                <div class="col-sm-4 mt-1 mb-2 form-group">--}}
+{{--                                    <label class="control-label">Status</label>--}}
+{{--                                    <div class="input-icon right">--}}
+{{--                                        @if(!empty($change_task_status) || \App\Models\Task::isUnitAdminOfTask($taskObj->id))--}}
+{{--                                            <select name="task_status" class="form-control selectpicker" data-live-search="true" id="task_status">--}}
+{{--                                                @foreach(\App\Models\SiteConfigs::task_status() as $index=>$status)--}}
+{{--                                                    <option @if($taskObj->status == $index) selected=selected @endif value="{{$index}}">{{ $status }}</option>--}}
+{{--                                                @endforeach--}}
+{{--                                            </select>--}}
+{{--                                         @else--}}
+{{--                                            <span>--}}
+{{--                                                {{\App\Models\SiteConfigs::task_status($taskObj->status)}}--}}
+{{--                                                <!--</span>-->--}}
+{{--                                                    @if($taskObj->status == "editable" && !empty($taskEditor) && $taskEditor->submit_for_approval == "not_submitted")--}}
+{{--                                                        @if(count($otherEditorsDone) > 0)--}}
+{{--                                                            ({{count($otherEditorsDone).' task editor submitted this task for Approval'}}--}}
+{{--                                                            @if(!empty($availableDays))--}}
+{{--                                                                {{"Time left for editing: ".$availableDays." days."}})--}}
+{{--                                                            @endif--}}
+{{--                                                        @endif--}}
+{{--                                                        <a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a>--}}
 
-                                                    @elseif($taskObj->status == "editable" && count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted")
-                                                        ( You changed this task status to "Awaiting Approval". Waiting for {{count($otherRemainEditors)}}
-                                                        other editors to do the same)
-                                                    @endif
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-                            </div>
+{{--                                                    @elseif($taskObj->status == "editable" && count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted")--}}
+{{--                                                        ( You changed this task status to "Awaiting Approval". Waiting for {{count($otherRemainEditors)}}--}}
+{{--                                                        other editors to do the same)--}}
+{{--                                                    @endif--}}
+{{--                                            </span>--}}
+{{--                                        @endif--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            @endif--}}
+{{--                            </div>--}}
                         </div>
 
 

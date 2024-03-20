@@ -34,7 +34,8 @@ class Task extends Model
         'task_action',
         'summary',
         'slug',
-        'comment'
+        'comment',
+        'open_for_bidding_date'
     ];
 
 
