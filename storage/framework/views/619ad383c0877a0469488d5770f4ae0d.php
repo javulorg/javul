@@ -21,7 +21,7 @@
                     </li>
                 <?php endif; ?>
             <?php endif; ?>
-            
+
         </ul>
     </div>
 
@@ -51,6 +51,11 @@
     <script src="<?php echo e(asset('v2/jquery/jquery-validation/dist/additional-methods.min.js')); ?>"></script>
     <script src="<?php echo e(asset('v2/fontawesome/js/all.min.js')); ?>"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
+    <script src="<?php echo url('assets/js/function.js'); ?>" type="text/javascript"></script>
+    <script>
+        var siteURL = '<?php echo url(''); ?>';
+        var login = '<?php echo e(\Auth::check()); ?>';
+    </script>
 
 
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/layout/footer.blade.php ENDPATH**/ ?>

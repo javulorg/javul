@@ -177,7 +177,7 @@
                 </div>
             </div>
 
-            <div class="content_block">
+            <div class="content_block mt-4">
                 <div class="table_block table_block_objectives active">
                     <div class="table_block_head">
                         <div class="table_block_icon">
@@ -199,7 +199,7 @@
                 </div>
             </div>
 
-            <div class="content_block_comments">
+            <div class="content_block_comments mt-4">
                 <div class="table_block table_block_comments">
                     <div class="table_block_head">
                         <div class="table_block_icon">
@@ -266,14 +266,80 @@
                 </div>
             </div>
 
+
+            <div class="content_block mt-4">
+                <div class="table_block table_block_tasks">
+                    <div class="table_block_head">
+                        <div class="table_block_icon">
+                            <img src="<?php echo e(asset('v2/assets/img/auction.png')); ?>" alt="" class="img-fluid">
+                        </div>
+                        Bidders
+                        <div class="arrow">
+                            <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
+                        </div>
+                    </div>
+                    <div class="table_block_body">
+
+                        <table>
+                            <thead>
+                            <tr>
+                                <th class="title_col">Bidder Name</th>
+                                <th class="type_col">Amount</th>
+                                <th class="type_col"></th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <?php if(count($taskBidders) > 0): ?>
+                                <?php $__currentLoopData = $taskBidders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $bidder): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr>
+                                        <td class="title_col">
+                                            <a href="<?php echo url('userprofiles/'.$userIDHashID->encode($bidder->user_id).'/'.
+                                                strtolower($bidder->first_name.'_'.$bidder->last_name)); ?>">
+                                                <?php echo e($bidder->first_name.' '
+                                                .$bidder->last_name); ?>
+
+                                            </a>
+                                        </td>
+                                        <td class="type_col"><?php echo e($bidder->amount); ?> <span class="badge" style="color: #0d1217; font-size:12px;"><?php echo e($bidder->charge_type); ?></span></td>
+                                        <td class="type_col">
+                                            <?php if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to): ?>
+                                                <a class="btn btn-sm btn-warning" style="color:#fff;">Assigned</a>
+                                            <?php elseif($taskObj->status=="completion_evaluation" && $bidder->user_id == $taskObj->assign_to): ?>
+                                                <a class="btn btn-sm btn-success" style="color:#fff;">Completed</a>
+                                            <?php elseif($bidder->status == "offer_rejected"): ?>
+                                                <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
+                                            <?php elseif($taskObj->status=="in_progress" && $bidder->user_id == $taskObj->assign_to): ?>
+                                                <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
+                                            <?php elseif((empty($taskObj->assign_to) && $isUnitAdminOfTask) || (!empty($taskObj->assign_to) && $isUnitAdminOfTask && $taskObj->status=="open_for_bidding")): ?>
+                                                <a class="btn btn-sm btn-primary assign_now"
+                                                   data-uid="<?php echo e($userIDHashID->encode($bidder->user_id)); ?>"
+                                                   data-tid="<?php echo e($taskIDHashID->encode($bidder->task_id)); ?>"
+                                                   style="color:#fff;">Assign now</a>
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="3">No record(s) found.</td>
+                                </tr>
+                            <?php endif; ?>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
     <script>
         $(document).ready(function() {
-            $("#comment_form").click(function(e)
-            {
+            $("#comment_form").click(function(e){
                 var unitId = $('#comment_unit_id').val();
                 var sectionId = $('#comment_section_id').val();
                 var objectId = $('#comment_object_id').val();
@@ -299,367 +365,27 @@
                     },
                 });
             });
+
+            $(".assign_now").click(function (e) {
+                var uid = $(this).attr('data-uid');
+                var tid = $(this).attr('data-tid');
+                if($.trim(uid) != "" && $.trim(tid) != ""){
+                    $.ajax({
+                        type:'GET',
+                        url: '<?php echo e(url("/tasks/assign")); ?>',
+                        data:{uid:uid,tid:tid },
+                        dataType:'json',
+                        success:function(resp){
+                            if(resp.success){
+                                showToastMessage('TASK_ASSIGN_SUCCESSFULLY');
+                                window.location.reload(true);
+                            }
+                        }
+                    })
+                }
+            });
         });
     </script>
 <?php $__env->stopSection(); ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/tasks/view.blade.php ENDPATH**/ ?>

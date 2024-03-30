@@ -1,6 +1,8 @@
 @include('layout.header-dependencies')
 @include('layout.header')
 <div class="wrapper position-relative">
+
+
     <div class="banner">
         <div class="banner_left_side">
             <div class="banner_car">
@@ -37,6 +39,12 @@
                 <a href="/">Urban Planning</a><div class="separator"></div><a href="#">Public Transport</a><div class="separator"></div><a href="#">Taxis</a>
             </div>
         </div> -->
+
+
+    </div>
+
+    <div class="mt-2" id="loadingDiv" style="display: none;"><img id="loading" src="{!! url('assets/images/loader.gif') !!}" alt="" />
+
     </div>
 
     <div class="content">

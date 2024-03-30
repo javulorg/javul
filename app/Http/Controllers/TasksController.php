@@ -1634,6 +1634,7 @@ class TasksController extends Controller
                     view()->share('taskObj',$taskObj );
 
                     $flag =Task::isUnitAdminOfTask($task_id);
+//                    dd($flag);
                     $taskBidders = TaskBidder::join('users','task_bidders.user_id','=','users.id')
                                         ->select(['users.first_name','users.last_name','users.id as user_id','task_bidders.*'])
                                         ->where('task_id',$task_id)->get();
@@ -1983,25 +1984,27 @@ class TasksController extends Controller
         $user_id = $request->input('uid');
         $task_id = $request->input('tid');
         $task_id_encoded =$task_id;
-        if(!empty($task_id) && !empty($user_id)){
+        if(!empty($task_id) && !empty($user_id))
+        {
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
 
             $userIDHashID = new Hashids('user id hash',10,Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
 
-            if(!empty($task_id) && !empty($user_id)){
+            if(!empty($task_id) && !empty($user_id))
+            {
                 $task_id = $task_id[0];
                 $user_id = $user_id[0];
                 $taskObj = Task::find($task_id);
                 $userObj = User::find($user_id);
-                if(!empty($taskObj) && !empty($userObj)){
+                if(!empty($taskObj) && !empty($userObj))
+                {
                     $taskBidderObj = TaskBidder::where('task_id',$task_id)->where('user_id',$user_id)->first();
                     if(!empty($taskBidderObj)){
                         $taskBidderObj->update(['status'=>'offer_sent']);
                         Task::where('id','=',$task_id)->update(['status'=>'assigned','assign_to'=>$user_id]);
 
-                        // add activity point for submit for approval task.
                         ActivityPoint::create([
                             'user_id'=>Auth::user()->id,
                             'task_id'=>$task_id,
@@ -2010,30 +2013,11 @@ class TasksController extends Controller
                             'type'=>'task'
                         ]);
 
-                        $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
-                        $unitCreator = User::find($user_id);
-
-                        $toEmail = $unitCreator->email;
-                        $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
-                        $subject="Task assigned to ".$unitCreator->first_name.' '.$unitCreator->last_name;
-
-                        // send email and notification
-                        $unitObj = Unit::find($taskObj->unit_id);
-                        $unitIDHashID= new Hashids('unit id hash',10,Config::get('app.encode_chars'));
-
-                        $content = 'Task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'.$taskObj->name.'</a> at Unit' .
-                            '<a href="'.url('units/'.$unitIDHashID->encode($unitObj->id).'/'.$unitObj->slug).'">'.$unitObj->name.'</a> has
-                             been assigned to you';
-
-                        $email_subject = 'Task '.$taskObj->name.' has been assigned to you';
-
-                        \App\Models\User::SendEmailAndOnSiteAlert($content,$email_subject,[$unitCreator],$onlyemail=false,'task_management');
-
                         $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                         $loggedin_user_id = $userIDHashID->encode(Auth::user()->id);
                         $user_id = $userIDHashID->encode($user_id);
 
-                        $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+                        $user_name= Auth::user()->first_name.' '.Auth::user()->last_name;
                         if(!empty(Auth::user()->username))
                             $user_name =Auth::user()->username;
 
