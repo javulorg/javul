@@ -179,6 +179,7 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::any('tasks/bid_now/{task_id}', [TasksController::class,'bid_now']);
     Route::any('tasks/{taskid}/edit/{task_status}', [TasksController::class,'edit']);
 
+    Route::resource('notifications', NotificationController::class);
     //ForumController
     //Route::get('forum/{unit_id}/{section_id}', 'ForumController@view');
     Route::post('forum/submit', [ForumController::class, 'submit']);
