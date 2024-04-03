@@ -90,6 +90,15 @@
 
         <div class="header_right">
             <?php if(auth()->guard()->check()): ?>
+
+                <!-- Add Notifications link -->
+                <a href="<?php echo e(url('notifications')); ?>" class="header_btn" style="position: relative;">
+                    <img src="<?php echo e(asset('v2/assets/img/bell.svg')); ?>" alt="Notifications" class="img-fluid" style="max-width: 66%!important; filter: brightness(0) invert(1);">
+                    <!-- Counter -->
+                    <span class="notification-counter" style="position: absolute; top: -4px; right: -4px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 10px;">3</span>
+
+                </a>
+
                 <a href="<?php echo e(url('my_watchlist')); ?>" class="header_btn">
                     <img src="<?php echo e(asset('v2/assets/img/Watchlist.svg')); ?>" alt="" class="img-fluid" style="max-width:88%!important;">
                 </a>
@@ -102,13 +111,10 @@
                 </a>
 
                 <a href="<?php echo url('userprofiles/'.$userIDHashID->encode(auth()->user()->id).'/'.strtolower(auth()->user()->first_name).'_'.strtolower(auth()->user()->last_name)); ?>" class="header_btn">
-
                     <img src="<?php echo e(asset('v2/assets/img/user.svg')); ?>" alt="" class="img-fluid">
                 </a>
 
                 <a style="text-decoration: none;" href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="login_btn">
-
-
                      Logout
                 </a>
 

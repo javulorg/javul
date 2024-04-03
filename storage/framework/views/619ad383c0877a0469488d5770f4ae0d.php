@@ -58,4 +58,6 @@
     </script>
 
 
+
+
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/layout/footer.blade.php ENDPATH**/ ?>

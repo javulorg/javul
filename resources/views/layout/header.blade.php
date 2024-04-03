@@ -90,6 +90,15 @@
 
         <div class="header_right">
             @auth
+
+                <!-- Add Notifications link -->
+                <a href="{{ url('notifications') }}" class="header_btn" style="position: relative;">
+                    <img src="{{ asset('v2/assets/img/bell.svg') }}" alt="Notifications" class="img-fluid" style="max-width: 66%!important; filter: brightness(0) invert(1);">
+                    <!-- Counter -->
+                    <span class="notification-counter" style="position: absolute; top: -4px; right: -4px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 10px;">3</span>
+
+                </a>
+
                 <a href="{{ url('my_watchlist') }}" class="header_btn">
                     <img src="{{ asset('v2/assets/img/Watchlist.svg') }}" alt="" class="img-fluid" style="max-width:88%!important;">
                 </a>
@@ -102,13 +111,10 @@
                 </a>
 
                 <a href="{!! url('userprofiles/'.$userIDHashID->encode(auth()->user()->id).'/'.strtolower(auth()->user()->first_name).'_'.strtolower(auth()->user()->last_name)) !!}" class="header_btn">
-{{--                    <i class="fas fa-user-circle text-white" style="font-size: 1rem; margin-top: 3px!important;" aria-hidden="true"></i>--}}
                     <img src="{{ asset('v2/assets/img/user.svg') }}" alt="" class="img-fluid">
                 </a>
 
                 <a style="text-decoration: none;" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="login_btn">
-{{--                    <i class="fas fa-sign-out-alt" aria-hidden="true" style="font-size: 1rem; margin-top: 3px!important;"></i>--}}
-{{--                    <span class="login_btn" style="margin: 0 4px; text-underline-offset: auto;">Logout</span>--}}
                      Logout
                 </a>
 
