@@ -6,7 +6,7 @@ $(function(){
             return false;
         }
     });
-    
+
     /**
      * below function are used for validate bitcoin value with 4 decimal poin
      * bitcoin minimum transfer amount is 0.0001
@@ -18,23 +18,23 @@ $(function(){
            (event.which != 0 && event.which != 4))) {
             event.preventDefault();
         }
-      
+
         var text = $(this).val();
         if ((event.which == 46) && (text.indexOf('.') == -1)) {
          setTimeout(function() {
           if ($this.val().substring($this.val().indexOf('.')).length > 4) {
            $this.val($this.val().substring(0, $this.val().indexOf('.') + 4));
-           
-          }     
+
+          }
          }, 1);
         }
-      
+
         if ((text.indexOf('.') != -1) &&
          (text.substring(text.indexOf('.')).length > 4) &&
          (event.which != 0 && event.which != 4) &&
          ($(this)[0].selectionStart >= text.length - 4)) {
           event.preventDefault();
-        }      
+        }
     });
 
     //show loaded on ajax calls.
@@ -381,26 +381,6 @@ function check_assigned_task(){
                 if($(".confirmation_box_"+resp.task_id).length == 0){
                     $(".content > .container").prepend('<div class="row"><div class="col-sm-12">'+resp.html+'</div></div>');
                 }
-                /*bootbox.dialog({
-                    message: resp.html,
-                    title: resp.title,
-                    buttons: {
-                        success: {
-                            label: resp.ok,
-                            className: "btn-success",
-                            callback: function() {
-                                accept_reject_offer(resp.task_id,'/tasks/accept_offer');
-                            }
-                        },
-                        danger: {
-                            label: resp.cancel,
-                            className: "btn-danger",
-                            callback: function() {
-                                accept_reject_offer(resp.task_id,'/tasks/reject_offer');
-                            }
-                        }
-                    }
-                });*/
             }else
             {
                 setTimeout(function(){

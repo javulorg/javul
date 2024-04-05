@@ -88,19 +88,77 @@
         </div>
 
 
+
         <div class="header_right">
             @auth
 
-                <!-- Add Notifications link -->
-                <a href="{{ url('notifications') }}" class="header_btn" style="position: relative;">
-                    <img src="{{ asset('v2/assets/img/bell.svg') }}" alt="Notifications" class="img-fluid" style="max-width: 66%!important; filter: brightness(0) invert(1);">
-                    <!-- Counter -->
-                    <span class="notification-counter" style="position: absolute; top: -4px; right: -4px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 10px;">3</span>
+                <style>
+                    /* Custom styling for notifications */
+                    .notification-card {
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        padding: 12px;
+                        transition: all 0.3s ease;
+                    }
 
-                </a>
+                    .notification-card:hover {
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    }
 
-                <a href="{{ url('my_watchlist') }}" class="header_btn">
-                    <img src="{{ asset('v2/assets/img/Watchlist.svg') }}" alt="" class="img-fluid" style="max-width:88%!important;">
+                    /* Make the dropdown scrollable */
+                    .dropdown-menu-scrollable {
+                        max-height: 250px;
+                        overflow-y: auto;
+                    }
+                    .card-link {
+                        color: inherit;
+                        text-decoration: none;
+                    }
+
+                </style>
+
+                <div class="dropdown">
+                    <a href="#" class="header_btn dropdown-toggle" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ asset('v2/assets/img/bell.svg') }}" alt="Notifications" class="img-fluid" style="max-width: 66%!important; filter: brightness(0) invert(1);">
+                        <!-- Counter -->
+                        @auth()
+                            @if(isset($notifications) && count($notifications) > 0)
+                                <span class="notification-counter" style="position: absolute; top: -4px; right: -0px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 10px;">{{ count($notifications) }}</span>
+                            @else
+                            @endif
+                        @endauth
+
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-scrollable" aria-labelledby="notificationsDropdown">
+                        @auth()
+                            @if(isset($notifications) && count($notifications) > 0)
+                                @foreach($notifications as $notification)
+                                    @if($notification->status == "offer_sent")
+                                        <li>
+                                            <a href="/notification-detail" class="card-link">
+                                                <div class="card notification-card">
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                                            <h6 class="card-title mb-0">Task Assigned!</h6>
+                                                            <small class="text-muted">{{ \Carbon\Carbon::parse($notification->updated_at)->format('F j, Y') }}</small>
+                                                        </div>
+                                                            <p class="card-text text-smaller mb-0">Your bid has been selected and task ({{ $notification->name }}) has been assigned to you.</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            @endif
+                        @endauth
+                    </ul>
+                </div>
+
+                <div style="width: 20px;"></div> <!-- Adjust width as needed -->
+
+                <a href="{{ url('my_watchlist') }}" class="header_btn me-3">
+                    <img src="{{ asset('v2/assets/img/Watchlist.svg') }}" alt="Watchlist" class="img-fluid" style="max-width:88%!important;">
                 </a>
                 <a href="{{ route('message_inbox') }}" class="header_btn">
                     <img src="{{ asset('v2/assets/img/mail.svg') }}" alt="" class="img-fluid" style="max-width:88%!important;">
@@ -278,3 +336,7 @@
         </div>
     </div>
 </header>
+
+
+
+

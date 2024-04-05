@@ -52,10 +52,15 @@
     <script src="{{ asset('v2/fontawesome/js/all.min.js') }}"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
     <script src="{!! url('assets/js/function.js') !!}" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         var siteURL = '{!! url('') !!}';
         var login = '{{ \Auth::check() }}';
     </script>
+
+
+
 
 
 

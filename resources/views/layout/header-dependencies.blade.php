@@ -18,6 +18,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('v2/assets/css/style.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('v2/tooltipster/dist/css/tooltipster.bundle.min.css') }}">
 <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.5.2/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 
 <link rel="shortcut icon" href="{!! url('favicon.ico') !!}" type="image/icon">

@@ -87,20 +87,20 @@
                                                 Status:
                                             </div>
                                             <div class="sidebar_block_right">
-                                                <?php echo e(\App\Models\SiteConfigs::task_status($taskObj->status)); ?>
-
+                                                <label class="control-label" style="color: lightgreen;"><?php echo e(\App\Models\SiteConfigs::task_status($taskObj->status)); ?></label>
                                                 <?php if($taskObj->status == "open_for_bidding" && auth()->check()): ?>
                                                     <?php if(\App\Models\TaskBidder::checkBid($taskObj->id)): ?>
-                                                        <a title="bid now" href="<?php echo url('tasks/bid_now/'.$taskIDHashID->encode($taskObj->id)).'#bid_now'; ?>" class="btn btn-primary btn-sm" style="color:#fff !important;">
-                                                            Bid now
+                                                        <a title="Bid Now" href="<?php echo url('tasks/bid_now/'.$taskIDHashID->encode($taskObj->id)).'#bid_now'; ?>" class="btn btn-success btn-sm" style="color:#fff !important;">
+                                                            Bid Now
                                                         </a>
                                                     <?php else: ?>
-                                                        <a title="applied bid" class="btn btn-warning btn-sm" style="color:#fff !important;">
+                                                        <a title="Applied Bid" class="btn btn-warning btn-sm disabled" style="color:#fff !important;">
                                                             Applied Bid
                                                         </a>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                             </div>
+
                                         </div>
 
                                         <div class="sidebar_line"></div>
@@ -311,7 +311,8 @@
                                                 <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
                                             <?php elseif($taskObj->status=="in_progress" && $bidder->user_id == $taskObj->assign_to): ?>
                                                 <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
-                                            <?php elseif((empty($taskObj->assign_to) && $isUnitAdminOfTask) || (!empty($taskObj->assign_to) && $isUnitAdminOfTask && $taskObj->status=="open_for_bidding")): ?>
+                                            <?php elseif((empty($taskObj->assign_to) && ($isUnitAdminOfTask || auth()->user()->role == 1 || auth()->user()->role == 3)) || (!empty($taskObj->assign_to) && ($isUnitAdminOfTask || auth()->user()->role == 1 || auth()->user()->role == 3) && $taskObj->status=="open_for_bidding")): ?>
+
                                                 <a class="btn btn-sm btn-primary assign_now"
                                                    data-uid="<?php echo e($userIDHashID->encode($bidder->user_id)); ?>"
                                                    data-tid="<?php echo e($taskIDHashID->encode($bidder->task_id)); ?>"
@@ -376,9 +377,18 @@
                         data:{uid:uid,tid:tid },
                         dataType:'json',
                         success:function(resp){
-                            if(resp.success){
-                                showToastMessage('TASK_ASSIGN_SUCCESSFULLY');
-                                window.location.reload(true);
+                            if (resp.success) {
+                                // Show SweetAlert notification
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Task assigned successfully!',
+                                    timer: 2000, // Set a timer for auto-close
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    // Reload the page
+                                    window.location.reload(true);
+                                });
                             }
                         }
                     })
