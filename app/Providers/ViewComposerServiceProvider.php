@@ -12,12 +12,14 @@ use App\Models\Issue;
 use App\Models\Objective;
 use App\Models\SiteActivity;
 use App\Models\Task;
+use App\Models\TaskBidder;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\UserMessages;
 use App\Models\UserNotification;
 use Carbon\Carbon;
 use Hashids\Hashids;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -33,6 +35,16 @@ class ViewComposerServiceProvider extends ServiceProvider
     {
         view()->composer('*',function($view){
             $view->with('authUserObj',auth()->user());
+            if(auth()->check())
+            {
+                $notifications = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')
+                    ->whereIn('task_bidders.status',['offer_sent','re_assigned'])
+                    ->where('task_bidders.user_id', Auth::user()->id)
+                    ->select(['tasks.name', 'tasks.slug', 'task_bidders.*'])
+                    ->get();
+                view()->share('notifications', $notifications);
+            }
+
             $view->with('totalUnits',Unit::count());
             $view->with('totalObjectives',Objective::count());
             $view->with('totalTasks',Task::count());
@@ -193,6 +205,10 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('unitsMaster',$unitsMaster);
         view()->share('ideasMasterTotal',$ideasMasterTotal);
         view()->share('ideasMaster',$ideasMaster);
+
+
+
+
 
     }
 

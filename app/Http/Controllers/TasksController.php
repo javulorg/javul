@@ -1634,7 +1634,6 @@ class TasksController extends Controller
                     view()->share('taskObj',$taskObj );
 
                     $flag =Task::isUnitAdminOfTask($task_id);
-//                    dd($flag);
                     $taskBidders = TaskBidder::join('users','task_bidders.user_id','=','users.id')
                                         ->select(['users.first_name','users.last_name','users.id as user_id','task_bidders.*'])
                                         ->where('task_id',$task_id)->get();
@@ -1862,7 +1861,6 @@ class TasksController extends Controller
                     {
                         Validator::extend('isCurrency', function($field,$value,$parameters)
                         {
-                            //return true if field value is foo
                             return Helpers::isCurrency($value);
                         });
 
@@ -1903,18 +1901,6 @@ class TasksController extends Controller
                         if(!empty(Auth::user()->username))
                             $user_name =Auth::user()->username;
 
-
-                        // send email and notification
-                        $unitObj = Unit::find($taskObj->unit_id);
-                        $unitIDHashID= new Hashids('unit id hash',10,Config::get('app.encode_chars'));
-
-                        $content = 'You have bid Task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'.$taskObj->name.'</a>
-                         at Unit <a href="'.url('units/'.$unitIDHashID->encode($unitObj->id).'/'.$unitObj->slug).'">'.$unitObj->name.'</a>';
-
-                        $email_subject = 'You have bid Task '.$taskObj->name.' at Unit '.$unitObj->name;
-
-                        \App\Models\User::SendEmailAndOnSiteAlert($content,$email_subject,[Auth::user()],$onlyemail=false,'task_management');
-
                         SiteActivity::create([
                             'user_id'=>Auth::user()->id,
                             'unit_id'=>$taskObj->unit_id,
@@ -1926,11 +1912,8 @@ class TasksController extends Controller
                                 .$taskObj->name.'</a>'
                         ]);
 
-                        $unitCreator = User::find(Auth::user()->id);
-
-
                         $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_BID')['text']);
-                        return redirect('tasks');
+                        return redirect('tasks/'.$task_id_encoded .'/'.$taskObj->slug);
                     }
                     else{
                         $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
@@ -2048,14 +2031,13 @@ class TasksController extends Controller
                         ->where('task_bidders.user_id',Auth::user()->id)
                         ->select(['tasks.name','tasks.slug','task_bidders.*'])
                         ->first();
-
+//        dd($taskBidderObj->toArray());
         if(!empty($taskBidderObj)){
 
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->encode($taskBidderObj->task_id);
 
-           /* $html = "Your bid has been selected and task (<a href='".url('tasks/'.$task_id.'/'.$taskBidderObj->slug)."'>".$taskBidderObj->name."</a>) " .
-                "has been assigned to you.";*/
+
 
             if($taskBidderObj->status == "offer_sent"){
                 $html = '<div class="alert alert-warning" style="padding:15px;margin-bottom:15px">'.

@@ -44,7 +44,7 @@
     </div>
 
     <div class="mt-2" id="loadingDiv" style="display: none;"><img id="loading" src="{!! url('assets/images/loader.gif') !!}" alt="" />
-
+fffffff
     </div>
 
     <div class="content">
