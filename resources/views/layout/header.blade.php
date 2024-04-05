@@ -136,7 +136,7 @@
                                 @foreach($notifications as $notification)
                                     @if($notification->status == "offer_sent")
                                         <li>
-                                            <a href="/notification-detail" class="card-link">
+                                            <a href="{{ url('notifications/'. $notification->task_id) }}" class="card-link">
                                                 <div class="card notification-card">
                                                     <div class="card-body">
                                                         <div class="d-flex justify-content-between align-items-center mb-3">

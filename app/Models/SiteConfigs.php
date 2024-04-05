@@ -46,6 +46,7 @@ class SiteConfigs extends Model
             'waiting_for_approval'          => 'Waiting for Approval',
             'open_for_bidding'              => 'Open for Bidding',
             'bid_selection'                 => 'Bid Selection',
+            'awaiting_assignment'           =>'Awaiting Assignment',
             'assigned'                      => 'Assigned',
             'in_progress'                   => 'In Progress',
             'completed_under_evaluation'    => 'Completed (Under Evaluation)',
