@@ -2031,7 +2031,7 @@ class TasksController extends Controller
                         ->where('task_bidders.user_id',Auth::user()->id)
                         ->select(['tasks.name','tasks.slug','task_bidders.*'])
                         ->first();
-//        dd($taskBidderObj->toArray());
+
         if(!empty($taskBidderObj)){
 
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
@@ -2065,19 +2065,13 @@ class TasksController extends Controller
         return response()->json(['success'=>false]);
     }
 
-    public function accept_offer(Request $request)
+    public function accept_offer($taskId)
     {
-        $task_id = $request->input('task_id');
-        $task_id_encoded=$task_id;
-        if(!empty($task_id)){
-            $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
-            $task_id = $taskIDHashID->decode($task_id);
-            if(!empty($task_id)){
-                $task_id = $task_id[0];
-                $taskObj = Task::find($task_id);
+        $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
+                $taskObj = Task::find($taskId);
                 if(!empty($taskObj)){
                     $taskObj->update(['status'=>'in_progress']);
-                    $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
+                    $taskBidder = TaskBidder::where('task_id',$taskId)->where('user_id',Auth::user()->id)->first();
                     if(!empty($taskBidder)){
                         $taskBidder->update(['status'=>'offer_accepted']);
                     }
@@ -2092,118 +2086,44 @@ class TasksController extends Controller
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$taskObj->unit_id,
                         'objective_id'=>$taskObj->objective_id,
-                        'task_id'=>$task_id,
+                        'task_id'=>$taskId,
                         'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
                             .$user_name
-                            .'</a> accept offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
+                            .'</a> accept offer of task <a href="'.url('tasks/'.$taskIDHashID->encode($taskId) .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
-
-
-                    // mail send
-                    /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                    if(!empty($alertObj) && $alertObj->task_management == 1) {
-                        $toEmail = Auth::user()->email;
-                        $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                        $subject = 'Task updated successfully. ';
-
-                        Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                            $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                        });
-                    }*/
-
-
-                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
-                    $unitCreator = User::find(Auth::user()->id);
-
-                    $toEmail = $unitCreator->email;
-                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
-                    $subject="Task accepted by ".$unitCreator->first_name.' '.$unitCreator->last_name;
-
-//                    Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
-//                    {
-//                        $message->to($toEmail,$toName)->subject($subject);
-//                        if(!empty($siteAdminemails))
-//                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
-//
-//                        $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-//                    });
-                    return response()->json(['success'=>true]);
+                    return redirect('tasks/'. $taskIDHashID->encode($taskId). '/' . $taskObj->slug);
                 }
-            }
-        }
-        return response()->json(['success'=>false]);
     }
 
-    public function reject_offer(Request $request)
+    public function reject_offer($taskId)
     {
-        $task_id = $request->input('task_id');
-        $task_id_encoded =$task_id;
-        if(!empty($task_id)){
-            $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
-            $task_id = $taskIDHashID->decode($task_id);
-            if(!empty($task_id)){
-                $task_id = $task_id[0];
-                $taskObj = Task::find($task_id);
-                if(!empty($taskObj)){
-                    $taskObj->update(['assign_to'=>null,'status'=>'awaiting_assignment']);
-                    $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->first();
-                    if(!empty($taskBidder)){
-                        $taskBidder->update(['status'=>'offer_rejected']);
-                    }
-                    $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
-                    $user_id = $userIDHashID->encode(Auth::user()->id);
-
-                    $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
-                    if(!empty(Auth::user()->username))
-                        $user_name =Auth::user()->username;
-
-                    SiteActivity::create([
-                        'user_id'=>Auth::user()->id,
-                        'unit_id'=>$taskObj->unit_id,
-                        'objective_id'=>$taskObj->objective_id,
-                        'task_id'=>$task_id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                            .$user_name
-                            .'</a> reject offer of task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
-                            .$taskObj->name.'</a>'
-                    ]);
-
-                    // mail send
-                   /* $alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                    if(!empty($alertObj) && $alertObj->task_management == 1) {
-                        $toEmail = Auth::user()->email;
-                        $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                        $subject = 'Task updated successfully. ';
-
-                        Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                            $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                        });
-                    }*/
-
-                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
-                    $unitCreator = User::find(Auth::user()->id);
-
-                    $toEmail = $unitCreator->email;
-                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
-                    $subject="Task rejected by ".$unitCreator->first_name.' '.$unitCreator->last_name;
-
-//                    Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
-//                    {
-//                        $message->to($toEmail,$toName)->subject($subject);
-//                        if(!empty($siteAdminemails))
-//                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
-//
-//                        $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-//                    });
-
-                    return response()->json(['success'=>true]);
-                }
+        $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
+        $taskObj = Task::find($taskId);
+        if(!empty($taskObj))
+        {
+            $taskObj->update(['assign_to'=>null,'status'=>'awaiting_assignment']);
+            $taskBidder = TaskBidder::where('task_id',$taskId)->where('user_id',Auth::user()->id)->first();
+            if(!empty($taskBidder))
+            {
+                $taskBidder->update(['status'=>'offer_rejected']);
             }
+            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
+            $user_id = $userIDHashID->encode(Auth::user()->id);
+
+            $user_name=Auth::user()->first_name.' '.Auth::user()->last_name;
+            if(!empty(Auth::user()->username))
+                $user_name =Auth::user()->username;
+            SiteActivity::create([
+                'user_id'=>Auth::user()->id,
+                'unit_id'=>$taskObj->unit_id,
+                'objective_id'=>$taskObj->objective_id,
+                'task_id'=>$taskId,
+                'comment'=>'<a href="'.url('userprofiles/'.$user_id.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">' .$user_name
+                    .'</a> reject offer of task <a href="'.url('tasks/'.$taskIDHashID->encode($taskId) .'/'.$taskObj->slug).'">' .$taskObj->name.'</a>'
+            ]);
+            return redirect('tasks/'. $taskIDHashID->encode($taskId). '/' . $taskObj->slug);
         }
-        return response()->json(['success'=>false]);
     }
 
     public function get_biding_details(Request $request)

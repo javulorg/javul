@@ -165,8 +165,11 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::post('tasks/get_tasks', [TasksController::class,'get_tasks']);
     Route::get('tasks/get_biding_details', [TasksController::class,'get_biding_details']);
     Route::get('tasks/check_assigned_task', [TasksController::class,'check_assigned_task']);
-    Route::get('tasks/accept_offer', [TasksController::class,'accept_offer']);
-    Route::get('tasks/reject_offer', [TasksController::class,'reject_offer']);
+
+    Route::get('tasks/accept_offer/{task_id}', [TasksController::class,'accept_offer']);
+
+    Route::get('tasks/reject_offer/{task_id}', [TasksController::class,'reject_offer']);
+
     Route::any('tasks/remove_task_document', [TasksController::class,'remove_task_documents']);
     Route::any('tasks/submit_for_approval', [TasksController::class,'submit_for_approval']);
     Route::get('tasks/delete_task', [TasksController::class,'delete_task']);
@@ -179,7 +182,7 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::any('tasks/bid_now/{task_id}', [TasksController::class,'bid_now']);
     Route::any('tasks/{taskid}/edit/{task_status}', [TasksController::class,'edit']);
 
-    Route::resource('notifications', NotificationController::class);
+    Route::get('notifications/{task_id}/', [App\Http\Controllers\V2\NotificationController::class, 'taskAcceptOfferView']);
     //ForumController
     //Route::get('forum/{unit_id}/{section_id}', 'ForumController@view');
     Route::post('forum/submit', [ForumController::class, 'submit']);

@@ -136,7 +136,7 @@
                                 <?php $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <?php if($notification->status == "offer_sent"): ?>
                                         <li>
-                                            <a href="/notification-detail" class="card-link">
+                                            <a href="<?php echo e(url('notifications/'. $notification->task_id)); ?>" class="card-link">
                                                 <div class="card notification-card">
                                                     <div class="card-body">
                                                         <div class="d-flex justify-content-between align-items-center mb-3">
