@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityPoint;
 use App\Models\AreaOfInterest;
+use App\Models\Fund;
 use App\Models\JobSkill;
 use App\Models\Objective;
 use App\Models\SiteActivity;
@@ -163,18 +164,41 @@ class UserController extends Controller
         return view('users.my_contributions');
     }
 
-    public function my_tasks()
+    public function my_tasks(Request $request)
     {
-        $myBids = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')->where('task_bidders.user_id',
-            Auth::user()->id)->whereNull('task_bidders.status')->select(['tasks.name','tasks.slug','tasks.status as task_status',
-                'task_bidders.*'])->get();
+        $myBids = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')
+            ->where('task_bidders.user_id', Auth::user()->id)
+            ->whereNull('task_bidders.status')
+            ->select(['tasks.name','tasks.id as task_id','tasks.slug','tasks.status as task_status', 'task_bidders.*'])
+            ->get();
         $myAssignedTask = Task::where('status','in_progress')->where('assign_to',Auth::user()->id)->get();
+
+        $assignedTasks = Task::query()
+            ->where('assign_to',Auth::user()->id)
+            ->get();
+        view()->share('assignedTasks',$assignedTasks);
+
+        $inProgressTasks = Task::query()
+            ->where('assign_to',Auth::user()->id)
+            ->where('status','in_progress')
+            ->get();
+
+        $completedTasks = Task::query()
+            ->where('assign_to',Auth::user()->id)
+            ->where('status','completed')
+            ->get();
+
+        view()->share('inProgressTasks',$inProgressTasks);
+        view()->share('myBids',$myBids);
+        view()->share('completedTasks',$completedTasks);
+
 
         $myEvaluationTask =[];
         $myCancelledTask = [];
         $zcashTransferList = [];
 
-        if(Auth::user()->role == "superadmin"){
+        if(Auth::user()->role == 1)
+        {
             $myEvaluationTask = Task::join('task_complete','tasks.id','=','task_complete.task_id')
                 ->join('users','task_complete.user_id','=','users.id')
                 ->selectRaw('max(tasks.name),max(slug),max(tasks.status),
@@ -196,14 +220,18 @@ class UserController extends Controller
             ->select('users.first_name','users.last_name','users.id as user_id','zcash_withdraw_request.*')
             ->where('zcash_withdraw_request.status','withdrawal')
             ->get();
-
-
-            /*$myEvaluationTask = Task::with(['task_complete','task_complete.users'])
-                    ->where('status','completion_evaluation')
-                    ->get();*/
         }
 
 
+
+        $unitData = Unit::where('id', $request->unit)->first();
+        $availableFunds = Fund::getUnitDonatedFund($request->unit);
+        $awardedFunds = Fund::getUnitAwardedFund($request->unit);
+
+        view()->share('availableFunds',$availableFunds );
+        view()->share('awardedFunds',$awardedFunds );
+        view()->share('unitData',$unitData);
+        view()->share('unitObj',$unitData);
 
         $site_activity = SiteActivity::orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
         view()->share('site_activity',$site_activity);

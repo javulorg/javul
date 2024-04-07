@@ -51,7 +51,7 @@
     <script src="<?php echo e(asset('v2/jquery/jquery-validation/dist/additional-methods.min.js')); ?>"></script>
     <script src="<?php echo e(asset('v2/fontawesome/js/all.min.js')); ?>"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
-    <script src="<?php echo url('assets/js/function.js'); ?>" type="text/javascript"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>

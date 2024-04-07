@@ -311,8 +311,14 @@
                                                 <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
                                             <?php elseif($taskObj->status=="in_progress" && $bidder->user_id == $taskObj->assign_to): ?>
                                                 <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
-                                            <?php elseif((empty($taskObj->assign_to) && ($isUnitAdminOfTask || auth()->user()->role == 1 || auth()->user()->role == 3)) || (!empty($taskObj->assign_to) && ($isUnitAdminOfTask || auth()->user()->role == 1 || auth()->user()->role == 3) && $taskObj->status=="open_for_bidding")): ?>
 
+                                            <?php elseif(
+    (
+        (empty($taskObj->assign_to) && ($isUnitAdminOfTask || (auth()->user()?->role == 1) || (auth()->user()?->role == 3)))
+        ||
+        (!empty($taskObj->assign_to) && ($isUnitAdminOfTask || (auth()->user()?->role == 1) || (auth()->user()?->role == 3)) && $taskObj->status=="open_for_bidding")
+    )
+): ?>
                                                 <a class="btn btn-sm btn-primary assign_now"
                                                    data-uid="<?php echo e($userIDHashID->encode($bidder->user_id)); ?>"
                                                    data-tid="<?php echo e($taskIDHashID->encode($bidder->task_id)); ?>"

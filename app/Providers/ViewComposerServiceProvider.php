@@ -205,11 +205,6 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('unitsMaster',$unitsMaster);
         view()->share('ideasMasterTotal',$ideasMasterTotal);
         view()->share('ideasMaster',$ideasMaster);
-
-
-
-
-
     }
 
     /**

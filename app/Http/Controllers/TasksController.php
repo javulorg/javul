@@ -2148,10 +2148,12 @@ class TasksController extends Controller
     public function complete_task(Request $request,$task_id)
     {
         $task_id_encoded=$task_id;
-        if(!empty($task_id)){
+        if(!empty($task_id))
+        {
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
-            if(!empty($task_id)){
+            if(!empty($task_id))
+            {
                 $task_id = $task_id[0];
                 $taskCompleteObj  = TaskComplete::join('users','task_complete.user_id','=','users.id')
                     ->where('task_id',$task_id)
@@ -2159,22 +2161,26 @@ class TasksController extends Controller
                     ->orderBy('id','asc')
                     ->get();
 
-                if(Auth::user()->role == "superadmin")
+                if(auth()->user()->role == 1 || auth()->user()->role == 2 || auth()->user()->role == 3){
                     $taskObj = Task::where('id','=',$task_id)->first();
-                else
-                    $taskObj = Task::where('id','=',$task_id)->where('assign_to',Auth::user()->id)->where('status','in_progress')->first();
-
+                }
+                else{
+                    $taskObj = Task::where('id','=',$task_id)->where('assign_to',auth()->user()->id)->where('status','in_progress')->first();
+                }
                 $taskEditors = RewardAssignment::where('task_id',$task_id)->get();
                 $rewardAssigned=true;
 
-                if(empty($taskEditors) || count($taskEditors) == 0){
+
+                if(empty($taskEditors) || count($taskEditors) == 0)
+                {
                     $taskEditors = TaskEditor::where('task_id',$task_id)->where('user_id','!=',$taskObj->assign_to)->get();
                     $rewardAssigned=false;
                 }
 
-                if(!empty($taskObj)){
-                    if($request->isMethod('post')){
-
+                if(!empty($taskObj))
+                {
+                    if($request->isMethod('post'))
+                    {
                         $validator = Validator::make($request->all(), [
                             'comment' => 'required'
                         ]);
@@ -2182,17 +2188,19 @@ class TasksController extends Controller
                         if ($validator->fails())
                             return redirect()->back()->withErrors($validator)->withInput();
 
-                        // upload documents of task.
                         $task_documents=[];
                         $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                         $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
-                        if($request->hasFile('attachments')) {
+                        if($request->hasFile('attachments'))
+                        {
                             $files = $request->file('attachments');
                             if(count($files) > 0){
                                 $totalAvailableDocs = TaskComplete::where('task_id',$task_id)->get();
                                 $totalAvailableDocs= count($totalAvailableDocs) + 1;
-                                foreach($files as $index=>$file){
-                                    if(!empty($file)){
+                                foreach($files as $index=>$file)
+                                {
+                                    if(!empty($file))
+                                    {
 
                                         $rules = ['attachments' => 'required', 'extension' => 'required|in:doc,docx,pdf,txt,jpg,png,ppt,pptx,jpeg,doc,xls,xlsx'];
                                         $fileData = ['attachments' => $file, 'extension' => strtolower($file->getClientOriginalExtension())];
@@ -2251,9 +2259,8 @@ class TasksController extends Controller
                         if(!empty($taskBidder))
                             $taskBidder->update(['status'=>'task_completed']);
 
-                        Task::find($task_id)->update(['status'=>'completion_evaluation']);
+                        Task::find($task_id)->update(['status'=>'completed_under_evaluation']);
 
-                        // add activity point for submit for approval task.
                         ActivityPoint::create([
                             'user_id'=>Auth::user()->id,
                             'task_id'=>$task_id,
@@ -2276,50 +2283,22 @@ class TasksController extends Controller
                                 .'</a> complete task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                                 .$taskObj->name.'</a>'
                         ]);
-
-                        // mail send
-                        /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                        if(!empty($alertObj) && $alertObj->task_management == 1) {
-                            $toEmail = Auth::user()->email;
-                            $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                            $subject = 'Task updated successfully. ';
-
-                            Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                                $message->to($toEmail, $toName)->subject($subject);
-                                $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                            });
-                        }*/
-
-
-                        $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
-                        $unitCreator = User::find(Auth::user()->id);
-
-                        $toEmail = $unitCreator->email;
-                        $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
-                        $subject="Task completed by ".$unitCreator->first_name.' '.$unitCreator->last_name;
-
-//                        Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use
-//                        ($toEmail,
-//                            $toName,
-//                            $subject,$siteAdminemails)
-//                        {
-//                            $message->to($toEmail,$toName)->subject($subject);
-//                            if(!empty($siteAdminemails))
-//                                $message->bcc($siteAdminemails,"Admin")->subject($subject);
-//
-//                            $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-//                        });
-
                         $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_COMPLETED')['text']);
                         return redirect('tasks');
                     }
                     else{
                         $taskObj->unit = Unit::getUnitWithCategories($taskObj->unit_id);
-                        $availableUnitFunds =Fund::getUnitDonatedFund($taskObj->unit_id);
-                        $awardedUnitFunds =Fund::getUnitAwardedFund($taskObj->unit_id);
+                        $unitData = Unit::where('id', $taskObj->unit_id)->first();
+                        $availableFunds = Fund::getUnitDonatedFund($taskObj->unit_id);
+                        $awardedFunds = Fund::getUnitAwardedFund($taskObj->unit_id);
+                        $issueResolutions = $this->calculateIssueResolution($taskObj->unit_id);
 
-                        view()->share('availableUnitFunds',$availableUnitFunds );
-                        view()->share('awardedUnitFunds',$awardedUnitFunds );
+                        view()->share('totalIssueResolutions',$issueResolutions);
+                        view()->share('availableFunds',$availableFunds);
+                        view()->share('awardedFunds',$awardedFunds);
+                        view()->share('unitData',$unitData);
+                        view()->share('unitObj',$unitData);
+
 
                         $site_activity = SiteActivity::where('unit_id',$taskObj->unit_id)
                             ->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
@@ -2441,64 +2420,76 @@ class TasksController extends Controller
     public function mark_as_complete(Request $request,$task_id)
     {
         $task_id_encoded=$task_id;
-        if(!empty($task_id)){
+        if(!empty($task_id))
+        {
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
-            if(!empty($task_id)){
+            if(!empty($task_id))
+            {
+
                 $task_id = $task_id[0];
                 $taskObj = Task::find($task_id);
-                if(!empty($taskObj)){
+                if(!empty($taskObj))
+                {
+
                     $taskEditors = RewardAssignment::where('task_id',$task_id)->get();
 
                     if(empty($taskEditors) || count($taskEditors) == 0)
                         $taskEditors = TaskEditor::where('task_id',$task_id)->where('user_id','!=',$taskObj->assign_to)->get();
 
-                    // validate percentage split.
-                    $percentageError = [];
-                    $totalPercentage=0;
-                    if(!empty($taskEditors) && count($taskEditors) > 0){
-                        $allUsersRewardPercentage = $request->input('amount_percentage');
-                        if(!empty($allUsersRewardPercentage)){
-                            foreach($allUsersRewardPercentage  as $u_id=>$percentage){
-                                $editorExist = TaskEditor::where('task_id',$task_id)->where('user_id',$u_id)->get();
-                                if($taskObj->user_id != $u_id && (empty($editorExist) || count($editorExist) == 0))
-                                    $percentageError['amount_percentage['.$u_id.']']="Please enter percentage";
-                                else
-                                    $totalPercentage+=intval($percentage);
-                            }
-                        }
+//                    $percentageError = [];
+//                    $totalPercentage=0;
+//                    if(!empty($taskEditors) && count($taskEditors) > 0)
+//                    {
+//
+//                        $allUsersRewardPercentage = $request->input('amount_percentage');
+//                        if(!empty($allUsersRewardPercentage))
+//                        {
+//                            foreach($allUsersRewardPercentage  as $u_id=>$percentage){
+//                                $editorExist = TaskEditor::where('task_id',$task_id)->where('user_id',$u_id)->get();
+//                                if($taskObj->user_id != $u_id && (empty($editorExist) || count($editorExist) == 0))
+//                                    $percentageError['amount_percentage['.$u_id.']']="Please enter percentage";
+//                                else
+//                                    $totalPercentage+=intval($percentage);
+//                            }
+//                        }
+//
+//                        if(!empty($percentageError))
+//                            return redirect()->back()->withErrors($percentageError)->withInput();
+//
+//                        if($totalPercentage < 100 || $totalPercentage > 100)
+//                            return redirect()->back()->withErrors(['split_error'=>"Please split 100% among all users."])->withInput();
+//                    }
+//
+//                    // insert task reward assignment into table. to use where transaction take place. to give % of amount to user.
+//                    if(!empty($taskEditors) && count($taskEditors) > 0 )
+//                    {
+//                        $allUsersRewardPercentage = $request->input('amount_percentage');
+//                        if(!empty($allUsersRewardPercentage))
+//                        {
+//                            foreach($allUsersRewardPercentage  as $u_id=>$percentage)
+//                            {
+//                                $rewardAssignedObj = RewardAssignment::where('task_id',$task_id)->where('user_id',$u_id)->first();
+//                                if(!empty($rewardAssignedObj) && count($rewardAssignedObj) > 0)
+//                                {
+//                                    $rewardAssignedObj->update([
+//                                        'reward_percentage'=>$percentage
+//                                    ]);
+//                                }
+//                                else{
+//                                    RewardAssignment::create([
+//                                        'task_id'=>$task_id,
+//                                        'user_id'=>$u_id,
+//                                        'reward_percentage'=>$percentage
+//                                    ]);
+//                                }
+//                            }
+//                        }
+//                    }
 
-                        if(!empty($percentageError))
-                            return redirect()->back()->withErrors($percentageError)->withInput();
-
-                        if($totalPercentage < 100 || $totalPercentage > 100)
-                            return redirect()->back()->withErrors(['split_error'=>"Please split 100% among all users."])->withInput();
-                    }
-
-                    // insert task reward assignment into table. to use where transaction take place. to give % of amount to user.
-                    if(!empty($taskEditors) && count($taskEditors) > 0 ){
-                        $allUsersRewardPercentage = $request->input('amount_percentage');
-                        if(!empty($allUsersRewardPercentage)){
-                            foreach($allUsersRewardPercentage  as $u_id=>$percentage){
-                                $rewardAssignedObj = RewardAssignment::where('task_id',$task_id)->where('user_id',$u_id)->first();
-                                if(!empty($rewardAssignedObj) && count($rewardAssignedObj) > 0){
-                                    $rewardAssignedObj->update([
-                                        'reward_percentage'=>$percentage
-                                    ]);
-                                }
-                                else{
-                                    RewardAssignment::create([
-                                        'task_id'=>$task_id,
-                                        'user_id'=>$u_id,
-                                        'reward_percentage'=>$percentage
-                                    ]);
-                                }
-                            }
-                        }
-                    }
 
                     // Transfer rewards to all users
-                    User::transferRewards($task_id);
+//                    User::transferRewards($task_id);
 
                     Task::find($task_id)->update(['status'=>'completed']);
 
@@ -2521,7 +2512,7 @@ class TasksController extends Controller
                     $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
 
                     $taskBidderObj = TaskBidder::where('task_id',$taskObj->id)->where('user_id',$taskObj->assign_to)->where('charge_type','points')->first();
-                    if(!empty($taskBidderObj) && count($taskBidderObj) > 0)
+                    if(!empty($taskBidderObj))
                     {
                         ActivityPoint::create([
                             'user_id'=>$taskObj->assign_to,
@@ -2536,19 +2527,6 @@ class TasksController extends Controller
                     if(!empty(Auth::user()->username))
                         $user_name =Auth::user()->username;
 
-                    $userObj = User::find($taskObj->assign_to);
-                    // send email and notification
-                    $unitObj = Unit::find($taskObj->unit_id);
-                    $unitIDHashID= new Hashids('unit id hash',10,Config::get('app.encode_chars'));
-
-                    $content = 'Task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'.$taskObj->name.'</a>
-                         at Unit <a href="'.url('units/'.$unitIDHashID->encode($unitObj->id).'/'.$unitObj->slug).'">'.$unitObj->name.'</a>
-                          has been mark as complete';
-
-                    $email_subject = 'Task '.$taskObj->name.' at Unit '.$unitObj->name.' has been mark as complete';
-
-                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$userObj],$onlyemail=false,'task_management');
-
                     SiteActivity::create([
                         'user_id'=>Auth::user()->id,
                         'unit_id'=>$taskObj->unit_id,
@@ -2559,38 +2537,6 @@ class TasksController extends Controller
                             .'</a> approved completed task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
                             .$taskObj->name.'</a>'
                     ]);
-
-
-                    // mail send
-                    /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                    if(!empty($alertObj) && $alertObj->task_management == 1) {
-                        $toEmail = Auth::user()->email;
-                        $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                        $subject = 'Task updated successfully. ';
-
-                        Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                            $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                        });
-                    }*/
-
-                    $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
-                    $unitCreator = User::find($taskObj->assign_to);
-
-                    $toEmail = $unitCreator->email;
-                    $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
-                    $subject="Task completed by supperadmin ";
-
-//                    Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use ($toEmail,
-//                        $toName,$subject,
-//                        $siteAdminemails)
-//                    {
-//                        $message->to($toEmail,$toName)->subject($subject);
-//                        if(!empty($siteAdminemails))
-//                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
-//
-//                        $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-//                    });
 
                     $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_COMPLETED')['text']);
                     return redirect('tasks');

@@ -168,6 +168,10 @@
                     <img src="{{ asset('v2/assets/img/settings.svg') }}" alt="Settings" class="img-fluid" style="max-width:88%!important;">
                 </a>
 
+                <a href="{{ url('my_tasks') }}" class="header_btn">
+                    <img src="{{ asset('v2/assets/img/tasks-list.svg') }}" alt="My Tasks" class="img-fluid" style="max-width: 86%!important; filter: brightness(0) invert(1);">
+                </a>
+
                 <a href="{!! url('userprofiles/'.$userIDHashID->encode(auth()->user()->id).'/'.strtolower(auth()->user()->first_name).'_'.strtolower(auth()->user()->last_name)) !!}" class="header_btn">
                     <img src="{{ asset('v2/assets/img/user.svg') }}" alt="" class="img-fluid">
                 </a>
