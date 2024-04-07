@@ -1,56 +1,55 @@
-@extends('layout.master')
-@section('title', 'My Tasks')
+<?php $__env->startSection('title', 'My Tasks'); ?>
 
-@section('site-name')
-    @if(isset($unitData))
-        <h1>{{ $unitData->name }}</h1>
-    @else
+<?php $__env->startSection('site-name'); ?>
+    <?php if(isset($unitData)): ?>
+        <h1><?php echo e($unitData->name); ?></h1>
+    <?php else: ?>
         <h1>Javul.org</h1>
-    @endif
+    <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
         Open-source Society
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('navbar')
-    @if(isset($unitData))
-        @include('layout.navbar', ['unitData' => $unitData])
-    @endif
-@endsection
-@section('content')
+<?php $__env->startSection('navbar'); ?>
+    <?php if(isset($unitData)): ?>
+        <?php echo $__env->make('layout.navbar', ['unitData' => $unitData], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php endif; ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
     <div class="content_row">
 
         <div class="sidebar">
-            @if(isset($unitData))
-                @include('layout.v2.global-unit-overview')
+            <?php if(isset($unitData)): ?>
+                <?php echo $__env->make('layout.v2.global-unit-overview', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     <?php
                     $title = 'Activity Log';
                     ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                @include('layout.v2.global-finances')
+                <?php echo $__env->make('layout.v2.global-finances', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                @include('layout.v2.global-about-site')
-            @else
+                <?php echo $__env->make('layout.v2.global-about-site', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php else: ?>
                     <?php
                     $title = 'Global Activity Log';
                     ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
-            @endif
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php endif; ?>
         </div>
 
         <div class="main_content">
-            @auth()
-                @if(auth()->user()->role != 1)
+            <?php if(auth()->guard()->check()): ?>
+                <?php if(auth()->user()->role != 1): ?>
                     <div class="content_block">
                         <div class="table_block table_block_tasks">
                             <div class="table_block_head">
                                 <div class="table_block_icon">
-                                    <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                                    <img src="<?php echo e(asset('v2/assets/img/list.svg')); ?>" alt="" class="img-fluid">
                                 </div>
-                                Assigned Tasks ({{ isset($assignedTasks) ? count($assignedTasks) : 0  }})
+                                Assigned Tasks (<?php echo e(isset($assignedTasks) ? count($assignedTasks) : 0); ?>)
                                 <div class="arrow">
-                                    <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                                    <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                                 </div>
                             </div>
                             <div class="table_block_body">
@@ -64,36 +63,37 @@
                                     </thead>
 
                                     <tbody>
-                                    @if(count($assignedTasks) > 0)
-                                        @foreach($assignedTasks as $assignedTask)
+                                    <?php if(count($assignedTasks) > 0): ?>
+                                        <?php $__currentLoopData = $assignedTasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $assignedTask): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td class="title_col">
-                                                    <a href="{!! url('tasks/'.$taskIDHashID->encode($assignedTask->id).'/'.$assignedTask->slug) !!}"
+                                                    <a href="<?php echo url('tasks/'.$taskIDHashID->encode($assignedTask->id).'/'.$assignedTask->slug); ?>"
                                                        title="edit">
-                                                        {{$assignedTask->name}}
+                                                        <?php echo e($assignedTask->name); ?>
+
                                                     </a>
                                                 </td>
                                                 <td class="type_col">
-                                                    <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($assignedTask->status)}}</span>
+                                                    <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($assignedTask->status)); ?></span>
                                                 </td>
 
                                                 <td class="type_col">
-                                                    <a href="{!! url('tasks/complete_task/'.$taskIDHashID->encode($assignedTask->id)) !!}"
+                                                    <a href="<?php echo url('tasks/complete_task/'.$taskIDHashID->encode($assignedTask->id)); ?>"
                                                        class="btn btn-sm m-2" style="background-color: #198754; color: white;" title="Complete Task">
                                                         <i class="bi bi-check2"></i>
                                                     </a>
-                                                    <a href="{!! url('tasks/cancel_task/'.$taskIDHashID->encode($assignedTask->id)) !!}"
+                                                    <a href="<?php echo url('tasks/cancel_task/'.$taskIDHashID->encode($assignedTask->id)); ?>"
                                                        class="btn btn-sm m-2" style="background-color: #dc3545; color: white;" title="Cancel Task">
                                                         <i class="bi bi-x"></i>
                                                     </a>
                                                 </td>
                                             </tr>
-                                        @endforeach
-                                    @else
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                         <tr>
                                             <td colspan="5">No record(s) found.</td>
                                         </tr>
-                                    @endif
+                                    <?php endif; ?>
                                     </tbody>
 
                                 </table>
@@ -109,11 +109,11 @@
                         <div class="table_block table_block_tasks">
                             <div class="table_block_head">
                                 <div class="table_block_icon">
-                                    <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                                    <img src="<?php echo e(asset('v2/assets/img/list.svg')); ?>" alt="" class="img-fluid">
                                 </div>
-                                In Progress Tasks ({{ isset($inProgressTasks) ? count($inProgressTasks) : 0  }})
+                                In Progress Tasks (<?php echo e(isset($inProgressTasks) ? count($inProgressTasks) : 0); ?>)
                                 <div class="arrow">
-                                    <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                                    <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                                 </div>
                             </div>
                             <div class="table_block_body">
@@ -126,25 +126,26 @@
                                     </thead>
 
                                     <tbody>
-                                    @if(count($inProgressTasks) > 0)
-                                        @foreach($inProgressTasks as $inProgressTask)
+                                    <?php if(count($inProgressTasks) > 0): ?>
+                                        <?php $__currentLoopData = $inProgressTasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $inProgressTask): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td class="title_col">
-                                                    <a href="{!! url('tasks/'.$taskIDHashID->encode($inProgressTask->id).'/'.$inProgressTask->slug) !!}"
+                                                    <a href="<?php echo url('tasks/'.$taskIDHashID->encode($inProgressTask->id).'/'.$inProgressTask->slug); ?>"
                                                        title="edit">
-                                                        {{$inProgressTask->name}}
+                                                        <?php echo e($inProgressTask->name); ?>
+
                                                     </a>
                                                 </td>
                                                 <td class="type_col">
-                                                    <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($inProgressTask->status)}}</span>
+                                                    <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($inProgressTask->status)); ?></span>
                                                 </td>
                                             </tr>
-                                        @endforeach
-                                    @else
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                         <tr>
                                             <td colspan="5">No record(s) found.</td>
                                         </tr>
-                                    @endif
+                                    <?php endif; ?>
                                     </tbody>
 
                                 </table>
@@ -160,11 +161,11 @@
                         <div class="table_block table_block_tasks">
                             <div class="table_block_head">
                                 <div class="table_block_icon">
-                                    <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                                    <img src="<?php echo e(asset('v2/assets/img/list.svg')); ?>" alt="" class="img-fluid">
                                 </div>
-                                Completed Tasks ({{ isset($completedTasks) ? count($completedTasks) : 0  }})
+                                Completed Tasks (<?php echo e(isset($completedTasks) ? count($completedTasks) : 0); ?>)
                                 <div class="arrow">
-                                    <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                                    <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                                 </div>
                             </div>
                             <div class="table_block_body">
@@ -177,25 +178,26 @@
                                     </thead>
 
                                     <tbody>
-                                    @if(count($completedTasks) > 0)
-                                        @foreach($completedTasks as $completedTask)
+                                    <?php if(count($completedTasks) > 0): ?>
+                                        <?php $__currentLoopData = $completedTasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $completedTask): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td class="title_col">
-                                                    <a href="{!! url('tasks/'.$taskIDHashID->encode($completedTask->id).'/'.$completedTask->slug) !!}"
+                                                    <a href="<?php echo url('tasks/'.$taskIDHashID->encode($completedTask->id).'/'.$completedTask->slug); ?>"
                                                        title="edit">
-                                                        {{$completedTask->name}}
+                                                        <?php echo e($completedTask->name); ?>
+
                                                     </a>
                                                 </td>
                                                 <td class="type_col">
-                                                    <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($completedTask->status)}}</span>
+                                                    <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($completedTask->status)); ?></span>
                                                 </td>
                                             </tr>
-                                        @endforeach
-                                    @else
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                         <tr>
                                             <td colspan="5">No record(s) found.</td>
                                         </tr>
-                                    @endif
+                                    <?php endif; ?>
                                     </tbody>
 
                                 </table>
@@ -211,11 +213,11 @@
                         <div class="table_block table_block_tasks">
                             <div class="table_block_head">
                                 <div class="table_block_icon">
-                                    <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                                    <img src="<?php echo e(asset('v2/assets/img/list.svg')); ?>" alt="" class="img-fluid">
                                 </div>
-                                Bids Tasks ({{ isset($myBids) ? count($myBids) : 0  }})
+                                Bids Tasks (<?php echo e(isset($myBids) ? count($myBids) : 0); ?>)
                                 <div class="arrow">
-                                    <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                                    <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                                 </div>
                             </div>
                             <div class="table_block_body">
@@ -228,25 +230,26 @@
                                     </thead>
 
                                     <tbody>
-                                    @if(count($myBids) > 0)
-                                        @foreach($myBids as $myBid)
+                                    <?php if(count($myBids) > 0): ?>
+                                        <?php $__currentLoopData = $myBids; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $myBid): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td class="title_col">
-                                                    <a href="{!! url('tasks/'.$taskIDHashID->encode($myBid->task_id).'/'.$myBid->slug) !!}"
+                                                    <a href="<?php echo url('tasks/'.$taskIDHashID->encode($myBid->task_id).'/'.$myBid->slug); ?>"
                                                        title="edit">
-                                                        {{$myBid->name}}
+                                                        <?php echo e($myBid->name); ?>
+
                                                     </a>
                                                 </td>
                                                 <td class="type_col">
-                                                    <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($myBid->task_status)}}</span>
+                                                    <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($myBid->task_status)); ?></span>
                                                 </td>
                                             </tr>
-                                        @endforeach
-                                    @else
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                         <tr>
                                             <td colspan="5">No record(s) found.</td>
                                         </tr>
-                                    @endif
+                                    <?php endif; ?>
                                     </tbody>
 
                                 </table>
@@ -257,16 +260,16 @@
                             </div>
                         </div>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="content_block">
                         <div class="table_block table_block_tasks">
                             <div class="table_block_head">
                                 <div class="table_block_icon">
-                                    <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                                    <img src="<?php echo e(asset('v2/assets/img/list.svg')); ?>" alt="" class="img-fluid">
                                 </div>
-                                Task Evaluation ({{ isset($myEvaluationTask) ? count($myEvaluationTask) : 0  }})
+                                Task Evaluation (<?php echo e(isset($myEvaluationTask) ? count($myEvaluationTask) : 0); ?>)
                                 <div class="arrow">
-                                    <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                                    <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                                 </div>
                             </div>
                             <div class="table_block_body">
@@ -281,43 +284,45 @@
                                     </thead>
 
                                     <tbody>
-                                    @if(count($myEvaluationTask) > 0)
-                                        @foreach($myEvaluationTask as $valuationTask)
+                                    <?php if(count($myEvaluationTask) > 0): ?>
+                                        <?php $__currentLoopData = $myEvaluationTask; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $valuationTask): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td class="title_col">
-                                                    <a href="{!! url('tasks/'.$taskIDHashID->encode($valuationTask->task_id).'/'.$valuationTask->slug) !!}"
+                                                    <a href="<?php echo url('tasks/'.$taskIDHashID->encode($valuationTask->task_id).'/'.$valuationTask->slug); ?>"
                                                        title="edit">
-                                                        {{$valuationTask->name}}
+                                                        <?php echo e($valuationTask->name); ?>
+
                                                     </a>
                                                 </td>
                                                 <td class="type_col">
-                                                    <a href="{!! url('userprofiles/'.$userIDHashID->encode($valuationTask->user_id).'/'.strtolower
-                                ($valuationTask->first_name.'_'.$valuationTask->last_name)) !!}"
+                                                    <a href="<?php echo url('userprofiles/'.$userIDHashID->encode($valuationTask->user_id).'/'.strtolower
+                                ($valuationTask->first_name.'_'.$valuationTask->last_name)); ?>"
                                                        title="edit">
-                                                        {{$valuationTask->first_name.' '.$valuationTask->last_name}}
+                                                        <?php echo e($valuationTask->first_name.' '.$valuationTask->last_name); ?>
+
                                                     </a>
                                                 </td>
                                                 <td class="type_col">
-                                                    <span class="colorLightGreen">{{\App\Models\SiteConfigs::task_status($valuationTask->task_status)}}</span>
+                                                    <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($valuationTask->task_status)); ?></span>
                                                 </td>
 
                                                 <td class="type_col">
-                                                    <a href="{!! url('tasks/complete_task/'.$taskIDHashID->encode($valuationTask->task_id)) !!}"
+                                                    <a href="<?php echo url('tasks/complete_task/'.$taskIDHashID->encode($valuationTask->task_id)); ?>"
                                                        class="btn btn-xs btn-success mark-complete" >
                                                         Mark as Complete
                                                     </a>
-                                                    <a href="{!! url('tasks/complete_task/'.$taskIDHashID->encode($valuationTask->task_id)) !!}"
+                                                    <a href="<?php echo url('tasks/complete_task/'.$taskIDHashID->encode($valuationTask->task_id)); ?>"
                                                        class="btn btn-xs btn-danger re-assigned" >
                                                         Re Assign
                                                     </a>
                                                 </td>
                                             </tr>
-                                        @endforeach
-                                    @else
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                         <tr>
                                             <td colspan="5">No record(s) found.</td>
                                         </tr>
-                                    @endif
+                                    <?php endif; ?>
                                     </tbody>
 
                                 </table>
@@ -328,11 +333,13 @@
                             </div>
                         </div>
                     </div>
-                @endif
-            @endauth
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
-@endsection
+<?php $__env->startSection('scripts'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/users/my_tasks.blade.php ENDPATH**/ ?>

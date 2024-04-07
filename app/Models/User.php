@@ -129,7 +129,7 @@ class User extends Authenticatable
     public static function transferRewards($task_id)
     {
         $taskObj = Task::find($task_id);
-        if(!empty($taskObj) && count($taskObj) > 0)
+        if(!empty($taskObj) && $taskObj)
         {
             $taskCompleter = $taskObj->assign_to;
             $taskCompleterObj = User::find($taskCompleter);
