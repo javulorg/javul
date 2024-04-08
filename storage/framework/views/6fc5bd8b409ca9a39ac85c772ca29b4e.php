@@ -1,65 +1,66 @@
-@extends('layout.master')
-@section('title', 'Task: ' . $taskObj->name)
-@section('style')
+<?php $__env->startSection('title', 'Task: ' . $taskObj->name); ?>
+<?php $__env->startSection('style'); ?>
     <style>
         .custom-orange-text {
             color: orange;
         }
     </style>
-@endsection
-@section('site-name')
-    @if(isset($unitData))
-        <h1>{{ $unitData->name }}</h1>
-    @else
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('site-name'); ?>
+    <?php if(isset($unitData)): ?>
+        <h1><?php echo e($unitData->name); ?></h1>
+    <?php else: ?>
         <h1>Javul.org</h1>
-    @endif
+    <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
         Open-source Society
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('navbar')
-    @if(isset($unitData))
-        @include('layout.navbar', ['unitData' => $unitData])
-    @endif
-@endsection
-@section('content')
+<?php $__env->startSection('navbar'); ?>
+    <?php if(isset($unitData)): ?>
+        <?php echo $__env->make('layout.navbar', ['unitData' => $unitData], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php endif; ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
     <div class="content_row">
         <div class="sidebar">
-            @if(isset($unitData))
-                @include('layout.v2.global-unit-overview')
+            <?php if(isset($unitData)): ?>
+                <?php echo $__env->make('layout.v2.global-unit-overview', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     <?php
                     $title = 'Activity Log';
                     ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                @include('layout.v2.global-finances')
+                <?php echo $__env->make('layout.v2.global-finances', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                @include('layout.v2.global-about-site')
-            @else
+                <?php echo $__env->make('layout.v2.global-about-site', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php else: ?>
                     <?php
                     $title = 'Global Activity Log';
                     ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
-            @endif
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php endif; ?>
         </div>
         <div class="main_content">
             <div class="content_block">
                 <div class="table_block table_block_tasks active">
                     <div class="table_block_head">
                         <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                            <img src="<?php echo e(asset('v2/assets/img/list.svg')); ?>" alt="" class="img-fluid">
                         </div>
-                        TASK MANAGEMENT / Cancel Task : {{ $taskObj->name }}
+                        TASK MANAGEMENT / Cancel Task : <?php echo e($taskObj->name); ?>
+
                         <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                            <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                         </div>
                     </div>
                     <div class="objective_content">
                         <div class="objective_content_row d-sm-flex d-none">
                             <div>
                                 <p>
-                                    {!! $taskObj->description !!}
+                                    <?php echo $taskObj->description; ?>
+
                                 </p>
                             </div>
                             <div class="objective_content_info">
@@ -67,7 +68,7 @@
                                     <div class="sidebar_block_ttl">
                                         Task Overview
                                         <div class="arrow">
-                                            <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
+                                            <img src="<?php echo e(asset('v2/assets/img/bottom_y.svg')); ?>" alt="">
                                         </div>
                                     </div>
                                     <div class="sidebar_block_content">
@@ -86,7 +87,7 @@
                                                 Status:
                                             </div>
                                             <div class="sidebar_block_right">
-                                                <label class="control-label" style="color: lightgreen;">{{\App\Models\SiteConfigs::task_status($taskObj->status)}}</label>
+                                                <label class="control-label" style="color: lightgreen;"><?php echo e(\App\Models\SiteConfigs::task_status($taskObj->status)); ?></label>
                                             </div>
 
                                         </div>
@@ -97,11 +98,12 @@
                                                 Skills
                                             </div>
                                             <div class="sidebar_block_right">
-                                                @if(!empty($skill_names) && count($skill_names) > 0)
-                                                    {{$skill_names[0]}}
-                                                @else
+                                                <?php if(!empty($skill_names) && count($skill_names) > 0): ?>
+                                                    <?php echo e($skill_names[0]); ?>
+
+                                                <?php else: ?>
                                                     -
-                                                @endif
+                                                <?php endif; ?>
                                             </div>
                                         </div>
 
@@ -111,7 +113,8 @@
                                                 Award
                                             </div>
                                             <div class="sidebar_block_right">
-                                                $ {{ $taskObj->compensation }}
+                                                $ <?php echo e($taskObj->compensation); ?>
+
                                             </div>
                                         </div>
 
@@ -122,7 +125,8 @@
                                                 Completion
                                             </div>
                                             <div class="sidebar_block_right">
-                                                {{ $taskObj->completionTime }}
+                                                <?php echo e($taskObj->completionTime); ?>
+
                                             </div>
                                         </div>
 
@@ -132,7 +136,8 @@
                                                 Available
                                             </div>
                                             <div class="sidebar_block_right">
-                                                $ {{ number_format($availableFunds,2) }}
+                                                $ <?php echo e(number_format($availableFunds,2)); ?>
+
                                             </div>
                                         </div>
 
@@ -142,7 +147,8 @@
                                                 Awarded
                                             </div>
                                             <div class="sidebar_block_right">
-                                                $ {{ number_format($availableFunds,2) }}
+                                                $ <?php echo e(number_format($availableFunds,2)); ?>
+
                                             </div>
                                         </div>
                                     </div>
@@ -158,9 +164,9 @@
             <div class="content_block mt-3">
                 <div class="row">
                     <div class="col-sm-12" style="padding:20px 20px 10px 30px;">
-                        <form role="form" method="post" action="{{ url('tasks/cancel_task/' . $taskIDHashID->encode($taskObj->id)) }}" >
-                            @csrf
-                            @method('post')
+                        <form role="form" method="post" action="<?php echo e(url('tasks/cancel_task/' . $taskIDHashID->encode($taskObj->id))); ?>" >
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('post'); ?>
                                 <div class="row">
                                     <div class="col-sm-12 form-group">
                                         <label class="control-label">Comments</label>
@@ -180,8 +186,8 @@
             </div>
         </div>
     </div>
-@endsection
-@section('scripts')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('scripts'); ?>
     <script>
         $(document).ready(function() {
             ClassicEditor
@@ -191,4 +197,6 @@
                 } );
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/tasks/partials/cancel_task.blade.php ENDPATH**/ ?>

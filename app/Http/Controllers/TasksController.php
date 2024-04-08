@@ -2548,23 +2548,30 @@ class TasksController extends Controller
 
     public function cancel_task(Request $request,$task_id)
     {
+
         $task_id_encoded=$task_id;
-        if(!empty($task_id)){
+        if(!empty($task_id))
+        {
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
             $task_id = $taskIDHashID->decode($task_id);
-            if(!empty($task_id)){
+            if(!empty($task_id))
+            {
+
                 $task_id = $task_id[0];
                 $taskCancelObj  = TaskCancel::join('users','task_cancel.user_id','=','users.id')
                     ->where('task_id',$task_id)
                     ->select(['task_cancel.*','users.first_name','users.last_name'])
                     ->orderBy('id','asc')
                     ->get();
-                if(Auth::user()->role == "superadmin")
+                if(\auth()->user()->role == 1 || \auth()->user()->role == 2 || \auth()->user()->role == 3)
                     $taskObj = Task::where('id','=',$task_id)->first();
                 else
-                    $taskObj = Task::where('id','=',$task_id)->where('assign_to',Auth::user()->id)->where('status','in_progress')->first();
-                if(!empty($taskObj)){
-                    if($request->isMethod('post')){
+                    $taskObj = Task::where('id','=',$task_id)->where('assign_to',\auth()->user()->id)->where('status','in_progress')->first();
+
+                if(!empty($taskObj))
+                {
+                    if($request->isMethod('post'))
+                    {
                         $validator = Validator::make($request->all(), [
                             'comment' => 'required'
                         ]);
@@ -2575,26 +2582,19 @@ class TasksController extends Controller
                         }
 
                         TaskCancel::create([
-                            'user_id'=>Auth::user()->id,
-                            'task_id'=>$task_id,
-                            'comments'=>$request->input('comment')
+                            'user_id'  => Auth::user()->id,
+                            'task_id'  => $task_id,
+                            'comments' => $request->comment
                         ]);
 
-                        $taskBidder = TaskBidder::where('task_id',$task_id)->where('user_id',Auth::user()->id)->where('task_bidders.status',
-                            'offer_accepted')->first();
+                        $taskBidder = TaskBidder::where('task_id',$task_id)
+                            ->where('user_id',Auth::user()->id)
+                            ->where('task_bidders.status', 'offer_accepted')
+                            ->first();
                         if(!empty($taskBidder))
                             $taskBidder->update(['status'=>'task_canceled']);
 
-                        Task::find($task_id)->update(['status'=>'cancelled']);
-
-                        // add activity point for submit for cancel task.
-                       /* ActivityPoint::create([
-                            'user_id'=>Auth::user()->id,
-                            'task_id'=>$task_id,
-                            'points'=>50,
-                            'comments'=>'Task Completed',
-                            'type'=>'task'
-                        ]);*/
+                        Task::find($task_id)->update(['status'=>'archived']);
 
                         $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
                         $user_id_encoded = $userIDHashID->encode(Auth::user()->id);
@@ -2614,41 +2614,22 @@ class TasksController extends Controller
                                 .$taskObj->name.'</a>'
                         ]);
 
-                        // mail send
-                        /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                        if(!empty($alertObj) && $alertObj->task_management == 1) {
-                            $toEmail = Auth::user()->email;
-                            $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                            $subject = 'Task updated successfully. ';
-
-                            Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                                $message->to($toEmail, $toName)->subject($subject);
-                                $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                            });
-                        }*/
-
-                        $siteAdminemails = User::where('role','superadmin')->pluck('email')->all();
-                        $unitCreator = User::find(Auth::user()->id);
-
-                        $toEmail = $unitCreator->email;
-                        $toName= $unitCreator->first_name.' '.$unitCreator->last_name;
-                        $subject="Task cancelled by ".$toName;
-
-//                        Mail::send('emails.registration', ['userObj'=> $unitCreator,'report_concern'=>false ], function($message) use
-//                        ($toEmail,$toName,
-//                            $subject,$siteAdminemails)
-//                        {
-//                            $message->to($toEmail,$toName)->subject($subject);
-//                            if(!empty($siteAdminemails))
-//                                $message->bcc($siteAdminemails,"Admin")->subject($subject);
-//
-//                            $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-//                        });
-
                         $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_CANCELLED')['text']);
-                        return redirect('tasks');
+                        return redirect('tasks/' .$task_id_encoded .'/'.$taskObj->slug);
                     }
                     else{
+
+                        $unitData = Unit::where('id', $taskObj->unit_id)->first();
+                        $availableFunds = Fund::getUnitDonatedFund($taskObj->unit_id);
+                        $awardedFunds = Fund::getUnitAwardedFund($taskObj->unit_id);
+                        $issueResolutions = $this->calculateIssueResolution($taskObj->unit_id);
+
+                        view()->share('totalIssueResolutions',$issueResolutions);
+                        view()->share('availableFunds',$availableFunds);
+                        view()->share('awardedFunds',$awardedFunds);
+                        view()->share('unitData',$unitData);
+                        view()->share('unitObj',$unitData);
+
                         view()->share('taskObj',$taskObj);
                         view()->share('taskCancelObj',$taskCancelObj);
                         return view('tasks.partials.cancel_task');
