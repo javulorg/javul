@@ -12,6 +12,7 @@ use App\Models\Task;
 use App\Models\TaskBidder;
 use App\Models\TaskRatings;
 use App\Models\Unit;
+use Carbon\Carbon;
 use Hashids\Hashids;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
@@ -76,7 +77,10 @@ class UserController extends Controller
             {
                 $user_id = $user_id [0];
                 $userObj = User::find($user_id);
-                $unitsObj = Unit::with(['objectives','tasks'])->where('units.user_id',$user_id)->get();
+                $unitsObj = Unit::with(['objectives','tasks'])
+                    ->where('units.user_id',$user_id)
+                    ->get();
+
 
                 $objectivesObj = Objective::where('user_id',$user_id)->get();
                 $tasksObj = Task::where('user_id',$user_id)->get();
@@ -148,6 +152,31 @@ class UserController extends Controller
                 view()->share('activityPoints',$activityPoints);
                 view()->share('userObj',$userObj);
                 view()->share('unitsObj',$unitsObj);
+
+
+                $mostActiveUnits = ActivityPoint::with('unit')
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->latest()
+                    ->groupBy('unit_id')
+                    ->take(5)
+                    ->get();
+
+                $totalObjectivesCreated =  ActivityPoint::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Objective Created')
+                    ->count();
+
+                $totalObjectivesEdited =  ActivityPoint::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Objective updated')
+                    ->count();
+
+                view()->share('mostActiveUnits',$mostActiveUnits);
+                view()->share('totalObjectivesCreated',$totalObjectivesCreated);
+                view()->share('totalObjectivesEdited',$totalObjectivesEdited);
 
                 return view('users.profile');
             }
