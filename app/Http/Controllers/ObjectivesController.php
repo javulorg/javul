@@ -330,6 +330,10 @@ class ObjectivesController extends Controller
                             $availableFunds = Fund::getUnitDonatedFund($objectiveObj->unit_id);
                             $awardedFunds = Fund::getUnitAwardedFund($objectiveObj->unit_id);
 
+
+                            $issueResolutions = $this->calculateIssueResolution($objectiveObj->unit_id);
+                            view()->share('totalIssueResolutions',$issueResolutions);
+
                             view()->share('availableFunds',$availableFunds);
                             view()->share('awardedFunds',$awardedFunds);
                             view()->share('unitData',$unitData);

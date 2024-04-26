@@ -162,10 +162,34 @@ class UserController extends Controller
                     ->take(5)
                     ->get();
 
+                $mostTopObjectives = ActivityPoint::with('objective')
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Objective Created')
+                    ->latest()
+                    ->groupBy('objective_id')
+                    ->take(5)
+                    ->get();
+
+                $mostTopTasks = ActivityPoint::with('task')
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Task Created')
+                    ->latest()
+                    ->groupBy('task_id')
+                    ->take(5)
+                    ->get();
+
                 $totalObjectivesCreated =  ActivityPoint::query()
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
                     ->where('user_id', $user_id)
                     ->where('comments', 'Objective Created')
+                    ->count();
+
+                $totalTasksCreated =  ActivityPoint::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Task Created')
                     ->count();
 
                 $totalObjectivesEdited =  ActivityPoint::query()
@@ -175,8 +199,11 @@ class UserController extends Controller
                     ->count();
 
                 view()->share('mostActiveUnits',$mostActiveUnits);
+                view()->share('mostTopObjectives',$mostTopObjectives);
+                view()->share('mostTopTasks',$mostTopTasks);
                 view()->share('totalObjectivesCreated',$totalObjectivesCreated);
                 view()->share('totalObjectivesEdited',$totalObjectivesEdited);
+                view()->share('totalTasksCreated',$totalTasksCreated);
 
                 return view('users.profile');
             }

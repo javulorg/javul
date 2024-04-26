@@ -543,7 +543,8 @@ class TasksController extends Controller
             'task_id'        => $task_id_decoded,
             'points'         => 5,
             'comments'       => 'Task Created',
-            'type'           => 'task'
+            'type'           => 'task',
+            'unit_id'        => $unit_id[0]
         ]);
 
         $userIDHashID = new Hashids('user id hash',10,Config::get('app.encode_chars'));

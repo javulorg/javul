@@ -8,18 +8,18 @@
             </tr>
             </thead>
             <tbody>
-            <?php if(!empty($objectivesObj) && count($objectivesObj) > 0): ?>
-                <?php $__currentLoopData = $objectivesObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php if(!empty($mostTopObjectives) && count($mostTopObjectives) > 0): ?>
+                <?php $__currentLoopData = $mostTopObjectives; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr>
                         <td>
-                            <a href="<?php echo url('objectives/'.$objectiveIDHashID->encode($objective->id).'/edit'); ?>">
-                                <?php echo e($objective->name); ?>
+                            <a href="<?php echo url('objectives/'.$objectiveIDHashID->encode($objective->objective->id).'/edit'); ?>">
+                                <?php echo e($objective->objective->name); ?>
 
                             </a>
                         </td>
                         <td>
-                            <a href="<?php echo url('units/'.$unitIDHashID->encode($objective->unit_id).'/edit'); ?>">
-                                <?php echo e(\App\Models\Unit::getUnitName($objective->unit_id)); ?>
+                            <a href="<?php echo url('units/'.$unitIDHashID->encode($objective->objective->unit_id).'/edit'); ?>">
+                                <?php echo e(\App\Models\Unit::getUnitName($objective->objective->unit_id)); ?>
 
                             </a>
                         </td>
