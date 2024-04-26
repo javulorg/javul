@@ -8,17 +8,17 @@
             </tr>
             </thead>
             <tbody>
-            @if(!empty($objectivesObj) && count($objectivesObj) > 0)
-                @foreach($objectivesObj as $objective)
+            @if(!empty($mostTopObjectives) && count($mostTopObjectives) > 0)
+                @foreach($mostTopObjectives as $objective)
                     <tr>
                         <td>
-                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/edit') !!}">
-                                {{$objective->name}}
+                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->objective->id).'/edit') !!}">
+                                {{$objective->objective->name}}
                             </a>
                         </td>
                         <td>
-                            <a href="{!! url('units/'.$unitIDHashID->encode($objective->unit_id).'/edit') !!}">
-                                {{\App\Models\Unit::getUnitName($objective->unit_id)}}
+                            <a href="{!! url('units/'.$unitIDHashID->encode($objective->objective->unit_id).'/edit') !!}">
+                                {{\App\Models\Unit::getUnitName($objective->objective->unit_id)}}
                             </a>
                         </td>
                     </tr>

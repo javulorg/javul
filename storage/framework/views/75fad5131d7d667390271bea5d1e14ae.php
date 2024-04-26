@@ -9,24 +9,24 @@
             </tr>
             </thead>
             <tbody>
-            <?php if(!empty($tasksObj) && count($tasksObj) > 0): ?>
-                <?php $__currentLoopData = $tasksObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php if(!empty($mostTopTasks) && count($mostTopTasks) > 0): ?>
+                <?php $__currentLoopData = $mostTopTasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr>
                         <td>
-                            <a href="<?php echo url('tasks/'.$taskIDHashID->encode($task->id).'/edit'); ?>">
-                                <?php echo e($task->name); ?>
+                            <a href="<?php echo url('tasks/'.$taskIDHashID->encode($task->task->id).'/edit'); ?>">
+                                <?php echo e($task->task->name); ?>
 
                             </a>
                         </td>
                         <td>
-                            <a href="<?php echo url('objectives/'.$objectiveIDHashID->encode($task->objective_id).'/edit'); ?>">
-                                <?php echo e(\App\Models\Objective::getObjectiveName($task->objective_id)); ?>
+                            <a href="<?php echo url('objectives/'.$objectiveIDHashID->encode($task->task->objective_id).'/edit'); ?>">
+                                <?php echo e(\App\Models\Objective::getObjectiveName($task->task->objective_id)); ?>
 
                             </a>
                         </td>
                         <td>
-                            <a href="<?php echo url('units/'.$unitIDHashID->encode($task->unit_id).'/edit'); ?>">
-                                <?php echo e(\App\Models\Unit::getUnitName($task->unit_id)); ?>
+                            <a href="<?php echo url('units/'.$unitIDHashID->encode($task->task->unit_id).'/edit'); ?>">
+                                <?php echo e(\App\Models\Unit::getUnitName($task->task->unit_id)); ?>
 
                             </a>
                         </td>

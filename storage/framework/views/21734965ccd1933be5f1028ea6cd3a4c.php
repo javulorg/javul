@@ -148,7 +148,6 @@
             </div>
 
             <!-- Card for Objectives Details -->
-
             <div class="card mb-3">
                 <div class="card-header">
                     Objectives Details
@@ -182,32 +181,40 @@
 
 
             <!-- Card for Tasks Details -->
+
             <div class="card mb-3">
                 <div class="card-header">
-                    Tasks Details
+                    Task Details
                 </div>
                 <div class="card-body">
+
+                    <!-- Flex Container for side-by-side layout -->
+                    <div class="mb-4" style="display: flex; justify-content: space-between;">
+
+                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
+                            <h5>Task Metrics</h5>
+                            <ul>
+                                <li>Tasks Created: <?php echo e($totalTasksCreated ?? 0); ?></li>
+                                <li>Tasks Edited: 3</li>
+                                <li>Tasks Completed: 4</li>
+                            </ul>
+                        </div>
+
+                        <!-- New Section for Objective Upvote Ratios -->
+                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
+                            <h5>Feedback Provided for Task Completion</h5>
+                            <ul>
+                                <li>Quality of Work: 5</li>
+                                <li>Timeliness: 6</li>
+                            </ul>
+                        </div>
+
+                    </div>
+
                     <?php echo $__env->make('users.profile-partials.tasks-details', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-
-                    <div class="mt-4">
-                        <h5>Task Metrics</h5>
-                        <ul>
-                            <li>Tasks Created: 2</li>
-                            <li>Tasks Edited: 3</li>
-                            <li>Tasks Completed: 4</li>
-                        </ul>
-                    </div>
-
-                    <!-- New Section for Feedback on Tasks -->
-                    <div class="mt-4">
-                        <h5>Feedback Provided for Task Completion</h5>
-                        <ul>
-                            <li>Quality of Work: 5</li>
-                            <li>Timeliness: 6</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
+
 
             <!-- Card for Most Active Units -->
             <div class="card mb-3">

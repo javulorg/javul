@@ -9,22 +9,22 @@
             </tr>
             </thead>
             <tbody>
-            @if(!empty($tasksObj) && count($tasksObj) > 0)
-                @foreach($tasksObj as $task)
+            @if(!empty($mostTopTasks) && count($mostTopTasks) > 0)
+                @foreach($mostTopTasks as $task)
                     <tr>
                         <td>
-                            <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id).'/edit') !!}">
-                                {{$task->name}}
+                            <a href="{!! url('tasks/'.$taskIDHashID->encode($task->task->id).'/edit') !!}">
+                                {{$task->task->name}}
                             </a>
                         </td>
                         <td>
-                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->objective_id).'/edit') !!}">
-                                {{\App\Models\Objective::getObjectiveName($task->objective_id)}}
+                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($task->task->objective_id).'/edit') !!}">
+                                {{\App\Models\Objective::getObjectiveName($task->task->objective_id)}}
                             </a>
                         </td>
                         <td>
-                            <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id).'/edit') !!}">
-                                {{\App\Models\Unit::getUnitName($task->unit_id)}}
+                            <a href="{!! url('units/'.$unitIDHashID->encode($task->task->unit_id).'/edit') !!}">
+                                {{\App\Models\Unit::getUnitName($task->task->unit_id)}}
                             </a>
                         </td>
                     </tr>
