@@ -8,17 +8,17 @@
             </tr>
             </thead>
             <tbody>
-            <?php if(!empty($unitsObj) && count($unitsObj) > 0): ?>
-                <?php $__currentLoopData = $unitsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php if(!empty($mostActiveUnits) && count($mostActiveUnits) > 0): ?>
+                <?php $__currentLoopData = $mostActiveUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr>
                         <td>
-                            <a href="<?php echo url('units/'.$unitIDHashID->encode($unit->id).'/edit'); ?>">
-                                <?php echo e($unit->name); ?>
+                            <a href="<?php echo url('units/'.$unitIDHashID->encode($unit->unit->id).'/edit'); ?>">
+                                <?php echo e($unit->unit->name); ?>
 
                             </a>
                         </td>
                         <td>
-                            <span class="colorLightGreen"><?php echo e($unit->status); ?></span>
+                            <span class="colorLightGreen"><?php echo e($unit->unit->status); ?></span>
                         </td>
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

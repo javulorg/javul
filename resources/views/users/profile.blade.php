@@ -1,12 +1,7 @@
 @extends('layout.master')
 @section('title', 'My Profile')
 @section('style')
-{{--    <style>--}}
-{{--        .badge {--}}
-{{--            display: inline-block;--}}
-{{--            white-space: nowrap;--}}
-{{--        }--}}
-{{--    </style>--}}
+
 @endsection
 @section('content')
     <div class="bg-light p-3 mb-4">
@@ -113,40 +108,156 @@
             </div>
 
         </div>
+
+
+
         <div class="col-sm-8">
-            <h3 style="display: inline-block;width: 70%;">Total Activity Points : {{$activityPoints}} | Idea Points : {{$activityPoints_forum}}</h3>
-            @if($userObj->paypal_email)
-                <a class="btn btn-outline-dark btn-sm" id="add_funds_btn" href="{!! url('funds/donate/user/'.$userIDHashID->encode($userObj->id)) !!}"
-                   style="display: inline-block; float: right; margin-top: 10px;">
-                    <i class="fas fa-plus me-1"></i>
-                    {!! trans('messages.add_funds')!!}
-                </a>
-            @endif
-        <!-- Tabs navigation -->
-            <ul class="nav nav-tabs mt-4 mb-3" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#unit_details" type="button" role="tab" aria-controls="unit-details" aria-selected="true">Units Details</button>
-                </li>
-
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="objectives-details-tab" data-bs-toggle="tab" data-bs-target="#objectives_details" type="button" role="tab" aria-controls="objectives-details" aria-selected="false">Objectives Details</button>
-                </li>
-
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="tasks-details-tab" data-bs-toggle="tab" data-bs-target="#tasks_details" type="button" role="tab" aria-controls="tasks-details" aria-selected="false">Tasks Details</button>
-                </li>
-            </ul>
-
-            <div id="my-tab-content" class="tab-content">
-                @include('users.profile-partials.unit-details')
-                @include('users.profile-partials.objectives-details')
-                @include('users.profile-partials.tasks-details')
+            <!-- Enhanced Header Card -->
+            <!-- Enhanced Header Card -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3 class="card-title">
+                        Total Activity Points: {{ $activityPoints }}
+                        | Idea Points: {{$activityPoints_forum}}
+                    </h3>
+                    @if($userObj->paypal_email)
+                        <a class="btn btn-outline-dark btn-sm float-end" id="add_funds_btn"
+                           href="{!! url('funds/donate/user/'.$userIDHashID->encode($userObj->id)) !!}">
+                            <i class="fas fa-plus me-1"></i>
+                            {!! trans('messages.add_funds') !!}
+                        </a>
+                    @endif
+                </div>
             </div>
-{{--            @include('users.profile-partials.user-wiki')--}}
+
+            <!-- Card for Most Active Units -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    Units Details
+                </div>
+                <div class="card-body">
+                    @include('users.profile-partials.unit-details')
+                </div>
+            </div>
+
+            <!-- Card for Objectives Details -->
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    Objectives Details
+                </div>
+                <div class="card-body">
+
+                    <!-- Flex Container for side-by-side layout -->
+                    <div class="mb-4" style="display: flex; justify-content: space-between;">
+
+                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
+
+                            <ul>
+                                <li>Objectives Created: {{ $totalObjectivesCreated ?? 0 }}</li>
+                                <li>Objectives Edited: {{ $totalObjectivesEdited ?? 0 }}</li>
+                            </ul>
+                        </div>
+
+                        <!-- New Section for Objective Upvote Ratios -->
+                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
+                            <ul>
+                                <li>Creation Upvote Ratio: 5</li>
+                                <li>Edits Upvote Ratio: 6</li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    @include('users.profile-partials.objectives-details')
+                </div>
+            </div>
+
+
+            <!-- Card for Tasks Details -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    Tasks Details
+                </div>
+                <div class="card-body">
+                    @include('users.profile-partials.tasks-details')
+
+                    <div class="mt-4">
+                        <h5>Task Metrics</h5>
+                        <ul>
+                            <li>Tasks Created: 2</li>
+                            <li>Tasks Edited: 3</li>
+                            <li>Tasks Completed: 4</li>
+                        </ul>
+                    </div>
+
+                    <!-- New Section for Feedback on Tasks -->
+                    <div class="mt-4">
+                        <h5>Feedback Provided for Task Completion</h5>
+                        <ul>
+                            <li>Quality of Work: 5</li>
+                            <li>Timeliness: 6</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for Most Active Units -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    Most Active Units
+                </div>
+                <div class="card-body">
+                    <!-- You will need to include a component here that fetches and displays the most active units -->
+                </div>
+            </div>
+
+
+
+            <div class="card mb-3">
+                    <div class="card-header">
+                        Comment Statistics
+                    </div>
+                    <div class="card-body">
+                        <p>Total Comments: <span id="totalComments">0</span></p>
+                        <p>Total Upvotes on Comments: <span id="totalUpvotes">0</span></p>
+                        <p>Comments/Upvotes Ratio: <span id="commentsUpvotesRatio">0</span></p>
+
+                        <p>Most Recent Comments: <span id="totalUpvotes">0</span></p>
+                        <p>Top Comments: <span id="commentsUpvotesRatio">0</span></p>
+                    </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    Activity by Unit
+                </div>
+                <div class="card-body">
+                    <div id="activityByUnitList"></div>
+                </div>
+            </div>
+
         </div>
+
+
+
+
+        <style>
+            .card-header {
+                background-color: #f8f9fa;
+                color: #333;
+                font-weight: bold;
+            }
+            .card-body {
+                background-color: #ffffff;
+            }
+
+        </style>
     </div>
 @endsection
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             $('#tabs').tab();

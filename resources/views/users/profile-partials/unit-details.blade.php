@@ -8,16 +8,16 @@
             </tr>
             </thead>
             <tbody>
-            @if(!empty($unitsObj) && count($unitsObj) > 0)
-                @foreach($unitsObj as $unit)
+            @if(!empty($mostActiveUnits) && count($mostActiveUnits) > 0)
+                @foreach($mostActiveUnits as $unit)
                     <tr>
                         <td>
-                            <a href="{!! url('units/'.$unitIDHashID->encode($unit->id).'/edit') !!}">
-                                {{$unit->name}}
+                            <a href="{!! url('units/'.$unitIDHashID->encode($unit->unit->id).'/edit') !!}">
+                                {{$unit->unit->name}}
                             </a>
                         </td>
                         <td>
-                            <span class="colorLightGreen">{{$unit->status}}</span>
+                            <span class="colorLightGreen">{{$unit->unit->status}}</span>
                         </td>
                     </tr>
                 @endforeach

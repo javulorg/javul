@@ -205,7 +205,8 @@ class ObjectivesController extends Controller
             'objective_id'     => $objective->id,
             'points'           => 2,
             'comments'         => 'Objective Created',
-            'type'             => 'objective'
+            'type'             => 'objective',
+            'unit_id'          => $unitID
         ]);
 
         if(isset($request->idea_id))
@@ -638,7 +639,8 @@ class ObjectivesController extends Controller
                 'objective_id'    => $objectiveObj->id,
                 'points'          => 1,
                 'comments'        => 'Objective updated',
-                'type'            => 'objective'
+                'type'            => 'objective',
+                'unit_id'         => $unitID
             ]);
 
             $userIDHashID = new Hashids('user id hash',10, Config::get('app.encode_chars'));
