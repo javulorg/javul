@@ -168,7 +168,8 @@ class IssuesController extends Controller
             'issue_id'        => $integerIssueId,
             'points'          => 2,
             'comments'        => 'Issue Created',
-            'type'            => 'issue'
+            'type'            => 'issue',
+            'unit_id'         => $unit_id[0]
         ]);
 
         // add site activity record for global statistics.
@@ -771,11 +772,12 @@ class IssuesController extends Controller
         if($request->verified == 1)
         {
             ActivityPoint::create([
-                'user_id' => Auth::user()->id,
-                'issue_id' => $issueObj->id,
-                'points' => 2,
-                'comments' => 'Issue Verified',
-                'type' => 'issue'
+                'user_id'      => Auth::user()->id,
+                'issue_id'     => $issueObj->id,
+                'points'       => 2,
+                'comments'     => 'Issue Verified',
+                'type'         => 'issue',
+                'unit_id'      => $unit_id[0]
             ]);
         }
         else {

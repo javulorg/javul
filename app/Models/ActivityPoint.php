@@ -6,7 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityPoint extends Model
 {
-    protected $fillable = ['user_id','unit_id','objective_id','task_id','issue_id','points','comments','type'];
+    protected $fillable = [
+        'user_id',
+        'unit_id',
+        'objective_id',
+        'task_id',
+        'issue_id',
+        'idea_id',
+        'points',
+        'comments',
+        'type'
+    ];
 
     public function unit()
     {
@@ -21,5 +31,14 @@ class ActivityPoint extends Model
     public function task()
     {
         return $this->belongsTo(Task::class, 'task_id');
+    }
+    public function issue()
+    {
+        return $this->belongsTo(Issue::class, 'issue_id');
+    }
+
+    public function idea()
+    {
+        return $this->belongsTo(Idea::class, 'idea_id');
     }
 }

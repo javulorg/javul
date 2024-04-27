@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityPoint;
 use App\Models\Category;
 use App\Models\Forum;
 use App\Models\Fund;
@@ -14,6 +15,7 @@ use App\Services\Ideas\IdeaService;
 use App\Traits\UnitTrait;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 
@@ -117,6 +119,14 @@ class IdeaController extends Controller
         ]);
         if($idea)
         {
+            ActivityPoint::create([
+                'user_id'      => Auth::user()->id,
+                'points'       => 2,
+                'idea_id'      => $idea->id,
+                'comments'     => 'Idea Created',
+                'type'         => 'idea',
+                'unit_id'      => $request->unit_id
+            ]);
             return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
         }
     }
@@ -235,6 +245,15 @@ class IdeaController extends Controller
                 'description'    => $request->description,
                 'comment'        => $request->comment,
                 'status'         => $request->status,
+        ]);
+
+        ActivityPoint::create([
+            'user_id'      => Auth::user()->id,
+            'points'       => 2,
+            'idea_id'      => $request->idea_id,
+            'comments'     => 'Idea Updated',
+            'type'         => 'idea',
+            'unit_id'      => $request->unit_id
         ]);
 
         if($idea)

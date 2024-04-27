@@ -22,6 +22,7 @@ use App\Models\ZcashWithdrawRequest;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -154,13 +155,32 @@ class UserController extends Controller
                 view()->share('unitsObj',$unitsObj);
 
 
-                $mostActiveUnits = ActivityPoint::with('unit')
+                $mostActiveUnits = SiteActivity::select('unit_id', DB::raw('COUNT(*) as occurrence'))
+                    ->with('unit')
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
                     ->where('user_id', $user_id)
-                    ->latest()
                     ->groupBy('unit_id')
+                    ->orderBy('occurrence', 'desc')
                     ->take(5)
                     ->get();
+
+//                $mostActiveUnits = SiteActivity::select('site_activities.unit_id', DB::raw('SUM(activity_points.points) as total_points'))
+//                    ->leftJoin('activity_points', function($join) {
+//                        $join->on('site_activities.user_id', '=', 'activity_points.user_id')
+//                            ->on('site_activities.unit_id', '=', 'activity_points.unit_id');
+//                    })
+//                    ->where('site_activities.created_at', '>=', Carbon::now()->subMonths(6))
+//                    ->where('site_activities.user_id', $user_id)
+//                    ->groupBy('site_activities.unit_id')
+//                    ->orderBy('total_points', 'desc')
+//                    ->take(5)
+//                    ->get();
+
+//                dd($mostActiveUnits->toArray());
+
+
+
+
 
                 $mostTopObjectives = ActivityPoint::with('objective')
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
@@ -180,6 +200,24 @@ class UserController extends Controller
                     ->take(5)
                     ->get();
 
+                $mostTopIssues = ActivityPoint::with('issue')
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Issue Created')
+                    ->latest()
+                    ->groupBy('issue_id')
+                    ->take(5)
+                    ->get();
+
+                $mostTopIdeas = ActivityPoint::with('idea')
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Idea Created')
+                    ->latest()
+                    ->groupBy('idea_id')
+                    ->take(5)
+                    ->get();
+
                 $totalObjectivesCreated =  ActivityPoint::query()
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
                     ->where('user_id', $user_id)
@@ -192,18 +230,48 @@ class UserController extends Controller
                     ->where('comments', 'Task Created')
                     ->count();
 
+                $totalTasksEdited =  ActivityPoint::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Task Updated')
+                    ->count();
+
+                $totalCompletedTasks=  Task::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('status', 'completed')
+                    ->count();
+
                 $totalObjectivesEdited =  ActivityPoint::query()
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
                     ->where('user_id', $user_id)
                     ->where('comments', 'Objective updated')
                     ->count();
 
+                $totalIdeasCreated =  ActivityPoint::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Idea Created')
+                    ->count();
+
+                $totalIdeasUpdated =  ActivityPoint::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Idea Updated')
+                    ->count();
+
                 view()->share('mostActiveUnits',$mostActiveUnits);
                 view()->share('mostTopObjectives',$mostTopObjectives);
                 view()->share('mostTopTasks',$mostTopTasks);
+                view()->share('mostTopIssues',$mostTopIssues);
+                view()->share('mostTopIdeas',$mostTopIdeas);
                 view()->share('totalObjectivesCreated',$totalObjectivesCreated);
                 view()->share('totalObjectivesEdited',$totalObjectivesEdited);
                 view()->share('totalTasksCreated',$totalTasksCreated);
+                view()->share('totalTasksEdited',$totalTasksEdited);
+                view()->share('totalCompletedTasks',$totalCompletedTasks);
+                view()->share('totalIdeasCreated',$totalIdeasCreated);
+                view()->share('totalIdeasUpdated',$totalIdeasUpdated);
 
                 return view('users.profile');
             }
