@@ -5,6 +5,7 @@
             <tr>
                 <th>Unit Name</th>
                 <th>Status</th>
+
             </tr>
             </thead>
             <tbody>
@@ -20,6 +21,10 @@
                         <td>
                             <span class="colorLightGreen"><?php echo e($unit->unit->status); ?></span>
                         </td>
+
+
+
+
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             <?php else: ?>

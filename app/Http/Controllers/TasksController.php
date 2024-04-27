@@ -678,12 +678,7 @@ class TasksController extends Controller
                 'open_for_bidding_date'  => Carbon::now()->format('Y-m-d')
             ]);
         }
-//        if(Task::isUnitAdminOfTask($task_id))
-//        {
-//            Task::where('id',$task_id)->update([
-//                'status' => $request->task_status
-//            ]);
-//        }
+
 
         $task_id_decoded   = $task_id;
         $taskObjTemp       = Task::find($task_id);
@@ -789,7 +784,8 @@ class TasksController extends Controller
             'task_id'         => $task_id_decoded,
             'points'          => 2,
             'comments'        => 'Task Updated',
-            'type'            => 'task'
+            'type'            => 'task',
+            'unit_id'         => $unit_id[0]
         ]);
 
         $userIDHashID  = new Hashids('user id hash',10,Config::get('app.encode_chars'));

@@ -133,7 +133,7 @@
             <!-- Card for Most Active Units -->
             <div class="card mb-3">
                 <div class="card-header">
-                    Units Details
+                    Most Active Units
                 </div>
                 <div class="card-body">
                     @include('users.profile-partials.unit-details')
@@ -187,9 +187,9 @@
                         <div class="mt-4" style="flex: 1; padding-right: 20px;">
                             <h5>Task Metrics</h5>
                             <ul>
-                                <li>Tasks Created: {{ $totalTasksCreated ?? 0 }}</li>
-                                <li>Tasks Edited: 3</li>
-                                <li>Tasks Completed: 4</li>
+                                <li>Tasks Created: {{ $totalTasksCreated }}</li>
+                                <li>Tasks Edited: {{ $totalTasksEdited }}</li>
+                                <li>Tasks Completed: {{ $totalCompletedTasks }}</li>
                             </ul>
                         </div>
 
@@ -209,15 +209,63 @@
             </div>
 
 
-            <!-- Card for Most Active Units -->
+            <!-- Card for Issues Details -->
             <div class="card mb-3">
                 <div class="card-header">
-                    Most Active Units
+                    Issue Details
                 </div>
                 <div class="card-body">
-                    <!-- You will need to include a component here that fetches and displays the most active units -->
+
+                    <!-- Flex Container for side-by-side layout -->
+                    <div class="mb-4" style="display: flex; justify-content: space-between;">
+
+                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
+                            <h5>Issue Metrics</h5>
+                            <ul>
+                                <li>Issue Created: {{ $totalTasksCreated }}</li>
+                                <li>Issue Edited: {{ $totalTasksEdited }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    @include('users.profile-partials.issues-details')
                 </div>
             </div>
+
+
+            <!-- Card for Idea Details -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    Idea Details
+                </div>
+                <div class="card-body">
+
+                    <!-- Flex Container for side-by-side layout -->
+                    <div class="mb-4" style="display: flex; justify-content: space-between;">
+
+                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
+                            <h5>Idea Metrics</h5>
+                            <ul>
+                                <li>Idea Created: {{ $totalIdeasCreated }}</li>
+                                <li>Idea Edited: {{ $totalIdeasUpdated }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    @include('users.profile-partials.ideas-details')
+                </div>
+            </div>
+
+
+            <!-- Card for Most Active Units -->
+{{--            <div class="card mb-3">--}}
+{{--                <div class="card-header">--}}
+{{--                    Most Active Units--}}
+{{--                </div>--}}
+{{--                <div class="card-body">--}}
+{{--                    <!-- You will need to include a component here that fetches and displays the most active units -->--}}
+{{--                </div>--}}
+{{--            </div>--}}
 
 
 
