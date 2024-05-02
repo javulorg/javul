@@ -23,7 +23,6 @@ class Objective extends Model
         'parent_id',
         'modified_by',
         'slug',
-        'upvote_create_count',
         'upvote_edit_count',
     ];
 
