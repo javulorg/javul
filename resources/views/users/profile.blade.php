@@ -112,8 +112,6 @@
 
 
         <div class="col-sm-8">
-            <!-- Enhanced Header Card -->
-            <!-- Enhanced Header Card -->
             <div class="card mb-3">
                 <div class="card-body">
                     <h3 class="card-title">
@@ -161,14 +159,13 @@
                         <!-- New Section for Objective Upvote Ratios -->
                         <div class="mt-4" style="flex: 1; padding-left: 20px;">
                             <ul>
-                                <li>Creation Upvote Ratio: 5</li>
-                                <li>Edits Upvote Ratio: 6</li>
+                                <li>Creation Upvote Ratio: {{ $upvoteCreationRatio ?? 0 }}</li>
+                                <li>Edits Upvote Ratio: {{ $upvoteEditRatio ?? 0 }}</li>
                             </ul>
                         </div>
 
                     </div>
 
-                    @include('users.profile-partials.objectives-details')
                 </div>
             </div>
 
@@ -201,10 +198,7 @@
                                 <li>Timeliness: 6</li>
                             </ul>
                         </div>
-
                     </div>
-
-                    @include('users.profile-partials.tasks-details')
                 </div>
             </div>
 
@@ -227,8 +221,6 @@
                             </ul>
                         </div>
                     </div>
-
-                    @include('users.profile-partials.issues-details')
                 </div>
             </div>
 
@@ -252,21 +244,8 @@
                         </div>
                     </div>
 
-                    @include('users.profile-partials.ideas-details')
                 </div>
             </div>
-
-
-            <!-- Card for Most Active Units -->
-{{--            <div class="card mb-3">--}}
-{{--                <div class="card-header">--}}
-{{--                    Most Active Units--}}
-{{--                </div>--}}
-{{--                <div class="card-body">--}}
-{{--                    <!-- You will need to include a component here that fetches and displays the most active units -->--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
 
 
             <div class="card mb-3">
@@ -294,9 +273,6 @@
 
         </div>
 
-
-
-
         <style>
             .card-header {
                 background-color: #f8f9fa;
@@ -312,10 +288,7 @@
 @endsection
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#tabs').tab();
-        });
+
     </script>
 @endsection

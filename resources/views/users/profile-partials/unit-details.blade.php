@@ -5,7 +5,7 @@
             <tr>
                 <th>Unit Name</th>
                 <th>Status</th>
-{{--                <th>Points</th>--}}
+                <th>Points</th>
             </tr>
             </thead>
             <tbody>
@@ -21,9 +21,9 @@
                             <span class="colorLightGreen">{{$unit->unit->status}}</span>
                         </td>
 
-{{--                        <td>--}}
-{{--                            <span class="colorLightGreen">{{$unit->total_points}}</span>--}}
-{{--                        </td>--}}
+                        <td>
+                            <span class="colorLightGreen">{{$unit->total_points}}</span>
+                        </td>
                     </tr>
                 @endforeach
             @else

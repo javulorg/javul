@@ -296,6 +296,7 @@ Route::get('units/category={type}', [UnitsController::class, 'categoryView']);
 Route::any('objectives/{objectiveid}/{slug}', [ObjectivesController::class, 'view']);
 Route::get('objectives/get_objectives_paginate', [ObjectivesController::class, 'get_objectives_paginate']);
 Route::get('objectives/{unitid}/lists', [ObjectivesController::class, 'lists']);
+Route::post('objectives/upvote-edits/', [ObjectivesController::class, 'upvoteEdits']);
 
 //ChatController route
 Route::get('chat', [ChatController::class, 'index']);
