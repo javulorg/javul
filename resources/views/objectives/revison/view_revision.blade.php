@@ -64,7 +64,13 @@
                             <div class="table_block_icon featured_unit current_objective">
                                 <img src="{{ asset('v2/assets/img/location.svg') }}" style="margin-bottom:6px;" alt="" class="img-fluid">
                             </div>
-                        <h4 class="card-title ml-3" style="font-size: medium;">View Revision: {!! $objectiveObj->name !!}</h4>
+
+
+                        <h4 class="card-title" style="font-size: medium;">View Revision: {!! $objectiveObj->name !!}
+                            <input type="hidden" value="{{ $objectiveObj->id }}" id="objective_id">
+                            <a href="#" id="thumb-up-btn" class="ml-auto"><i class="fas fa-thumbs-up"></i></a>
+                        </h4>
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -84,5 +90,44 @@
 
     </div>
 
+
+@endsection
+
+
+@section('scripts')
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#thumb-up-btn').click(function(e) {
+                e.preventDefault();
+                var objectiveId = $('#objective_id').val();
+                $.ajax({
+                    type: "POST",
+                    url: '{{ url("/objectives/upvote-edits") }}',
+                    data: {
+                        objectiveId   : objectiveId,
+                        _token: $('input[name="_token"]').val(),
+                    },
+
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Objective likes updated successfully',
+                            timer: 2000 // Close after 2 seconds
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Warning!',
+                            text: 'You have already upvoted this objective',
+                            timer: 2000 // Close after 2 seconds
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
 @endsection

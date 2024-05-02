@@ -25,6 +25,7 @@ use App\Models\UserMessages;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class ObjectivesController extends Controller
@@ -627,7 +628,7 @@ class ObjectivesController extends Controller
             $ObjectiveRevision->created_at    = date("Y-m-d H:i:s");
             $ObjectiveRevision->save();
 
-            Objective::where('id',$objectiveObj->id)->update([
+             Objective::where('id',$objectiveObj->id)->update([
                 'user_id'        => Auth::user()->id,
                 'unit_id'        => $unitID,
                 'name'           => $request->objective_name,
@@ -638,14 +639,18 @@ class ObjectivesController extends Controller
                 'parent_id'      => $parent_id
             ]);
 
-            ActivityPoint::create([
-                'user_id'         => Auth::user()->id,
-                'objective_id'    => $objectiveObj->id,
-                'points'          => 1,
-                'comments'        => 'Objective updated',
-                'type'            => 'objective',
-                'unit_id'         => $unitID
-            ]);
+
+
+             ActivityPoint::create([
+                 'user_id'         => Auth::user()->id,
+                 'objective_id'    => $objectiveObj->id,
+                 'points'          => 1,
+                 'comments'        => 'Objective updated',
+                 'type'            => 'objective',
+                 'unit_id'         => $unitID
+             ]);
+
+
 
             $userIDHashID = new Hashids('user id hash',10, Config::get('app.encode_chars'));
             $user_id = $userIDHashID->encode(Auth::user()->id);
@@ -1018,4 +1023,20 @@ class ObjectivesController extends Controller
         $html = view('objectives.partials.more_objectives')->render();
         return response()->json(['success'=>true,'html'=>$html]);
     }
+
+    public function upvoteEdits(Request $request)
+    {
+        $cookieName = "upvoted_objective_{$request->objectiveId}";
+        if ($request->cookie($cookieName)) {
+            // If the cookie exists, return an error response
+            return response()->json(['error' => 'You have already upvoted this objective'], 422);
+        }
+        Objective::findOrFail($request->objectiveId)
+            ->increment('upvote_edit_count');
+
+        // Set a cookie indicating that the objective has been upvoted
+        return response()->json(['message' => 'Objective upvoted successfully'])
+            ->cookie($cookieName, true, /* expiration time if needed */);
+    }
+
 }

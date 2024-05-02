@@ -116,8 +116,6 @@
 
 
         <div class="col-sm-8">
-            <!-- Enhanced Header Card -->
-            <!-- Enhanced Header Card -->
             <div class="card mb-3">
                 <div class="card-body">
                     <h3 class="card-title">
@@ -168,14 +166,13 @@
                         <!-- New Section for Objective Upvote Ratios -->
                         <div class="mt-4" style="flex: 1; padding-left: 20px;">
                             <ul>
-                                <li>Creation Upvote Ratio: 5</li>
-                                <li>Edits Upvote Ratio: 6</li>
+                                <li>Creation Upvote Ratio: <?php echo e($upvoteCreationRatio ?? 0); ?></li>
+                                <li>Edits Upvote Ratio: <?php echo e($upvoteEditRatio ?? 0); ?></li>
                             </ul>
                         </div>
 
                     </div>
 
-                    <?php echo $__env->make('users.profile-partials.objectives-details', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 </div>
             </div>
 
@@ -208,10 +205,7 @@
                                 <li>Timeliness: 6</li>
                             </ul>
                         </div>
-
                     </div>
-
-                    <?php echo $__env->make('users.profile-partials.tasks-details', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 </div>
             </div>
 
@@ -234,8 +228,6 @@
                             </ul>
                         </div>
                     </div>
-
-                    <?php echo $__env->make('users.profile-partials.issues-details', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 </div>
             </div>
 
@@ -259,21 +251,8 @@
                         </div>
                     </div>
 
-                    <?php echo $__env->make('users.profile-partials.ideas-details', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 </div>
             </div>
-
-
-            <!-- Card for Most Active Units -->
-
-
-
-
-
-
-
-
-
 
 
             <div class="card mb-3">
@@ -301,9 +280,6 @@
 
         </div>
 
-
-
-
         <style>
             .card-header {
                 background-color: #f8f9fa;
@@ -319,11 +295,8 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#tabs').tab();
-        });
+
     </script>
 <?php $__env->stopSection(); ?>
 

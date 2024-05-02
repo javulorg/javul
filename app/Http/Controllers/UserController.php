@@ -155,68 +155,19 @@ class UserController extends Controller
                 view()->share('unitsObj',$unitsObj);
 
 
-                $mostActiveUnits = SiteActivity::select('unit_id', DB::raw('COUNT(*) as occurrence'))
-                    ->with('unit')
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
+                $mostActiveUnits =  ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
                     ->groupBy('unit_id')
-                    ->orderBy('occurrence', 'desc')
-                    ->take(5)
+                    ->orderByDesc('total_points')
+                    ->limit(5)
                     ->get();
 
-//                $mostActiveUnits = SiteActivity::select('site_activities.unit_id', DB::raw('SUM(activity_points.points) as total_points'))
-//                    ->leftJoin('activity_points', function($join) {
-//                        $join->on('site_activities.user_id', '=', 'activity_points.user_id')
-//                            ->on('site_activities.unit_id', '=', 'activity_points.unit_id');
-//                    })
-//                    ->where('site_activities.created_at', '>=', Carbon::now()->subMonths(6))
-//                    ->where('site_activities.user_id', $user_id)
-//                    ->groupBy('site_activities.unit_id')
-//                    ->orderBy('total_points', 'desc')
-//                    ->take(5)
-//                    ->get();
-
-//                dd($mostActiveUnits->toArray());
 
 
 
 
 
-                $mostTopObjectives = ActivityPoint::with('objective')
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Objective Created')
-                    ->latest()
-                    ->groupBy('objective_id')
-                    ->take(5)
-                    ->get();
 
-                $mostTopTasks = ActivityPoint::with('task')
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Task Created')
-                    ->latest()
-                    ->groupBy('task_id')
-                    ->take(5)
-                    ->get();
 
-                $mostTopIssues = ActivityPoint::with('issue')
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Issue Created')
-                    ->latest()
-                    ->groupBy('issue_id')
-                    ->take(5)
-                    ->get();
-
-                $mostTopIdeas = ActivityPoint::with('idea')
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Idea Created')
-                    ->latest()
-                    ->groupBy('idea_id')
-                    ->take(5)
-                    ->get();
 
                 $totalObjectivesCreated =  ActivityPoint::query()
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
@@ -260,11 +211,33 @@ class UserController extends Controller
                     ->where('comments', 'Idea Updated')
                     ->count();
 
+                $userObjectivesIds = Objective::where('user_id', $user_id)->pluck('id');
+                $totalObjectivesCreated = Objective::where('user_id', $user_id)->count();
+                $objectivesPriority = DB::table('priorities')
+                    ->whereIn('type_id', $userObjectivesIds)
+                    ->where('type', 3)
+                    ->count();
+
+                $upvoteCreationRatio = $objectivesPriority / $totalObjectivesCreated;
+                $upvoteCreationRatio = round($upvoteCreationRatio,2);
+
+                $objectiveRevisions = DB::table('objective_revisions')
+                    ->whereIn('objective_id', $userObjectivesIds)
+                    ->count();
+                $objectivesUpvote = DB::table('objectives')
+                    ->whereIn('id', $userObjectivesIds)
+                    ->sum('upvote_edit_count');
+                $upvoteEditRatio = 0;
+                if($objectivesUpvote > 0){
+                    $upvoteEditRatio = $objectivesUpvote / $objectiveRevisions;
+                    $upvoteEditRatio = round($upvoteCreationRatio,2);
+                }
+
+
+                view()->share('upvoteCreationRatio',$upvoteCreationRatio);
+                view()->share('upvoteEditRatio',$upvoteEditRatio);
+
                 view()->share('mostActiveUnits',$mostActiveUnits);
-                view()->share('mostTopObjectives',$mostTopObjectives);
-                view()->share('mostTopTasks',$mostTopTasks);
-                view()->share('mostTopIssues',$mostTopIssues);
-                view()->share('mostTopIdeas',$mostTopIdeas);
                 view()->share('totalObjectivesCreated',$totalObjectivesCreated);
                 view()->share('totalObjectivesEdited',$totalObjectivesEdited);
                 view()->share('totalTasksCreated',$totalTasksCreated);

@@ -13,7 +13,19 @@ class Objective extends Model
     public $timestamps = true;
 
 
-    protected $fillable = ['user_id','unit_id','comment','name','description','status','parent_id','modified_by','slug'];
+    protected $fillable = [
+        'user_id',
+        'unit_id',
+        'comment',
+        'name',
+        'description',
+        'status',
+        'parent_id',
+        'modified_by',
+        'slug',
+        'upvote_create_count',
+        'upvote_edit_count',
+    ];
 
 
     public function unit()
