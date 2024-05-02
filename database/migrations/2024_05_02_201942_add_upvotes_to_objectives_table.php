@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('objectives', function (Blueprint $table) {
-            $table->bigInteger('upvote_create_count')->default(0);
             $table->bigInteger('upvote_edit_count')->default(0);
         });
     }
@@ -23,7 +22,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('objectives', function (Blueprint $table) {
-            $table->dropColumn('upvote_create_count');
             $table->dropColumn('upvote_edit_count');
         });
     }
