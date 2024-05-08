@@ -169,11 +169,7 @@ class UserController extends Controller
 
 
 
-                $totalObjectivesCreated =  ActivityPoint::query()
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Objective Created')
-                    ->count();
+
 
                 $totalTasksCreated =  ActivityPoint::query()
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
@@ -218,8 +214,16 @@ class UserController extends Controller
                     ->where('type', 3)
                     ->count();
 
-                $upvoteCreationRatio = $objectivesPriority / $totalObjectivesCreated;
-                $upvoteCreationRatio = round($upvoteCreationRatio,2);
+                $userTasksIds = Task::where('user_id', $user_id)->pluck('id');
+                $totalTasksCreated = Task::query()->where('user_id', $user_id)->count();
+
+
+                $upvoteCreationRatio = 0;
+                if($objectivesPriority > 0){
+                    $upvoteCreationRatio = $objectivesPriority / $totalObjectivesCreated;
+                    $upvoteCreationRatio = round($upvoteCreationRatio,2);
+                }
+
 
                 $objectiveRevisions = DB::table('objective_revisions')
                     ->whereIn('objective_id', $userObjectivesIds)
@@ -230,12 +234,29 @@ class UserController extends Controller
                 $upvoteEditRatio = 0;
                 if($objectivesUpvote > 0){
                     $upvoteEditRatio = $objectivesUpvote / $objectiveRevisions;
-                    $upvoteEditRatio = round($upvoteCreationRatio,2);
+                    $upvoteEditRatio = round($upvoteEditRatio,2);
+                }
+
+
+
+                $taskRevisions = DB::table('tasks_revisions')
+                    ->whereIn('task_id', $userTasksIds)
+                    ->count();
+                $taskUpvote = DB::table('tasks')
+                    ->whereIn('id', $userTasksIds)
+                    ->sum('upvote_edit_count');
+                $tasksUpvoteEditRatio = 0;
+                if($taskUpvote > 0){
+                    $tasksUpvoteEditRatio = $taskUpvote / $taskRevisions;
+                    $tasksUpvoteEditRatio = round($tasksUpvoteEditRatio,2);
                 }
 
 
                 view()->share('upvoteCreationRatio',$upvoteCreationRatio);
                 view()->share('upvoteEditRatio',$upvoteEditRatio);
+
+
+                view()->share('tasksUpvoteEditRatio',$tasksUpvoteEditRatio);
 
                 view()->share('mostActiveUnits',$mostActiveUnits);
                 view()->share('totalObjectivesCreated',$totalObjectivesCreated);

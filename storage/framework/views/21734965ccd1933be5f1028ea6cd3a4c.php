@@ -203,6 +203,7 @@
                             <ul>
                                 <li>Quality of Work: 5</li>
                                 <li>Timeliness: 6</li>
+                                <li>Edits Upvote Ratio: <?php echo e($tasksUpvoteEditRatio ?? 0); ?></li>
                             </ul>
                         </div>
                     </div>

@@ -2775,4 +2775,19 @@ class TasksController extends Controller
         $html = view('tasks.partials.more_tasks')->render();
         return response()->json(['success'=>true,'html'=>$html]);
     }
+
+    public function upvoteEdits(Request $request)
+    {
+        $cookieName = "upvoted_objective_{$request->taskId}";
+        if ($request->cookie($cookieName)) {
+            // If the cookie exists, return an error response
+            return response()->json(['error' => 'You have already upvoted this task'], 422);
+        }
+        Task::findOrFail($request->taskId)
+            ->increment('upvote_edit_count');
+
+        // Set a cookie indicating that the objective has been upvoted
+        return response()->json(['message' => 'Task upvoted successfully'])
+            ->cookie($cookieName, true, /* expiration time if needed */);
+    }
 }
