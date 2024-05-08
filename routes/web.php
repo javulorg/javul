@@ -297,6 +297,7 @@ Route::any('objectives/{objectiveid}/{slug}', [ObjectivesController::class, 'vie
 Route::get('objectives/get_objectives_paginate', [ObjectivesController::class, 'get_objectives_paginate']);
 Route::get('objectives/{unitid}/lists', [ObjectivesController::class, 'lists']);
 Route::post('objectives/upvote-edits/', [ObjectivesController::class, 'upvoteEdits']);
+Route::post('tasks/upvote-edits/', [TasksController::class, 'upvoteEdits']);
 
 //ChatController route
 Route::get('chat', [ChatController::class, 'index']);
