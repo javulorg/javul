@@ -195,7 +195,7 @@
                                 <div class="objective_content_info_links">
                                     <a href="<?php echo url('ideas/'. $ideaHashId .'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" alt=""></a>
                                     <div class="separat"></div>
-                                    <a href="<?php echo url('ideas/'. $ideaHashId .'/history'); ?>" class="edit_icon"> Revision History</a>
+                                    <a href="<?php echo route('idea_revisions',[$ideaHashId]); ?>" class="edit_icon"> Revision History</a>
                                     <div class="separat"></div>
                                     <a href="<?php echo url('ideas/'. $ideaHashId .'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""></a>
 

@@ -7,12 +7,15 @@ use App\Models\Category;
 use App\Models\Forum;
 use App\Models\Fund;
 use App\Models\Idea;
+use App\Models\IdeaRevision;
 use App\Models\Issue;
+use App\Models\SiteActivity;
 use App\Models\Task;
 use App\Models\Type;
 use App\Models\Unit;
 use App\Services\Ideas\IdeaService;
 use App\Traits\UnitTrait;
+use Carbon\Carbon;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -235,8 +238,22 @@ class IdeaController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $idea = Idea::where('id', $request->idea_id)
-            ->update([
+        $idea = Idea::where('id', $request->idea_id)->first();
+        $bytes    = IdeaRevision::strBytes( str_replace(' ', '', strip_tags($request->description)));
+        $oldBytes = IdeaRevision::strBytes( str_replace(' ', '', strip_tags($idea->description)));
+
+        $ideaRevision                = new IdeaRevision();
+        $ideaRevision->unit_id       = $idea->unit_id;
+        $ideaRevision->user_id       = $idea->user_id;
+        $ideaRevision->description   = $idea->description;
+        $ideaRevision->idea_id       = $idea->id;
+        $ideaRevision->comment       = $idea->comment." ";
+        $ideaRevision->modified_by   = Auth::user()->id;
+        $ideaRevision->size          = (  $bytes - $oldBytes );
+        $ideaRevision->created_at    = date("Y-m-d H:i:s");
+        $ideaRevision->save();
+
+        $idea->update([
                 'title'          => $request->title,
                 'user_id'        => auth()->user()->id,
                 'task_id'        => $request->task_id,
@@ -255,6 +272,7 @@ class IdeaController extends Controller
             'type'         => 'idea',
             'unit_id'      => $request->unit_id
         ]);
+
 
         if($idea)
         {
@@ -275,5 +293,69 @@ class IdeaController extends Controller
         // Set a cookie indicating that the objective has been upvoted
         return response()->json(['message' => 'Idea upvoted successfully'])
             ->cookie($cookieName, true, /* expiration time if needed */);
+    }
+
+
+    public function revision($idea_id,Request $request)
+    {
+
+        if(!empty($idea_id))
+        {
+            view()->share("idea_id",$idea_id);
+            $hash = new Hashids('idea id hash',10,Config::get('app.encode_chars'));
+            $idea_id = $hash->decode($idea_id);
+
+            if(!empty($idea_id))
+            {
+                $idea_id = $idea_id[0];
+                $idea = Idea::findOrFail($idea_id);
+                if($idea)
+                {
+
+
+                        view()->share('idea',$idea);
+
+                        $availableUnitFunds =Fund::getUnitDonatedFund($idea->unit_id);
+                        $awardedUnitFunds =Fund::getUnitAwardedFund($idea->unit_id);
+
+                        view()->share('availableUnitFunds',$availableUnitFunds );
+                        view()->share('awardedUnitFunds',$awardedUnitFunds );
+
+
+                        $revisions = IdeaRevision::with('user')
+                            ->where('unit_id', $idea->unit_id)
+                            ->where('idea_id', $idea->id)
+                            ->get();
+
+                        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
+
+                        view()->share('userIDHashID', $userIDHashID);
+                        view()->share('Carbon', new Carbon);
+                        view()->share('revisions',$revisions);
+                        view()->share("unit_id", $idea->unit_id);
+                        view()->share("section_id", 1);
+                        view()->share("object_id",$idea->id);
+
+                        $site_activity = SiteActivity::where('unit_id',$idea->unit->id)->orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
+                        view()->share('site_activity',$site_activity);
+                        view()->share('unit_activity_id',$idea->unit->id);
+
+
+                        $unitData = Unit::where('id', $idea->unit->id)->first();
+                        $availableFunds = Fund::getUnitDonatedFund($idea->unit->id);
+                        $awardedFunds = Fund::getUnitAwardedFund($idea->unit->id);
+
+                        $issueResolutions = $this->calculateIssueResolution($idea->unit->id);
+
+                        view()->share('totalIssueResolutions',$issueResolutions);
+                        view()->share('availableFunds',$availableFunds );
+                        view()->share('awardedFunds',$awardedFunds );
+                        view()->share('unitData',$unitData);
+                        view()->share('unitObj',$unitData);
+                        return view('ideas.revision.view');
+                }
+            }
+        }
+        return view('errors.404');
     }
 }
