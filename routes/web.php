@@ -237,6 +237,9 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::post('objectives/importance', [ObjectivesController::class, 'add_importance']);
     Route::get('objectives/delete_objective', [ObjectivesController::class, 'delete_objective']);
 
+
+    Route::get('ideas/{ideaId}/revisions', [IdeaController::class, 'revision'])->name('idea_revisions');
+
     //ChatController
     Route::get('chat/create_room', [ChatController::class, 'create_room']);
     Route::post('chat/sendmsg', [ChatController::class, 'sendmsg']);

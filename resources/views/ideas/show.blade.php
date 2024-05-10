@@ -193,7 +193,7 @@
                                 <div class="objective_content_info_links">
                                     <a href="{!! url('ideas/'. $ideaHashId .'/edit')!!}" class="edit_icon"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a>
                                     <div class="separat"></div>
-                                    <a href="{!! url('ideas/'. $ideaHashId .'/history')!!}" class="edit_icon"> Revision History</a>
+                                    <a href="{!! route('idea_revisions',[$ideaHashId]) !!}" class="edit_icon"> Revision History</a>
                                     <div class="separat"></div>
                                     <a href="{!! url('ideas/'. $ideaHashId .'/edit')!!}" class="edit_icon"><img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt=""></a>
 

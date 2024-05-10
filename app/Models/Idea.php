@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,4 +36,6 @@ class Idea extends Model
     {
         return $this->belongsTo(Task::class, 'task_id');
     }
+
+
 }
