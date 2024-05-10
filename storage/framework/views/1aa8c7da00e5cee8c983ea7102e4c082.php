@@ -1,6 +1,5 @@
-@extends('layout.master')
-@section('title', 'Issue: View Revision')
-@section('style')
+<?php $__env->startSection('title', 'Issue: View Revision'); ?>
+<?php $__env->startSection('style'); ?>
 
     <style>
         .panel {
@@ -18,43 +17,43 @@
             border-bottom: 3px solid #5a5858;
         }
     </style>
-@endsection
-@section('site-name')
-    @if(isset($unitData))
-        <h1>{{ $unitData->name }}</h1>
-    @else
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('site-name'); ?>
+    <?php if(isset($unitData)): ?>
+        <h1><?php echo e($unitData->name); ?></h1>
+    <?php else: ?>
         <h1>Javul.org</h1>
-    @endif
+    <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
         Open-source Society
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('navbar')
-    @if(isset($unitData))
-        @include('layout.navbar', ['unitData' => $unitData])
-    @endif
-@endsection
+<?php $__env->startSection('navbar'); ?>
+    <?php if(isset($unitData)): ?>
+        <?php echo $__env->make('layout.navbar', ['unitData' => $unitData], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php endif; ?>
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="content_row">
         <div class="sidebar">
-            @if(isset($unitData))
-                @include('layout.v2.global-unit-overview')
+            <?php if(isset($unitData)): ?>
+                <?php echo $__env->make('layout.v2.global-unit-overview', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 <?php
                 $title = 'Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                @include('layout.v2.global-finances')
+                <?php echo $__env->make('layout.v2.global-finances', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-                @include('layout.v2.global-about-site')
-            @else
+                <?php echo $__env->make('layout.v2.global-about-site', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php else: ?>
                 <?php
                 $title = 'Global Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
-            @endif
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php endif; ?>
         </div>
 
         <div class="col-md-9">
@@ -62,13 +61,14 @@
                 <div class="card-header">
                     <div class="card-heading d-flex align-items-center">
                         <div class="table_block_icon featured_unit current_issue">
-                            <img src="{{ asset('v2/assets/img/bug.svg') }}" style="margin-bottom:6px;" alt="" class="img-fluid">
+                            <img src="<?php echo e(asset('v2/assets/img/bug.svg')); ?>" style="margin-bottom:6px;" alt="" class="img-fluid">
                         </div>
-{{--                        <h4 class="card-title ml-3" style="font-size: medium;">View Revision: {!! $issueObj->title !!}</h4>--}}
 
-                        <h4 class="card-title" style="font-size: medium;">View Revision: {!! $issueObj->title !!}
-                            <input type="hidden" value="{{ $issueObj->id }}" id="issue_id">
-                            <input type="hidden" value="{{ $revisions->id }}" id="revision_id">
+
+                        <h4 class="card-title" style="font-size: medium;">View Revision: <?php echo $issueObj->title; ?>
+
+                            <input type="hidden" value="<?php echo e($issueObj->id); ?>" id="issue_id">
+                            <input type="hidden" value="<?php echo e($revisions->id); ?>" id="revision_id">
                             <a href="#" id="thumb-up-btn" class="ml-auto"><i class="fas fa-thumbs-up"></i></a>
                         </h4>
                     </div>
@@ -77,11 +77,11 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h4 class="text-center">Previous revision</h4>
-                            <h5 class="text-center">{{ date("d-m-Y h:A", strtotime($revisions->created_at)) }}, Edited By User {{ $revisions->first_name }} {{ $revisions->last_name }}</h5>
+                            <h5 class="text-center"><?php echo e(date("d-m-Y h:A", strtotime($revisions->created_at))); ?>, Edited By User <?php echo e($revisions->first_name); ?> <?php echo e($revisions->last_name); ?></h5>
                             <hr>
-                            <div class="wiki-page-desc">{!! $revisions->description !!}</div>
+                            <div class="wiki-page-desc"><?php echo $revisions->description; ?></div>
                             <hr>
-                            <p><strong>Comment:</strong> {{ $revisions->comment }}</p>
+                            <p><strong>Comment:</strong> <?php echo e($revisions->comment); ?></p>
                         </div>
                     </div>
                 </div>
@@ -91,9 +91,9 @@
     </div>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -103,7 +103,7 @@
                 var revisionId = $('#revision_id').val();
                 $.ajax({
                     type: "POST",
-                    url: '{{ url("/issues/upvote-edits") }}',
+                    url: '<?php echo e(url("/issues/upvote-edits")); ?>',
                     data: {
                         issueId   : issueId,
                         revisionId : revisionId,
@@ -131,4 +131,6 @@
         });
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/issues/revison/view_revision.blade.php ENDPATH**/ ?>

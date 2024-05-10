@@ -769,6 +769,7 @@ class IssuesController extends Controller
         IssueDocuments::uploadDocuments($issueObj->id,$request);
 
 
+
         if($request->verified == 1)
         {
             ActivityPoint::create([
@@ -777,16 +778,17 @@ class IssuesController extends Controller
                 'points'       => 2,
                 'comments'     => 'Issue Verified',
                 'type'         => 'issue',
-                'unit_id'      => $unit_id[0]
+                'unit_id'      => $issueObj->unit_id
             ]);
         }
         else {
             ActivityPoint::create([
-                'user_id' => Auth::user()->id,
-                'issue_id' => $issueObj->id,
-                'points' => 1,
-                'comments' => 'Issue Updated',
-                'type' => 'issue'
+                'user_id'    => Auth::user()->id,
+                'issue_id'   => $issueObj->id,
+                'points'     => 1,
+                'comments'   => 'Issue Updated',
+                'type'       => 'issue',
+                'unit_id'    => $issueObj->unit_id
             ]);
         }
             // add site activity record for global statistics.
@@ -1194,5 +1196,20 @@ class IssuesController extends Controller
         Mc::putMcData();
         $question=Mc::getMcQuestion();
         return response()->json(['success'=>true,'captcha_value'=>$question]);
+    }
+
+    public function upvoteEdits(Request $request)
+    {
+        $cookieName = "upvoted_issue_{$request->revisionId}";
+        if ($request->cookie($cookieName)) {
+            // If the cookie exists, return an error response
+            return response()->json(['error' => 'You have already upvoted this issue'], 422);
+        }
+        Issue::findOrFail($request->issueId)
+            ->increment('upvote_edit_count');
+
+        // Set a cookie indicating that the objective has been upvoted
+        return response()->json(['message' => 'Issue upvoted successfully'])
+            ->cookie($cookieName, true, /* expiration time if needed */);
     }
 }

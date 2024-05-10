@@ -326,6 +326,28 @@
 
                     @if(isset($comments))
                         @foreach($comments as $comment)
+{{--                            <div class="comment_container">--}}
+{{--                                <div class="comment_icon">--}}
+{{--                                    <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">--}}
+{{--                                </div>--}}
+{{--                                <div class="comment_content">--}}
+{{--                                    <div class="comment_info">--}}
+{{--                                        <div class="comment_autor">--}}
+{{--                                            @php--}}
+{{--                                                $user = \App\Models\User::where('id', $comment->user_id)->select('first_name','last_name')->first();--}}
+{{--                                            @endphp--}}
+{{--                                            {{ $user->first_name . ' ' . $user->last_name }}--}}
+{{--                                        </div>--}}
+{{--                                        <div class="comment_time">--}}
+{{--                                            {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}--}}
+
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="comment_txt">--}}
+{{--                                        {{ $comment->post }}--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="comment_container">
                                 <div class="comment_icon">
                                     <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
@@ -340,14 +362,39 @@
                                         </div>
                                         <div class="comment_time">
                                             {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}
-
                                         </div>
                                     </div>
                                     <div class="comment_txt">
                                         {{ $comment->post }}
                                     </div>
+                                    <!-- Like and dislike buttons -->
+                                    <div class="comment_actions">
+                                        <form action="" method="POST">
+                                            @csrf
+                                            <button type="submit" class="like_button">
+                                                <i class="fas fa-thumbs-up"></i>
+                                            </button>
+                                        </form>
+                                        <form action="" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dislike_button">
+                                                <i class="fas fa-thumbs-down"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <!-- End of Like and dislike buttons -->
                                 </div>
                             </div>
+
+                            <style>
+                                .comment_actions form {
+                                    display: inline-block;
+                                    margin-right: 10px; /* Adjust the margin between buttons */
+                                }
+                                .comment_actions form:last-child {
+                                    margin-right: 0; /* Remove margin for the last button */
+                                }
+                            </style>
                         @endforeach
                     @endif
 
@@ -444,6 +491,8 @@
                     },
                 });
             });
+
+
         });
     </script>
 @endsection
