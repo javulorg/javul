@@ -298,6 +298,8 @@ Route::get('objectives/get_objectives_paginate', [ObjectivesController::class, '
 Route::get('objectives/{unitid}/lists', [ObjectivesController::class, 'lists']);
 Route::post('objectives/upvote-edits/', [ObjectivesController::class, 'upvoteEdits']);
 Route::post('tasks/upvote-edits/', [TasksController::class, 'upvoteEdits']);
+Route::post('issues/upvote-edits/', [IssuesController::class, 'upvoteEdits']);
+Route::post('ideas/upvote-edits/', [IdeaController::class, 'upvoteEdits']);
 
 //ChatController route
 Route::get('chat', [ChatController::class, 'index']);

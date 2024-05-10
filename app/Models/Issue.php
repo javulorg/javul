@@ -23,7 +23,8 @@ class Issue extends Model
         'verified_by',
         'resolved_by',
         'verified',
-        'category_id'
+        'category_id',
+        'upvote_edit_count'
     ];
 
 

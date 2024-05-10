@@ -331,6 +331,26 @@
 
                     <?php if(isset($comments)): ?>
                         <?php $__currentLoopData = $comments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             <div class="comment_container">
                                 <div class="comment_icon">
                                     <img src="<?php echo e(asset('v2/assets/img/User_Circle.svg')); ?>" alt="" class="img-fluid">
@@ -347,15 +367,40 @@
                                         <div class="comment_time">
                                             <?php echo e(Carbon\Carbon::parse($comment->created_time)->diffForHumans()); ?>
 
-
                                         </div>
                                     </div>
                                     <div class="comment_txt">
                                         <?php echo e($comment->post); ?>
 
                                     </div>
+                                    <!-- Like and dislike buttons -->
+                                    <div class="comment_actions">
+                                        <form action="" method="POST">
+                                            <?php echo csrf_field(); ?>
+                                            <button type="submit" class="like_button">
+                                                <i class="fas fa-thumbs-up"></i>
+                                            </button>
+                                        </form>
+                                        <form action="" method="POST">
+                                            <?php echo csrf_field(); ?>
+                                            <button type="submit" class="dislike_button">
+                                                <i class="fas fa-thumbs-down"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <!-- End of Like and dislike buttons -->
                                 </div>
                             </div>
+
+                            <style>
+                                .comment_actions form {
+                                    display: inline-block;
+                                    margin-right: 10px; /* Adjust the margin between buttons */
+                                }
+                                .comment_actions form:last-child {
+                                    margin-right: 0; /* Remove margin for the last button */
+                                }
+                            </style>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endif; ?>
 

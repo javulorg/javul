@@ -228,6 +228,13 @@
                                 <li>Issue Edited: <?php echo e($totalTasksEdited); ?></li>
                             </ul>
                         </div>
+
+                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
+                            <ul>
+                                <li>Creation Upvote Ratio: <?php echo e($issueUpvoteCreationRatio ?? 0); ?></li>
+                                <li>Edits Upvote Ratio: <?php echo e($issueUpvoteEditRatio ?? 0); ?></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -261,7 +268,7 @@
                         Comment Statistics
                     </div>
                     <div class="card-body">
-                        <p>Total Comments: <span id="totalComments">0</span></p>
+                        <p>Total Comments: <span id="totalComments"><?php echo e($totalUserComments); ?></span></p>
                         <p>Total Upvotes on Comments: <span id="totalUpvotes">0</span></p>
                         <p>Comments/Upvotes Ratio: <span id="commentsUpvotesRatio">0</span></p>
 
@@ -270,14 +277,14 @@
                     </div>
             </div>
 
-            <div class="card mb-3">
-                <div class="card-header">
-                    Activity by Unit
-                </div>
-                <div class="card-body">
-                    <div id="activityByUnitList"></div>
-                </div>
-            </div>
+
+
+
+
+
+
+
+
 
         </div>
 

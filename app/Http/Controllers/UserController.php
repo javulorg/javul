@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivityPoint;
 use App\Models\AreaOfInterest;
 use App\Models\Fund;
+use App\Models\Issue;
 use App\Models\JobSkill;
 use App\Models\Objective;
 use App\Models\SiteActivity;
@@ -166,17 +167,6 @@ class UserController extends Controller
 
 
 
-
-
-
-
-
-                $totalTasksCreated =  ActivityPoint::query()
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Task Created')
-                    ->count();
-
                 $totalTasksEdited =  ActivityPoint::query()
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
                     ->where('user_id', $user_id)
@@ -215,6 +205,7 @@ class UserController extends Controller
                     ->count();
 
                 $userTasksIds = Task::where('user_id', $user_id)->pluck('id');
+                $userIssueIds = Issue::where('user_id', $user_id)->pluck('id');
                 $totalTasksCreated = Task::query()->where('user_id', $user_id)->count();
 
 
@@ -251,6 +242,40 @@ class UserController extends Controller
                     $tasksUpvoteEditRatio = round($tasksUpvoteEditRatio,2);
                 }
 
+
+                $issueRevisions = DB::table('issues_revisions')
+                    ->whereIn('issues_id', $userIssueIds)
+                    ->count();
+                $issueUpvote = DB::table('issues')
+                    ->whereIn('id', $userIssueIds)
+                    ->sum('upvote_edit_count');
+
+                $issueUpvoteEditRatio = 0;
+                if($issueUpvote > 0){
+                    $issueUpvoteEditRatio = $issueUpvote / $issueRevisions;
+                    $issueUpvoteEditRatio = round($issueUpvoteEditRatio,2);
+                }
+
+
+                $issuePriority = DB::table('priorities')
+                    ->whereIn('type_id', $userIssueIds)
+                    ->where('type', 1)
+                    ->count();
+                $issueUpvoteCreationRatio = 0;
+                if($issuePriority > 0){
+                    $issueUpvoteCreationRatio = $issuePriority / $totalObjectivesCreated;
+                    $issueUpvoteCreationRatio = round($issueUpvoteCreationRatio,2);
+                }
+
+                $totalUserComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                    ->count();
+
+                view()->share('totalUserComments',$totalUserComments);
+
+
+                view()->share('issueUpvoteCreationRatio',$issueUpvoteCreationRatio);
+                view()->share('issueUpvoteEditRatio',$issueUpvoteEditRatio);
 
                 view()->share('upvoteCreationRatio',$upvoteCreationRatio);
                 view()->share('upvoteEditRatio',$upvoteEditRatio);

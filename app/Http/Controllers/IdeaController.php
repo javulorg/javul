@@ -261,4 +261,19 @@ class IdeaController extends Controller
             return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
         }
     }
+
+    public function upvoteEdits(Request $request)
+    {
+        $cookieName = "upvoted_issue_{$request->revisionId}";
+        if ($request->cookie($cookieName)) {
+            // If the cookie exists, return an error response
+            return response()->json(['error' => 'You have already upvoted this idea'], 422);
+        }
+        Idea::findOrFail($request->ideaId)
+            ->increment('upvote_edit_count');
+
+        // Set a cookie indicating that the objective has been upvoted
+        return response()->json(['message' => 'Idea upvoted successfully'])
+            ->cookie($cookieName, true, /* expiration time if needed */);
+    }
 }
