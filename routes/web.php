@@ -239,6 +239,7 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
 
 
     Route::get('ideas/{ideaId}/revisions', [IdeaController::class, 'revision'])->name('idea_revisions');
+    Route::get('ideas/{ideaId}/revisions/{revision_id}', [IdeaController::class, 'revisionView'])->name('unit_idea_view');
 
     //ChatController
     Route::get('chat/create_room', [ChatController::class, 'create_room']);

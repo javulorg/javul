@@ -257,6 +257,13 @@
                                 <li>Idea Edited: <?php echo e($totalIdeasUpdated); ?></li>
                             </ul>
                         </div>
+
+                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
+                            <ul>
+                                <li>Creation Upvote Ratio: <?php echo e($ideaUpvoteCreationRatio ?? 0); ?></li>
+                                <li>Edits Upvote Ratio: <?php echo e($ideaUpvoteEditRatio ?? 0); ?></li>
+                            </ul>
+                        </div>
                     </div>
 
                 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivityPoint;
 use App\Models\AreaOfInterest;
 use App\Models\Fund;
+use App\Models\Idea;
 use App\Models\Issue;
 use App\Models\JobSkill;
 use App\Models\Objective;
@@ -206,6 +207,9 @@ class UserController extends Controller
 
                 $userTasksIds = Task::where('user_id', $user_id)->pluck('id');
                 $userIssueIds = Issue::where('user_id', $user_id)->pluck('id');
+                $userIdeaIds = Idea::where('user_id', $user_id)->pluck('id');
+
+
                 $totalTasksCreated = Task::query()->where('user_id', $user_id)->count();
 
 
@@ -267,6 +271,32 @@ class UserController extends Controller
                     $issueUpvoteCreationRatio = round($issueUpvoteCreationRatio,2);
                 }
 
+
+                $ideaRevisions = DB::table('idea_revisions')
+                    ->whereIn('idea_id', $userIdeaIds)
+                    ->count();
+                $ideaUpvote = DB::table('ideas')
+                    ->whereIn('id', $userIdeaIds)
+                    ->sum('upvote_edit_count');
+
+                $ideaUpvoteEditRatio = 0;
+                if($ideaUpvote > 0){
+                    $ideaUpvoteEditRatio = $ideaUpvote / $ideaRevisions;
+                    $ideaUpvoteEditRatio = round($ideaUpvoteEditRatio,2);
+                }
+
+                $ideaPriority = DB::table('priorities')
+                    ->whereIn('type_id', $userIdeaIds)
+                    ->where('type', 2)
+                    ->count();
+                $ideaUpvoteCreationRatio = 0;
+                if($ideaPriority > 0){
+                    $ideaUpvoteCreationRatio = $ideaPriority / $totalIdeasCreated;
+                    $ideaUpvoteCreationRatio = round($ideaUpvoteCreationRatio,2);
+                }
+
+
+
                 $totalUserComments = DB::table('forum_post')
                     ->where('user_id', $user_id)
                     ->count();
@@ -276,6 +306,9 @@ class UserController extends Controller
 
                 view()->share('issueUpvoteCreationRatio',$issueUpvoteCreationRatio);
                 view()->share('issueUpvoteEditRatio',$issueUpvoteEditRatio);
+
+                view()->share('ideaUpvoteCreationRatio',$ideaUpvoteCreationRatio);
+                view()->share('ideaUpvoteEditRatio',$ideaUpvoteEditRatio);
 
                 view()->share('upvoteCreationRatio',$upvoteCreationRatio);
                 view()->share('upvoteEditRatio',$upvoteEditRatio);
