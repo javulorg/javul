@@ -298,7 +298,6 @@ class IdeaController extends Controller
 
     public function revision($idea_id,Request $request)
     {
-
         if(!empty($idea_id))
         {
             view()->share("idea_id",$idea_id);
@@ -311,8 +310,6 @@ class IdeaController extends Controller
                 $idea = Idea::findOrFail($idea_id);
                 if($idea)
                 {
-
-
                         view()->share('idea',$idea);
 
                         $availableUnitFunds =Fund::getUnitDonatedFund($idea->unit_id);
@@ -353,6 +350,64 @@ class IdeaController extends Controller
                         view()->share('unitData',$unitData);
                         view()->share('unitObj',$unitData);
                         return view('ideas.revision.view');
+                }
+            }
+        }
+        return view('errors.404');
+    }
+
+    public function revisionView($idea_id,$revision_id,Request $request)
+    {
+        if(!empty($idea_id))
+        {
+            view()->share("idea_id",$idea_id);
+            $hash = new Hashids('idea id hash',10,Config::get('app.encode_chars'));
+            $idea_id = $hash->decode($idea_id);
+
+            if(!empty($idea_id))
+            {
+                $idea_id = $idea_id[0];
+                $idea = Idea::findOrFail($idea_id);
+                if($idea) {
+                    view()->share('idea', $idea);
+                    $availableUnitFunds = Fund::getUnitDonatedFund($idea->unit_id);
+                    $awardedUnitFunds = Fund::getUnitAwardedFund($idea->unit_id);
+
+                    view()->share('availableUnitFunds', $availableUnitFunds);
+                    view()->share('awardedUnitFunds', $awardedUnitFunds);
+
+
+                    $revisions = IdeaRevision::with('user')
+                        ->where('unit_id', $idea->unit_id)
+                        ->where('idea_id', $idea->id)
+                        ->first();
+
+//                    dd($revisions->toArray());
+                    $userIDHashID = new Hashids('user id hash', 10, Config::get('app.encode_chars'));
+                    view()->share('userIDHashID', $userIDHashID);
+                    view()->share('Carbon', new Carbon);
+                    view()->share('revisions', $revisions);
+                    view()->share("unit_id", $idea->unit_id);
+                    view()->share("section_id", 1);
+                    view()->share("object_id", $idea->id);
+
+                    $site_activity = SiteActivity::where('unit_id', $idea->unit->id)->orderBy('id', 'desc')->paginate(Config::get('app.site_activity_page_limit'));
+                    view()->share('site_activity', $site_activity);
+                    view()->share('unit_activity_id', $idea->unit->id);
+
+
+                    $unitData = Unit::where('id', $idea->unit->id)->first();
+                    $availableFunds = Fund::getUnitDonatedFund($idea->unit->id);
+                    $awardedFunds = Fund::getUnitAwardedFund($idea->unit->id);
+
+                    $issueResolutions = $this->calculateIssueResolution($idea->unit->id);
+
+                    view()->share('totalIssueResolutions', $issueResolutions);
+                    view()->share('availableFunds', $availableFunds);
+                    view()->share('awardedFunds', $awardedFunds);
+                    view()->share('unitData', $unitData);
+                    view()->share('unitObj', $unitData);
+                    return view('ideas.revision.view_revision');
                 }
             }
         }

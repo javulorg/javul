@@ -67,7 +67,7 @@
                                     <?php $user_id = $userIDHashID->encode($value->user_id); ?>
                                 <tr>
                                     <td><input type="checkbox" name="id" value="{{ $value['id'] }}" class="single-checkbox"></td>
-                                    <td class="title_col"><a href="{!! route('unit_objectives_view',[$idea_id,$value['id']]) !!}">View </a></td>
+                                    <td class="title_col"><a href="{!! route('unit_idea_view',[$idea_id,$value['id']]) !!}">View </a></td>
                                     <td class="title_col">{{ $Carbon::createFromFormat('Y-m-d H:i:s', $value->created_at)->diffForHumans() }}</td>
                                     <td class="last_reply_col"><a href="{{ url('userprofiles/'. $user_id .'/'.strtolower($value->first_name.'_'.$value->last_name)) }}">{{ $value->first_name ." ".$value->last_name }}</a></td>
                                     <td class="last_reply_col">{{ $value->comment }}</td>
