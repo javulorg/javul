@@ -326,28 +326,6 @@
 
                     @if(isset($comments))
                         @foreach($comments as $comment)
-{{--                            <div class="comment_container">--}}
-{{--                                <div class="comment_icon">--}}
-{{--                                    <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">--}}
-{{--                                </div>--}}
-{{--                                <div class="comment_content">--}}
-{{--                                    <div class="comment_info">--}}
-{{--                                        <div class="comment_autor">--}}
-{{--                                            @php--}}
-{{--                                                $user = \App\Models\User::where('id', $comment->user_id)->select('first_name','last_name')->first();--}}
-{{--                                            @endphp--}}
-{{--                                            {{ $user->first_name . ' ' . $user->last_name }}--}}
-{{--                                        </div>--}}
-{{--                                        <div class="comment_time">--}}
-{{--                                            {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}--}}
-
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="comment_txt">--}}
-{{--                                        {{ $comment->post }}--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
                             <div class="comment_container">
                                 <div class="comment_icon">
                                     <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
@@ -367,32 +345,36 @@
                                     <div class="comment_txt">
                                         {{ $comment->post }}
                                     </div>
-                                    <!-- Like and dislike buttons -->
+
                                     <div class="comment_actions">
-                                        <form action="" method="POST">
-                                            @csrf
-                                            <button type="submit" class="like_button">
-                                                <i class="fas fa-thumbs-up"></i>
-                                            </button>
-                                        </form>
-                                        <form action="" method="POST">
-                                            @csrf
-                                            <button type="submit" class="dislike_button">
-                                                <i class="fas fa-thumbs-down"></i>
-                                            </button>
-                                        </form>
+                                        <input type="hidden" value="{{ $comment->id }}" id="comment_id">
+                                        <button type="button" class="like_button">
+                                            <i class="fas fa-thumbs-up"></i>
+                                            <span id="like_count" class="badge badge-primary">
+                                                <span class="count"> {{ $comment->likes }}</span>
+                                            </span>
+                                        </button>
+{{--                                        <button type="button" class="dislike_button" data-comment-id="{{ $comment->id }}">--}}
+                                        <button type="button" class="dislike_button">
+                                            <i class="fas fa-thumbs-down"></i>
+                                            <span id="dislike_count" class="badge badge-danger">
+                                                 <span class="count"> {{ $comment->dislikes }}</span>
+                                            </span>
+                                        </button>
                                     </div>
-                                    <!-- End of Like and dislike buttons -->
                                 </div>
                             </div>
 
                             <style>
                                 .comment_actions form {
                                     display: inline-block;
-                                    margin-right: 10px; /* Adjust the margin between buttons */
+                                    margin-right: 10px;
                                 }
                                 .comment_actions form:last-child {
-                                    margin-right: 0; /* Remove margin for the last button */
+                                    margin-right: 0;
+                                }
+                                .badge .count {
+                                    color: black; /* Adjust color as needed */
                                 }
                             </style>
                         @endforeach
@@ -492,6 +474,47 @@
                 });
             });
 
+            $('.like_button').click(function() {
+                var commentId = $('#comment_id').val();
+                $.ajax({
+                    url: '{{ route("like") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        comment_id: commentId
+                    },
+                    success: function(response) {
+                        $('#like_count').text(response.dislike_count);
+                        location.reload();
+                        console.log(response);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
+                    }
+                });
+            });
+
+            $('.dislike_button').click(function() {
+                var commentId = $('#comment_id').val();
+                $.ajax({
+                    url: '{{ route("dislike") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        comment_id: commentId
+                    },
+                    success: function(response) {
+                        console.log(response)
+
+                        $('#dislike_count').text(response.dislike_count);
+                        location.reload();
+
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
+                    }
+                });
+            });
 
         });
     </script>

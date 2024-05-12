@@ -23,7 +23,9 @@ class IssueService
             $comments = DB::table('forum_post')
                 ->where('topic_id', $forumTopic->topic_id)
                 ->get();
+//            dd($comments->toArray());
         }
+
         return $comments;
     }
 

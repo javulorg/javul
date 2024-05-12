@@ -325,6 +325,10 @@ Route::get('tasks/search_by_skills', [TasksController::class,'search_by_skills']
 Route::get('tasks/search_by_status', [TasksController::class,'search_by_status']);
 Route::get('objectives/{objective_id}/{slug_id}/{unit_id}/tasks', [TasksController::class, 'getObjectiveTask']);
 
+
+Route::post('/like', [\App\Http\Controllers\V2\CommentController::class, 'like'])->name('like');
+Route::post('/dislike', [\App\Http\Controllers\V2\CommentController::class, 'dislike'])->name('dislike');
+
 //FundsController
 Route::get('funds/donate/unit/{unit_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/donate/objective/{objective_id}', [FundsController::class, 'donate_to_unit_objective_task']);
