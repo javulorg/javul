@@ -331,26 +331,6 @@
 
                     <?php if(isset($comments)): ?>
                         <?php $__currentLoopData = $comments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             <div class="comment_container">
                                 <div class="comment_icon">
                                     <img src="<?php echo e(asset('v2/assets/img/User_Circle.svg')); ?>" alt="" class="img-fluid">
@@ -373,32 +353,36 @@
                                         <?php echo e($comment->post); ?>
 
                                     </div>
-                                    <!-- Like and dislike buttons -->
+
                                     <div class="comment_actions">
-                                        <form action="" method="POST">
-                                            <?php echo csrf_field(); ?>
-                                            <button type="submit" class="like_button">
-                                                <i class="fas fa-thumbs-up"></i>
-                                            </button>
-                                        </form>
-                                        <form action="" method="POST">
-                                            <?php echo csrf_field(); ?>
-                                            <button type="submit" class="dislike_button">
-                                                <i class="fas fa-thumbs-down"></i>
-                                            </button>
-                                        </form>
+                                        <input type="hidden" value="<?php echo e($comment->id); ?>" id="comment_id">
+                                        <button type="button" class="like_button">
+                                            <i class="fas fa-thumbs-up"></i>
+                                            <span id="like_count" class="badge badge-primary">
+                                                <span class="count"> <?php echo e($comment->likes); ?></span>
+                                            </span>
+                                        </button>
+
+                                        <button type="button" class="dislike_button">
+                                            <i class="fas fa-thumbs-down"></i>
+                                            <span id="dislike_count" class="badge badge-danger">
+                                                 <span class="count"> <?php echo e($comment->dislikes); ?></span>
+                                            </span>
+                                        </button>
                                     </div>
-                                    <!-- End of Like and dislike buttons -->
                                 </div>
                             </div>
 
                             <style>
                                 .comment_actions form {
                                     display: inline-block;
-                                    margin-right: 10px; /* Adjust the margin between buttons */
+                                    margin-right: 10px;
                                 }
                                 .comment_actions form:last-child {
-                                    margin-right: 0; /* Remove margin for the last button */
+                                    margin-right: 0;
+                                }
+                                .badge .count {
+                                    color: black; /* Adjust color as needed */
                                 }
                             </style>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -498,6 +482,47 @@
                 });
             });
 
+            $('.like_button').click(function() {
+                var commentId = $('#comment_id').val();
+                $.ajax({
+                    url: '<?php echo e(route("like")); ?>',
+                    method: 'POST',
+                    data: {
+                        _token: '<?php echo e(csrf_token()); ?>',
+                        comment_id: commentId
+                    },
+                    success: function(response) {
+                        $('#like_count').text(response.dislike_count);
+                        location.reload();
+                        console.log(response);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
+                    }
+                });
+            });
+
+            $('.dislike_button').click(function() {
+                var commentId = $('#comment_id').val();
+                $.ajax({
+                    url: '<?php echo e(route("dislike")); ?>',
+                    method: 'POST',
+                    data: {
+                        _token: '<?php echo e(csrf_token()); ?>',
+                        comment_id: commentId
+                    },
+                    success: function(response) {
+                        console.log(response)
+
+                        $('#dislike_count').text(response.dislike_count);
+                        location.reload();
+
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
+                    }
+                });
+            });
 
         });
     </script>

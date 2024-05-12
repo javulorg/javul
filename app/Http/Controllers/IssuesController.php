@@ -834,7 +834,8 @@ class IssuesController extends Controller
             {
                 $issue_id = $issue_id[0];
                 $issueObj = Issue::with(['issue_documents'])->find($issue_id);
-                if(!empty($issueObj)  && $issueObj->count() > 0){
+                if(!empty($issueObj)  && $issueObj->count() > 0)
+                {
 
                     $unitObj = Unit::find($issueObj->unit_id);
                     view()->share('unitObj',$unitObj);
