@@ -390,8 +390,38 @@
                                         <div class="comment_txt">
                                             {{ $comment->post }}
                                         </div>
+
+                                        <div class="comment_actions">
+                                            <input type="hidden" value="{{ $comment->id }}" id="comment_id_{{ $comment->id }}">
+
+                                            <button type="button" class="like_button">
+                                                <i class="fas fa-thumbs-up"></i>
+                                                <span id="like_count" class="badge badge-primary">
+                                                <span class="count"> {{ $comment->likes }}</span>
+                                            </span>
+                                            </button>
+                                            <button type="button" class="dislike_button">
+                                                <i class="fas fa-thumbs-down"></i>
+                                                <span id="dislike_count" class="badge badge-danger">
+                                                 <span class="count"> {{ $comment->dislikes }}</span>
+                                            </span>
+                                            </button>
+                                        </div>
+
                                     </div>
                                 </div>
+                                <style>
+                                    .comment_actions form {
+                                        display: inline-block;
+                                        margin-right: 10px;
+                                    }
+                                    .comment_actions form:last-child {
+                                        margin-right: 0;
+                                    }
+                                    .badge .count {
+                                        color: black; /* Adjust color as needed */
+                                    }
+                                </style>
                             @endforeach
                         @endif
 
@@ -481,6 +511,48 @@
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseText);
                     },
+                });
+            });
+
+            $('.like_button').click(function() {
+                var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
+                $.ajax({
+                    url: '{{ route("like") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        comment_id: commentId
+                    },
+                    success: function(response) {
+                        $('#like_count').text(response.dislike_count);
+                        location.reload();
+                        console.log(response);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
+                    }
+                });
+            });
+
+            $('.dislike_button').click(function() {
+                var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
+                $.ajax({
+                    url: '{{ route("dislike") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        comment_id: commentId
+                    },
+                    success: function(response) {
+                        console.log(response)
+
+                        $('#dislike_count').text(response.dislike_count);
+                        location.reload();
+
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
+                    }
                 });
             });
             });
