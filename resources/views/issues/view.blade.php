@@ -355,7 +355,6 @@
                                                 <span class="count"> {{ $comment->likes }}</span>
                                             </span>
                                         </button>
-{{--                                        <button type="button" class="dislike_button" data-comment-id="{{ $comment->id }}">--}}
                                         <button type="button" class="dislike_button">
                                             <i class="fas fa-thumbs-down"></i>
                                             <span id="dislike_count" class="badge badge-danger">
