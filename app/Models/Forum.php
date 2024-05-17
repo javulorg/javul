@@ -81,6 +81,39 @@ class Forum extends Model
          }
     	return $topics;
     }
+    public static function checkSection($topicId)
+    {
+        $section = DB::table('forum_topic')
+            ->where('topic_id', $topicId)
+            ->select('section_id','object_id')
+            ->first();
+        if($section && $section->section_id == 4){
+            $ideaHashID = new Hashids('idea id hash',10,Config::get('app.encode_chars'));
+            $url = url('ideas/' . $ideaHashID->encode($section->object_id));
+           return $url;
+        }
+
+        elseif($section && $section->section_id == 3){
+            $issueIDHashID = new Hashids('issue id hash',10,Config::get('app.encode_chars'));
+            $url = url('issues/' . $issueIDHashID->encode($section->object_id) . '/view');
+            return $url;
+        }
+
+        elseif($section && $section->section_id == 1){
+            $objective = Objective::where('id', $section->object_id)->first();
+            $objectiveIDHashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
+            $url = url('objectives/' . $objectiveIDHashID->encode($section->object_id) . '/' . $objective->slug);
+            return $url;
+        }
+
+        elseif($section && $section->section_id == 2){
+            $task = Task::where('id', $section->object_id)->first();
+            $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
+            $url = url('tasks/' . $taskIDHashID->encode($section->object_id) . '/' . $task->slug);
+            return $url;
+        }
+
+    }
     public static function checkTopic($filter = array())
     {
         $extraWhere = array();

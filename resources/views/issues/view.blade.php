@@ -347,7 +347,8 @@
                                     </div>
 
                                     <div class="comment_actions">
-                                        <input type="hidden" value="{{ $comment->id }}" id="comment_id">
+                                        <input type="hidden" value="{{ $comment->id }}" id="comment_id_{{ $comment->id }}">
+
                                         <button type="button" class="like_button">
                                             <i class="fas fa-thumbs-up"></i>
                                             <span id="like_count" class="badge badge-primary">
@@ -475,7 +476,7 @@
             });
 
             $('.like_button').click(function() {
-                var commentId = $('#comment_id').val();
+                var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
                 $.ajax({
                     url: '{{ route("like") }}',
                     method: 'POST',
@@ -495,7 +496,7 @@
             });
 
             $('.dislike_button').click(function() {
-                var commentId = $('#comment_id').val();
+                var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
                 $.ajax({
                     url: '{{ route("dislike") }}',
                     method: 'POST',

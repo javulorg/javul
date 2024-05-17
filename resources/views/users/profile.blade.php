@@ -269,22 +269,29 @@
                     </div>
                     <div class="card-body">
                         <p>Total Comments: <span id="totalComments">{{ $totalUserComments }}</span></p>
-                        <p>Total Upvotes on Comments: <span id="totalUpvotes">0</span></p>
-                        <p>Comments/Upvotes Ratio: <span id="commentsUpvotesRatio">0</span></p>
-
-                        <p>Most Recent Comments: <span id="totalUpvotes">0</span></p>
-                        <p>Top Comments: <span id="commentsUpvotesRatio">0</span></p>
+                        <p>Total Upvotes on Comments: <span id="totalUpvotes">{{ $totalUpvotesComments }}</span></p>
+                        <p>Total down votes on Comments: <span id="totalUpvotes">{{ $totalDownvotesComments }}</span></p>
+                        <p>Comments/Upvotes Ratio: <span id="commentsUpvotesRatio">{{ $totalUpvotesCommentsRatio }}</span></p>
                     </div>
             </div>
 
-{{--            <div class="card mb-3">--}}
-{{--                <div class="card-header">--}}
-{{--                    Activity by Unit--}}
-{{--                </div>--}}
-{{--                <div class="card-body">--}}
-{{--                    <div id="activityByUnitList"></div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
+            <div class="card mb-3">
+                <div class="card-header">
+                    Most Recent Comments
+                </div>
+                <div class="card-body">
+                    @include('users.profile-partials.most-recent-comments')
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    Top Comments
+                </div>
+                <div class="card-body">
+                    @include('users.profile-partials.top-comments')
+                </div>
+            </div>
 
         </div>
 
