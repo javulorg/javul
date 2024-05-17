@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityPoint;
 use App\Models\AreaOfInterest;
+use App\Models\CommentLike;
 use App\Models\Fund;
 use App\Models\Idea;
 use App\Models\Issue;
@@ -301,7 +302,40 @@ class UserController extends Controller
                     ->where('user_id', $user_id)
                     ->count();
 
+                $totalUpvotesComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                    ->sum('likes');
+
+                $totalDownvotesComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                    ->sum('dislikes');
+
+                $totalUpvotesCommentsRatio = 0;
+                if($totalUpvotesComments > 0){
+                    $totalUpvotesCommentsRatio = $totalUserComments / $totalUpvotesComments;
+                    $totalUpvotesCommentsRatio = round($totalUpvotesCommentsRatio, 2);
+                }
+
+
+                $mostRecentComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                    ->orderBy('created_at', 'desc')
+                    ->take(10)
+                    ->get();
+
+                $topComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                    ->where('likes', '>' , 0)
+                    ->orderBy('likes', 'desc')
+                    ->take(10)
+                    ->get();
+
                 view()->share('totalUserComments',$totalUserComments);
+                view()->share('totalUpvotesComments',$totalUpvotesComments);
+                view()->share('totalDownvotesComments',$totalDownvotesComments);
+                view()->share('totalUpvotesCommentsRatio',$totalUpvotesCommentsRatio);
+                view()->share('mostRecentComments',$mostRecentComments);
+                view()->share('topComments',$topComments);
 
 
                 view()->share('issueUpvoteCreationRatio',$issueUpvoteCreationRatio);

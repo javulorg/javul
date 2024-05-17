@@ -276,22 +276,29 @@
                     </div>
                     <div class="card-body">
                         <p>Total Comments: <span id="totalComments"><?php echo e($totalUserComments); ?></span></p>
-                        <p>Total Upvotes on Comments: <span id="totalUpvotes">0</span></p>
-                        <p>Comments/Upvotes Ratio: <span id="commentsUpvotesRatio">0</span></p>
-
-                        <p>Most Recent Comments: <span id="totalUpvotes">0</span></p>
-                        <p>Top Comments: <span id="commentsUpvotesRatio">0</span></p>
+                        <p>Total Upvotes on Comments: <span id="totalUpvotes"><?php echo e($totalUpvotesComments); ?></span></p>
+                        <p>Total down votes on Comments: <span id="totalUpvotes"><?php echo e($totalDownvotesComments); ?></span></p>
+                        <p>Comments/Upvotes Ratio: <span id="commentsUpvotesRatio"><?php echo e($totalUpvotesCommentsRatio); ?></span></p>
                     </div>
             </div>
 
+            <div class="card mb-3">
+                <div class="card-header">
+                    Most Recent Comments
+                </div>
+                <div class="card-body">
+                    <?php echo $__env->make('users.profile-partials.most-recent-comments', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                </div>
+            </div>
 
-
-
-
-
-
-
-
+            <div class="card mb-3">
+                <div class="card-header">
+                    Top Comments
+                </div>
+                <div class="card-body">
+                    <?php echo $__env->make('users.profile-partials.top-comments', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                </div>
+            </div>
 
         </div>
 
