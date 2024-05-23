@@ -363,7 +363,6 @@
                                                 <span class="count"> <?php echo e($comment->likes); ?></span>
                                             </span>
                                         </button>
-
                                         <button type="button" class="dislike_button">
                                             <i class="fas fa-thumbs-down"></i>
                                             <span id="dislike_count" class="badge badge-danger">

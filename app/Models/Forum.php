@@ -85,32 +85,64 @@ class Forum extends Model
     {
         $section = DB::table('forum_topic')
             ->where('topic_id', $topicId)
-            ->select('section_id','object_id')
+            ->select('section_id','object_id', 'unit_id')
             ->first();
         if($section && $section->section_id == 4){
             $ideaHashID = new Hashids('idea id hash',10,Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+            $unit = Unit::where('id', $section->unit_id)->first();
+            $unitUrl = url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug);
             $url = url('ideas/' . $ideaHashID->encode($section->object_id));
-           return $url;
+            return [
+                'url'        => $url,
+                'unit_name'  => $unit->name,
+                'unit_url'   => $unitUrl,
+                'section'    => 'Ideas'
+            ];
         }
 
         elseif($section && $section->section_id == 3){
             $issueIDHashID = new Hashids('issue id hash',10,Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+            $unit = Unit::where('id', $section->unit_id)->first();
+            $unitUrl = url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug);
             $url = url('issues/' . $issueIDHashID->encode($section->object_id) . '/view');
-            return $url;
+            return [
+                'url'        => $url,
+                'unit_name'  => $unit->name,
+                'unit_url'   => $unitUrl,
+                'section'    => 'Issues'
+            ];
         }
 
         elseif($section && $section->section_id == 1){
             $objective = Objective::where('id', $section->object_id)->first();
             $objectiveIDHashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+            $unit = Unit::where('id', $section->unit_id)->first();
+            $unitUrl = url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug);
             $url = url('objectives/' . $objectiveIDHashID->encode($section->object_id) . '/' . $objective->slug);
-            return $url;
+            return [
+                'url'        => $url,
+                'unit_name'  => $unit->name,
+                'unit_url'   => $unitUrl,
+                'section'    => 'Objectives'
+            ];
         }
 
         elseif($section && $section->section_id == 2){
             $task = Task::where('id', $section->object_id)->first();
             $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
+            $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+            $unit = Unit::where('id', $section->unit_id)->first();
+            $unitUrl = url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug);
             $url = url('tasks/' . $taskIDHashID->encode($section->object_id) . '/' . $task->slug);
-            return $url;
+            return [
+                'url'        => $url,
+                'unit_name'  => $unit->name,
+                'unit_url'   => $unitUrl,
+                'section'    => 'Tasks'
+            ];
         }
 
     }
