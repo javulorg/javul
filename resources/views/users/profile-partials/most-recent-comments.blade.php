@@ -1,11 +1,12 @@
 <div class="list-group tab-pane active table-responsive" id="unit_details">
-    <div class="table-responsive" style="border:1px solid #ddd; ">
+    <div class="table-responsive" style="border:1px solid #ddd;">
         <table class="table">
             <thead>
             <tr>
+                <th>Unit</th>
+                <th>Section</th>
                 <th>Comment</th>
-                <th>Likes</th>
-                <th>Dislikes</th>
+                <th>Time</th>
             </tr>
             </thead>
             <tbody>
@@ -14,21 +15,33 @@
                     <tr>
                         <td>
                             @php $section = \App\Models\Forum::checkSection($comment->topic_id) @endphp
-                            <a href="{!! $section !!}">
-                                {{$comment->post}}
+                            <a href="{!! $section['unit_url'] !!}">
+                                {{ $section['unit_name'] }}
                             </a>
                         </td>
                         <td>
-                            <span class="colorLightGreen">{{$comment->likes}}</span>
+                            @php $section = \App\Models\Forum::checkSection($comment->topic_id) @endphp
+                            <span class="colorLightGreen">{!! $section['section'] !!}</span>
                         </td>
                         <td>
-                            <span class="colorLightGreen">{{$comment->dislikes}}</span>
+                            @php $section = \App\Models\Forum::checkSection($comment->topic_id) @endphp
+                            <a href="{!! $section['url'] !!}">
+                                {{ substr($comment->post, 0, 60) }}{{ strlen($comment->post) > 60 ? '...' : '' }}
+                            </a>
+                        </td>
+
+                        <td>
+                            @if($comment->created_time)
+                                {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}
+                            @else
+                                N/A
+                            @endif
                         </td>
                     </tr>
                 @endforeach
             @else
                 <tr>
-                    <td colspan="3">No record(s) found.</td>
+                    <td colspan="4">No record(s) found.</td>
                 </tr>
             @endif
             </tbody>

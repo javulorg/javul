@@ -207,21 +207,6 @@ class ViewComposerServiceProvider extends ServiceProvider
         view()->share('ideasMaster',$ideasMaster);
     }
 
-
-    /*
-     *  <div class="col-md-6">
-            <h3>Activities</h3>
-            <p>Total Activity Points: {{ $totalActivityPoints }}</p>
-            <p>Tasks Completed: {{ $user->tasks->count() }}</p>
-            <p>Objectives Contributed: {{ $user->objectives->count() }}</p>
-        </div>
-        <div class="col-md-6">
-            <h3>Comments</h3>
-            <p>Total Comments: {{ $user->comments->count() }}</p>
-            <!-- Additional details can be added similarly -->
-        </div>
-     */
-
     /**
      * Register the application services.
      *
