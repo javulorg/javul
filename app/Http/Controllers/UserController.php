@@ -165,10 +165,6 @@ class UserController extends Controller
                     ->get();
 
 
-
-
-
-
                 $totalTasksEdited =  ActivityPoint::query()
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
                     ->where('user_id', $user_id)
