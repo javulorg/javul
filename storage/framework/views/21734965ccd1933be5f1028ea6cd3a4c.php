@@ -74,7 +74,7 @@
 
 
 
-    <div class="row">
+    <div class="row col-lg-12">
         <div class="col-md-3">
             <div class="sidebar_block">
                 <div class="sidebar_block_ttl">
@@ -112,8 +112,8 @@
 
         </div>
 
-        <div class="col-sm-8">
-            <div class="card mb-3">
+        <div class="col-md-8">
+            <div class="card mb-4">
                 <div class="card-body">
                     <h3 class="card-title">
                         Total Activity Points: <?php echo e($activityPoints); ?>
@@ -358,9 +358,8 @@
                     url: '<?php echo e(url("/userprofiles")); ?>/' + userId + '/' + userName + '?filter=' + value,
                     method: 'GET',
                     contentType: 'application/json',
-                    // data: JSON.stringify({ filter: value }),
                     success: function (response) {
-                        console.log('Data filtered successfully:', response);
+                        location.reload()
                     },
                     error: function (error) {
                         console.error('Error filtering data:', error);

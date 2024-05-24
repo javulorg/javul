@@ -158,56 +158,132 @@ class UserController extends Controller
                 view()->share('unitsObj',$unitsObj);
 
 
-                $mostActiveUnits =  ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
-                    ->groupBy('unit_id')
-                    ->orderByDesc('total_points')
-                    ->limit(5)
-                    ->get();
+                $filter = $request->query('filter', 'specific');
+
+                if ($filter == 'specific') {
+                    // Your logic for the specific filter
+                    $mostActiveUnits = ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
+                        ->where('created_at', '>=', now()->subMonths(6)) // Adjust the date range as needed
+                        ->groupBy('unit_id')
+                        ->orderByDesc('total_points')
+                        ->limit(5)
+                        ->get();
+
+                    $totalTasksEdited =  ActivityPoint::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Task Updated')
+                        ->count();
+
+                    $totalCompletedTasks=  Task::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)
+                        ->where('status', 'completed')
+                        ->count();
+
+                    $totalObjectivesEdited =  ActivityPoint::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Objective updated')
+                        ->count();
+
+                    $totalIdeasCreated =  ActivityPoint::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Idea Created')
+                        ->count();
+
+                    $totalIdeasUpdated =  ActivityPoint::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Idea Updated')
+                        ->count();
 
 
-                $totalTasksEdited =  ActivityPoint::query()
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Task Updated')
-                    ->count();
+                    $userObjectivesIds = Objective::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)
+                        ->pluck('id');
 
-                $totalCompletedTasks=  Task::query()
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('status', 'completed')
-                    ->count();
+                    $totalObjectivesCreated = Objective::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)->count();
 
-                $totalObjectivesEdited =  ActivityPoint::query()
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Objective updated')
-                    ->count();
-
-                $totalIdeasCreated =  ActivityPoint::query()
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Idea Created')
-                    ->count();
-
-                $totalIdeasUpdated =  ActivityPoint::query()
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Idea Updated')
-                    ->count();
-
-                $userObjectivesIds = Objective::where('user_id', $user_id)->pluck('id');
-                $totalObjectivesCreated = Objective::where('user_id', $user_id)->count();
-                $objectivesPriority = DB::table('priorities')
-                    ->whereIn('type_id', $userObjectivesIds)
-                    ->where('type', 3)
-                    ->count();
-
-                $userTasksIds = Task::where('user_id', $user_id)->pluck('id');
-                $userIssueIds = Issue::where('user_id', $user_id)->pluck('id');
-                $userIdeaIds = Idea::where('user_id', $user_id)->pluck('id');
+                    $objectivesPriority = DB::table('priorities')
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->whereIn('type_id', $userObjectivesIds)
+                        ->where('type', 3)
+                        ->count();
 
 
-                $totalTasksCreated = Task::query()->where('user_id', $user_id)->count();
+
+                    $userTasksIds = Task::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)->pluck('id');
+
+                    $userIssueIds = Issue::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)->pluck('id');
+
+                    $userIdeaIds = Idea::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)->pluck('id');
+
+                    $totalTasksCreated = Task::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)->count();
+
+                } else {
+                    // Default logic for 'Last 6 Months' or 'Lifetime'
+                    $mostActiveUnits = ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
+                        ->groupBy('unit_id')
+                        ->orderByDesc('total_points')
+                        ->limit(5)
+                        ->get();
+
+                    $totalTasksEdited =  ActivityPoint::query()
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Task Updated')
+                        ->count();
+
+                    $totalCompletedTasks=  Task::query()
+                        ->where('user_id', $user_id)
+                        ->where('status', 'completed')
+                        ->count();
+
+                    $totalObjectivesEdited =  ActivityPoint::query()
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Objective updated')
+                        ->count();
+
+                    $totalIdeasCreated =  ActivityPoint::query()
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Idea Created')
+                        ->count();
+
+                    $totalIdeasUpdated =  ActivityPoint::query()
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Idea Updated')
+                        ->count();
+
+
+                    $userObjectivesIds = Objective::query()
+                        ->where('user_id', $user_id)
+                        ->pluck('id');
+
+                    $totalObjectivesCreated = Objective::query()
+                        ->where('user_id', $user_id)->count();
+
+                    $objectivesPriority = DB::table('priorities')
+                        ->whereIn('type_id', $userObjectivesIds)
+                        ->where('type', 3)
+                        ->count();
+
+                    $userTasksIds = Task::where('user_id', $user_id)->pluck('id');
+                    $userIssueIds = Issue::where('user_id', $user_id)->pluck('id');
+                    $userIdeaIds = Idea::where('user_id', $user_id)->pluck('id');
+                    $totalTasksCreated = Task::query()->where('user_id', $user_id)->count();
+                }
 
 
                 $upvoteCreationRatio = 0;
