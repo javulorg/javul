@@ -78,7 +78,6 @@
         <div class="col-md-3">
             <div class="sidebar_block">
                 <div class="sidebar_block_ttl">
-                    
                     User Activity Log
                     <div class="arrow">
                         <img src="<?php echo e(asset('v2/assets/img/bottom_y.svg')); ?>" alt="">
@@ -113,8 +112,6 @@
 
         </div>
 
-
-
         <div class="col-sm-8">
             <div class="card mb-3">
                 <div class="card-body">
@@ -132,9 +129,17 @@
 
                         </a>
                     <?php endif; ?>
+
+                    <div class="input-icon right float-end">
+                        <label for="amount" class="control-label">&nbsp;</label>
+                        <input id="amount-toggle" checked
+                               data-on="Last 6 Months" data-off="Lifetime"
+                               data-toggle="toggle" data-width="140" data-height="30" data-onstyle="light" data-offstyle="info"
+                               type="checkbox" name="charge_type">
+                    </div>
                 </div>
             </div>
-
+            
             <!-- Card for Most Active Units -->
             <div class="card mb-3">
                 <div class="card-header">
@@ -145,37 +150,35 @@
                 </div>
             </div>
 
+
             <!-- Card for Objectives Details -->
             <div class="card mb-3">
                 <div class="card-header">
                     Objectives Details
                 </div>
                 <div class="card-body">
-
-                    <!-- Flex Container for side-by-side layout -->
-                    <div class="mb-4" style="display: flex; justify-content: space-between;">
-
-                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
-
-                            <ul>
-                                <li>Objectives Created: <?php echo e($totalObjectivesCreated ?? 0); ?></li>
-                                <li>Objectives Edited: <?php echo e($totalObjectivesEdited ?? 0); ?></li>
-                            </ul>
-                        </div>
-
-                        <!-- New Section for Objective Upvote Ratios -->
-                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
-                            <ul>
-                                <li>Creation Upvote Ratio: <?php echo e($upvoteCreationRatio ?? 0); ?></li>
-                                <li>Edits Upvote Ratio: <?php echo e($upvoteEditRatio ?? 0); ?></li>
-                            </ul>
-                        </div>
-
-                    </div>
-
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Objectives Created</td>
+                            <td><?php echo e($totalObjectivesCreated ?? 0); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Objectives Edited</td>
+                            <td><?php echo e($totalObjectivesEdited ?? 0); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Creation Upvote Ratio</td>
+                            <td><?php echo e($upvoteCreationRatio ?? 0); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Edits Upvote Ratio</td>
+                            <td><?php echo e($upvoteEditRatio ?? 0); ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
 
             <!-- Card for Tasks Details -->
 
@@ -184,32 +187,34 @@
                     Task Details
                 </div>
                 <div class="card-body">
-
-                    <!-- Flex Container for side-by-side layout -->
-                    <div class="mb-4" style="display: flex; justify-content: space-between;">
-
-                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
-                            <h5>Task Metrics</h5>
-                            <ul>
-                                <li>Tasks Created: <?php echo e($totalTasksCreated); ?></li>
-                                <li>Tasks Edited: <?php echo e($totalTasksEdited); ?></li>
-                                <li>Tasks Completed: <?php echo e($totalCompletedTasks); ?></li>
-                            </ul>
-                        </div>
-
-                        <!-- New Section for Objective Upvote Ratios -->
-                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
-                            <h5>Feedback Provided for Task Completion</h5>
-                            <ul>
-                                <li>Quality of Work: 5</li>
-                                <li>Timeliness: 6</li>
-                                <li>Edits Upvote Ratio: <?php echo e($tasksUpvoteEditRatio ?? 0); ?></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                        <tr>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Task Metrics</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Feedback Provided for Task Completion</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                <ul>
+                                    <li>Tasks Created: <?php echo e($totalTasksCreated); ?></li>
+                                    <li>Tasks Edited: <?php echo e($totalTasksEdited); ?></li>
+                                    <li>Tasks Completed: <?php echo e($totalCompletedTasks); ?></li>
+                                </ul>
+                            </td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                <ul>
+                                    <li>Quality of Work: 5</li>
+                                    <li>Timeliness: 6</li>
+                                    <li>Edits Upvote Ratio: <?php echo e($tasksUpvoteEditRatio ?? 0); ?></li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
 
             <!-- Card for Issues Details -->
             <div class="card mb-3">
@@ -217,28 +222,28 @@
                     Issue Details
                 </div>
                 <div class="card-body">
-
-                    <!-- Flex Container for side-by-side layout -->
-                    <div class="mb-4" style="display: flex; justify-content: space-between;">
-
-                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
-                            <h5>Issue Metrics</h5>
-                            <ul>
-                                <li>Issue Created: <?php echo e($totalTasksCreated); ?></li>
-                                <li>Issue Edited: <?php echo e($totalTasksEdited); ?></li>
-                            </ul>
-                        </div>
-
-                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
-                            <ul>
-                                <li>Creation Upvote Ratio: <?php echo e($issueUpvoteCreationRatio ?? 0); ?></li>
-                                <li>Edits Upvote Ratio: <?php echo e($issueUpvoteEditRatio ?? 0); ?></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Issue Created</td>
+                            <td><?php echo e($totalTasksCreated); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Issue Edited</td>
+                            <td><?php echo e($totalTasksEdited); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Creation Upvote Ratio</td>
+                            <td><?php echo e($issueUpvoteCreationRatio ?? 0); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Edits Upvote Ratio</td>
+                            <td><?php echo e($issueUpvoteEditRatio ?? 0); ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
 
             <!-- Card for Idea Details -->
             <div class="card mb-3">
@@ -246,40 +251,56 @@
                     Idea Details
                 </div>
                 <div class="card-body">
-
-                    <!-- Flex Container for side-by-side layout -->
-                    <div class="mb-4" style="display: flex; justify-content: space-between;">
-
-                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
-                            <h5>Idea Metrics</h5>
-                            <ul>
-                                <li>Idea Created: <?php echo e($totalIdeasCreated); ?></li>
-                                <li>Idea Edited: <?php echo e($totalIdeasUpdated); ?></li>
-                            </ul>
-                        </div>
-
-                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
-                            <ul>
-                                <li>Creation Upvote Ratio: <?php echo e($ideaUpvoteCreationRatio ?? 0); ?></li>
-                                <li>Edits Upvote Ratio: <?php echo e($ideaUpvoteEditRatio ?? 0); ?></li>
-                            </ul>
-                        </div>
-                    </div>
-
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Idea Created</td>
+                            <td><?php echo e($totalIdeasCreated); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Idea Edited</td>
+                            <td><?php echo e($totalIdeasUpdated); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Creation Upvote Ratio</td>
+                            <td><?php echo e($ideaUpvoteCreationRatio ?? 0); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Edits Upvote Ratio</td>
+                            <td><?php echo e($ideaUpvoteEditRatio ?? 0); ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-
+            <!-- Card for Comment Statistics -->
             <div class="card mb-3">
-                    <div class="card-header">
-                        Comment Statistics
-                    </div>
-                    <div class="card-body">
-                        <p>Total Comments: <span id="totalComments"><?php echo e($totalUserComments); ?></span></p>
-                        <p>Total Upvotes on Comments: <span id="totalUpvotes"><?php echo e($totalUpvotesComments); ?></span></p>
-                        <p>Total down votes on Comments: <span id="totalUpvotes"><?php echo e($totalDownvotesComments); ?></span></p>
-                        <p>Comments/Upvotes Ratio: <span id="commentsUpvotesRatio"><?php echo e($totalUpvotesCommentsRatio); ?></span></p>
-                    </div>
+                <div class="card-header">
+                    Comment Statistics
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Total Comments</td>
+                            <td><span id="totalComments"><?php echo e($totalUserComments); ?></span></td>
+                        </tr>
+                        <tr>
+                            <td>Total Upvotes on Comments</td>
+                            <td><span id="totalUpvotes"><?php echo e($totalUpvotesComments); ?></span></td>
+                        </tr>
+                        <tr>
+                            <td>Total Downvotes on Comments</td>
+                            <td><span id="totalDownvotes"><?php echo e($totalDownvotesComments); ?></span></td>
+                        </tr>
+                        <tr>
+                            <td>Comments/Upvotes Ratio</td>
+                            <td><span id="commentsUpvotesRatio"><?php echo e($totalUpvotesCommentsRatio); ?></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="card mb-3">

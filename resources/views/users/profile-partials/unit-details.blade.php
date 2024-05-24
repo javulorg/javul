@@ -4,7 +4,6 @@
             <thead>
             <tr>
                 <th>Unit Name</th>
-                <th>Status</th>
                 <th>Points</th>
             </tr>
             </thead>
@@ -17,10 +16,6 @@
                                 {{$unit->unit->name}}
                             </a>
                         </td>
-                        <td>
-                            <span class="colorLightGreen">{{$unit->unit->status}}</span>
-                        </td>
-
                         <td>
                             <span class="colorLightGreen">{{$unit->total_points}}</span>
                         </td>

@@ -4,7 +4,6 @@
             <thead>
             <tr>
                 <th>Unit Name</th>
-                <th>Status</th>
                 <th>Points</th>
             </tr>
             </thead>
@@ -18,10 +17,6 @@
 
                             </a>
                         </td>
-                        <td>
-                            <span class="colorLightGreen"><?php echo e($unit->unit->status); ?></span>
-                        </td>
-
                         <td>
                             <span class="colorLightGreen"><?php echo e($unit->total_points); ?></span>
                         </td>

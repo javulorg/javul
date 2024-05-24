@@ -75,7 +75,6 @@
         <div class="col-md-3">
             <div class="sidebar_block">
                 <div class="sidebar_block_ttl">
-                    {{--        {{ $site_activity_text }}--}}
                     User Activity Log
                     <div class="arrow">
                         <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
@@ -109,8 +108,6 @@
 
         </div>
 
-
-
         <div class="col-sm-8">
             <div class="card mb-3">
                 <div class="card-body">
@@ -125,9 +122,17 @@
                             {!! trans('messages.add_funds') !!}
                         </a>
                     @endif
+
+                    <div class="input-icon right float-end">
+                        <label for="amount" class="control-label">&nbsp;</label>
+                        <input id="amount-toggle" checked
+                               data-on="Last 6 Months" data-off="Lifetime"
+                               data-toggle="toggle" data-width="140" data-height="30" data-onstyle="light" data-offstyle="info"
+                               type="checkbox" name="charge_type">
+                    </div>
                 </div>
             </div>
-
+            
             <!-- Card for Most Active Units -->
             <div class="card mb-3">
                 <div class="card-header">
@@ -138,37 +143,35 @@
                 </div>
             </div>
 
+
             <!-- Card for Objectives Details -->
             <div class="card mb-3">
                 <div class="card-header">
                     Objectives Details
                 </div>
                 <div class="card-body">
-
-                    <!-- Flex Container for side-by-side layout -->
-                    <div class="mb-4" style="display: flex; justify-content: space-between;">
-
-                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
-
-                            <ul>
-                                <li>Objectives Created: {{ $totalObjectivesCreated ?? 0 }}</li>
-                                <li>Objectives Edited: {{ $totalObjectivesEdited ?? 0 }}</li>
-                            </ul>
-                        </div>
-
-                        <!-- New Section for Objective Upvote Ratios -->
-                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
-                            <ul>
-                                <li>Creation Upvote Ratio: {{ $upvoteCreationRatio ?? 0 }}</li>
-                                <li>Edits Upvote Ratio: {{ $upvoteEditRatio ?? 0 }}</li>
-                            </ul>
-                        </div>
-
-                    </div>
-
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Objectives Created</td>
+                            <td>{{ $totalObjectivesCreated ?? 0 }}</td>
+                        </tr>
+                        <tr>
+                            <td>Objectives Edited</td>
+                            <td>{{ $totalObjectivesEdited ?? 0 }}</td>
+                        </tr>
+                        <tr>
+                            <td>Creation Upvote Ratio</td>
+                            <td>{{ $upvoteCreationRatio ?? 0 }}</td>
+                        </tr>
+                        <tr>
+                            <td>Edits Upvote Ratio</td>
+                            <td>{{ $upvoteEditRatio ?? 0 }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
 
             <!-- Card for Tasks Details -->
 
@@ -177,32 +180,34 @@
                     Task Details
                 </div>
                 <div class="card-body">
-
-                    <!-- Flex Container for side-by-side layout -->
-                    <div class="mb-4" style="display: flex; justify-content: space-between;">
-
-                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
-                            <h5>Task Metrics</h5>
-                            <ul>
-                                <li>Tasks Created: {{ $totalTasksCreated }}</li>
-                                <li>Tasks Edited: {{ $totalTasksEdited }}</li>
-                                <li>Tasks Completed: {{ $totalCompletedTasks }}</li>
-                            </ul>
-                        </div>
-
-                        <!-- New Section for Objective Upvote Ratios -->
-                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
-                            <h5>Feedback Provided for Task Completion</h5>
-                            <ul>
-                                <li>Quality of Work: 5</li>
-                                <li>Timeliness: 6</li>
-                                <li>Edits Upvote Ratio: {{ $tasksUpvoteEditRatio ?? 0 }}</li>
-                            </ul>
-                        </div>
-                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                        <tr>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Task Metrics</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Feedback Provided for Task Completion</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                <ul>
+                                    <li>Tasks Created: {{ $totalTasksCreated }}</li>
+                                    <li>Tasks Edited: {{ $totalTasksEdited }}</li>
+                                    <li>Tasks Completed: {{ $totalCompletedTasks }}</li>
+                                </ul>
+                            </td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                <ul>
+                                    <li>Quality of Work: 5</li>
+                                    <li>Timeliness: 6</li>
+                                    <li>Edits Upvote Ratio: {{ $tasksUpvoteEditRatio ?? 0 }}</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
 
             <!-- Card for Issues Details -->
             <div class="card mb-3">
@@ -210,28 +215,28 @@
                     Issue Details
                 </div>
                 <div class="card-body">
-
-                    <!-- Flex Container for side-by-side layout -->
-                    <div class="mb-4" style="display: flex; justify-content: space-between;">
-
-                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
-                            <h5>Issue Metrics</h5>
-                            <ul>
-                                <li>Issue Created: {{ $totalTasksCreated }}</li>
-                                <li>Issue Edited: {{ $totalTasksEdited }}</li>
-                            </ul>
-                        </div>
-
-                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
-                            <ul>
-                                <li>Creation Upvote Ratio: {{ $issueUpvoteCreationRatio ?? 0 }}</li>
-                                <li>Edits Upvote Ratio: {{ $issueUpvoteEditRatio ?? 0 }}</li>
-                            </ul>
-                        </div>
-                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Issue Created</td>
+                            <td>{{ $totalTasksCreated }}</td>
+                        </tr>
+                        <tr>
+                            <td>Issue Edited</td>
+                            <td>{{ $totalTasksEdited }}</td>
+                        </tr>
+                        <tr>
+                            <td>Creation Upvote Ratio</td>
+                            <td>{{ $issueUpvoteCreationRatio ?? 0 }}</td>
+                        </tr>
+                        <tr>
+                            <td>Edits Upvote Ratio</td>
+                            <td>{{ $issueUpvoteEditRatio ?? 0 }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
 
             <!-- Card for Idea Details -->
             <div class="card mb-3">
@@ -239,40 +244,56 @@
                     Idea Details
                 </div>
                 <div class="card-body">
-
-                    <!-- Flex Container for side-by-side layout -->
-                    <div class="mb-4" style="display: flex; justify-content: space-between;">
-
-                        <div class="mt-4" style="flex: 1; padding-right: 20px;">
-                            <h5>Idea Metrics</h5>
-                            <ul>
-                                <li>Idea Created: {{ $totalIdeasCreated }}</li>
-                                <li>Idea Edited: {{ $totalIdeasUpdated }}</li>
-                            </ul>
-                        </div>
-
-                        <div class="mt-4" style="flex: 1; padding-left: 20px;">
-                            <ul>
-                                <li>Creation Upvote Ratio: {{ $ideaUpvoteCreationRatio ?? 0 }}</li>
-                                <li>Edits Upvote Ratio: {{ $ideaUpvoteEditRatio ?? 0 }}</li>
-                            </ul>
-                        </div>
-                    </div>
-
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Idea Created</td>
+                            <td>{{ $totalIdeasCreated }}</td>
+                        </tr>
+                        <tr>
+                            <td>Idea Edited</td>
+                            <td>{{ $totalIdeasUpdated }}</td>
+                        </tr>
+                        <tr>
+                            <td>Creation Upvote Ratio</td>
+                            <td>{{ $ideaUpvoteCreationRatio ?? 0 }}</td>
+                        </tr>
+                        <tr>
+                            <td>Edits Upvote Ratio</td>
+                            <td>{{ $ideaUpvoteEditRatio ?? 0 }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-
+            <!-- Card for Comment Statistics -->
             <div class="card mb-3">
-                    <div class="card-header">
-                        Comment Statistics
-                    </div>
-                    <div class="card-body">
-                        <p>Total Comments: <span id="totalComments">{{ $totalUserComments }}</span></p>
-                        <p>Total Upvotes on Comments: <span id="totalUpvotes">{{ $totalUpvotesComments }}</span></p>
-                        <p>Total down votes on Comments: <span id="totalUpvotes">{{ $totalDownvotesComments }}</span></p>
-                        <p>Comments/Upvotes Ratio: <span id="commentsUpvotesRatio">{{ $totalUpvotesCommentsRatio }}</span></p>
-                    </div>
+                <div class="card-header">
+                    Comment Statistics
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Total Comments</td>
+                            <td><span id="totalComments">{{ $totalUserComments }}</span></td>
+                        </tr>
+                        <tr>
+                            <td>Total Upvotes on Comments</td>
+                            <td><span id="totalUpvotes">{{ $totalUpvotesComments }}</span></td>
+                        </tr>
+                        <tr>
+                            <td>Total Downvotes on Comments</td>
+                            <td><span id="totalDownvotes">{{ $totalDownvotesComments }}</span></td>
+                        </tr>
+                        <tr>
+                            <td>Comments/Upvotes Ratio</td>
+                            <td><span id="commentsUpvotesRatio">{{ $totalUpvotesCommentsRatio }}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="card mb-3">
