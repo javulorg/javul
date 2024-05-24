@@ -71,7 +71,7 @@
 
 
 
-    <div class="row">
+    <div class="row col-lg-12">
         <div class="col-md-3">
             <div class="sidebar_block">
                 <div class="sidebar_block_ttl">
@@ -108,8 +108,8 @@
 
         </div>
 
-        <div class="col-sm-8">
-            <div class="card mb-3">
+        <div class="col-md-8">
+            <div class="card mb-4">
                 <div class="card-body">
                     <h3 class="card-title">
                         Total Activity Points: {{ $activityPoints }}
@@ -352,7 +352,7 @@
                     method: 'GET',
                     contentType: 'application/json',
                     success: function (response) {
-                        console.log('Data filtered successfully:', response);
+                        location.reload()
                     },
                     error: function (error) {
                         console.error('Error filtering data:', error);
