@@ -130,6 +130,13 @@
                         </a>
                     <?php endif; ?>
 
+                    <?php if(auth()->guard()->check()): ?>
+                        <?php
+                            $userIDHashID = new Hashids\Hashids('user id hash',10,Config::get('app.encode_chars'));
+                        ?>
+                        <input type="hidden" value="<?php echo e($userIDHashID->encode(auth()->user()->id)); ?>" id="user_id">
+                        <input type="hidden" value="<?php echo e(auth()->user()->username); ?>" id="username">
+                    <?php endif; ?>
                     <div class="input-icon right float-end">
                         <label for="amount" class="control-label">&nbsp;</label>
                         <input id="amount-toggle" checked
@@ -137,9 +144,10 @@
                                data-toggle="toggle" data-width="140" data-height="30" data-onstyle="light" data-offstyle="info"
                                type="checkbox" name="charge_type">
                     </div>
+
                 </div>
             </div>
-            
+
             <!-- Card for Most Active Units -->
             <div class="card mb-3">
                 <div class="card-header">
@@ -337,10 +345,31 @@
     </div>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript">
 
+    <script>
+        $(document).ready(function () {
+            $('#amount-toggle').change(function () {
+                var isChecked = $(this).prop('checked');
+                var value = isChecked ? 'specific' : 'Lifetime';
+                var userId = $('#user_id').val();
+                var userName = $('#username').val();
+
+                $.ajax({
+                    url: '<?php echo e(url("/userprofiles")); ?>/' + userId + '/' + userName + '?filter=' + value,
+                    method: 'GET',
+                    contentType: 'application/json',
+                    // data: JSON.stringify({ filter: value }),
+                    success: function (response) {
+                        console.log('Data filtered successfully:', response);
+                    },
+                    error: function (error) {
+                        console.error('Error filtering data:', error);
+                    }
+                });
+            });
+        });
     </script>
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/users/profile.blade.php ENDPATH**/ ?>

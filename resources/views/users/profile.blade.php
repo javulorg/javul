@@ -123,6 +123,13 @@
                         </a>
                     @endif
 
+                    @auth()
+                        @php
+                            $userIDHashID = new Hashids\Hashids('user id hash',10,Config::get('app.encode_chars'));
+                        @endphp
+                        <input type="hidden" value="{{ $userIDHashID->encode(auth()->user()->id) }}" id="user_id">
+                        <input type="hidden" value="{{ auth()->user()->username }}" id="username">
+                    @endauth
                     <div class="input-icon right float-end">
                         <label for="amount" class="control-label">&nbsp;</label>
                         <input id="amount-toggle" checked
@@ -130,9 +137,10 @@
                                data-toggle="toggle" data-width="140" data-height="30" data-onstyle="light" data-offstyle="info"
                                type="checkbox" name="charge_type">
                     </div>
+
                 </div>
             </div>
-            
+
             <!-- Card for Most Active Units -->
             <div class="card mb-3">
                 <div class="card-header">
@@ -330,8 +338,28 @@
     </div>
 @endsection
 @section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript">
 
+    <script>
+        $(document).ready(function () {
+            $('#amount-toggle').change(function () {
+                var isChecked = $(this).prop('checked');
+                var value = isChecked ? 'specific' : 'Lifetime';
+                var userId = $('#user_id').val();
+                var userName = $('#username').val();
+
+                $.ajax({
+                    url: '{{ url("/userprofiles") }}/' + userId + '/' + userName + '?filter=' + value,
+                    method: 'GET',
+                    contentType: 'application/json',
+                    success: function (response) {
+                        console.log('Data filtered successfully:', response);
+                    },
+                    error: function (error) {
+                        console.error('Error filtering data:', error);
+                    }
+                });
+            });
+        });
     </script>
+
 @endsection
