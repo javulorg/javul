@@ -16,8 +16,15 @@ use Illuminate\Support\Facades\DB;
 class UnitService
 {
     use WikiTrait;
+
+
     public function store($request)
     {
+
+        // validation code here start
+
+
+
         DB::transaction(function () use($request) {
             $unit = $this->saveUnit($request);
             $this->saveUnitWikiPage($unit);

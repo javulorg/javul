@@ -224,32 +224,158 @@ class HomeController extends Controller
         return view('errors.404');
     }
 
+    // public function my_watchlist(Request $request)
+    // {
+    //     $watchedUnits = Watchlist::join('units','my_watchlist.unit_id','=','units.id')
+    //                     ->where('my_watchlist.user_id',Auth::user()->id)
+    //                     ->whereNotNull('unit_id')->select(['units.*'])->get();
+    //     $watchedObjectives = Watchlist::join('objectives','my_watchlist.objective_id','=','objectives.id')
+    //                         ->where('my_watchlist.user_id',Auth::user()->id)
+    //                         ->whereNotNull('objective_id')->select(['objectives.*'])->get();
+    //     $watchedTasks = Watchlist::join('tasks','my_watchlist.task_id','=','tasks.id')
+    //                     ->where('my_watchlist.user_id',Auth::user()->id)
+    //                     ->whereNotNull('task_id')->select(['tasks.*'])->get();
+
+
+    //     $watchedIssues = Watchlist::join( 'issues','my_watchlist.issue_id','=','issues.id')
+    //         ->where('my_watchlist.user_id',Auth::user()->id)
+    //         ->whereNotNull('issue_id')->select(['issues.*'])->get();
+
+    //     view()->share('watchedUnits',$watchedUnits);
+    //     view()->share('watchedObjectives',$watchedObjectives);
+    //     view()->share('watchedTasks',$watchedTasks);
+    //     view()->share('watchedIssues',$watchedIssues);
+    //     return view('users.my_watchlist');
+    // }
+
+    // public function my_watchlist(Request $request)
+    // {
+    //     $userId = Auth::id(); // Authenticated user ka ID
+
+    //     // Watchlisted Units
+    //     $watchedUnits = Watchlist::join('units', 'my_watchlist.unit_id', '=', 'units.id')
+    //         ->where('my_watchlist.user_id', $userId)
+    //         ->whereNotNull('unit_id')
+    //         ->select('units.*')
+    //         ->get();
+
+    //     // Watchlisted Objectives
+    //     $watchedObjectives = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')
+    //         ->where('my_watchlist.user_id', $userId)
+    //         ->whereNotNull('objective_id')
+    //         ->select('objectives.*')
+    //         ->get();
+
+    //     // Watchlisted Tasks
+    //     $watchedTasks = Watchlist::join('tasks', 'my_watchlist.task_id', '=', 'tasks.id')
+    //         ->where('my_watchlist.user_id', $userId)
+    //         ->whereNotNull('task_id')
+    //         ->select('tasks.*')
+    //         ->get();
+
+    //     // Watchlisted Issues
+    //     $watchedIssues = Watchlist::join('issues', 'my_watchlist.issue_id', '=', 'issues.id')
+    //         ->where('my_watchlist.user_id', $userId)
+    //         ->whereNotNull('issue_id')
+    //         ->select('issues.*')
+    //         ->get();
+
+    //     // Debugging: dd() to check if data is fetched correctly
+    //     dd($watchedTasks, $watchedUnits, $watchedObjectives, $watchedIssues);
+
+    //     // Return view with all watchlist data
+    //     return view('users.my_watchlist', compact(
+    //         'watchedTasks', 'watchedUnits', 'watchedObjectives', 'watchedIssues'
+    //     ));
+    // }
+
+
     public function my_watchlist(Request $request)
     {
-        $watchedUnits = Watchlist::join('units','my_watchlist.unit_id','=','units.id')
-                        ->where('my_watchlist.user_id',Auth::user()->id)
-                        ->whereNotNull('unit_id')->select(['units.*'])->get();
-        $watchedObjectives = Watchlist::join('objectives','my_watchlist.objective_id','=','objectives.id')
-                            ->where('my_watchlist.user_id',Auth::user()->id)
-                            ->whereNotNull('objective_id')->select(['objectives.*'])->get();
-        $watchedTasks = Watchlist::join('tasks','my_watchlist.task_id','=','tasks.id')
-                        ->where('my_watchlist.user_id',Auth::user()->id)
-                        ->whereNotNull('task_id')->select(['tasks.*'])->get();
+        $watchedUnits = Watchlist::join('units', 'my_watchlist.unit_id', '=', 'units.id')
+            ->where('my_watchlist.user_id', Auth::user()->id)
+            ->whereNotNull('unit_id')->select(['units.*'])->get();
+
+        // $watchedUnits = Watchlist::join('Objectives');
+
+        // $watchedUnits = Watchlist::join('units','my_watchlist.unit_id','=','units.id')
+        //                 ->where('my_watchlist.user_id',Auth::user()->id)
+        //                 ->whereNotNull('unit_id')->select(['units.*'])->get();
 
 
-        $watchedIssues = Watchlist::join( 'issues','my_watchlist.issue_id','=','issues.id')
-            ->where('my_watchlist.user_id',Auth::user()->id)
-            ->whereNotNull('issue_id')->select(['issues.*'])->get();
+        // $watchedObjectives = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')->select('Objectives.*')->get();
+        // ->where('my_watchlist.user_id',Auth::user()->id)
+        // ->whereNotNull('objective_id')->select(['objectives.*'])->get();
 
 
 
-//        dd($watchedIssues);
-        view()->share('watchedUnits',$watchedUnits);
-        view()->share('watchedObjectives',$watchedObjectives);
-        view()->share('watchedTasks',$watchedTasks);
-        view()->share('watchedIssues',$watchedIssues);
-        return view('users.my_watchlist');
+        $watchedObjectives = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')
+            ->where('my_watchlist.user_id', Auth::user()->id)
+            ->whereNotNull('objective_id')->select(['objectives.*'])->get();
+
+
+
+
+
+
+
+
+
+
+        // $watchedTask = Watchlist::join(': tasks', 'my_watchlist.objective_id', '=', 'objectives.id')->select('Objectives.*')->get();
+
+        $watchedTask = Watchlist::join('tasks', 'my_watchlist.task_id', '=', 'tasks.id')->select('tasks.*')->get();
+
+        $watchedIssue = Watchlist::join('issues', 'my_watchlist.issue_id', '=', 'issues.id')->select('issues.*')->get();
+
+        // $watchedTasks = Watchlist::join('tasks','my_watchlist.task_id','=','tasks.id')
+        //                 ->where('my_watchlist.user_id',Auth::user()->id)
+        //                 ->whereNotNull('task_id')->select(['tasks.*'])->get();
+
+
+        // $watchedIssues = Watchlist::join( 'issues','my_watchlist.issue_id','=','issues.id')
+        //     ->where('my_watchlist.user_id',Auth::user()->id)
+        //     ->whereNotNull('issue_id')->select(['issues.*'])->get();
+
+
+
+        //        dd($watchedIssues);
+        // view()->share('watchedUnits',$watchedUnits);
+        // view()->share('watchedObjectives',$watchedObjectives);
+        // view()->share('watchedTasks',$watchedTasks);
+        // view()->share('watchedIssues',$watchedIssues);
+        return view('users.my_watchlist', ['watchedUnits' => $watchedObjectives, 'watchedTasks' => $watchedTask, 'watchedissues' => $watchedIssue]);
     }
+
+
+
+
+
+    public function addToWatchlist(Request $request)
+{
+    $type = $request->type;
+    $id = $request->id;
+
+    $watchlist = new \App\Models\Watchlist();
+    $watchlist->user_id = auth()->id();
+
+    if ($type === 'unit') {
+        $watchlist->unit_id = $id;
+    } elseif ($type === 'objective') {
+        $watchlist->objective_id = $id;
+    } elseif ($type === 'task') {
+        $watchlist->task_id = $id;
+    } elseif ($type === 'issue') {
+        $watchlist->issue_id = $id;
+    }
+
+    $watchlist->save();
+
+    session()->flash('watchlist_success', "Thank you for adding {$type} to your watchlist.");
+
+    return redirect()->route('watchlist.page'); // or return back();
+}
+
 
     public function my_alerts(Request $request)
     {

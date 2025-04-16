@@ -43,17 +43,18 @@
 
         <div class="panel panel-grey panel-default">
             <div class="panel-heading">
-                <h4>Create Task</h4>
+                <h4>Create Task aa </h4>
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
+
                     <form role="form" method="post" id="form_sample_2" action="{{ url('tasks') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-sm-12 mt-1 mb-2 form-group">
                                 <label class="control-label">Task Name</label>
                                 <div class="input-icon right">
-                                    <input type="text" name="task_name" id="task_name" value="{{ (!empty($taskObj))? $taskObj->name : old('task_name') }}" class="form-control" placeholder="Task Name">
+                                    <input type="text" name="task_name" required id="task_name" value="{{ (!empty($taskObj))? $taskObj->name : old('task_name') }}" class="form-control" placeholder="Task Name">
                                 </div>
                                 @if ($errors->has('task_name'))
                                     <span class="help-block">
@@ -64,12 +65,12 @@
                         </div>
 
                         <div class="row mt-2">
-                            <input type="hidden" name="unit" value="{{ $unitIDHashID->encode($unitData->id) }}">
+                            <input type="hidden" name="unit" required value="{{ $unitIDHashID->encode($unitData->id) }}">
 
                             <div class="col-sm-12 form-group">
                                 <label class="control-label">Objective <span
                                         class="text-danger">*</span></label>
-                                <select @if(!empty($unitInfo) && !empty($task_objective_id)) name="objective_disabled" @else name="objective" @endif id="objective"
+                                <select @if(!empty($unitInfo) && !empty($task_objective_id)) required name="objective_disabled" @else name="objective" @endif id="objective"
                                         class="form-control selectpicker" data-live-search="true">
                                     @if(count($objectiveObj) > 0)
                                         @foreach($objectiveObj as $objective)

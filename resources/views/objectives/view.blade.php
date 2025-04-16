@@ -186,7 +186,35 @@
                                     </div>
                                 </div>
                                 <div class="objective_content_info_links">
-                                    <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objectiveObj->id).'/edit')!!}" class="edit_icon"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a>
+                                    {{-- <a href="#" class="edit_icon"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
+
+<a href="{{ route('watchlist.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}" class="edit_icon">
+    <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
+</a>
+
+                                    {{-- @if($watchedTasks->isNotEmpty())
+                                    @foreach($watchedTasks as $task)
+                                        <tr>
+                                            <td>{{ $task->title }}</td>
+                                            <td>
+                                                <form method="POST" action="{{ route('watchlist.add') }}">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="task">
+                                                    <input type="hidden" name="id" value="{{ $task->id }}">
+                                                    <button type="submit" class="edit_icon" title="Add to watchlist">
+                                                        <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="Add to watchlist">
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <p>No tasks found in your watchlist.</p>
+                                @endif --}}
+
+
+
+
                                     <div class="separat"></div>
                                     <a href="{!! route('objectives_revison',[$objectiveIDHashID->encode($objectiveObj->id)]) !!}" class="edit_icon"> Revision History</a>
                                     <div class="separat"></div>
@@ -197,6 +225,13 @@
                     </div>
                 </div>
             </div>
+
+
+            {{-- @if(session('watchlist_success'))
+            <div class="alert alert-success">
+                {{ session('watchlist_success') }}
+            </div>
+        @endif --}}
 
 
             <div class="content_block">
@@ -278,7 +313,7 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                    <a href="{{ url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
                 </div>
             </div>
 
@@ -298,7 +333,7 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                    <a href="{{ url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
                 </div>
             </div>
 
@@ -318,12 +353,14 @@
                             <thead>
                             <tr>
                                 <th class="title_col">Idea Name</th>
-                                <th class="type_col">Status</th>
+                                <th class="status_col">Status</th>
                             </tr>
                             </thead>
                             <tbody>
+
                             @if(isset($objectiveIdeas->ideas))
                                 @foreach($objectiveIdeas->ideas as $idea)
+                            @dd($idea)
                                     <tr>
                                         <td class="title_col">
                                             <a href="{!! url('ideas/'.$ideaHashID->encode($idea->id)) !!}">
@@ -351,7 +388,7 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="#"><img src="{!! url('ideas/'.$unitIDHashID->encode($unitData->id).'/add') !!}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                    <a href="{!! url('ideas/'.$unitIDHashID->encode($unitData->id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="" class="see_more">See more</a>
                 </div>
             </div>
 

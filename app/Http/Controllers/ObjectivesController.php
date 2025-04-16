@@ -7,6 +7,7 @@ use App\Models\Fund;
 use App\Models\Idea;
 use App\Models\ImportanceLevel;
 use App\Models\Objective;
+use App\Models\Watchlist;
 use App\Models\ObjectiveIdea;
 use App\Models\SiteActivity;
 use App\Models\Task;
@@ -1037,6 +1038,17 @@ class ObjectivesController extends Controller
         // Set a cookie indicating that the objective has been upvoted
         return response()->json(['message' => 'Objective upvoted successfully'])
             ->cookie($cookieName, true, /* expiration time if needed */);
+    }
+
+    public function storeW($userId, $unitId, $objective_id)
+    {
+        $watchlist = new Watchlist();
+        $watchlist->user_id = $userId;
+        $watchlist->unit_id = $unitId;
+        $watchlist->objective_id = $objective_id; // still static unless made dynamic
+        $watchlist->save();
+
+        return redirect()->back()->with('success', 'Added to watchlist!');
     }
 
 }

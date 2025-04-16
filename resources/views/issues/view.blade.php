@@ -233,7 +233,10 @@
                                 </div>
                             </div>
                             <div class="objective_content_info_links">
-                                <a class="add_to_my_watchlist edit_icon" data-type="issue" data-id="{{$issueIDHashID->encode($issueObj->id)}}" data-redirect="{{url()->current()}}"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a>
+                                {{-- <a class="add_to_my_watchlist edit_icon" data-type="issue" data-id="{{$issueIDHashID->encode($issueObj->id)}}" data-redirect="{{url()->current()}}"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
+                                <a href="{{ route('watchlistIssue.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}" class="edit_icon">
+                                    <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
+                                            </a>
                                 <div class="separat"></div>
                                 <a href="{!! route('issues_revison',[$issueIDHashID->encode($issueObj->id)]) !!}" class="edit_icon"> Revision History</a>
                                 <div class="separat"></div>

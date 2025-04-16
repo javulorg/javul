@@ -20,6 +20,7 @@
                 <tbody>
                 @if($unitsMaster->count() > 0)
                 @foreach($unitsMaster as $unit)
+
                     @php
                         $category_ids = $unit->category_id;
                         $category_names = App\Models\UnitCategory::getName($category_ids);
@@ -53,3 +54,17 @@
         <a href="{{ url('units') }}">See more</a>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

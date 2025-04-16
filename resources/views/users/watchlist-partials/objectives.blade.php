@@ -12,16 +12,21 @@
         <div class="table_block_body">
             <table id="watchlist-objectives-table-id">
                 <thead>
-                <tr>
-                    <th class="title_col">Objective Name</th>
-                    <th class="title_col">{!! trans('messages.description') !!}</th>
-                </tr>
+                    <tr>
+                        <th class="title_col">Objective Name</th>
+                        <th class="title_col">{!! trans('messages.description') !!}</th>
+                    </tr>
                 </thead>
 
-                <tbody>
-                </tbody>
-
+                @foreach ($watchedUnits as $watchedUnit)
+                    {{-- @dd($watchedUnit) --}}
+                        <tr>
+                            <td>{{ $watchedUnit->name }}</td>
+                            <td></td>
+                            <td>{{ $watchedUnit->description }}</td>
+                        </tr>
+                    @endforeach
             </table>
         </div>
-    </div>
+    </div>
 </div>

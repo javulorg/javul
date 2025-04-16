@@ -12,9 +12,9 @@
                 @foreach($mostActiveUnits as $unit)
                     <tr>
                         <td>
-                            <a href="{!! url('units/'.$unitIDHashID->encode($unit->unit->id).'/edit') !!}">
+                            {{-- <a href="{!! url('units/'.$unitIDHashID->encode($unit->unit->id).'/edit') !!}">
                                 {{$unit->unit->name}}
-                            </a>
+                            </a> --}}
                         </td>
                         <td>
                             <span class="colorLightGreen">{{$unit->total_points}}</span>

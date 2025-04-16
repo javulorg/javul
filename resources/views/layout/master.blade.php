@@ -7,7 +7,7 @@
     <h1>Javul.org</h1>
     <div class="banner_desc d-md-block d-none">
         Open-source Society
-    </div>
+        </div>
 @endsection
 @section('content')
     <div class="content_row">

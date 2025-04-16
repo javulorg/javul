@@ -15,8 +15,12 @@
         <div class="container">
             <div class="search_block d-lg-block d-none">
                 <div class="search_form">
+                    <select name="search_select" id="search_select_modal">
+                        <option value="">Search with this Unit</option>
+                        <option value="">Search with another Unit</option>
+                    </select>
                     <div class="separator"></div>
-                    <input type="text" placeholder="Search Site-wide">
+                    <input type="text" placeholder="">
                     <div class="separator"></div>
                     <button type="submit"><img src="{{ asset('v2/assets/img/search.svg') }}" alt=""></button>
                     <div class="clear_search"></div>

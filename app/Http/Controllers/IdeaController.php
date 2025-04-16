@@ -119,6 +119,7 @@ class IdeaController extends Controller
            'description'    => $request->description,
            'comment'        => $request->comment,
            'status'         => 1,
+
         ]);
         if($idea)
         {
@@ -130,7 +131,18 @@ class IdeaController extends Controller
                 'type'         => 'idea',
                 'unit_id'      => $request->unit_id
             ]);
-            return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
+
+
+            // $encodedObjectiveID = $objectiveIDHashID->encode($objective_id);
+
+            // return redirect('objectives/' . $encodedObjectiveID . '/' . $unitObj->slug)
+            //     ->with('success', 'Task created successfully!');
+
+        // return redirect('objectives/' . $unitHash->encode($request->unit_id) . '/' . $unit->slug)
+        //     ->with('success', 'Idea created successfully!');
+            // return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
+            return response()->json(['message' => 'Data saved successfully']);
+
         }
     }
 

@@ -41,7 +41,7 @@
 
         <div class="panel panel-grey panel-default">
             <div class="panel-heading">
-                <h4>Create Issue</h4>
+                <h4>Create Issue </h4>
             </div>
 
             <div class="panel-body list-group">
@@ -54,8 +54,8 @@
                         <div class="row">
 
                             <div class="form-group">
-                                <label class="control-label">Issue Title</label>
-                                <input type="text" name="title" value="{{ (!empty($issueObj))? $issueObj->title : old('title') }}" class="form-control" placeholder="Issue Name"/>
+                                <label class="control-label">Issue Title <span class="text-danger">*</span></label>
+                                <input type="text" name="title" required value="{{ (!empty($issueObj))? $issueObj->title : old('title') }}" class="form-control" placeholder="Issue Name"/>
                                 @if ($errors->has('title'))
                                     <span class="help-block">
                                     <strong>{{ $errors->first('title') }}</strong>
@@ -64,7 +64,7 @@
                             </div>
 
                             <div class="mt-3 form-group">
-                                <label class="control-label">Category : </label>
+                                <label class="control-label">Category</label>
                                 <div class="input-icon right">
                                     <select class="form-control" data-live-search="true" name="category_id" id="category_id">
                                         <option value="">{!! trans('messages.select') !!}</option>
@@ -115,8 +115,8 @@
 
 
                             <div class="mt-3 form-group">
-                                <label class="control-label">Description</label>
-                                <textarea class="form-control" id="description" name="description">@if(!empty($issueObj)) {{$issueObj->description}} @endif</textarea>
+                                <label class="control-label">Description <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="description"   name="description">@if(!empty($issueObj)) {{$issueObj->description}} @endif</textarea>
                             </div>
 
 
