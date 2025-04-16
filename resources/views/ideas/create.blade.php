@@ -2,7 +2,7 @@
 @section('title', 'Create Idea')
 
 @section('site-name')
-    @if(isset($unitData))
+    @if (isset($unitData))
         <h1>{{ $unitData->name }}</h1>
     @else
         <h1>Javul.org</h1>
@@ -13,7 +13,7 @@
 @endsection
 
 @section('navbar')
-    @if(isset($unitData))
+    @if (isset($unitData))
         @include('layout.navbar', ['unitData' => $unitData])
     @endif
 @endsection
@@ -21,12 +21,12 @@
 @section('content')
     <div class="content_row">
         <div class="sidebar">
-            @if(isset($unitData))
+            @if (isset($unitData))
                 @include('layout.v2.global-unit-overview')
                 <?php
                 $title = 'Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+                @include('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id])
 
                 @include('layout.v2.global-finances')
 
@@ -35,17 +35,17 @@
                 <?php
                 $title = 'Global Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
+                @include('layout.v2.global-activity-log', ['title' => $title])
             @endif
         </div>
 
         <div class="panel panel-grey panel-default col-md-9">
             <div class="panel-heading">
-                <h4>Create Idea</h4>
+                <h4>Create Idea </h4>
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
-                    <form role="form" method="post"  action="{{ url('ideas') }}">
+                    <form role="form" method="post" action="{{ url('ideas') }}" id="myForm">
                         @csrf
                         @method('post')
                         <div class="row">
@@ -53,20 +53,21 @@
                             <input type="hidden" name="unit_id" value="{{ $unitData->id }}">
 
                             <div class="col-md-12 form-group">
-                                <label class="control-label">Idea Name</label>
+                                <label class="control-label">Idea Name <span class="text-danger">*</span></label>
                                 <div class="input-icon right">
-                                    <input type="text" name="title" class="form-control" placeholder="Idea Name"/>
+                                    <input type="text" name="title" required class="form-control" placeholder="Idea Name" />
                                 </div>
                             </div>
 
                             <div class="col-md-12 mt-3 form-group">
-                                <label class="control-label">Category : </label>
+                                <label class="control-label">Category  </label>
                                 <div class="input-icon right">
-                                    <select class="form-control" data-live-search="true" name="category_id" id="category_id">
+                                    <select class="form-control" data-live-search="true" name="category_id"
+                                        id="category_id">
                                         <option value="">{!! trans('messages.select') !!}</option>
-                                            @foreach($types as $type)
-                                                <option value="{{ $type->id }}">{{ $type->title  }}</option>
-                                            @endforeach
+                                        @foreach ($types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->title }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -74,11 +75,12 @@
                             <div class="col-md-12 mt-3 form-group">
                                 <label class="control-label">Task</label>
                                 <div class="input-icon right">
-                                    <select class="form-control selectpicker" data-live-search="true" name="task_id" id="task_id">
+                                    <select class="form-control selectpicker" data-live-search="true" name="task_id"
+                                        id="task_id">
                                         <option value="">{!! trans('messages.select') !!}</option>
-                                            @foreach($tasks as $task)
-                                                <option value="{{ $task->id }}">{{ $task->name  }}</option>
-                                            @endforeach
+                                        @foreach ($tasks as $task)
+                                            <option value="{{ $task->id }}">{{ $task->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -86,19 +88,21 @@
                             <div class="col-md-12 mt-3 form-group">
                                 <label class="control-label">Issue</label>
                                 <div class="input-icon right">
-                                    <select class="form-control selectpicker" data-live-search="true" name="issue_id" id="issue_id">
+                                    <select class="form-control selectpicker" data-live-search="true" name="issue_id"
+                                        id="issue_id">
                                         <option value="">{!! trans('messages.select') !!}</option>
-                                            @foreach($issues as $issue)
-                                                <option value="{{ $issue->id }}">{{ $issue->title  }}</option>
-                                            @endforeach
+
+                                        @foreach ($issues as $issue)
+                                            <option value="{{ $issue->id }}">{{ $issue->title }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
 
 
                             <div class="col-sm-12 mt-3 form-group">
-                                <label class="control-label">Description</label>
-                                <textarea class="form-control" id="description" name="description">
+                                <label class="control-label">Description <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="description" required name="description">
                                 </textarea>
                             </div>
 
@@ -130,9 +134,34 @@
 @section('scripts')
     <script type="text/javascript">
         ClassicEditor
-            .create( document.querySelector( '#description' ) )
-            .catch( error => {
-                console.error( error );
-            } );
+            .create(document.querySelector('#description'))
+            .catch(error => {
+                console.error(error);
+            });
     </script>
+   <script>
+    document.getElementById('myForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission behavior
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Pass the CSRF token for security
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show success message
+            window.history.go(-2); // Go back 2 steps in history
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+    </script>
+
 @endsection

@@ -40,8 +40,8 @@ return new class extends Migration
 
             $table->string('status');
             $table->integer('modified_by')->nullable();
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

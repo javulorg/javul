@@ -20,6 +20,14 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @foreach ($watchedissues as $watchedissue)
+                    {{-- @dd($watchedissue) --}}
+                        <tr>
+                            <td>{{ $watchedissue->title }}</td>
+                            <td></td>
+                            <td>{{ $watchedissue->description }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

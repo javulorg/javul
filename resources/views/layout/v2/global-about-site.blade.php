@@ -1,3 +1,4 @@
+
 <div class="sidebar_block">
     <div class="sidebar_block_ttl">
         About
@@ -8,7 +9,10 @@
     <div class="sidebar_block_content">
         <div class="sidebar_block_content_txt">
             @if(isset($unitObj) && $unitObj->description)
-                {!! $unitObj->description !!} <a href="#"><img src="{{ asset('v2/assets/img/more.svg') }}" alt=""></a>
+
+                {!! $unitObj->description !!}<a
+                href="{{ url('wiki/home/' . $unitIDHashID->encode($unitObj->id) . '/' . $unitObj->slug) }}"><img
+                    src="{{ asset('v2/assets/img/more.svg') }}" alt=""></a>
             @endif
 
         </div>

@@ -11,6 +11,7 @@ use App\Models\IssueDocuments;
 use App\Models\Objective;
 use App\Models\SiteActivity;
 use App\Models\Task;
+use App\Models\Watchlist;
 use App\Models\Unit;
 use App\Models\User;
 use App\Services\Issues\IssueService;
@@ -1212,5 +1213,16 @@ class IssuesController extends Controller
         // Set a cookie indicating that the objective has been upvoted
         return response()->json(['message' => 'Issue upvoted successfully'])
             ->cookie($cookieName, true, /* expiration time if needed */);
+    }
+
+    public function storeW($userId, $unitId, $issue_id)
+    {
+        $watchlist = new Watchlist();
+        $watchlist->user_id = $userId;
+        $watchlist->unit_id = $unitId;
+        $watchlist->issue_id = $issue_id;
+        $watchlist->save();
+
+        return redirect()->back()->with('success', 'Added to watchlist!');
     }
 }

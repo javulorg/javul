@@ -6,9 +6,11 @@
         .panel {
             border-radius: 0px;
         }
+
         .panel-default {
             border-color: #ddd;
         }
+
         .panel-grey .panel-heading {
             background-color: #ebe9e9;
             color: #3F3F3F;
@@ -20,7 +22,7 @@
     </style>
 @endsection
 @section('site-name')
-    @if(isset($unitData))
+    @if (isset($unitData))
         <h1>{{ $unitData->name }}</h1>
     @else
         <h1>Javul.org</h1>
@@ -31,7 +33,7 @@
 @endsection
 
 @section('navbar')
-    @if(isset($unitData))
+    @if (isset($unitData))
         @include('layout.navbar', ['unitData' => $unitData])
     @endif
 @endsection
@@ -39,21 +41,21 @@
 @section('content')
     <div class="content_row">
         <div class="sidebar">
-            @if(isset($unitData))
+            @if (isset($unitData))
                 @include('layout.v2.global-unit-overview')
-                    <?php
-                    $title = 'Activity Log';
-                    ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+                <?php
+                $title = 'Activity Log';
+                ?>
+                @include('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id])
 
                 @include('layout.v2.global-finances')
 
                 @include('layout.v2.global-about-site')
             @else
-                    <?php
-                    $title = 'Global Activity Log';
-                    ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
+                <?php
+                $title = 'Global Activity Log';
+                ?>
+                @include('layout.v2.global-activity-log', ['title' => $title])
             @endif
         </div>
 
@@ -62,7 +64,8 @@
                 <div class="card-header">
                     <div class="card-heading d-flex align-items-center">
                         <div class="table_block_icon featured_unit current_objective">
-                            <img src="{{ asset('v2/assets/img/location.svg') }}" style="margin-bottom:6px;" alt="" class="img-fluid">
+                            <img src="{{ asset('v2/assets/img/location.svg') }}" style="margin-bottom:6px;" alt=""
+                                class="img-fluid">
                         </div>
 
 
@@ -78,7 +81,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h4 class="text-center">Previous revision</h4>
-                            <h5 class="text-center">{{ date("d-m-Y h:A", strtotime($revisions->created_at)) }}, Edited By User {{ $revisions->first_name }} {{ $revisions->last_name }}</h5>
+                            <h5 class="text-center">{{ date('d-m-Y h:A', strtotime($revisions->created_at)) }}, Edited By
+                                User {{ $revisions->first_name }} {{ $revisions->last_name }}</h5>
                             <hr>
                             <div class="wiki-page-desc">{!! $revisions->description !!}</div>
                             <hr>
@@ -105,9 +109,9 @@
                 var revisionId = $('#revision_id').val();
                 $.ajax({
                     type: "POST",
-                    url: '{{ url("/ideas/upvote-edits") }}',
+                    url: '{{ url('/ideas/upvote-edits') }}',
                     data: {
-                        ideaId   : ideaId,
+                        ideaId: ideaId,
                         _token: $('input[name="_token"]').val(),
                     },
 

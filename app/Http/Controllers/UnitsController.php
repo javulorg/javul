@@ -111,6 +111,7 @@ class UnitsController extends Controller
     public function store(UnitRequest $request)
     {
         $this->service->store($request);
+        // dd($request);
         return redirect()->to('units?home=true');
     }
 

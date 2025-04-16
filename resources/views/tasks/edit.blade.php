@@ -41,7 +41,7 @@
 
         <div class="panel panel-grey panel-default">
             <div class="panel-heading">
-                <h4>Update Task</h4>
+                <h4>Update Task </h4>
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
@@ -53,7 +53,8 @@
                         <input type="hidden" id="auth_user" value="{{ auth()->user()->role }}">
                         <div class="row">
                             <div class="col-md-12 form-group">
-                                <label class="control-label">Task Name</label>
+                                <label class="control-label">Task Name  <span
+                                    class="text-danger">*</span></label>
                                 <div class="input-icon right">
                                     <input type="text" name="task_name" id="task_name"
                                            value="{{ (!empty($taskObj))? $taskObj->name : old('task_name') }}"
@@ -134,7 +135,8 @@
                             </div>
 
                             <div class="col-sm-4 mt-1 mb-2 form-group {{ $errors->has('estimated_completion_time_start') ? ' has-error' : '' }}">
-                                <label class="control-label">Estimated Completion Time From</label>
+                                <label class="control-label">Estimated Completion Time From  <span
+                                    class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
                                     <input type="text" id="estimated_completion_time_start"
                                            name="estimated_completion_time_start" value="{{ (!empty($taskObj))?
@@ -153,7 +155,8 @@
                             </div>
 
                             <div class="col-sm-4 mt-1 mb-2 form-group {{ $errors->has('estimated_completion_time_end') ? ' has-error' : '' }}">
-                                <label class="control-label">Estimated Completion Time To</label>
+                                <label class="control-label">Estimated Completion Time To  <span
+                                    class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
                                     <input type="text" id="estimated_completion_time_end"
                                            name="estimated_completion_time_end" value="{{ (!empty($taskObj))?
@@ -197,19 +200,21 @@
 
                         <div class="row mt-3">
                             <div class="col-sm-12 form-group">
-                                <label class="control-label">Summary</label>
+                                <label class="control-label">Summary </label>
                                 <textarea class="form-control" id="task-summary"
                                           name="summary">@if(!empty($taskObj)) {{$taskObj->summary}} @endif</textarea>
                             </div>
 
                             <div class="col-sm-12 mt-3 mb-2 form-group">
-                                <label class="control-label">Description <span id="desc-error"></span></label>
+                                <label class="control-label">Description  <span
+                                    class="text-danger">*</span></label>
                                 <textarea class="form-control" id="description"
                                           name="description">@if(!empty($taskObj)) {{$taskObj->description}} @endif</textarea>
                             </div>
 
                             <div class="col-sm-12 mt-3 mb-2 form-group">
-                                <label class="control-label">Action Items</label>
+                                <label class="control-label">Action Items  <span
+                                    class="text-danger">*</span></label>
                                 <textarea class="form-control" name="action_items" id="action_items">
                                     @if(!empty($taskObj))
                                         {!! $taskObj->task_action !!}

@@ -63,7 +63,7 @@ Route::post('/check_email', [HomeController::class, 'check_email']);
 Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::get('/account', [AccountController::class, 'index']);
 
-//    Route::post('/account/logout', 'AccountController@logout')->name("logout");
+    //    Route::post('/account/logout', 'AccountController@logout')->name("logout");
     Auth::routes();
 
     // Admin
@@ -107,6 +107,10 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
 
     //Homecontroller
     Route::get('/my_watchlist', [HomeController::class, 'my_watchlist']);
+    // add watch list
+    Route::post('/add-to-watchlist', [HomeController::class, 'addToWatchlist'])->name('watchlist.add');
+
+
     Route::get('/remove_from_watchlist', [HomeController::class, 'remove_from_watchlist']);
     Route::get('/my_alerts', [HomeController::class, 'my_alerts']);
     Route::any('/site_admin', [HomeController::class, 'site_admin']);
@@ -156,31 +160,31 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::get('units/search_by_location', [UnitsController::class, 'search_by_location']);
 
     //TasksController
-    Route::any('tasks/add', [TasksController::class,'create']);
-    Route::get('tasks/{taskid}/revisions', [TasksController::class,'revison'])->name('tasks_revison');
-    Route::get('tasks/{taskid}/revisions/{revision_id}', [TasksController::class,'revisonview'])->name('unit_tasks_view');
-    Route::get('tasks/{taskid}/diff/{rev1}/{rev2}', [TasksController::class,'diff'])->name('tasks_revison_cmp');
-    Route::any('tasks/{unitid}/{objectiveid}/add', [TasksController::class,'create']);
-    Route::post('tasks/get_objective', [TasksController::class,'get_objective']);
-    Route::post('tasks/get_tasks', [TasksController::class,'get_tasks']);
-    Route::get('tasks/get_biding_details', [TasksController::class,'get_biding_details']);
-    Route::get('tasks/check_assigned_task', [TasksController::class,'check_assigned_task']);
+    Route::any('tasks/add', [TasksController::class, 'create']);
+    Route::get('tasks/{taskid}/revisions', [TasksController::class, 'revison'])->name('tasks_revison');
+    Route::get('tasks/{taskid}/revisions/{revision_id}', [TasksController::class, 'revisonview'])->name('unit_tasks_view');
+    Route::get('tasks/{taskid}/diff/{rev1}/{rev2}', [TasksController::class, 'diff'])->name('tasks_revison_cmp');
+    Route::any('tasks/{unitid}/{objectiveid}/add', [TasksController::class, 'create']);
+    Route::post('tasks/get_objective', [TasksController::class, 'get_objective']);
+    Route::post('tasks/get_tasks', [TasksController::class, 'get_tasks']);
+    Route::get('tasks/get_biding_details', [TasksController::class, 'get_biding_details']);
+    Route::get('tasks/check_assigned_task', [TasksController::class, 'check_assigned_task']);
 
-    Route::get('tasks/accept_offer/{task_id}', [TasksController::class,'accept_offer']);
+    Route::get('tasks/accept_offer/{task_id}', [TasksController::class, 'accept_offer']);
 
-    Route::get('tasks/reject_offer/{task_id}', [TasksController::class,'reject_offer']);
+    Route::get('tasks/reject_offer/{task_id}', [TasksController::class, 'reject_offer']);
 
-    Route::any('tasks/remove_task_document', [TasksController::class,'remove_task_documents']);
-    Route::any('tasks/submit_for_approval', [TasksController::class,'submit_for_approval']);
-    Route::get('tasks/delete_task', [TasksController::class,'delete_task']);
-    Route::get('tasks/assign', [TasksController::class,'assign_task']);
-    Route::any('tasks/cancel_task/{task_id}', [TasksController::class,'cancel_task']);
-    Route::any('tasks/complete_task/{task_id}', [TasksController::class,'complete_task']);
-    Route::any('tasks/re_assign/{task_id}', [TasksController::class,'re_assign']);
-    Route::post('tasks/mark_task_complete/{task_id}', [TasksController::class,'mark_as_complete']);
-    Route::any('tasks/{taskid}/edit', [TasksController::class,'edit']);
-    Route::any('tasks/bid_now/{task_id}', [TasksController::class,'bid_now']);
-    Route::any('tasks/{taskid}/edit/{task_status}', [TasksController::class,'edit']);
+    Route::any('tasks/remove_task_document', [TasksController::class, 'remove_task_documents']);
+    Route::any('tasks/submit_for_approval', [TasksController::class, 'submit_for_approval']);
+    Route::get('tasks/delete_task', [TasksController::class, 'delete_task']);
+    Route::get('tasks/assign', [TasksController::class, 'assign_task']);
+    Route::any('tasks/cancel_task/{task_id}', [TasksController::class, 'cancel_task']);
+    Route::any('tasks/complete_task/{task_id}', [TasksController::class, 'complete_task']);
+    Route::any('tasks/re_assign/{task_id}', [TasksController::class, 're_assign']);
+    Route::post('tasks/mark_task_complete/{task_id}', [TasksController::class, 'mark_as_complete']);
+    Route::any('tasks/{taskid}/edit', [TasksController::class, 'edit']);
+    Route::any('tasks/bid_now/{task_id}', [TasksController::class, 'bid_now']);
+    Route::any('tasks/{taskid}/edit/{task_status}', [TasksController::class, 'edit']);
 
     Route::get('notifications/{task_id}/', [App\Http\Controllers\V2\NotificationController::class, 'taskAcceptOfferView']);
     //ForumController
@@ -195,7 +199,7 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::post('forum/post_ideapoint', [ForumController::class, 'post_ideapoint']);
     Route::post('forum/topicUpDown', [ForumController::class, 'topicUpDown']);
     Route::get('forum/create/{unit_id}/{section_id}', [ForumController::class, 'create']);
-//    Route::post('forum/post/{unit_id}/{slug}', [ForumController::class, 'post']);
+    //    Route::post('forum/post/{unit_id}/{slug}', [ForumController::class, 'post']);
     Route::get('forum/post/{unit_id}/{slug}', [ForumController::class, 'post']);
     Route::get('forum/{unit_id}', [ForumController::class, 'index']);
     Route::get('forum/{unit_id}/{section_id}', [ForumController::class, 'view']);
@@ -277,7 +281,7 @@ Route::any('/notification/ipn_donation', [NotificationController::class, 'ipn_do
 Route::auth();
 
 
-Route::post('login', [AuthController::class,'login']);
+Route::post('login', [AuthController::class, 'login']);
 
 //UserWikiController
 Route::get('users/{slug}/{user_id}/wiki', [UserWikiController::class, 'home'])->name("user_wiki_home");
@@ -309,20 +313,20 @@ Route::post('ideas/upvote-edits/', [IdeaController::class, 'upvoteEdits']);
 Route::get('chat', [ChatController::class, 'index']);
 
 //WikiController route
-Route::get('wiki/home/{unit_id}/{slug}', [WikiController::class, 'home']);
+Route::get('wiki/home/{unit_id}/{slug}', [WikiController::class, 'home'])->name('wiki/home/{unit_id}/{slug}');
 Route::get('wiki/{unit_id}/{wiki_page_id}/{slug}', [WikiController::class, 'view']);
 
 // chat controller route
 //ForumController
-Route::get('forum', [ForumController::class,'index']);
+Route::get('forum', [ForumController::class, 'index']);
 
 //TasksController route
-Route::any('tasks/{taskid}/{slug}', [TasksController::class,'view']);
-Route::get('tasks/get_tasks_paginate', [TasksController::class,'get_tasks_paginate']);
-Route::get('tasks/{unitid}/lists', [TasksController::class,'lists']);
-Route::post('tasks/search_tasks', [TasksController::class,'search_tasks']);
-Route::get('tasks/search_by_skills', [TasksController::class,'search_by_skills']);
-Route::get('tasks/search_by_status', [TasksController::class,'search_by_status']);
+Route::any('tasks/{taskid}/{slug}', [TasksController::class, 'view']);
+Route::get('tasks/get_tasks_paginate', [TasksController::class, 'get_tasks_paginate']);
+Route::get('tasks/{unitid}/lists', [TasksController::class, 'lists']);
+Route::post('tasks/search_tasks', [TasksController::class, 'search_tasks']);
+Route::get('tasks/search_by_skills', [TasksController::class, 'search_by_skills']);
+Route::get('tasks/search_by_status', [TasksController::class, 'search_by_status']);
 Route::get('objectives/{objective_id}/{slug_id}/{unit_id}/tasks', [TasksController::class, 'getObjectiveTask']);
 
 
@@ -375,3 +379,11 @@ Route::post('/account/request-to-transfer-zcash', [AccountController::class, 're
 Route::resource('activities', SiteActivityController::class);
 
 Route::post('priorities', [\App\Http\Controllers\V2\PriorityController::class, 'store']);
+
+
+Route::get('/watchlist/add/{userId}/{unitId}/{objective_id}', [ObjectivesController::class, 'storeW'])->name('watchlist.store');
+
+Route::get('/watchlistTask/add/{userId}/{unitId}/{task_id}', [TasksController::class, 'storeW'])->name('watchlistTask.store');
+
+
+Route::get('/watchlistIssue/add/{userId}/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');

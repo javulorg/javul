@@ -2,7 +2,7 @@
 @section('title', 'Create Task')
 
 @section('site-name')
-    @if(isset($unitData))
+    @if (isset($unitData))
         <h1>{{ $unitData->name }}</h1>
     @else
         <h1>Javul.org</h1>
@@ -13,7 +13,7 @@
 @endsection
 
 @section('navbar')
-    @if(isset($unitData))
+    @if (isset($unitData))
         @include('layout.navbar', ['unitData' => $unitData])
     @endif
 @endsection
@@ -22,12 +22,12 @@
     <div class="content_row">
 
         <div class="sidebar">
-            @if(isset($unitData))
+            @if (isset($unitData))
                 @include('layout.v2.global-unit-overview')
                 <?php
                 $title = 'Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+                @include('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id])
 
                 @include('layout.v2.global-finances')
 
@@ -36,24 +36,27 @@
                 <?php
                 $title = 'Global Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
+                @include('layout.v2.global-activity-log', ['title' => $title])
             @endif
         </div>
 
 
         <div class="panel panel-grey panel-default">
             <div class="panel-heading">
-                <h4>Create Task</h4>
+                <h4>Create Tasks </h4>
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
-                    <form role="form" method="post" id="form_sample_2" action="{{ url('tasks') }}" enctype="multipart/form-data">
+                    <form role="form" method="post" id="form_sample_2" action="{{ url('tasks') }}"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-sm-12 mt-1 mb-2 form-group">
-                                <label class="control-label">Task Name</label>
+                                <label class="control-label">Task Name</label><span class="text-danger">*</span>
                                 <div class="input-icon right">
-                                    <input type="text" name="task_name" id="task_name" value="{{ (!empty($taskObj))? $taskObj->name : old('task_name') }}" class="form-control" placeholder="Task Name">
+                                    <input type="text" required name="task_name" id="task_name"
+                                        value="{{ !empty($taskObj) ? $taskObj->name : old('task_name') }}"
+                                        class="form-control" placeholder="Task Name">
                                 </div>
                                 @if ($errors->has('task_name'))
                                     <span class="help-block">
@@ -67,161 +70,176 @@
                             <input type="hidden" name="unit" value="{{ $unitIDHashID->encode($unitData->id) }}">
 
                             <div class="col-sm-12 form-group">
-                                <label class="control-label">Objective <span
-                                        class="text-danger">*</span></label>
-                                <select @if(!empty($unitInfo) && !empty($task_objective_id)) name="objective_disabled" @else name="objective" @endif id="objective"
-                                        class="form-control selectpicker" data-live-search="true">
-                                    @if(count($objectiveObj) > 0)
-                                        @foreach($objectiveObj as $objective)
-                                            <option value="{{$objectiveIDHashID->encode($objective->id)}}"
-                                                    @if(!empty($taskObj) && $objective->id == $taskObj->objective_id)
-                                                    selected=selected
+                                <label class="control-label">Objective <span class="text-danger">*</span></label>
+                                <select
+                                    @if (!empty($unitInfo) && !empty($task_objective_id)) required name="objective_disabled" @else name="objective" @endif
+                                    id="objective" class="form-control selectpicker" data-live-search="true">
+                                    @if (count($objectiveObj) > 0)
+                                        @foreach ($objectiveObj as $objective)
+                                            <option value="{{ $objectiveIDHashID->encode($objective->id) }}"
+                                                @if (!empty($taskObj) && $objective->id == $taskObj->objective_id) selected=selected
                                                     @elseif(empty($taskObj) && $objective->id == $task_objective_id)
-                                                    selected=selected
-                                                @endif>{{$objective->name}}</option>
+                                                    selected=selected @endif>
+                                                {{ $objective->name }}</option>
                                         @endforeach
                                     @endif
                                 </select>
-                                @if(!empty($unitInfo) && !empty($task_objective_id))
-                                    <input type="hidden" name="objective" value="{{$objectiveIDHashID->encode($task_objective_id)}}"/>
+                                @if (!empty($unitInfo) && !empty($task_objective_id))
+                                    <input type="hidden" name="objective"
+                                        value="{{ $objectiveIDHashID->encode($task_objective_id) }}" />
                                 @endif
                                 <span class="objective_loader location_loader" style="display: none">
-                                            <img src="{!! url('assets/images/small_loader.gif') !!}"/>
-                                        </span>
+                                    <img src="{!! url('assets/images/small_loader.gif') !!}" />
+                                </span>
                                 @if ($errors->has('objective'))
                                     <span class="help-block">
-                                                <strong>{{ $errors->first('objective') }}</strong>
-                                            </span>
+                                        <strong>{{ $errors->first('objective') }}</strong>
+                                    </span>
                                 @endif
                             </div>
 
                             <div class="col-sm-12 mt-3 form-group">
                                 <label class="control-label mb-1">Idea</label>
-                                <select class="form-select"  name="idea_id" id="idea_id">
+                                <select class="form-select" name="idea_id" id="idea_id">
                                     <option selected disabled>Select Idea</option>
-                                    @foreach($ideas as $idea)
+                                    dd($ideas)
+                                    {{-- @foreach ($ideas as $idea)
                                         <option value="{{ $idea->id }}">{{ $idea->title }}</option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
                         </div>
 
                         <div class="row mt-4">
                             <div class="col-sm-4 form-group {{ $errors->has('task_skills') ? ' has-error' : '' }}">
-                                <label class="control-label">Task Skills <span
-                                        class="text-danger">*</span></label>
-                                <select name="task_skills[]" class="form-control" data-live-search="true" id="task_skills" multiple>
+                                <label class="control-label">Task Skills <span class="text-danger">*</span></label>
+                                <select name="task_skills[]" class="form-control" required data-live-search="true"
+                                    id="task_skills" multiple>
                                     <option value="">Select</option>
-                                    @if(!empty($task_skills))
-                                        @foreach($task_skills as $skill_id=>$skill)
-                                            <option value="{{$skill_id}}" @if(!empty($exploded_task_list) && in_array($skill_id,
-                                                                $exploded_task_list)) selected=selected @endif>{{$skill}}</option>
+                                    @if (!empty($task_skills))
+                                        @foreach ($task_skills as $skill_id => $skill)
+                                            <option value="{{ $skill_id }}"
+                                                @if (!empty($exploded_task_list) && in_array($skill_id, $exploded_task_list)) selected=selected @endif>
+                                                {{ $skill }}</option>
                                         @endforeach
                                     @endif
                                 </select>
                                 @if ($errors->has('task_skills'))
                                     <span class="help-block">
-                                                <strong>{{ $errors->first('task_skills') }}</strong>
-                                            </span>
+                                        <strong>{{ $errors->first('task_skills') }}</strong>
+                                    </span>
                                 @endif
                             </div>
 
-                            <div class="col-sm-4 form-group {{ $errors->has('estimated_completion_time_start') ? ' has-error' : '' }}">
-                                <label class="control-label">Estimated Completion Time From</label>
+                            <div
+                                class="col-sm-4 form-group {{ $errors->has('estimated_completion_time_start') ? ' has-error' : '' }}">
+                                <label class="control-label">Estimated Completion Time From <span class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
-                                    <input type="text" id="estimated_completion_time_start" name="estimated_completion_time_start" value="{{ (!empty($taskObj))?
-                                                        $taskObj->estimated_completion_time_start :
-                                                        old('estimated_completion_time_start') }}" class="form-control datetimepicker" placeholder="Estimated Completion Time From">
-                                    <span class="input-group-text" id="calendar-icon-from"><i class="bi bi-calendar"></i></span>
+                                    <input type="text" id="estimated_completion_time_start"
+                                        name="estimated_completion_time_start"
+                                        value="{{ !empty($taskObj) ? $taskObj->estimated_completion_time_start : old('estimated_completion_time_start') }}"
+                                        class="form-control datetimepicker" placeholder="Estimated Completion Time From">
+                                    <span class="input-group-text" id="calendar-icon-from"><i
+                                            class="bi bi-calendar"></i></span>
                                 </div>
                                 @if ($errors->has('estimated_completion_time_start'))
                                     <span class="help-block">
-                                                <strong>{{ $errors->first('estimated_completion_time_start') }}</strong>
+                                        <strong>{{ $errors->first('estimated_completion_time_start') }}</strong>
                                     </span>
                                 @endif
                             </div>
 
-                            <div class="col-sm-4 form-group {{ $errors->has('estimated_completion_time_end') ? ' has-error' : '' }}">
-                                <label class="control-label">Estimated Completion Time To</label>
+                            <div
+                                class="col-sm-4 form-group {{ $errors->has('estimated_completion_time_end') ? ' has-error' : '' }}">
+                                <label class="control-label">Estimated Completion Time To <span class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
-                                    <input type="text" id="estimated_completion_time_end" name="estimated_completion_time_end" value="{{ (!empty($taskObj))?
-                                                    $taskObj->estimated_completion_time_end :
-                                                    old('estimated_completion_time_end') }}" class="form-control datetimepicker" placeholder="Estimated Completion Time To"/>
-                                    <span class="input-group-text" id="calendar-icon-to"><i class="bi bi-calendar"></i></span>
+                                    <input type="text" id="estimated_completion_time_end"
+                                        name="estimated_completion_time_end"
+                                        value="{{ !empty($taskObj) ? $taskObj->estimated_completion_time_end : old('estimated_completion_time_end') }}"
+                                        class="form-control datetimepicker" placeholder="Estimated Completion Time To" />
+                                    <span class="input-group-text" id="calendar-icon-to"><i
+                                            class="bi bi-calendar"></i></span>
                                 </div>
-                                    @if ($errors->has('estimated_completion_time_end'))
+                                @if ($errors->has('estimated_completion_time_end'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('estimated_completion_time_end') }}</strong>
                                     </span>
-                                   @endif
+                                @endif
                             </div>
                         </div>
 
                         <div class="row mt-4">
                             <div class="col-sm-12 form-group">
-                                <label class="control-label">Compensation <span
-                                        class="text-danger">*</span></label>
+                                <label class="control-label">Compensation <span class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
-                                        <input type="text" id="compensation" name="compensation" value="{{ (!empty($taskObj))? $taskObj->compensation : old('compensation') }}"
-                                               class="form-control border-radius-0 onlyDigits"
-                                               placeholder="Compensation"/>
+                                    <input type="text" id="compensation" required name="compensation"
+                                        value="{{ !empty($taskObj) ? $taskObj->compensation : old('compensation') }}"
+                                        class="form-control border-radius-0 onlyDigits" placeholder="Compensation" />
                                     <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
                                 </div>
                             </div>
-{{--                            <div class="col-sm-8">--}}
-{{--                                @if(!empty($taskObj))--}}
-{{--                                <div class="col-sm-4 mt-1 mb-2 form-group">--}}
-{{--                                    <label class="control-label">Status</label>--}}
-{{--                                    <div class="input-icon right">--}}
-{{--                                        @if(!empty($change_task_status) || \App\Models\Task::isUnitAdminOfTask($taskObj->id))--}}
-{{--                                            <select name="task_status" class="form-control selectpicker" data-live-search="true" id="task_status">--}}
-{{--                                                @foreach(\App\Models\SiteConfigs::task_status() as $index=>$status)--}}
-{{--                                                    <option @if($taskObj->status == $index) selected=selected @endif value="{{$index}}">{{ $status }}</option>--}}
-{{--                                                @endforeach--}}
-{{--                                            </select>--}}
-{{--                                         @else--}}
-{{--                                            <span>--}}
-{{--                                                {{\App\Models\SiteConfigs::task_status($taskObj->status)}}--}}
-{{--                                                <!--</span>-->--}}
-{{--                                                    @if($taskObj->status == "editable" && !empty($taskEditor) && $taskEditor->submit_for_approval == "not_submitted")--}}
-{{--                                                        @if(count($otherEditorsDone) > 0)--}}
-{{--                                                            ({{count($otherEditorsDone).' task editor submitted this task for Approval'}}--}}
-{{--                                                            @if(!empty($availableDays))--}}
-{{--                                                                {{"Time left for editing: ".$availableDays." days."}})--}}
-{{--                                                            @endif--}}
-{{--                                                        @endif--}}
-{{--                                                        <a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a>--}}
+                            {{--                            <div class="col-sm-8"> --}}
+                            {{--                                @if (!empty($taskObj)) --}}
+                            {{--                                <div class="col-sm-4 mt-1 mb-2 form-group"> --}}
+                            {{--                                    <label class="control-label">Status</label> --}}
+                            {{--                                    <div class="input-icon right"> --}}
+                            {{--                                        @if (!empty($change_task_status) || \App\Models\Task::isUnitAdminOfTask($taskObj->id)) --}}
+                            {{--                                            <select name="task_status" class="form-control selectpicker" data-live-search="true" id="task_status"> --}}
+                            {{--                                                @foreach (\App\Models\SiteConfigs::task_status() as $index => $status) --}}
+                            {{--                                                    <option @if ($taskObj->status == $index) selected=selected @endif value="{{$index}}">{{ $status }}</option> --}}
+                            {{--                                                @endforeach --}}
+                            {{--                                            </select> --}}
+                            {{--                                         @else --}}
+                            {{--                                            <span> --}}
+                            {{--                                                {{\App\Models\SiteConfigs::task_status($taskObj->status)}} --}}
+                            {{--                                                <!--</span>--> --}}
+                            {{--                                                    @if ($taskObj->status == 'editable' && !empty($taskEditor) && $taskEditor->submit_for_approval == 'not_submitted') --}}
+                            {{--                                                        @if (count($otherEditorsDone) > 0) --}}
+                            {{--                                                            ({{count($otherEditorsDone).' task editor submitted this task for Approval'}} --}}
+                            {{--                                                            @if (!empty($availableDays)) --}}
+                            {{--                                                                {{"Time left for editing: ".$availableDays." days."}}) --}}
+                            {{--                                                            @endif --}}
+                            {{--                                                        @endif --}}
+                            {{--                                                        <a href="#" class="submit_for_approval"  data-task_id="{{$taskIDHashID->encode($taskObj->id)}}">Submit for Approval</a> --}}
 
-{{--                                                    @elseif($taskObj->status == "editable" && count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted")--}}
-{{--                                                        ( You changed this task status to "Awaiting Approval". Waiting for {{count($otherRemainEditors)}}--}}
-{{--                                                        other editors to do the same)--}}
-{{--                                                    @endif--}}
-{{--                                            </span>--}}
-{{--                                        @endif--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            @endif--}}
-{{--                            </div>--}}
+                            {{--                                                    @elseif($taskObj->status == "editable" && count($taskEditor) > 0 && $taskEditor->submit_for_approval == "submitted") --}}
+                            {{--                                                        ( You changed this task status to "Awaiting Approval". Waiting for {{count($otherRemainEditors)}} --}}
+                            {{--                                                        other editors to do the same) --}}
+                            {{--                                                    @endif --}}
+                            {{--                                            </span> --}}
+                            {{--                                        @endif --}}
+                            {{--                                    </div> --}}
+                            {{--                                </div> --}}
+                            {{--                            @endif --}}
+                            {{--                            </div> --}}
                         </div>
 
 
                         <div class="row mt-2">
                             <div class="col-sm-12 mt-1 mb-2 form-group">
                                 <label class="control-label">Summary</label>
-                                <textarea class="form-control" id="task-summary" name="summary">@if(!empty($taskObj)) {{$taskObj->summary}} @endif</textarea>
+                                <textarea class="form-control" id="task-summary" name="summary">
+@if (!empty($taskObj))
+{{ $taskObj->summary }}
+@endif
+</textarea>
                             </div>
 
                             <div class="col-sm-12 mt-1 mb-2 form-group">
-                                <label class="control-label">Description <span id="desc-error"></span></label>
-                                <textarea class="form-control" id="description" name="description">@if(!empty($taskObj)) {{$taskObj->description}} @endif</textarea>
+                                <label class="control-label">Description <span id="desc-error" class="text-danger">*</span></label>
+                                <textarea class="form-control" id="description" name="description">
+@if (!empty($taskObj))
+{{ $taskObj->description }}
+@endif
+</textarea>
                             </div>
 
                             <div class="col-sm-12 mt-1 mb-2 form-group">
-                                <label class="control-label">Action Items</label>
-                                <textarea class="form-control" name="action_items" id="action_items">
-                                        @if(!empty($taskObj))
-                                        {!! $taskObj->task_action !!}
-                                    @endif
+                                <label class="control-label">Action Items <span class="text-danger">*</span></label>
+                                <textarea class="form-control" name="action_items" id="action_items" required>
+                                        @if (!empty($taskObj))
+{!! $taskObj->task_action !!}
+@endif
                                 </textarea>
                             </div>
                         </div>
@@ -233,26 +251,31 @@
                                     <div class="table-responsive overflow-hidden">
                                         <table class="documents table table-striped">
                                             <thead>
-                                            <tr>
-                                                <th style="border:0px;font-weight:normal;">Documents</th>
-                                                <th style="border:0px;"></th>
-                                            </tr>
+                                                <tr>
+                                                    <th style="border:0px;font-weight:normal;">Documents</th>
+                                                    <th style="border:0px;"></th>
+                                                </tr>
                                             </thead>
                                             <tbody>
 
-                                            @if(!empty($taskDocumentsObj))
-                                                <?php $i=1; ?>
-                                                @foreach($taskDocumentsObj as $document)
-                                                    @include('tasks.partials.task_document_listing',['document'=>$document,'taskObj'=>$taskObj,'taskDocumentIDHashID'=>$taskDocumentIDHashID,'fromEdit'=>'no'])
-                                                @endforeach
-                                                @if(empty($taskObj) || ($taskObj->status == "editable"))
-                                                    @include('tasks.partials.document_upload')
+                                                @if (!empty($taskDocumentsObj))
+                                                    <?php $i = 1; ?>
+                                                    @foreach ($taskDocumentsObj as $document)
+                                                        @include('tasks.partials.task_document_listing', [
+                                                            'document' => $document,
+                                                            'taskObj' => $taskObj,
+                                                            'taskDocumentIDHashID' => $taskDocumentIDHashID,
+                                                            'fromEdit' => 'no',
+                                                        ])
+                                                    @endforeach
+                                                    @if (empty($taskObj) || $taskObj->status == 'editable')
+                                                        @include('tasks.partials.document_upload')
+                                                    @endif
+                                                @else
+                                                    @if (empty($taskObj) || $taskObj->status == 'editable')
+                                                        @include('tasks.partials.document_upload')
+                                                    @endif
                                                 @endif
-                                            @else
-                                                @if(empty($taskObj) || ($taskObj->status == "editable"))
-                                                    @include('tasks.partials.document_upload')
-                                                @endif
-                                            @endif
                                             </tbody>
                                         </table>
                                     </div>
@@ -275,14 +298,14 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $(".datetimepicker").flatpickr({
                 enableTime: false,
-                position : "above",
-                mode : "multiple",
+                position: "above",
+                mode: "multiple",
                 // minuteIncrement : 1,
-                enableSeconds : false,
+                enableSeconds: false,
             });
 
             $("#task_skills").select2({
@@ -299,79 +322,84 @@
                 $(this).closest(".input-group").find("input").focus();
             });
 
-            $(document).off('click','.addMoreDocument').on('click',".addMoreDocument",function(){
+            $(document).off('click', '.addMoreDocument').on('click', ".addMoreDocument", function() {
                 cloneTR();
                 return false;
             });
 
-            $(document).on("click","table.documents tbody .remove-row", function(){
+            $(document).on("click", "table.documents tbody .remove-row", function() {
                 var index_tr = $(".documents").find("tbody").find("tr").index($(this));
                 var id = $(this).attr('data-id');
                 var task_id = $(this).attr('data-task_id');
                 var fromEdit = $(this).attr('data-from_edit');
                 $that = $(this);
-                if($.trim(id) != "" && $.trim(task_id) != ""){
+                if ($.trim(id) != "" && $.trim(task_id) != "") {
                     addEditedFieldName("remove_doc");
 
                     $.ajax({
-                        type:'get',
-                        url: '{{ url("/tasks/remove_task_document") }}',
-                        data:{id:id,task_id:task_id,fromEdit:fromEdit },
-                        dataType:'json',
-                        success:function(resp){
-                            if(resp.success){
+                        type: 'get',
+                        url: '{{ url('/tasks/remove_task_document') }}',
+                        data: {
+                            id: id,
+                            task_id: task_id,
+                            fromEdit: fromEdit
+                        },
+                        dataType: 'json',
+                        success: function(resp) {
+                            if (resp.success) {
                                 showToastMessage('DOCUMENT_DELETED');
                                 if ($("table.documents tbody tr").length > 1)
                                     $that.parents('tr:eq(0)').remove();
                                 if ($("table.documents tbody tr").length < 10)
                                     // cloneTR(true);
 
-                                    $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
-                            }
-                            else
+                                    $(".documents").find("tbody").find("tr").eq(index_tr).find(
+                                        ".addMoreDocument").removeClass("hide");
+                            } else
                                 showToastMessage('SOMETHING_GOES_WRONG');
                         }
                     })
-                }
-                else{
+                } else {
 
                     if ($("table.documents tbody tr").length > 1)
                         $(this).parents('tr:eq(0)').remove();
 
                     var addedDocLength = $(".fileinput-new:not(:hidden)").length;
-                    if(addedDocLength == 0)
-                        $(".changed_items[value='"+field_name+"']").remove();
+                    if (addedDocLength == 0)
+                        $(".changed_items[value='" + field_name + "']").remove();
 
-                    $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument").removeClass("hide");
+                    $(".documents").find("tbody").find("tr").eq(index_tr).find(".addMoreDocument")
+                        .removeClass("hide");
                 }
 
                 return false;
             });
 
-            $("#unit").on('change',function(){
+            $("#unit").on('change', function() {
                 var unit_val = $(this).val();
                 var token = $('[name="_token"]').val();
-                if($.trim(unit_val) == "")
-                {
+                if ($.trim(unit_val) == "") {
                     $("#objective").html('<option value="">Select</option>');
                     return false;
-                }
-                else
-                {
+                } else {
                     $(".objective_loader.location_loader").show();
-                    $("#objective").prop('disabled',true);
+                    $("#objective").prop('disabled', true);
                     $.ajax({
-                        type:'POST',
-                        url: '{{ url("/tasks/get_objective") }}',
-                        dataType:'json',
-                        data:{unit_id:unit_val,_token:token },
-                        success:function(resp){
+                        type: 'POST',
+                        url: '{{ url('/tasks/get_objective') }}',
+                        dataType: 'json',
+                        data: {
+                            unit_id: unit_val,
+                            _token: token
+                        },
+                        success: function(resp) {
                             $(".objective_loader.location_loader").hide();
-                            $("#objective").prop('disabled',false);
-                            if(resp.success){
-                                var html='<option value="">Select</option>';
-                                $.each(resp.objectives,function(index,val){
-                                    html+='<option value="'+index+'">'+val+'</option>'
+                            $("#objective").prop('disabled', false);
+                            if (resp.success) {
+                                var html = '<option value="">Select</option>';
+                                $.each(resp.objectives, function(index, val) {
+                                    html += '<option value="' + index + '">' + val +
+                                        '</option>'
                                 });
                                 $("#objective").append(html);
                                 $('.selectpicker').selectpicker('refresh');
@@ -386,31 +414,21 @@
 
 
         ClassicEditor
-            .create( document.querySelector('#task-summary') )
-            .catch( error => {
+            .create(document.querySelector('#task-summary'))
+            .catch(error => {
                 console.error(error);
-            } );
+            });
 
         ClassicEditor
-            .create( document.querySelector( '#description' ) )
-            .catch( error => {
-                console.error( error );
-            } );
+            .create(document.querySelector('#description'))
+            .catch(error => {
+                console.error(error);
+            });
 
         ClassicEditor
-            .create( document.querySelector( '#action_items' ) )
-            .catch( error => {
-                console.error( error );
-            } );
-
+            .create(document.querySelector('#action_items'))
+            .catch(error => {
+                console.error(error);
+            });
     </script>
 @endsection
-
-
-
-
-
-
-
-
-

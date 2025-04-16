@@ -19,7 +19,13 @@
                 </thead>
 
                 <tbody>
-
+                    @foreach ($watchedTasks as $watchedTask)
+                        <tr>
+                            <td>{{ $watchedTask->name }}</td>
+                            <td></td>
+                            <td>{{ $watchedTask->description }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
 
             </table>

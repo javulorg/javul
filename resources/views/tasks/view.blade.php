@@ -159,7 +159,15 @@
                                     </div>
                                 </div>
                                 <div class="objective_content_info_links">
-                                    <a class="add_to_my_watchlist edit_icon" data-type="task" data-id="{{$taskIDHashID->encode($taskObj->id)}}" data-redirect="{{url()->current()}}"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a>
+                                    {{-- <a class="add_to_my_watchlist edit_icon" data-type="task" data-id="{{$taskIDHashID->encode($taskObj->id)}}" data-redirect="{{url()->current()}}"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
+                                    <a href="{{ route('watchlistTask.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'task_id' => $taskObj->id]) }}" class="edit_icon">
+                                        <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
+                                    </a>
+
+                                    {{-- $encodedObjectiveID = $objectiveIDHashID->encode($objective_id);
+
+        return redirect('objectives/' . $encodedObjectiveID . '/' . $unitObj->slug)
+            ->with('success', 'Task created successfully!'); --}}
                                     <div class="separat"></div>
                                     <a href="{!! route('tasks_revison',[$taskIDHashID->encode($taskObj->id)]) !!}" class="edit_icon"> Revision History</a>
                                     <div class="separat"></div>
