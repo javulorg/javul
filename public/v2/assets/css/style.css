@@ -46,7 +46,11 @@ header {
 }
 
 .wrapper {
-    overflow: hidden;
+    /* overflow: hidden; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
 }
 
 .banner {
@@ -453,6 +457,7 @@ nav .separator {
 }
 
 .content {
+    padding-top: 20px;
     padding-bottom: 20px;
 }
 

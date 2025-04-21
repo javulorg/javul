@@ -44,7 +44,7 @@
                             <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
                         </div>
                     </div>
-                    <div class="table_block_body">
+                    {{-- <div class="table_block_body">
                         <table>
                             <thead>
                                 <tr>
@@ -86,7 +86,93 @@
                                 @endif
                             </tbody>
                         </table>
+                    </div> --}}
+
+                    <div class="table_block_body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="title_col">{{ __('messages.unit_name') }}</th>
+                                    <th class="last_reply_col">{{ __('messages.unit_category') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (count($allUnits) > 0)
+                                    @foreach ($allUnits as $unit)
+                                        @php
+                                            $category_ids = explode(',', $unit->category_id);
+                                            $category_names = explode(',', \App\Models\UnitCategory::getName($unit->category_id));
+                                        @endphp
+                                        <tr>
+                                            <td class="title_col">
+                                                <a href="{{ url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug) }}">
+                                                    {{ $unit->name }}
+                                                </a>
+                                            </td>
+                                            <td class="last_reply_col">
+                                                @if (count($category_ids) > 0)
+                                                    @foreach ($category_ids as $index => $category)
+                                                        <a href="{{ url('units/category=' . strtolower($category_names[$index])) }}">
+                                                            {{ $category_names[$index] }}
+                                                        </a>
+                                                        @if ($index !== count($category_ids) - 1)
+                                                            <span>, </span>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="4">No record(s) found.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+
+                        <!-- Mobile Table -->
+                        <div class="mob_table d-sm-none d-block">
+                            @if (count($allUnits) > 0)
+                                @foreach ($allUnits as $unit)
+                                    @php
+                                        $category_ids = explode(',', $unit->category_id);
+                                        $category_names = explode(',', \App\Models\UnitCategory::getName($unit->category_id));
+                                    @endphp
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_ttl">{{ __('messages.unit_name') }}</div>
+                                            <div class="mob_table_val">
+                                                <a href="{{ url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug) }}">
+                                                    {{ $unit->name }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_ttl">{{ __('messages.unit_category') }}</div>
+                                            <div class="mob_table_val">
+                                                @foreach ($category_ids as $index => $category)
+                                                    <a href="{{ url('units/category=' . strtolower($category_names[$index])) }}">
+                                                        {{ $category_names[$index] }}
+                                                    </a>
+                                                    @if ($index !== count($category_ids) - 1)
+                                                        <span>, </span>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="mob_table_section">
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_val text-center">No record(s) found.</div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
+
                 </div>
                 <div class="content_block_bottom">
                     <a href="{{ url('units/create') }}">

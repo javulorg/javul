@@ -9,7 +9,7 @@
                             <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
                         </div>
                     </div>
-                    <div class="table_block_body">
+                    {{-- <div class="table_block_body">
                         <table>
                             <thead>
                             <tr>
@@ -44,7 +44,81 @@
                         </table>
                         <div class="mob_table d-sm-none d-block">
                         </div>
+                    </div> --}}
+
+                    <div class="table_block_body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="title_col">Idea Name</th>
+                                    <th class="type_col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(count($ideas) > 0)
+                                    @foreach($ideas as $idea)
+                                        <tr>
+                                            <td class="title_col">
+                                                <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
+                                                    {{ $idea->title }}
+                                                </a>
+                                            </td>
+                                            <td class="type_col">
+                                                @if($idea->status == 1)
+                                                    Draft
+                                                @elseif($idea->status == 2)
+                                                    Assigned to Task
+                                                @else
+                                                    Implemented
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="2">No record(s) found.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+
+                        {{-- ✅ Mobile Responsive View --}}
+                        <div class="mob_table d-sm-none d-block">
+                            @if(count($ideas) > 0)
+                                @foreach($ideas as $idea)
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_ttl">Idea Name</div>
+                                            <div class="mob_table_val">
+                                                <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
+                                                    {{ $idea->title }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_ttl">Status</div>
+                                            <div class="mob_table_val">
+                                                @if($idea->status == 1)
+                                                    Draft
+                                                @elseif($idea->status == 2)
+                                                    Assigned to Task
+                                                @else
+                                                    Implemented
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="mob_table_section">
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_val text-center w-100">No record(s) found.</div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
+
                 </div>
     <div class="d-flex justify-content-between mt-2">
         <div class="pagination-left">
