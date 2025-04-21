@@ -1,17 +1,19 @@
 @include('layout.header-dependencies')
-@include('layout.header')
-<div class="wrapper position-relative">
+<div class="wrapper">
+    <div class="main-header">
 
+        @include('layout.header')
 
-    <div class="banner">
-        <div class="banner_left_side">
-            <div class="banner_car">
-                <img src="{{ asset('v2/assets/img/main-logo.png') }}" alt="" class="img-fluid">
+        <div class="banner">
+
+            <div class="banner_left_side">
+                <div class="banner_car">
+                    <img src="{{ asset('v2/assets/img/main-logo.png') }}" alt="" class="img-fluid">
+                </div>
+                <div>
+                    @yield('site-name')
+                </div>
             </div>
-            <div>
-                @yield('site-name')
-            </div>
-        </div>
         <div class="container">
             <div class="search_block d-lg-block d-none">
                 <div class="search_form">
@@ -33,38 +35,38 @@
                 <img src="{{ asset('v2/assets/img/search.svg') }}" alt="">
             </div>
         </div>
-    </div>
-
-    @yield('navbar')
-
-    <div class="breadcrumbs">
-        <!-- <div class="container">
-            <div class="bread">
-                <a href="/">Urban Planning</a><div class="separator"></div><a href="#">Public Transport</a><div class="separator"></div><a href="#">Taxis</a>
-            </div>
-        </div> -->
-
-
-    </div>
-
-{{--    <div class="mt-2" id="loadingDiv" style="display: none;"><img id="loading" src="{!! url('assets/images/loader.gif') !!}" alt="" />--}}
-
-{{--    </div>--}}
-
-    <div class="content">
-        <div class="container">
-            @yield('content')
         </div>
+
+        @yield('navbar')
+
+        @if (!Route::is('login') && !Route::is('register'))
+            <div class="content">
+                <div class="container">
+                    @yield('content')
+                </div>
+            </div>
+         @endif
+
+
     </div>
 
-    <div class="site_statistic">
-        @include('layout.site-statistic')
+    @if (Route::is('login') || Route::is('register'))
+    <div class="content">
+            <div class="container">
+                @yield('content')
+            </div>
+        </div>
+    @endif
+
+
+    <div class="main-footer">
+        <div class="site_statistic">
+            @include('layout.site-statistic')
+        </div>
+
+        <footer>
+            @include('layout.footer')
+            @yield('scripts')
+        </footer>
     </div>
-    <footer>
-    @include('layout.footer')
-        @yield('scripts')
-    </footer>
 </div>
-
-
-

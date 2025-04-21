@@ -48,6 +48,47 @@
                 <?php endif; ?>
                 </tbody>
             </table>
+            <div class="mob_table d-sm-none d-block">
+                <?php if($unitsMaster->count() > 0): ?>
+                    <?php $__currentLoopData = $unitsMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
+                        <?php
+                            $category_ids = $unit->category_id;
+                            $category_names = App\Models\UnitCategory::getName($category_ids);
+                            $category_ids = explode(",", $category_ids);
+                            $category_names = explode(",", $category_names);
+                        ?>
+                        <div class="mob_table_section">
+                            <div class="mob_table_row">
+                                <div class="mob_table_ttl">
+                                    <?php echo e(__('messages.unit_name')); ?>
+
+                                </div>
+                                <div class="mob_table_val">
+                                    <a href="<?php echo url('units/'.$unitIDHashID->encode($unit->id).'/'.$unit->slug); ?>"><?php echo e($unit->name); ?></a>
+                                </div>
+                            </div>
+                            <div class="mob_table_row">
+                                <div class="mob_table_ttl">
+                                    <?php echo e(__('messages.unit_category')); ?>
+
+                                </div>
+                                <div class="mob_table_val">
+                                    <?php if(count($category_ids) > 0): ?>
+                                        <?php $__currentLoopData = $category_ids; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <a href="<?php echo url('units/category='.strtolower($category_names[$index])); ?>"><?php echo e($category_names[$index]); ?></a>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">No record(s) found.</td>
+                        </tr>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
     <div class="content_block_bottom">

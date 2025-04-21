@@ -9,7 +9,7 @@
                 <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
             </div>
         </div>
-        <div class="table_block_body">
+        {{-- <div class="table_block_body">
             <table>
                 <thead>
                 <tr>
@@ -43,7 +43,78 @@
 
             </table>
 
+        </div> --}}
+        <div class="table_block_body">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="title_col">Objective Name</th>
+                        <th class="type_col text-center">Support</th>
+                        <th class="type_col text-center">In Progress</th>
+                        <th class="type_col text-center">Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(count($objectives) > 0)
+                        @foreach($objectives as $obj)
+                            <tr>
+                                <td>
+                                    <a href="{!! url('objectives/' . $objectiveIDHashID->encode($obj->id) . '/' . $obj->slug) !!}" title="edit">
+                                        {{ $obj->name }}
+                                    </a>
+                                </td>
+                                <td class="text-center">{{ \App\Models\Task::getTaskCount('available', $obj->id) }}</td>
+                                <td class="text-center">{{ \App\Models\Task::getTaskCount('in-progress', $obj->id) }}</td>
+                                <td class="text-center">{{ \App\Models\Task::getTaskCount('completed', $obj->id) }}</td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="4">No record(s) found.</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+
+            {{-- ✅ Mobile Responsive View --}}
+            <div class="mob_table d-sm-none d-block">
+                @if(count($objectives) > 0)
+                    @foreach($objectives as $obj)
+                        <div class="mob_table_section">
+                            <div class="mob_table_row">
+                                <div class="mob_table_ttl">Objective Name</div>
+                                <div class="mob_table_val">
+                                    <a href="{!! url('objectives/' . $objectiveIDHashID->encode($obj->id) . '/' . $obj->slug) !!}" title="edit">
+                                        {{ $obj->name }}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="mob_table_row">
+                                <div class="mob_table_ttl">Support</div>
+                                <div class="mob_table_val">{{ \App\Models\Task::getTaskCount('available', $obj->id) }}</div>
+                            </div>
+                            <div class="mob_table_row">
+                                <div class="mob_table_ttl">In Progress</div>
+                                <div class="mob_table_val">{{ \App\Models\Task::getTaskCount('in-progress', $obj->id) }}</div>
+                            </div>
+                            <div class="mob_table_row">
+                                <div class="mob_table_ttl">Available</div>
+                                <div class="mob_table_val">{{ \App\Models\Task::getTaskCount('completed', $obj->id) }}</div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="mob_table_section">
+                        <div class="mob_table_row">
+                            <div class="mob_table_val text-center w-100">
+                                No record(s) found.
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
+
     </div>
     <div class="d-flex justify-content-between mt-2">
         <div class="pagination-left">
