@@ -415,7 +415,7 @@
                         </div>
                     </div>
                     <div class="content_block_bottom">
-                        <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                        <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="{{ url('ideas?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
                     </div>
                 </div>
 

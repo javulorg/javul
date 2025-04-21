@@ -22,8 +22,9 @@
                     <?php $__currentLoopData = $watchedTasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $watchedTask): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
                             <td><?php echo e($watchedTask->name); ?></td>
-                            <td></td>
-                            <td><?php echo e($watchedTask->description); ?></td>
+                            <td style="display: none"></td>
+                            <td><?php echo e(strip_tags($watchedTask->description)); ?></td>
+
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>

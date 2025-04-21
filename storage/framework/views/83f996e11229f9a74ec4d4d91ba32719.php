@@ -18,16 +18,19 @@
                     </tr>
                 </thead>
 
+                
                 <?php $__currentLoopData = $watchedUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $watchedUnit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    
-                        <tr>
-                            <td><?php echo e($watchedUnit->name); ?></td>
-                            <td></td>
-                            <td><?php echo e($watchedUnit->description); ?></td>
-                        </tr>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <tr>
+                        <td><?php echo e($watchedUnit->name); ?></td>
+                        <td style="display: none"></td>
+                        <!-- Use strip_tags to remove HTML tags from description -->
+                        <td><?php echo e(strip_tags($watchedUnit->description)); ?></td>
+                    </tr>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
             </table>
         </div>
-    </div>
+
+    </div>
 </div>
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/users/watchlist-partials/objectives.blade.php ENDPATH**/ ?>

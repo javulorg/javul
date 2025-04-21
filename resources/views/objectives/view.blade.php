@@ -16,7 +16,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society jkjkj
+        Open-source Society
     </div>
 @endsection
 
@@ -213,7 +213,7 @@
                                 </div>
                                 <div class="objective_content_info_links">
                                     {{-- <a href="#" class="edit_icon"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
-                                    {{--
+{{--
 <a href="{{ route('watchlist.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}" class="edit_icon">
     <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
 </a> --}}
@@ -225,7 +225,7 @@ $isWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
     ->exists();
 @endphp
 
-<a href="javascript:void(0);" class="edit_icon watchlist-link"
+<a href="{{ route('watchlist.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}" class="edit_icon watchlist-link"
 data-id="{{ $objectiveObj->id }}"
 data-url="{{ route('watchlist.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}"
 id="eye-link-{{ $objectiveObj->id }}"
@@ -412,7 +412,7 @@ alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
 
                                 @if (isset($objectiveIdeas->ideas))
                                     @foreach ($objectiveIdeas->ideas as $idea)
-                                        @dd($idea)
+                                        {{-- @dd($idea) --}}
                                         <tr>
                                             <td class="title_col">
                                                 <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">

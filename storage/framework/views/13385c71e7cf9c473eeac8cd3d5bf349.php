@@ -24,8 +24,8 @@
                     
                         <tr>
                             <td><?php echo e($watchedissue->title); ?></td>
-                            <td></td>
-                            <td><?php echo e($watchedissue->description); ?></td>
+                            <td style="display: none"></td>
+                            <td><?php echo e(strip_tags($watchedissue->description)); ?></td>
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
