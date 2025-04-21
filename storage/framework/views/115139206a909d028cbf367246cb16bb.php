@@ -54,12 +54,13 @@
                             <div class="col-md-12 form-group">
                                 <label class="control-label">Idea Name <span class="text-danger">*</span></label>
                                 <div class="input-icon right">
-                                    <input type="text" name="title" required class="form-control" placeholder="Idea Name" />
+                                    <input type="text" name="title" required class="form-control"
+                                        placeholder="Idea Name" />
                                 </div>
                             </div>
 
                             <div class="col-md-12 mt-3 form-group">
-                                <label class="control-label">Category  </label>
+                                <label class="control-label">Category </label>
                                 <div class="input-icon right">
                                     <select class="form-control" data-live-search="true" name="category_id"
                                         id="category_id">
@@ -130,6 +131,7 @@
         </div>
     </div>
 <?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         ClassicEditor
@@ -138,31 +140,37 @@
                 console.error(error);
             });
     </script>
-   <script>
-    document.getElementById('myForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission behavior
 
-        const form = e.target;
-        const formData = new FormData(form);
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' // Pass the CSRF token for security
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message); // Show success message
-            window.history.go(-2); // Go back 2 steps in history
-        })
-        .catch(error => {
-            console.error('Error:', error);
+            const form = e.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                    }
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url; // Follow the redirect
+                        location.replace(location.href); // Force page refresh after redirect
+                    } else if (response.ok) {
+                        // If not redirected, fallback to history go
+                        window.history.go(-1);
+                    } else {
+                        alert('Something went wrong.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
-    });
     </script>
-
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/ideas/create.blade.php ENDPATH**/ ?>

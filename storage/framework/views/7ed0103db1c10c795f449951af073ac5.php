@@ -15,7 +15,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society jkjkj
+        Open-source Society
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -215,7 +215,7 @@
                                 </div>
                                 <div class="objective_content_info_links">
                                     
-                                    
+
 
 <?php
 $isWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
@@ -224,7 +224,7 @@ $isWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
     ->exists();
 ?>
 
-<a href="javascript:void(0);" class="edit_icon watchlist-link"
+<a href="<?php echo e(route('watchlist.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id])); ?>" class="edit_icon watchlist-link"
 data-id="<?php echo e($objectiveObj->id); ?>"
 data-url="<?php echo e(route('watchlist.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id])); ?>"
 id="eye-link-<?php echo e($objectiveObj->id); ?>"
@@ -405,7 +405,7 @@ alt="Watched" id="eye-off-icon-<?php echo e($objectiveObj->id); ?>">
 
                                 <?php if(isset($objectiveIdeas->ideas)): ?>
                                     <?php $__currentLoopData = $objectiveIdeas->ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <?php dd($idea); ?>
+                                        
                                         <tr>
                                             <td class="title_col">
                                                 <a href="<?php echo url('ideas/' . $ideaHashID->encode($idea->id)); ?>">

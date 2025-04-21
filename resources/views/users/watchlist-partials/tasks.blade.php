@@ -22,8 +22,9 @@
                     @foreach ($watchedTasks as $watchedTask)
                         <tr>
                             <td>{{ $watchedTask->name }}</td>
-                            <td></td>
-                            <td>{{ $watchedTask->description }}</td>
+                            <td style="display: none"></td>
+                            <td>{{strip_tags($watchedTask->description)  }}</td>
+
                         </tr>
                     @endforeach
                 </tbody>

@@ -410,6 +410,7 @@ class TasksController extends Controller
         view()->share('availableFunds', $availableUnitFunds);
         view()->share('awardedFunds', $awardedUnitFunds);
         view()->share('ideas', $ideas);
+
         return view('tasks.create');
     }
 
@@ -1659,7 +1660,8 @@ class TasksController extends Controller
                     view()->share('awardedFunds', $awardedFunds);
                     view()->share('unitData', $unitData);
                     view()->share('unitObj', $unitData);
-                    return view('tasks.view');
+                    $object_hash_id = 'abc123';
+                    return view('tasks.view' , ['object_hash_id'=>1]);
                 }
             }
         }

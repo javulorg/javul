@@ -18,15 +18,25 @@
                     </tr>
                 </thead>
 
-                @foreach ($watchedUnits as $watchedUnit)
-                    {{-- @dd($watchedUnit) --}}
+                {{-- @foreach ($watchedUnits as $watchedUnit)
+
                         <tr>
                             <td>{{ $watchedUnit->name }}</td>
-                            <td></td>
+                            <td style="display: none"></td>
                             <td>{{ $watchedUnit->description }}</td>
                         </tr>
-                    @endforeach
+                    @endforeach --}}
+                @foreach ($watchedUnits as $watchedUnit)
+                    <tr>
+                        <td>{{ $watchedUnit->name }}</td>
+                        <td style="display: none"></td>
+                        <!-- Use strip_tags to remove HTML tags from description -->
+                        <td>{{ strip_tags($watchedUnit->description) }}</td>
+                    </tr>
+                @endforeach
+
             </table>
         </div>
-    </div>
+
+    </div>
 </div>

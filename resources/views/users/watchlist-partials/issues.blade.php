@@ -24,8 +24,8 @@
                     {{-- @dd($watchedissue) --}}
                         <tr>
                             <td>{{ $watchedissue->title }}</td>
-                            <td></td>
-                            <td>{{ $watchedissue->description }}</td>
+                            <td style="display: none"></td>
+                            <td>{{strip_tags($watchedissue->description)  }}</td>
                         </tr>
                     @endforeach
                 </tbody>

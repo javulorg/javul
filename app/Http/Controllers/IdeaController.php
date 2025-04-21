@@ -141,7 +141,8 @@ class IdeaController extends Controller
         // return redirect('objectives/' . $unitHash->encode($request->unit_id) . '/' . $unit->slug)
         //     ->with('success', 'Idea created successfully!');
             // return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
-            return response()->json(['message' => 'Data saved successfully']);
+            return response('Idea created successfully!', 200);
+
 
 
         }
