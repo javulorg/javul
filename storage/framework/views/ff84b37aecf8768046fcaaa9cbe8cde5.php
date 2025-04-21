@@ -12,34 +12,34 @@
         <div class="table_block_body">
             <table>
                 <thead>
-                <tr>
-                    <th class="type_col">Idea Name</th>
-                    <th class="title_col">Unit Name</th>
-                </tr>
+                    <tr>
+                        <th class="type_col">Idea Name</th>
+                        <th class="title_col">Unit Name</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <?php if(count($ideasMaster) > 0 ): ?>
-                    <?php $__currentLoopData = $ideasMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(count($ideasMaster) > 0): ?>
+                        <?php $__currentLoopData = $ideasMaster->take(5); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <tr>
+                                <td class="type_col">
+                                    <a href="<?php echo url('ideas/' . $ideaHashID->encode($idea->id)); ?>">
+                                        <?php echo e($idea->title); ?>
+
+                                    </a>
+                                </td>
+                                <td class="title_col">
+                                    <a href="<?php echo url('units/' . $unitIDHashID->encode($idea->unit_id) . '/' . \App\Models\Unit::getSlug($idea->unit_id)); ?>">
+                                        <?php echo e(\App\Models\Unit::getUnitName($idea->unit_id)); ?>
+
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
                         <tr>
-                            <td class="type_col">
-                                <a href="<?php echo url('ideas/'.$ideaHashID->encode($idea->id)); ?>">
-                                    <?php echo e($idea->title); ?>
-
-                                </a>
-                            </td>
-                            <td class="title_col">
-                                <a href="<?php echo url('units/'.$unitIDHashID->encode($idea->unit_id).'/'.\App\Models\Unit::getSlug($idea->unit_id)); ?>">
-                                    <?php echo e(\App\Models\Unit::getUnitName($idea->unit_id)); ?>
-
-                                </a>
-                            </td>
+                            <td colspan="4">No record(s) found.</td>
                         </tr>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="4">No record(s) found.</td>
-                    </tr>
-                <?php endif; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
             <div class="mob_table d-sm-none d-block">

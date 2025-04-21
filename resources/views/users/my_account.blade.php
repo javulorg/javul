@@ -505,56 +505,82 @@
 
 
         $(document).ready(function() {
-            var $form = $("#personal-info");
-            $form.on('submit', function (event) {
-                event.preventDefault();
-                var token = $('[name="_token"]').val();
-                var profilePic = $(".kv-file-content").find('img').attr("src");
-                var formData = $form.serializeArray();
-                formData.push({name: '_token', value: token});
-                formData.push({name: 'profilePic', value: profilePic});
-                var dataString = $.param(formData);
-                $form.find('.help-block').append('');
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ url("/account/update_personal_info") }}',
-                    data: dataString,
-                    success: function (resp) {
-                        if (resp.success) {
-                            toastr.success('Profile updated successfully', 'Success', {
-                                progressBar: true,
-                                timeOut: 3000,
-                                extendedTimeOut: 2000,
-                                closeButton: true,
-                                tapToDismiss: false,
-                                positionClass: 'toast-top-right',
-                                // Customize the background color
-                                onShown: function () {
-                                    $('.toast-success').css('background-color', '#28a745');
-                                }
-                            });
+    var $form = $("#personal-info");
 
-                            // toastr.error('Profile updated successfully', 'Error', {
-                            //     progressBar: true,
-                            //     timeOut: 3000,
-                            //     extendedTimeOut: 2000,
-                            //     closeButton: true,
-                            //     tapToDismiss: false,
-                            //     positionClass: 'toast-top-right',
-                            //     // Customize the background color
-                            //     onShown: function () {
-                            //         $('.toast-error').css('background-color', '#8f0b33');
-                            //     }
-                            // });
+    $form.on('submit', function(event) {
+        event.preventDefault();
 
-                        } else {
-                            $.each(resp.errors, function (index, value) {
-                                $form.find("#" + index).parent('.col-sm-4').find('.help-block').append(value);
-                            });
+        var token = $('[name="_token"]').val();
+        var profilePic = $(".kv-file-content").find('img').attr("src");
+        var formData = $form.serializeArray();
+
+        formData.push({ name: '_token', value: token });
+        formData.push({ name: 'profilePic', value: profilePic });
+
+        var dataString = $.param(formData);
+
+        $form.find('.help-block').empty(); // Clear old error messages
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ url("/account/update_personal_info") }}',
+            data: dataString,
+            success: function(resp) {
+                if (resp.success) {
+                    toastr.success('Profile updated successfully', 'Success', {
+                        progressBar: true,
+                        timeOut: 2000,
+                        extendedTimeOut: 1000,
+                        closeButton: true,
+                        tapToDismiss: false,
+                        positionClass: 'toast-top-right',
+                        onShown: function() {
+                            $('.toast-success').css('background-color', '#28a745');
+                        },
+                        onHidden: function() {
+                            // 🔁 Page refresh after toast disappears
+                            location.reload();
                         }
-                    }
+                    });
+                } else {
+                    $.each(resp.errors, function(index, value) {
+                        $form.find("#" + index).parent('.col-sm-4').find('.help-block').append(value);
+                    });
+                }
+            }
+        });
+    });
+});
+
+    </script>
+    <script>
+        document.getElementById('personal-info').addEventListener('submit', function (e) {
+            e.preventDefault(); // Stop default submit behavior
+
+            const form = e.target;
+            const url = form.action;
+            const formData = new FormData(form);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                },
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json(); // Agar aap JSON return kar rahe ho controller se
                 })
-            });
+                .then(data => {
+                    // Optional message
+                    alert('Profile updated successfully!');
+                    location.reload(); // 🔁 Page refresh
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Profile updated successfully.');
+                });
         });
     </script>
 @endsection

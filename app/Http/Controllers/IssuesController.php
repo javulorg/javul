@@ -1215,14 +1215,34 @@ class IssuesController extends Controller
             ->cookie($cookieName, true, /* expiration time if needed */);
     }
 
+    // public function storeW($userId, $unitId, $issue_id)
+    // {
+    //     $watchlist = new Watchlist();
+    //     $watchlist->user_id = $userId;
+    //     $watchlist->unit_id = $unitId;
+    //     $watchlist->issue_id = $issue_id;
+    //     $watchlist->save();
+
+    //     return redirect()->back()->with('success', 'Added to watchlist!');
+    // }
+
     public function storeW($userId, $unitId, $issue_id)
     {
+        $existing = Watchlist::where('user_id', $userId)
+            ->where('unit_id', $unitId)
+            ->where('issue_id', $issue_id)
+            ->first();
+
+        if ($existing) {
+            return response()->json(['message' => 'Already in watchlist'], 200);
+        }
+
         $watchlist = new Watchlist();
         $watchlist->user_id = $userId;
         $watchlist->unit_id = $unitId;
         $watchlist->issue_id = $issue_id;
         $watchlist->save();
 
-        return redirect()->back()->with('success', 'Added to watchlist!');
+        return response()->json(['message' => 'Added to watchlist!']);
     }
 }

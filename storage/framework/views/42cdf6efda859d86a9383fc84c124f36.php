@@ -165,7 +165,31 @@
                                     </div>
                                 </div>
                                 <div class="objective_content_info_links">
-                                    <a class="add_to_my_watchlist edit_icon" data-type="task" data-id="<?php echo e($taskIDHashID->encode($taskObj->id)); ?>" data-redirect="<?php echo e(url()->current()); ?>"><img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" alt=""></a>
+                                    
+                                    
+                                    <?php
+                                    $isTaskWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
+                                        ->where('unit_id', $unitData->id)
+                                        ->where('task_id', $taskObj->id)
+                                        ->exists();
+                                ?>
+
+                                <a href="javascript:void(0);" class="edit_icon watchlist-link" data-id="<?php echo e($taskObj->id); ?>"
+                                    data-url="<?php echo e(route('watchlistTask.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'task_id' => $taskObj->id])); ?>"
+                                    id="task-eye-link-<?php echo e($taskObj->id); ?>" style="<?php echo e($isTaskWatched ? 'display: none;' : ''); ?>">
+                                    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;" alt="Watch"
+                                        id="task-eye-icon-<?php echo e($taskObj->id); ?>">
+                                </a>
+
+                                <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
+                                    style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? '' : 'display: none;'); ?>" alt="Watched"
+                                    id="task-eye-off-icon-<?php echo e($taskObj->id); ?>">
+
+
+
+
+
+                                    
                                     <div class="separat"></div>
                                     <a href="<?php echo route('tasks_revison',[$taskIDHashID->encode($taskObj->id)]); ?>" class="edit_icon"> Revision History</a>
                                     <div class="separat"></div>
@@ -473,6 +497,41 @@
             });
         });
     </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.watchlist-link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.dataset.url;
+                const taskId = this.dataset.id;
+
+                const eyeIcon = document.getElementById('task-eye-icon-' + taskId);
+                const eyeOffIcon = document.getElementById('task-eye-off-icon-' + taskId);
+                const anchor = document.getElementById('task-eye-link-' + taskId);
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hide clickable eye icon
+                        anchor.style.display = "none";
+
+                        // Show eye-off icon permanently
+                        if (eyeOffIcon) {
+                            eyeOffIcon.style.display = "inline-block";
+                        }
+
+                        alert(data.message || "Added to watchlist!");
+                    })
+                    .catch(err => {
+                        console.error('Watchlist error:', err);
+                        alert("Something went wrong!");
+                    });
+            });
+        });
+    });
+</script>
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/tasks/view.blade.php ENDPATH**/ ?>

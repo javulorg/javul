@@ -1,4 +1,6 @@
 <?php $__env->startSection('title', 'Create Unit'); ?>
+<!-- Bootstrap JS (v5 example) -->
+
 
 <?php $__env->startSection('content'); ?>
     <div class="content_row">
@@ -6,27 +8,32 @@
 
         <div class="panel panel-grey panel-default">
             <div class="panel-heading">
-                <h4>Create Unit</h4>
+                <h4>Create Unit </h4>
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
+
                     <form role="form" method="post" id="form_sample_2" action="<?php echo e(url('units')); ?>">
                         <?php echo csrf_field(); ?>
 
                         <!-- Unit Information Section -->
                         <div class="row">
                             <div class="col-sm-4 form-group">
-                                <label class="control-label mb-1"><?php echo e(__('messages.unit_name')); ?></label>
+                                <label class="control-label mb-1"><?php echo e(__('messages.unit_name')); ?></label> <span
+                                    class="text-danger">*</span>
                                 <div class="input-icon right">
-                                    <input type="text" name="unit_name" value="<?php echo e((!empty($unitObj))? $unitObj->name : old('unit_name')); ?>" class="form-control" placeholder="<?php echo e(__('messages.unit_name')); ?>"/>
+                                    <input type="text" name="unit_name" required
+                                        value="<?php echo e(!empty($unitObj) ? $unitObj->name : old('unit_name')); ?>"
+                                        class="form-control" placeholder="<?php echo e(__('messages.unit_name')); ?>" />
                                 </div>
                             </div>
 
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="control-label mb-1"><?php echo e(__('messages.unit_category')); ?> <span class="text-danger">*</span></label>
-                                    <select class="form-select"  name="unit_category[]" id="unit_category" multiple>
-                                        <?php $__currentLoopData = $unit_category_arr; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <label class="control-label mb-1"><?php echo e(__('messages.unit_category')); ?> <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select" required name="unit_category[]" id="unit_category" multiple>
+                                        <?php $__currentLoopData = $unit_category_arr; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <option value="<?php echo e($id); ?>"><?php echo e($val); ?></option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
@@ -36,7 +43,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="control-label mb-1">Unit Type <span class="text-danger">*</span></label>
-                                    <select class="form-select"  name="unit_type" id="unitType">
+                                    <select class="form-select" required name="unit_type" id="unitType">
                                         <option selected disabled>Select Type</option>
                                         <option value="0">Product</option>
                                         <option value="1">Service</option>
@@ -50,17 +57,19 @@
                             <div class="row mt-3" id="product-service-div">
                                 <div class="form-group col-sm-4" id="productNameDiv">
                                     <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="productName" placeholder="Product Name" name="product_name">
+                                    <input type="text" class="form-control" required id="productName"
+                                        placeholder="Product Name" name="product_name">
                                 </div>
 
                                 <div class="form-group col-sm-4" id="serviceNameDiv">
                                     <label for="serviceName">Service Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="serviceName" placeholder="Service Name" name="service_name">
+                                    <input type="text" required class="form-control" id="serviceName"
+                                        placeholder="Service Name" name="service_name">
                                 </div>
 
                                 <div class="form-group col-sm-4">
                                     <label for="businessModel">Business Model <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="businessModel" name="business_model">
+                                    <select class="form-control" required id="businessModel" name="business_model">
                                         <option selected disabled>Select Business Model</option>
                                         <option value="0">Community-owned</option>
                                         <option value="1">Corporate</option>
@@ -68,14 +77,17 @@
                                 </div>
 
                                 <div class="form-group col-sm-4 mt-3" id="operationalGradeDiv">
-                                    <label for="operationalGrade">Operational Grade <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="operationalGrade" placeholder="Enter Operational Grade" name="operational_grade">
+                                    <label for="operationalGrade">Operational Grade <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" required class="form-control" id="operationalGrade"
+                                        placeholder="Enter Operational Grade" name="operational_grade">
                                 </div>
 
                                 <!-- Company -->
                                 <div class="form-group col-sm-4 mt-3">
                                     <label for="company">Company <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="company" placeholder="Enter Company Name" name="company">
+                                    <input type="text" required class="form-control" id="company"
+                                        placeholder="Enter Company Name" name="company">
                                 </div>
                             </div>
 
@@ -83,7 +95,7 @@
                             <!-- Scope (Only for People's Government) -->
                             <div class="form-group col-sm-4 mt-3" id="scopeDiv">
                                 <label for="scope">Scope <span class="text-danger">*</span></label>
-                                <select class="form-control" id="scope" name="scope">
+                                <select class="form-control" required id="scope" name="scope">
                                     <option selected disabled>Select Scope</option>
                                     <option value="0">City</option>
                                     <option value="1">County</option>
@@ -97,15 +109,17 @@
 
                             <div class="col-sm-4 form-group mt-3">
                                 <label class="control-label">Country<span class="text-danger">*</span></label>
-                                <select class="form-control"  id="country" name="country">
+                                <select class="form-control" required id="country" name="country">
                                     <option value=""><?php echo trans('messages.select'); ?></option>
                                     <?php if(count($countries) > 0): ?>
-                                        <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-
-
-
-                                                <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && $unitObj->country_id == $id): ?> selected=selected <?php endif; ?>><?php echo e($val); ?></option>
-
+                                        <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            
+                                            
+                                            
+                                            <option value="<?php echo e($id); ?>"
+                                                <?php if(!empty($unitObj) && $unitObj->country_id == $id): ?> selected=selected <?php endif; ?>>
+                                                <?php echo e($val); ?></option>
+                                            
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endif; ?>
                                 </select>
@@ -114,47 +128,59 @@
 
                             <div class="col-sm-4 mt-3 form-group">
                                 <label class="control-label">State<span class="text-danger">*</span></label>
-                                <select class="form-control" name="state" id="state" <?php if(!empty($unitObj) && $unitObj->country_id == "global"): ?> disabled <?php endif; ?>>
+                                <select class="form-control" required name="state" id="state"
+                                    <?php if(!empty($unitObj) && $unitObj->country_id == 'global'): ?> disabled <?php endif; ?>>
                                     <?php if(!empty($unitObj)): ?>
-                                        <?php $__currentLoopData = $states; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && $unitObj->state_id == $id): ?> selected=selected <?php endif; ?>><?php echo e($val); ?></option>
+                                        <?php $__currentLoopData = $states; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($id); ?>"
+                                                <?php if(!empty($unitObj) && $unitObj->state_id == $id): ?> selected=selected <?php endif; ?>>
+                                                <?php echo e($val); ?></option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php else: ?>
                                         <option value=""><?php echo trans('messages.select'); ?></option>
                                     <?php endif; ?>
                                 </select>
-                                <span class="states_loader location_loader" style="display: none"><img src="<?php echo url('assets/images/small_loader.gif'); ?>"/></span>
+                                <span class="states_loader location_loader" style="display: none"><img
+                                        src="<?php echo url('assets/images/small_loader.gif'); ?>" /></span>
                             </div>
 
                             <div class="col-sm-4 mt-3 form-group">
                                 <label class="control-label">City<span class="text-danger">*</span></label>
-                                <select class="form-control" name="city" id="city" <?php if(!empty($unitObj) && $unitObj->country_id == "global"): ?> disabled <?php endif; ?>>
+                                <select class="form-control" required name="city" id="city"
+                                    <?php if(!empty($unitObj) && $unitObj->country_id == 'global'): ?> disabled <?php endif; ?>>
                                     <?php if(!empty($unitObj)): ?>
                                         <?php if(!empty($state_name_as_city_for_field)): ?>
-                                            <option value="<?php echo e($state_name_as_city_for_field->id); ?>" selected><?php echo e($state_name_as_city_for_field->name); ?></option>
+                                            <option value="<?php echo e($state_name_as_city_for_field->id); ?>" selected>
+                                                <?php echo e($state_name_as_city_for_field->name); ?></option>
                                         <?php else: ?>
-                                            <?php $__currentLoopData = $cities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cid=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($cid); ?>" <?php if(!empty($unitObj) && $unitObj->city_id == $cid): ?> selected=selected <?php endif; ?>><?php echo e($val); ?></option>
+                                            <?php $__currentLoopData = $cities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cid => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($cid); ?>"
+                                                    <?php if(!empty($unitObj) && $unitObj->city_id == $cid): ?> selected=selected <?php endif; ?>>
+                                                    <?php echo e($val); ?></option>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         <option value=""><?php echo e(__('messages.select')); ?></option>
                                     <?php endif; ?>
                                 </select>
-                                <input type="hidden" name="empty_city_state_name" id="empty_city_state_name"
-                                       <?php if(!empty($state_name_as_city_for_field)): ?> value="<?php echo e($unitObj->state_id_for_city_not_exits); ?>" <?php endif; ?>/>
-                                <span class="cities_loader location_loader" style="display: none"><img src="<?php echo url('assets/images/small_loader.gif'); ?>"/>
-                                 </span>
+                                <input type="hidden" required name="empty_city_state_name" id="empty_city_state_name"
+                                    <?php if(!empty($state_name_as_city_for_field)): ?> value="<?php echo e($unitObj->state_id_for_city_not_exits); ?>" <?php endif; ?> />
+                                <span class="cities_loader location_loader" style="display: none"><img
+                                        src="<?php echo url('assets/images/small_loader.gif'); ?>" />
+                                </span>
                             </div>
 
                             <!-- Unit Credibility Section -->
                             <div class="col-sm-4 mt-3 form-group">
-                                <label class="control-label"><?php echo e(__('messages.unit_credibility')); ?><span class="text-danger">*</span></label>
-                                <select class="form-control"  name="credibility">
+                                <label class="control-label"><?php echo e(__('messages.unit_credibility')); ?><span
+                                        class="text-danger">*</span></label>
+                                <select class="form-control" required name="credibility">
                                     <option value=""><?php echo trans('messages.select'); ?></option>
                                     <?php if(count($unit_credibility_arr) > 0): ?>
-                                        <?php $__currentLoopData = $unit_credibility_arr; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && $unitObj->credibility == $id): ?> selected=selected <?php endif; ?>><?php echo e($val); ?></option>
+                                        <?php $__currentLoopData = $unit_credibility_arr; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($id); ?>"
+                                                <?php if(!empty($unitObj) && $unitObj->credibility == $id): ?> selected=selected <?php endif; ?>>
+                                                <?php echo e($val); ?></option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endif; ?>
                                 </select>
@@ -163,31 +189,38 @@
                             <!-- Parent Unit and Status Section -->
                             <div class="col-sm-4 mt-3 form-group">
                                 <label class="control-label">Parent Unit</label>
-                                <select class="form-control" name="parent_unit" id="parent_unit">
+                                <select class="form-control"  name="parent_unit" id="parent_unit">
                                     <option value="">Select</option>
-                                    <?php if(count($parentUnitsObj) > 0 ): ?>
-                                        <?php $__currentLoopData = $parentUnitsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$parent): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && $id == $unitObj->parent_id): ?> selected=selected <?php endif; ?>><?php echo e($parent); ?></option>
+                                    <?php if(count($parentUnitsObj) > 0): ?>
+                                        <?php $__currentLoopData = $parentUnitsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $parent): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($id); ?>"
+                                                <?php if(!empty($unitObj) && $id == $unitObj->parent_id): ?> selected=selected <?php endif; ?>>
+                                                <?php echo e($parent); ?></option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endif; ?>
                                 </select>
                             </div>
                             <!-- Related Units and Status Section -->
                             <div class="col-sm-4 mt-3 form-group">
-                                    <label class="control-label">Related To</label>
-                                    <select class="form-control" name="related_to[]" id="related_to">
-                                        <?php if(count($relatedUnitsObj) > 0 ): ?>
-                                            <?php $__currentLoopData = $relatedUnitsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id=>$relate): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($id); ?>" <?php if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) && in_array($id,$relatedUnitsofUnitObj)): ?> selected=selected <?php endif; ?>><?php echo e($relate); ?></option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        <?php endif; ?>
-                                    </select>
+                                <label class="control-label">Related To</label>
+                                <select class="form-control"  name="related_to[]" id="related_to">
+                                    <option >--Select--</option>
+                                    <?php if(count($relatedUnitsObj) > 0): ?>
+                                        <?php $__currentLoopData = $relatedUnitsObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $relate): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($id); ?>"
+                                                <?php if(!empty($unitObj) && !empty($relatedUnitsofUnitObj) && in_array($id, $relatedUnitsofUnitObj)): ?> selected=selected <?php endif; ?>>
+                                                <?php echo e($relate); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
+                                </select>
                             </div>
 
-                            <?php if(!empty($unitObj) && $authUserObj->role == "superadmin"): ?>
+                            <?php if(!empty($unitObj) && $authUserObj->role == 'superadmin'): ?>
                                 <div class="col-sm-4 form-group">
                                     <label class="control-label" style="width: 100%;">Status</label>
-                                    <input data-toggle="toggle" data-on="Active" data-off="Disabled" type="checkbox" name="status" <?php if(!empty($unitObj) && $unitObj->status == "active"): ?> checked <?php elseif(empty($unitObj)): ?> checked <?php endif; ?>>
+                                    <input data-toggle="toggle" required data-on="Active" data-off="Disabled"
+                                        type="checkbox" name="status"
+                                        <?php if(!empty($unitObj) && $unitObj->status == 'active'): ?> checked <?php elseif(empty($unitObj)): ?> checked <?php endif; ?>>
                                 </div>
                             <?php endif; ?>
 
@@ -196,8 +229,11 @@
                         <!-- Description and Comments Section -->
                         <div class="col-sm-12 mt-3 form-group">
                             <label class="control-label mb-2">About This Unit <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="description" name="description">
-                                 <?php if(!empty($unitObj)): ?> <?php echo e($unitObj->description); ?> <?php endif; ?>
+                            <textarea class="form-control" required id="description" name="description">
+                                 <?php if(!empty($unitObj)): ?>
+<?php echo e($unitObj->description); ?>
+
+<?php endif; ?>
                             </textarea>
                         </div>
 
@@ -205,7 +241,8 @@
                         <div class="row justify-content-center mt-3">
                             <div class="col-md-6 col-lg-4">
                                 <button class="btn btn-secondary btn-block" type="submit" id="create_unit">
-                                    <i class="fa fa-plus"></i> <span class="plus_text"><?php echo e(__('messages.create_unit')); ?></span>
+                                    <i class="fa fa-plus"></i> <span
+                                        class="plus_text"><?php echo e(__('messages.create_unit')); ?></span>
                                 </button>
                             </div>
                         </div>
@@ -219,7 +256,7 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $("#unit_category").select2({
                 theme: "bootstrap-5",
                 containerCssClass: "select2--small",
@@ -227,47 +264,48 @@
             });
 
             ClassicEditor
-                .create( document.querySelector( '#description' ) )
-                .catch( error => {
-                    console.error( error );
-                } );
+                .create(document.querySelector('#description'))
+                .catch(error => {
+                    console.error(error);
+                });
 
-            $("#country").on('change',function(){
+            $("#country").on('change', function() {
                 $("#state").val('');
                 $("#empty_city_state_name").val('');
                 $("#city").val('');
                 var value = $(this).val();
                 var token = $('[name="_token"]').val();
-                if($.trim(value) == "" && value != 247){
+                if ($.trim(value) == "" && value != 247) {
                     $("#state").html('<option value="">Select</option>');
                     $("#city").html('<option value="">Select</option>');
-                    $("#state").prop('disabled',false);
-                    $("#city").prop('disabled',false);
-                }
-                else if($.trim(value) == 247){
-                    $("#state").prop('disabled',true);
-                    $("#city").prop('disabled',true);
+                    $("#state").prop('disabled', false);
+                    $("#city").prop('disabled', false);
+                } else if ($.trim(value) == 247) {
+                    $("#state").prop('disabled', true);
+                    $("#city").prop('disabled', true);
                     return false;
-                }
-                else
-                {
+                } else {
                     $(".states_loader.location_loader").show();
-                    $("#state").prop('disabled',true);
-                    $("#city").prop('disabled',true);
+                    $("#state").prop('disabled', true);
+                    $("#city").prop('disabled', true);
                     $.ajax({
-                        type:'POST',
-                        url:  '<?php echo e(url("units/get_state")); ?>',
-                        dataType:'json',
-                        async:true,
-                        data:{country_id:value,_token:token },
-                        success:function(resp){
+                        type: 'POST',
+                        url: '<?php echo e(url('units/get_state')); ?>',
+                        dataType: 'json',
+                        async: true,
+                        data: {
+                            country_id: value,
+                            _token: token
+                        },
+                        success: function(resp) {
                             $(".states_loader.location_loader").hide();
-                            $("#state").prop('disabled',false);
-                            $("#city").prop('disabled',false);
-                            if(resp.success){
-                                var html='<option value=""></option>';
-                                $.each(resp.states,function(index,val){
-                                    html+='<option value="'+index+'">'+val+'</option>'
+                            $("#state").prop('disabled', false);
+                            $("#city").prop('disabled', false);
+                            if (resp.success) {
+                                var html = '<option value=""></option>';
+                                $.each(resp.states, function(index, val) {
+                                    html += '<option value="' + index + '">' + val +
+                                        '</option>'
                                 });
                                 $("#state").append(html);
                             }
@@ -276,41 +314,46 @@
                 }
             });
 
-            $("#state").on('change',function(){
+            $("#state").on('change', function() {
                 var value = $(this).val();
                 var token = $('[name="_token"]').val();
-                if($.trim(value) == ""){
+                if ($.trim(value) == "") {
                     $("#city").html('<option value="">Select</option>');
-                    $("#city").prop('disabled',false);
-                }
-                else
-                {
+                    $("#city").prop('disabled', false);
+                } else {
                     $(".cities_loader.location_loader").show();
-                    $("#city").prop('disabled',true);
+                    $("#city").prop('disabled', true);
                     $.ajax({
-                        type:'POST',
-                        url: '<?php echo e(url("units/get_city")); ?>',
-                        dataType:'json',
-                        async:true,
-                        data:{state_id:value,_token:token },
-                        success:function(resp){
+                        type: 'POST',
+                        url: '<?php echo e(url('units/get_city')); ?>',
+                        dataType: 'json',
+                        async: true,
+                        data: {
+                            state_id: value,
+                            _token: token
+                        },
+                        success: function(resp) {
 
                             $(".cities_loader.location_loader").hide();
-                            $("#city").prop('disabled',false);
-                            if(resp.success){
+                            $("#city").prop('disabled', false);
+                            if (resp.success) {
 
-                                if(Object.keys(resp.cities).length > 0)
-                                {
-                                    $.each(resp.cities,function(index,val){
-                                        html ='<option value="'+index+'">'+val+'</option>'
+                                if (Object.keys(resp.cities).length > 0) {
+                                    $.each(resp.cities, function(index, val) {
+                                        html = '<option value="' + index + '">' + val +
+                                            '</option>'
                                     });
                                     $("#city").append(html);
                                     $("#empty_city_state_name").val('');
-                                }else{
-                                    var html ='<option value="'+value+'">'+resp.state_name+'</option>';
+                                } else {
+                                    var html = '<option value="' + value + '">' + resp
+                                        .state_name + '</option>';
 
                                     $("#city").append(html);
-                                    $("#empty_city_state_name").val(JSON.stringify([{"id":value,"name":resp.state_name}]));
+                                    $("#empty_city_state_name").val(JSON.stringify([{
+                                        "id": value,
+                                        "name": resp.state_name
+                                    }]));
                                 }
                             }
                         }
@@ -322,7 +365,7 @@
             $("#product-service-div").hide();
             $("#scopeDiv").hide();
 
-            $("#unitType").change(function () {
+            $("#unitType").change(function() {
                 var selectedOption = $(this).val();
 
                 $("#product-service-div").hide();

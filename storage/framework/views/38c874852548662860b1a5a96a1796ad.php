@@ -46,7 +46,9 @@
             <div class="header_ttl d-xl-block d-none">
                 Explore:
             </div>
-            <div class="dropdown d-xl-block">
+
+            
+            <div class="dropdown d-none d-xl-block">
                 <div class="header_dropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     Units
                 </div>
@@ -64,10 +66,11 @@
                     <a class="dropdown-item" href="<?php echo url('units'); ?>">All Units</a>
                     <a class="dropdown-item" href="<?php echo url('objectives'); ?>">Objectives</a>
                     <a class="dropdown-item" href="<?php echo url('tasks'); ?>">Tasks</a>
-                    <a class="dropdown-item" href="<?php echo url('issues'); ?>">Issues </a>
+                    <a class="dropdown-item" href="<?php echo url('issues'); ?>">Issues</a>
                     <a class="dropdown-item" href="<?php echo e(url('ideas')); ?>">Ideas</a>
                 </div>
             </div>
+
 
 
             <ul class="nav d-xl-flex d-none">
@@ -118,7 +121,7 @@
 
                 </style>
 
-                <div class="dropdown">
+                <div class="dropdown d-none d-xl-block">
                     <a href="#" class="header_btn dropdown-toggle" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="<?php echo e(asset('v2/assets/img/bell.svg')); ?>" alt="Notifications" class="img-fluid" style="max-width: 66%!important; filter: brightness(0) invert(1);">
                         <!-- Counter -->

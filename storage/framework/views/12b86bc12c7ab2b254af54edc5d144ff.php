@@ -46,7 +46,7 @@
                         <div class="table_block_icon">
                             <img src="<?php echo e(asset('v2/assets/img/location.svg')); ?>" alt="" class="img-fluid">
                         </div>
-                        Objectives
+
                         <div class="arrow">
                             <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                         </div>

@@ -236,7 +236,47 @@
                                 </div>
                             </div>
                             <div class="objective_content_info_links">
-                                <a class="add_to_my_watchlist edit_icon" data-type="issue" data-id="<?php echo e($issueIDHashID->encode($issueObj->id)); ?>" data-redirect="<?php echo e(url()->current()); ?>"><img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" alt=""></a>
+                                
+                                
+
+                                            
+
+
+<?php
+$isIssueWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
+    ->where('unit_id', $unitData->id)
+    ->where('issue_id', $issueObj->id)
+    ->exists();
+?>
+
+
+
+<a href="javascript:void(0);"
+class="edit_icon watchlist-link"
+data-id="<?php echo e($issueObj->id); ?>"
+data-url="<?php echo e(route('watchlistIssue.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'issue_id' => $issueObj->id])); ?>"
+id="issue-eye-link-<?php echo e($issueObj->id); ?>"
+style="<?php echo e($isIssueWatched ? 'display: none;' : ''); ?>">
+<img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>"
+    style="height: 20px; width: 20px;"
+    alt="Watch"
+    id="issue-eye-icon-<?php echo e($issueObj->id); ?>">
+</a>
+
+<img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
+style="height: 20px; width: 20px; <?php echo e($isIssueWatched ? '' : 'display: none;'); ?>"
+alt="Watched"
+id="issue-eye-off-icon-<?php echo e($issueObj->id); ?>">
+
+
+
+                                            <?php if(session('success')): ?>
+                                                <div class="alert alert-success"><?php echo e(session('success')); ?></div>
+                                            <?php endif; ?>
+
+                                            <?php if(session('info')): ?>
+                                                <div class="alert alert-info"><?php echo e(session('info')); ?></div>
+                                            <?php endif; ?>
                                 <div class="separat"></div>
                                 <a href="<?php echo route('issues_revison',[$issueIDHashID->encode($issueObj->id)]); ?>" class="edit_icon"> Revision History</a>
                                 <div class="separat"></div>
@@ -526,6 +566,40 @@
 
         });
     </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.watchlist-link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.dataset.url;
+                const issueId = this.dataset.id;
+
+                const eyeIcon = document.getElementById('issue-eye-icon-' + issueId);
+                const eyeOffIcon = document.getElementById('issue-eye-off-icon-' + issueId);
+                const anchor = document.getElementById('issue-eye-link-' + issueId);
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hide the clickable link (eye icon)
+                        anchor.style.display = "none";
+
+                        // Show the eye-off icon
+                        if (eyeOffIcon) {
+                            eyeOffIcon.style.display = "inline-block";
+                        }
+
+                        alert(data.message || "Added to watchlist!");
+                    })
+                    .catch(err => {
+                        console.error('Watchlist error:', err);
+                        alert("Something went wrong!");
+                    });
+            });
+        });
+    });
+</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/issues/view.blade.php ENDPATH**/ ?>

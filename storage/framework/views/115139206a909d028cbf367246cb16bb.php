@@ -25,7 +25,7 @@
                 <?php
                 $title = 'Activity Log';
                 ?>
-                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                <?php echo $__env->make('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
                 <?php echo $__env->make('layout.v2.global-finances', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
@@ -34,17 +34,17 @@
                 <?php
                 $title = 'Global Activity Log';
                 ?>
-                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                <?php echo $__env->make('layout.v2.global-activity-log', ['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             <?php endif; ?>
         </div>
 
         <div class="panel panel-grey panel-default col-md-9">
             <div class="panel-heading">
-                <h4>Create Idea</h4>
+                <h4>Create Idea </h4>
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
-                    <form role="form" method="post"  action="<?php echo e(url('ideas')); ?>">
+                    <form role="form" method="post" action="<?php echo e(url('ideas')); ?>" id="myForm">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('post'); ?>
                         <div class="row">
@@ -52,20 +52,21 @@
                             <input type="hidden" name="unit_id" value="<?php echo e($unitData->id); ?>">
 
                             <div class="col-md-12 form-group">
-                                <label class="control-label">Idea Name</label>
+                                <label class="control-label">Idea Name <span class="text-danger">*</span></label>
                                 <div class="input-icon right">
-                                    <input type="text" name="title" class="form-control" placeholder="Idea Name"/>
+                                    <input type="text" name="title" required class="form-control" placeholder="Idea Name" />
                                 </div>
                             </div>
 
                             <div class="col-md-12 mt-3 form-group">
-                                <label class="control-label">Category : </label>
+                                <label class="control-label">Category  </label>
                                 <div class="input-icon right">
-                                    <select class="form-control" data-live-search="true" name="category_id" id="category_id">
+                                    <select class="form-control" data-live-search="true" name="category_id"
+                                        id="category_id">
                                         <option value=""><?php echo trans('messages.select'); ?></option>
-                                            <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($type->id); ?>"><?php echo e($type->title); ?></option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($type->id); ?>"><?php echo e($type->title); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
@@ -73,11 +74,12 @@
                             <div class="col-md-12 mt-3 form-group">
                                 <label class="control-label">Task</label>
                                 <div class="input-icon right">
-                                    <select class="form-control selectpicker" data-live-search="true" name="task_id" id="task_id">
+                                    <select class="form-control selectpicker" data-live-search="true" name="task_id"
+                                        id="task_id">
                                         <option value=""><?php echo trans('messages.select'); ?></option>
-                                            <?php $__currentLoopData = $tasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($task->id); ?>"><?php echo e($task->name); ?></option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php $__currentLoopData = $tasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($task->id); ?>"><?php echo e($task->name); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
@@ -85,19 +87,21 @@
                             <div class="col-md-12 mt-3 form-group">
                                 <label class="control-label">Issue</label>
                                 <div class="input-icon right">
-                                    <select class="form-control selectpicker" data-live-search="true" name="issue_id" id="issue_id">
+                                    <select class="form-control selectpicker" data-live-search="true" name="issue_id"
+                                        id="issue_id">
                                         <option value=""><?php echo trans('messages.select'); ?></option>
-                                            <?php $__currentLoopData = $issues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($issue->id); ?>"><?php echo e($issue->title); ?></option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                                        <?php $__currentLoopData = $issues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($issue->id); ?>"><?php echo e($issue->title); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
 
 
                             <div class="col-sm-12 mt-3 form-group">
-                                <label class="control-label">Description</label>
-                                <textarea class="form-control" id="description" name="description">
+                                <label class="control-label">Description <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="description" required name="description">
                                 </textarea>
                             </div>
 
@@ -129,11 +133,36 @@
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         ClassicEditor
-            .create( document.querySelector( '#description' ) )
-            .catch( error => {
-                console.error( error );
-            } );
+            .create(document.querySelector('#description'))
+            .catch(error => {
+                console.error(error);
+            });
     </script>
+   <script>
+    document.getElementById('myForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission behavior
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' // Pass the CSRF token for security
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show success message
+            window.history.go(-2); // Go back 2 steps in history
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+    </script>
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/ideas/create.blade.php ENDPATH**/ ?>

@@ -46,7 +46,7 @@
                             <div class="table_block_icon">
                                 <img src="<?php echo e(asset('v2/assets/img/list.svg')); ?>" alt="" class="img-fluid">
                             </div>
-                            Tasks (<?php echo e($tasksTotal); ?>)
+                            Tasks  (<?php echo e($tasksTotal); ?>)
                             <div class="arrow">
                                 <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                             </div>

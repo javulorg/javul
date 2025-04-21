@@ -88,6 +88,7 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     Route::get('/account/get_notifications', [AccountController::class, 'get_notifications']);
     Route::post('/account/update_notifications', [AccountController::class, 'update_notifications']);
     Route::post('/account/update-creditcard', [AccountController::class, 'update_creditcard']);
+
     Route::post('/account/update_personal_info', [AccountController::class, 'update_personal_info']);
 
     Route::get('/my_tasks', [UserController::class, 'my_tasks']);

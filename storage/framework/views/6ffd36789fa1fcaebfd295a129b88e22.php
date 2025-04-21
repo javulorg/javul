@@ -20,6 +20,7 @@
                 <tbody>
                 <?php if($unitsMaster->count() > 0): ?>
                 <?php $__currentLoopData = $unitsMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
                     <?php
                         $category_ids = $unit->category_id;
                         $category_names = App\Models\UnitCategory::getName($category_ids);
@@ -53,4 +54,18 @@
         <a href="<?php echo e(url('units')); ?>">See more</a>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/layout/v2/master/units.blade.php ENDPATH**/ ?>

@@ -143,6 +143,7 @@ class IdeaController extends Controller
             // return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
             return response()->json(['message' => 'Data saved successfully']);
 
+
         }
     }
 

@@ -160,9 +160,30 @@
                                 </div>
                                 <div class="objective_content_info_links">
                                     {{-- <a class="add_to_my_watchlist edit_icon" data-type="task" data-id="{{$taskIDHashID->encode($taskObj->id)}}" data-redirect="{{url()->current()}}"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
-                                    <a href="{{ route('watchlistTask.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'task_id' => $taskObj->id]) }}" class="edit_icon">
+                                    {{-- <a href="{{ route('watchlistTask.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'task_id' => $taskObj->id]) }}" class="edit_icon">
                                         <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
-                                    </a>
+                                    </a> --}}
+                                    @php
+                                    $isTaskWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
+                                        ->where('unit_id', $unitData->id)
+                                        ->where('task_id', $taskObj->id)
+                                        ->exists();
+                                @endphp
+
+                                <a href="javascript:void(0);" class="edit_icon watchlist-link" data-id="{{ $taskObj->id }}"
+                                    data-url="{{ route('watchlistTask.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'task_id' => $taskObj->id]) }}"
+                                    id="task-eye-link-{{ $taskObj->id }}" style="{{ $isTaskWatched ? 'display: none;' : '' }}">
+                                    <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;" alt="Watch"
+                                        id="task-eye-icon-{{ $taskObj->id }}">
+                                </a>
+
+                                <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
+                                    style="height: 20px; width: 20px; {{ $isTaskWatched ? '' : 'display: none;' }}" alt="Watched"
+                                    id="task-eye-off-icon-{{ $taskObj->id }}">
+
+
+
+
 
                                     {{-- $encodedObjectiveID = $objectiveIDHashID->encode($objective_id);
 
@@ -470,4 +491,39 @@
             });
         });
     </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.watchlist-link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.dataset.url;
+                const taskId = this.dataset.id;
+
+                const eyeIcon = document.getElementById('task-eye-icon-' + taskId);
+                const eyeOffIcon = document.getElementById('task-eye-off-icon-' + taskId);
+                const anchor = document.getElementById('task-eye-link-' + taskId);
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hide clickable eye icon
+                        anchor.style.display = "none";
+
+                        // Show eye-off icon permanently
+                        if (eyeOffIcon) {
+                            eyeOffIcon.style.display = "inline-block";
+                        }
+
+                        alert(data.message || "Added to watchlist!");
+                    })
+                    .catch(err => {
+                        console.error('Watchlist error:', err);
+                        alert("Something went wrong!");
+                    });
+            });
+        });
+    });
+</script>
+
 @endsection

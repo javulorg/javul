@@ -46,7 +46,8 @@
             <div class="header_ttl d-xl-block d-none">
                 Explore:
             </div>
-            <div class="dropdown d-xl-block">
+
+            {{-- <div class="dropdown d-xl-block">
                 <div class="header_dropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     Units
                 </div>
@@ -67,7 +68,30 @@
                     <a class="dropdown-item" href="{!! url('issues') !!}">Issues </a>
                     <a class="dropdown-item" href="{{ url('ideas') }}">Ideas</a>
                 </div>
+            </div> --}}
+            <div class="dropdown d-none d-xl-block">
+                <div class="header_dropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    Units
+                </div>
+                <style>
+                    header .dropdown-item {
+                        padding: 8px 15px!important;
+                        font-weight: 700!important;
+                        font-size: 13px!important;
+                        line-height: 10px!important;
+                        margin-bottom: 0px!important;
+                        color: var(--second-dark-color)!important;
+                    }
+                </style>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <a class="dropdown-item" href="{!! url('units') !!}">All Units</a>
+                    <a class="dropdown-item" href="{!! url('objectives') !!}">Objectives</a>
+                    <a class="dropdown-item" href="{!! url('tasks') !!}">Tasks</a>
+                    <a class="dropdown-item" href="{!! url('issues') !!}">Issues</a>
+                    <a class="dropdown-item" href="{{ url('ideas') }}">Ideas</a>
+                </div>
             </div>
+
 
 
             <ul class="nav d-xl-flex d-none">
@@ -118,7 +142,7 @@
 
                 </style>
 
-                <div class="dropdown">
+                <div class="dropdown d-none d-xl-block">
                     <a href="#" class="header_btn dropdown-toggle" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="{{ asset('v2/assets/img/bell.svg') }}" alt="Notifications" class="img-fluid" style="max-width: 66%!important; filter: brightness(0) invert(1);">
                         <!-- Counter -->
