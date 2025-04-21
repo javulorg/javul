@@ -234,9 +234,53 @@
                             </div>
                             <div class="objective_content_info_links">
                                 {{-- <a class="add_to_my_watchlist edit_icon" data-type="issue" data-id="{{$issueIDHashID->encode($issueObj->id)}}" data-redirect="{{url()->current()}}"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
-                                <a href="{{ route('watchlistIssue.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}" class="edit_icon">
+                                {{-- <a href="{{ route('watchlistIssue.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}" class="edit_icon">
                                     <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
-                                            </a>
+                                            </a> --}}
+
+                                            {{-- <a href="{{ route('watchlistIssue.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}"
+                                                class="edit_icon watchlist-link" data-id="{{ $issueObj->id }}"
+                                                data-url="{{ route('watchlistIssue.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}">
+                                                <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;" alt="Watch"
+                                                    id="eye-icon-{{ $issueObj->id }}">
+                                            </a> --}}
+
+
+@php
+$isIssueWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
+    ->where('unit_id', $unitData->id)
+    ->where('issue_id', $issueObj->id)
+    ->exists();
+@endphp
+
+
+
+<a href="javascript:void(0);"
+class="edit_icon watchlist-link"
+data-id="{{ $issueObj->id }}"
+data-url="{{ route('watchlistIssue.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}"
+id="issue-eye-link-{{ $issueObj->id }}"
+style="{{ $isIssueWatched ? 'display: none;' : '' }}">
+<img src="{{ asset('v2/assets/img/eye.svg') }}"
+    style="height: 20px; width: 20px;"
+    alt="Watch"
+    id="issue-eye-icon-{{ $issueObj->id }}">
+</a>
+
+<img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
+style="height: 20px; width: 20px; {{ $isIssueWatched ? '' : 'display: none;' }}"
+alt="Watched"
+id="issue-eye-off-icon-{{ $issueObj->id }}">
+
+
+
+                                            @if(session('success'))
+                                                <div class="alert alert-success">{{ session('success') }}</div>
+                                            @endif
+
+                                            @if(session('info'))
+                                                <div class="alert alert-info">{{ session('info') }}</div>
+                                            @endif
                                 <div class="separat"></div>
                                 <a href="{!! route('issues_revison',[$issueIDHashID->encode($issueObj->id)]) !!}" class="edit_icon"> Revision History</a>
                                 <div class="separat"></div>
@@ -521,4 +565,38 @@
 
         });
     </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.watchlist-link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.dataset.url;
+                const issueId = this.dataset.id;
+
+                const eyeIcon = document.getElementById('issue-eye-icon-' + issueId);
+                const eyeOffIcon = document.getElementById('issue-eye-off-icon-' + issueId);
+                const anchor = document.getElementById('issue-eye-link-' + issueId);
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hide the clickable link (eye icon)
+                        anchor.style.display = "none";
+
+                        // Show the eye-off icon
+                        if (eyeOffIcon) {
+                            eyeOffIcon.style.display = "inline-block";
+                        }
+
+                        alert(data.message || "Added to watchlist!");
+                    })
+                    .catch(err => {
+                        console.error('Watchlist error:', err);
+                        alert("Something went wrong!");
+                    });
+            });
+        });
+    });
+</script>
 @endsection

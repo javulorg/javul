@@ -25,7 +25,7 @@
                 <?php
                 $title = 'Activity Log';
                 ?>
-                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                <?php echo $__env->make('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
                 <?php echo $__env->make('layout.v2.global-finances', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
@@ -34,13 +34,13 @@
                 <?php
                 $title = 'Global Activity Log';
                 ?>
-                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                <?php echo $__env->make('layout.v2.global-activity-log', ['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             <?php endif; ?>
         </div>
 
         <div class="panel panel-grey panel-default">
             <div class="panel-heading">
-                <h4>Create Objective</h4>
+                <h4>Create Objective </h4>
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
@@ -48,28 +48,28 @@
                         <?php echo csrf_field(); ?>
 
                         <div class="row">
-                                <input type="hidden" name="unit" value="<?php echo e($unitIDHashID->encode($unitData->id)); ?>">
-                                <div class="col-md-12 form-group">
-                                    <label class="control-label">Objective Name</label>
-                                    <div class="input-icon right">
-                                        <input type="text" name="objective_name"
-                                               value="<?php echo e(old('objective_name')); ?>"
-                                               class="form-control"
-                                               placeholder="Objective Name" required/>
-                                    </div>
+                            <input type="hidden" name="unit" value="<?php echo e($unitIDHashID->encode($unitData->id)); ?>">
+                            <div class="col-md-12 form-group">
+                                <label class="control-label">Objective Name</label><span class="text-danger">*</span>
+                                <div class="input-icon right">
+                                    <input type="text" name="objective_name" value="<?php echo e(old('objective_name')); ?>"
+                                        class="form-control" placeholder="Objective Name" required />
                                 </div>
+                            </div>
 
 
 
                             <div class="col-md-12 mt-3 form-group">
                                 <label class="control-label">Parent objective</label>
                                 <div class="input-icon right">
-                                    <select class="form-control" data-live-search="true" name="parent_objective" id="parent_objective">
+                                    <select class="form-control" data-live-search="true"  name="parent_objective"
+                                        id="parent_objective">
                                         <option value=""><?php echo trans('messages.select'); ?></option>
                                         <?php if(count($parentObjectivesObj) > 0): ?>
-                                            <?php $__currentLoopData = $parentObjectivesObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective_id=>$parentObjective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($objectiveIDHashID->encode($objective_id)); ?>" <?php if(!empty($objectiveObj) &&
-                                                                $objectiveObj->parent_id == $objective_id): ?> selected=selected <?php endif; ?>><?php echo e($parentObjective); ?></option>
+                                            <?php $__currentLoopData = $parentObjectivesObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective_id => $parentObjective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($objectiveIDHashID->encode($objective_id)); ?>"
+                                                    <?php if(!empty($objectiveObj) && $objectiveObj->parent_id == $objective_id): ?> selected=selected <?php endif; ?>>
+                                                    <?php echo e($parentObjective); ?></option>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <?php endif; ?>
                                     </select>
@@ -78,21 +78,28 @@
 
 
                             <div class="col-sm-12 mt-3 form-group">
-                                <label class="control-label">Objective Description</label>
-                                <textarea class="form-control" id="description" name="description">
-                                    <?php if(!empty($objectiveObj)): ?> <?php echo e($objectiveObj->description); ?> <?php endif; ?>
-                                </textarea>
-                            </div>
+                                <label class="control-label">Objective Description</label></span>
+                                <textarea class="form-control" id="description"  name="description">
+                                    <?php if(!empty($objectiveObj)): ?>
+<?php echo e($objectiveObj->description); ?>
 
+<?php endif; ?>
+                                </textarea>
+
+
+                            </div>
 
                             <div class="col-sm-12 mt-3 form-group">
-                                    <label class="control-label mb-1">Idea</label>
-                                    <select class="form-select"  name="idea_id[]" id="idea_id" multiple>
-                                        <?php $__currentLoopData = $ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <option value="<?php echo e($idea->id); ?>"><?php echo e($idea->title); ?></option>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </select>
+                                <label class="control-label mb-1">Idea</label>
+                                <select class="form-select " style="width: 100%" name="idea_id[]"  id="idea_id"
+                                    multiple>
+                                    <?php $__currentLoopData = $ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($idea->id); ?>"><?php echo e($idea->title); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
                             </div>
+
+
                         </div>
                         <div class="row justify-content-center mt-3">
                             <div class="col-md-6 col-lg-4">
@@ -109,7 +116,7 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $("#idea_id").select2({
                 theme: "bootstrap-5",
                 containerCssClass: "select2--small",
@@ -117,10 +124,10 @@
             });
 
             ClassicEditor
-                .create( document.querySelector( '#description' ) )
-                .catch( error => {
-                    console.error( error );
-                } );
+                .create(document.querySelector('#description'))
+                .catch(error => {
+                    console.error(error);
+                });
         });
     </script>
 <?php $__env->stopSection(); ?>

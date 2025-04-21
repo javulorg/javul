@@ -164,10 +164,22 @@
             <div class="row justify-content-center mt-3">
                 <div class="col-md-6 col-lg-4">
                     <button class="btn btn-secondary btn-block" type="submit">
-                        <i class="fa fa-edit"></i> <span class="plus_text">Update Profile</span>
+                        <i class="fa fa-edit"></i> <span class="plus_text">Update  Profile</span>
                     </button>
+                    {{-- <button class="btn btn-secondary btn-block" type="submit" onclick="location.reload();">
+                        <i class="fa fa-edit"></i> <span class="plus_text">Update Profile</span>
+                    </button> --}}
+
                 </div>
             </div>
         </div>
     </form>
+    {{-- <script>
+            document.querySelector('.btn-block').addEventListener('click', () => {
+            location.reload();
+        });
+    </script> --}}
 </div>
+
+
+

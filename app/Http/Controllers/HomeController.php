@@ -292,9 +292,9 @@ class HomeController extends Controller
 
     public function my_watchlist(Request $request)
     {
-        $watchedUnits = Watchlist::join('units', 'my_watchlist.unit_id', '=', 'units.id')
-            ->where('my_watchlist.user_id', Auth::user()->id)
-            ->whereNotNull('unit_id')->select(['units.*'])->get();
+        // $watchedUnits = Watchlist::join('units', 'my_watchlist.unit_id', '=', 'units.id')
+        //     ->where('my_watchlist.user_id', Auth::user()->id)
+        //     ->whereNotNull('unit_id')->select(['units.*'])->get();
 
         // $watchedUnits = Watchlist::join('Objectives');
 
@@ -309,9 +309,9 @@ class HomeController extends Controller
 
 
 
-        $watchedObjectives = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')
-            ->where('my_watchlist.user_id', Auth::user()->id)
-            ->whereNotNull('objective_id')->select(['objectives.*'])->get();
+        // $watchedObjectives = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')
+        //     ->where('my_watchlist.user_id', Auth::user()->id)
+        //     ->whereNotNull('objective_id')->select(['objectives.*'])->get();
 
 
 
@@ -323,6 +323,8 @@ class HomeController extends Controller
 
 
         // $watchedTask = Watchlist::join(': tasks', 'my_watchlist.objective_id', '=', 'objectives.id')->select('Objectives.*')->get();
+
+        $watchedObject = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')->select('objectives.*')->get();
 
         $watchedTask = Watchlist::join('tasks', 'my_watchlist.task_id', '=', 'tasks.id')->select('tasks.*')->get();
 
@@ -344,7 +346,7 @@ class HomeController extends Controller
         // view()->share('watchedObjectives',$watchedObjectives);
         // view()->share('watchedTasks',$watchedTasks);
         // view()->share('watchedIssues',$watchedIssues);
-        return view('users.my_watchlist', ['watchedUnits' => $watchedObjectives, 'watchedTasks' => $watchedTask, 'watchedissues' => $watchedIssue]);
+        return view('users.my_watchlist', ['watchedUnits' => $watchedObject, 'watchedTasks' => $watchedTask, 'watchedissues' => $watchedIssue]);
     }
 
 

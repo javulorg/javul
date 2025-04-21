@@ -164,11 +164,17 @@
             <div class="row justify-content-center mt-3">
                 <div class="col-md-6 col-lg-4">
                     <button class="btn btn-secondary btn-block" type="submit">
-                        <i class="fa fa-edit"></i> <span class="plus_text">Update Profile</span>
+                        <i class="fa fa-edit"></i> <span class="plus_text">Update  Profile</span>
                     </button>
+                    
+
                 </div>
             </div>
         </div>
     </form>
+    
 </div>
+
+
+
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/users/user-account-partials/personal-info.blade.php ENDPATH**/ ?>

@@ -480,6 +480,8 @@ class ForumController extends Controller
                     }
                 }
 
+
+
                 $homeCheck = isset($request->home) ??  false;
                 $unitData = Unit::where('id', $unit_id)->first();
 
@@ -490,7 +492,8 @@ class ForumController extends Controller
 
                 view()->share("topic",$topicDetail);
                 view()->share("topic_id",$topic_id);
-                return view("forum.post");
+                return view("forum.post",['totalIssueResolutions'=>1]);
+
             }
         }
         return view("errors.404");
@@ -639,7 +642,8 @@ class ForumController extends Controller
                 view()->share('homeCheck',$homeCheck );
                 view()->share('availableFunds',$availableFunds);
                 view()->share('awardedFunds',$awardedFunds);
-    			return view("forum.forum_create");
+
+    			return view("forum.forum_create",['totalIssueResolutions'=>1]);
 	        }
         }
     }

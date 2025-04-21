@@ -12,10 +12,7 @@
                 <?php $__currentLoopData = $mostActiveUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr>
                         <td>
-                            <a href="<?php echo url('units/'.$unitIDHashID->encode($unit->unit->id).'/edit'); ?>">
-                                <?php echo e($unit->unit->name); ?>
-
-                            </a>
+                            
                         </td>
                         <td>
                             <span class="colorLightGreen"><?php echo e($unit->total_points); ?></span>

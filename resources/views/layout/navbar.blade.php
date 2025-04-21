@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="nav-item">
-                    <a class="nav-link{{ request()->is('tasks') ? ' active' : '' }}" href="{{ url('tasks?unit=' . $unitData->id) }}">Tasks</a>
+                    <a class="nav-link{{ request()->is('tasks') ? ' active' : '' }}" href="{{ url('tasks?unit=' . $unitData->id) }}">Tasks </a>
                 </div>
 
 

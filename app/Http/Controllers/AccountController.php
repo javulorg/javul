@@ -206,9 +206,13 @@ class AccountController extends Controller
             Auth::user()->timezone=$request->input('timezone');
             Auth::user()->paypal_email=$request->input('paypal_email');
             Auth::user()->save();
-            return response()->json(['success'=>true]);
+            // return response()->json(['success'=>true]);
+            return redirect()->back()->with('success', 'Profile updated successfully.');
+
         }
     }
+
+
 
     public function withdraw(Request $request)
     {

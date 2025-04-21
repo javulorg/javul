@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="nav-item">
-                    <a class="nav-link<?php echo e(request()->is('tasks') ? ' active' : ''); ?>" href="<?php echo e(url('tasks?unit=' . $unitData->id)); ?>">Tasks</a>
+                    <a class="nav-link<?php echo e(request()->is('tasks') ? ' active' : ''); ?>" href="<?php echo e(url('tasks?unit=' . $unitData->id)); ?>">Tasks </a>
                 </div>
 
 

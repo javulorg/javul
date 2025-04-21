@@ -20,6 +20,14 @@
                 </tr>
                 </thead>
                 <tbody>
+                    <?php $__currentLoopData = $watchedissues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $watchedissue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    
+                        <tr>
+                            <td><?php echo e($watchedissue->title); ?></td>
+                            <td></td>
+                            <td><?php echo e($watchedissue->description); ?></td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>

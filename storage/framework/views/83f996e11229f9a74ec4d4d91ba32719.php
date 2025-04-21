@@ -12,17 +12,22 @@
         <div class="table_block_body">
             <table id="watchlist-objectives-table-id">
                 <thead>
-                <tr>
-                    <th class="title_col">Objective Name</th>
-                    <th class="title_col"><?php echo trans('messages.description'); ?></th>
-                </tr>
+                    <tr>
+                        <th class="title_col">Objective Name</th>
+                        <th class="title_col"><?php echo trans('messages.description'); ?></th>
+                    </tr>
                 </thead>
 
-                <tbody>
-                </tbody>
-
+                <?php $__currentLoopData = $watchedUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $watchedUnit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    
+                        <tr>
+                            <td><?php echo e($watchedUnit->name); ?></td>
+                            <td></td>
+                            <td><?php echo e($watchedUnit->description); ?></td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </table>
         </div>
-    </div>
+    </div>
 </div>
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/users/watchlist-partials/objectives.blade.php ENDPATH**/ ?>

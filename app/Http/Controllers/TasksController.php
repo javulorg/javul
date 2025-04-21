@@ -2729,14 +2729,34 @@ class TasksController extends Controller
     }
 
 
+    // public function storeW($userId, $unitId, $task_id)
+    // {
+    //     $watchlist = new Watchlist();
+    //     $watchlist->user_id = $userId;
+    //     $watchlist->unit_id = $unitId;
+    //     $watchlist->task_id = $task_id; // still static unless made dynamic
+    //     $watchlist->save();
+
+    //     return redirect()->back()->with('success', 'Added to watchlist!');
+    // }
+
     public function storeW($userId, $unitId, $task_id)
     {
+        $existing = Watchlist::where('user_id', $userId)
+            ->where('unit_id', $unitId)
+            ->where('task_id', $task_id)
+            ->first();
+
+        if ($existing) {
+            return response()->json(['message' => 'Added to watchlist!']);
+        }
+
         $watchlist = new Watchlist();
         $watchlist->user_id = $userId;
         $watchlist->unit_id = $unitId;
-        $watchlist->task_id = $task_id; // still static unless made dynamic
+        $watchlist->task_id = $task_id;
         $watchlist->save();
 
-        return redirect()->back()->with('success', 'Added to watchlist!');
+        return response()->json(['message' => 'Added to watchlist!']);
     }
 }

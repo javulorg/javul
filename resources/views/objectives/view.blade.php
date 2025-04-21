@@ -4,23 +4,24 @@
     <style>
         a.modal-link {
             font-size: 13px;
-            text-decoration: none; /* Remove underline */
+            text-decoration: none;
+            /* Remove underline */
         }
     </style>
 @endsection
 @section('site-name')
-    @if(isset($unitData))
+    @if (isset($unitData))
         <h1>{{ $unitData->name }}</h1>
     @else
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society jkjkj
     </div>
 @endsection
 
 @section('navbar')
-    @if(isset($unitData))
+    @if (isset($unitData))
         @include('layout.navbar', ['unitData' => $unitData])
     @endif
 @endsection
@@ -28,12 +29,12 @@
 @section('content')
     <div class="content_row">
         <div class="sidebar">
-            @if(isset($unitData))
+            @if (isset($unitData))
                 @include('layout.v2.global-unit-overview')
                 <?php
                 $title = 'Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+                @include('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id])
 
                 @include('layout.v2.global-finances')
 
@@ -42,7 +43,7 @@
                 <?php
                 $title = 'Global Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
+                @include('layout.v2.global-activity-log', ['title' => $title])
             @endif
         </div>
 
@@ -55,7 +56,7 @@
                         <div class="table_block_icon">
                             <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
                         </div>
-                        {{ $objectiveObj->name}}
+                        {{ $objectiveObj->name }}
                         <div class="arrow">
                             <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
                         </div>
@@ -63,9 +64,9 @@
                     <div class="objective_content">
                         <div class="objective_content_row d-sm-flex d-none">
                             <div>
-                               <p>
-                                   {!! $objectiveObj->description !!}
-                               </p>
+                                <p>
+                                    {!! $objectiveObj->description !!}
+                                </p>
                             </div>
                             <div class="objective_content_info">
                                 <div class="sidebar_block">
@@ -81,45 +82,53 @@
                                                 Priority:
                                             </div>
 
-                                            @if(isset($ratingResult) && $ratingResult >= 3.5)
+                                            @if (isset($ratingResult) && $ratingResult >= 3.5)
                                                 <div class="sidebar_block_right">
                                                     High
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
                                             @elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult > 2.5))
                                                 <div class="sidebar_block_right">
                                                     Medium
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
-                                            @elseif(isset($ratingResult) && ($ratingResult < 2.5) && ($ratingResult > 2))
+                                            @elseif(isset($ratingResult) && $ratingResult < 2.5 && $ratingResult > 2)
                                                 <div class="sidebar_block_right">
                                                     Low
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
                                             @else
                                                 <div class="sidebar_block_right">
                                                     Medium
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ (2.5 / 5) * 100 }}%"></div>
+                                                        <div class="progress-bar" style="width: {{ (2.5 / 5) * 100 }}%">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             @endif
 
                                             @auth()
                                                 <div class="sidebar_block_right">
-                                                    <a href="#" class="modal-link" data-bs-toggle="modal" data-bs-target="#exampleModal">Rate</a>
-                                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <a href="#" class="modal-link" data-bs-toggle="modal"
+                                                        data-bs-target="#exampleModal">Rate</a>
+                                                    <div class="modal fade" id="exampleModal" tabindex="-1"
+                                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Priority</h1>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Priority
+                                                                    </h1>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <form id="ratingForm">
@@ -127,35 +136,52 @@
                                                                             <label for="rating">Select rating:</label><br>
 
                                                                             <div class="form-check mt-3">
-                                                                                <input type="radio" class="form-check-input" id="rating5" name="rating" value="5">
-                                                                                <label class="form-check-label" for="rating5">High</label>
+                                                                                <input type="radio" class="form-check-input"
+                                                                                    id="rating5" name="rating"
+                                                                                    value="5">
+                                                                                <label class="form-check-label"
+                                                                                    for="rating5">High</label>
                                                                             </div>
                                                                             <div class="form-check">
-                                                                                <input type="radio" class="form-check-input" id="rating4" name="rating" value="4">
-                                                                                <label class="form-check-label" for="rating4">Medium-High</label>
-                                                                            </div>
-
-                                                                            <div class="form-check">
-                                                                                <input type="radio" class="form-check-input" id="rating3" name="rating" value="3">
-                                                                                <label class="form-check-label" for="rating3">Medium</label>
-                                                                            </div>
-
-                                                                            <div class="form-check">
-                                                                                <input type="radio" class="form-check-input" id="rating2" name="rating" value="2">
-                                                                                <label class="form-check-label" for="rating2">Medium-Low</label>
+                                                                                <input type="radio" class="form-check-input"
+                                                                                    id="rating4" name="rating"
+                                                                                    value="4">
+                                                                                <label class="form-check-label"
+                                                                                    for="rating4">Medium-High</label>
                                                                             </div>
 
                                                                             <div class="form-check">
-                                                                                <input type="radio" class="form-check-input" id="rating1" name="rating" value="1">
-                                                                                <label class="form-check-label" for="rating1">Low</label>
+                                                                                <input type="radio" class="form-check-input"
+                                                                                    id="rating3" name="rating"
+                                                                                    value="3">
+                                                                                <label class="form-check-label"
+                                                                                    for="rating3">Medium</label>
+                                                                            </div>
+
+                                                                            <div class="form-check">
+                                                                                <input type="radio" class="form-check-input"
+                                                                                    id="rating2" name="rating"
+                                                                                    value="2">
+                                                                                <label class="form-check-label"
+                                                                                    for="rating2">Medium-Low</label>
+                                                                            </div>
+
+                                                                            <div class="form-check">
+                                                                                <input type="radio" class="form-check-input"
+                                                                                    id="rating1" name="rating"
+                                                                                    value="1">
+                                                                                <label class="form-check-label"
+                                                                                    for="rating1">Low</label>
                                                                             </div>
 
                                                                         </div>
                                                                     </form>
                                                                 </div>
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                    <button type="button" id="submitRating" class="btn btn-primary">Save changes</button>
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Close</button>
+                                                                    <button type="button" id="submitRating"
+                                                                        class="btn btn-primary">Save changes</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -179,46 +205,64 @@
                                             </div>
                                             <div class="sidebar_block_right">
                                                 Received $2500<br>
-                                                Awarded ${{number_format($awardedObjFunds,2)}}<br>
-                                                Available ${{number_format($availableObjFunds,2)}}<br>
+                                                Awarded ${{ number_format($awardedObjFunds, 2) }}<br>
+                                                Available ${{ number_format($availableObjFunds, 2) }}<br>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="objective_content_info_links">
                                     {{-- <a href="#" class="edit_icon"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
-
+                                    {{--
 <a href="{{ route('watchlist.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}" class="edit_icon">
     <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
+</a> --}}
+
+@php
+$isWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
+    ->where('unit_id', $unitData->id)
+    ->where('objective_id', $objectiveObj->id)
+    ->exists();
+@endphp
+
+<a href="javascript:void(0);" class="edit_icon watchlist-link"
+data-id="{{ $objectiveObj->id }}"
+data-url="{{ route('watchlist.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}"
+id="eye-link-{{ $objectiveObj->id }}"
+style="{{ $isWatched ? 'display: none;' : '' }}">
+<img src="{{ asset('v2/assets/img/eye.svg') }}"
+    style="height: 20px; width: 20px;" alt="Watch"
+    id="eye-icon-{{ $objectiveObj->id }}">
 </a>
 
-                                    {{-- @if($watchedTasks->isNotEmpty())
-                                    @foreach($watchedTasks as $task)
-                                        <tr>
-                                            <td>{{ $task->title }}</td>
-                                            <td>
-                                                <form method="POST" action="{{ route('watchlist.add') }}">
-                                                    @csrf
-                                                    <input type="hidden" name="type" value="task">
-                                                    <input type="hidden" name="id" value="{{ $task->id }}">
-                                                    <button type="submit" class="edit_icon" title="Add to watchlist">
-                                                        <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="Add to watchlist">
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <p>No tasks found in your watchlist.</p>
-                                @endif --}}
+<img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
+style="height: 20px; width: 20px; {{ $isWatched ? '' : 'display: none;' }}"
+alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
+
+
+
+
+
+
+
+{{--
+                                    @if (session('success'))
+                                        <div class="alert alert-success">{{ session('success') }}</div>
+                                    @endif
+
+                                    @if (session('info'))
+                                        <div class="alert alert-info">{{ session('info') }}</div>
+                                    @endif
+ --}}
 
 
 
 
                                     <div class="separat"></div>
-                                    <a href="{!! route('objectives_revison',[$objectiveIDHashID->encode($objectiveObj->id)]) !!}" class="edit_icon"> Revision History</a>
+                                    <a href="{!! route('objectives_revison', [$objectiveIDHashID->encode($objectiveObj->id)]) !!}" class="edit_icon"> Revision History</a>
                                     <div class="separat"></div>
-                                    <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objectiveObj->id).'/edit')!!}" class="edit_icon"><img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt=""></a>
+                                    <a href="{!! url('objectives/' . $objectiveIDHashID->encode($objectiveObj->id) . '/edit') !!}" class="edit_icon"><img
+                                            src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt=""></a>
                                 </div>
                             </div>
                         </div>
@@ -226,12 +270,6 @@
                 </div>
             </div>
 
-
-            {{-- @if(session('watchlist_success'))
-            <div class="alert alert-success">
-                {{ session('watchlist_success') }}
-            </div>
-        @endif --}}
 
 
             <div class="content_block">
@@ -248,38 +286,40 @@
                     <div class="table_block_body">
                         <table>
                             <thead>
-                            <tr>
-                                <th class="title_col">
-                                    Title
-                                </th>
-                                <th class="status_col">
-                                    Status
-                                </th>
-                            </tr>
+                                <tr>
+                                    <th class="title_col">
+                                        Title
+                                    </th>
+                                    <th class="status_col">
+                                        Status
+                                    </th>
+                                </tr>
                             </thead>
                             <tbody>
-                            @if(count($objectiveObj->tasks) > 0)
-                                @foreach($objectiveObj->tasks as $obj)
+                                @if (count($objectiveObj->tasks) > 0)
+                                    @foreach ($objectiveObj->tasks as $obj)
+                                        <tr>
+                                            <td class="title_col">
+                                                <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}" title="edit">
+                                                    {{ $obj->name }}
+                                                </a>
+                                            </td>
+                                            <td class="status_col">
+                                                @if ($obj->status == 'editable')
+                                                    <span
+                                                        class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
+                                                @else
+                                                    <span
+                                                        class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
                                     <tr>
-                                        <td class="title_col">
-                                            <a href="{!! url('tasks/'.$taskIDHashID->encode($obj->id).'/'.$obj->slug) !!}" title="edit">
-                                                {{$obj->name}}
-                                            </a>
-                                        </td>
-                                        <td class="status_col">
-                                            @if($obj->status == "editable")
-                                                <span class="text-success">{{\App\Models\SiteConfigs::task_status($obj->status)}}</span>
-                                            @else
-                                                <span class="text-success">{{\App\Models\SiteConfigs::task_status($obj->status)}}</span>
-                                            @endif
-                                        </td>
+                                        <td colspan="4">No record(s) found.</td>
                                     </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="4">No record(s) found.</td>
-                                </tr>
-                            @endif
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -289,7 +329,10 @@
                         <img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt="">
                         Add New
                     </a>
-                    <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                    <div class="separator"></div>
+                    <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
+
+
                 </div>
             </div>
 
@@ -307,13 +350,17 @@
 
                     <?php $objSlug = \App\Models\Objective::getSlug($objectiveObj->parent_id); ?>
                     <div class="table_block_txt">
-                        <a style="font-weight: normal;" class="no-decoration" href="{!! url('objectives/'.$objectiveIDHashID->encode($objectiveObj->parent_id).'/'.$objSlug ) !!}">
-                            {{\App\Models\Objective::getObjectiveName($objectiveObj->parent_id)}}
+                        <a style="font-weight: normal;" class="no-decoration" href="{!! url('objectives/' . $objectiveIDHashID->encode($objectiveObj->parent_id) . '/' . $objSlug) !!}">
+                            {{ \App\Models\Objective::getObjectiveName($objectiveObj->parent_id) }}
                         </a>
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="{{ url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                    <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img
+                            src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a>
+                    <div class="separator"></div>
+                    <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
+
                 </div>
             </div>
 
@@ -321,7 +368,8 @@
                 <div class="table_block table_block_objective">
                     <div class="table_block_head">
                         <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/Users_Two_Rounded.svg') }}" alt="" class="img-fluid">
+                            <img src="{{ asset('v2/assets/img/Users_Two_Rounded.svg') }}" alt=""
+                                class="img-fluid">
                         </div>
                         Child Objectives
                         <div class="arrow">
@@ -333,7 +381,10 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="{{ url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
+                    <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img
+                            src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a>
+                            <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
+
                 </div>
             </div>
 
@@ -341,7 +392,8 @@
                 <div class="table_block table_block_ideas">
                     <div class="table_block_head">
                         <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt="" class="img-fluid">
+                            <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt=""
+                                class="img-fluid">
                         </div>
                         Ideas
                         <div class="arrow">
@@ -351,36 +403,36 @@
                     <div class="table_block_body">
                         <table>
                             <thead>
-                            <tr>
-                                <th class="title_col">Idea Name</th>
-                                <th class="status_col">Status</th>
-                            </tr>
+                                <tr>
+                                    <th class="title_col">Idea Name</th>
+                                    <th class="status_col">Status</th>
+                                </tr>
                             </thead>
                             <tbody>
 
-                            @if(isset($objectiveIdeas->ideas))
-                                @foreach($objectiveIdeas->ideas as $idea)
-                            @dd($idea)
+                                @if (isset($objectiveIdeas->ideas))
+                                    @foreach ($objectiveIdeas->ideas as $idea)
+                                        @dd($idea)
+                                        <tr>
+                                            <td class="title_col">
+                                                <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
+                                                    {{ $idea->title }}
+                                                </a>
+                                            </td>
+                                            @if ($idea->status == 1)
+                                                <td class="type_col"> Draft</td>
+                                            @elseif($idea->status == 2)
+                                                <td class="type_col">Assigned to Task</td>
+                                            @else
+                                                <td class="type_col">Implemented</td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                @else
                                     <tr>
-                                        <td class="title_col">
-                                            <a href="{!! url('ideas/'.$ideaHashID->encode($idea->id)) !!}">
-                                                {{ $idea->title }}
-                                            </a>
-                                        </td>
-                                        @if($idea->status == 1)
-                                            <td class="type_col"> Draft</td>
-                                        @elseif($idea->status == 2)
-                                            <td class="type_col">Assigned to Task</td>
-                                        @else
-                                            <td class="type_col">Implemented</td>
-                                        @endif
+                                        <td colspan="5">No record(s) found.</td>
                                     </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="5">No record(s) found.</td>
-                                </tr>
-                            @endif
+                                @endif
                             </tbody>
                         </table>
                         <div class="mob_table d-sm-none d-block">
@@ -388,7 +440,10 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="{!! url('ideas/'.$unitIDHashID->encode($unitData->id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="" class="see_more">See more</a>
+                    <a href="{!! url('ideas/' . $unitIDHashID->encode($unitData->id) . '/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}"
+                            alt=""> Add New</a>
+                            <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
+
                 </div>
             </div>
 
@@ -405,17 +460,20 @@
                         <div class="comment_stat">
                         </div>
 
-                        @if(isset($comments))
-                            @foreach($comments as $comment)
+                        @if (isset($comments))
+                            @foreach ($comments as $comment)
                                 <div class="comment_container">
                                     <div class="comment_icon">
-                                        <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
+                                        <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt=""
+                                            class="img-fluid">
                                     </div>
                                     <div class="comment_content">
                                         <div class="comment_info">
                                             <div class="comment_autor">
                                                 @php
-                                                  $user = \App\Models\User::where('id', $comment->user_id)->select('first_name','last_name')->first();
+                                                    $user = \App\Models\User::where('id', $comment->user_id)
+                                                        ->select('first_name', 'last_name')
+                                                        ->first();
                                                 @endphp
                                                 {{ $user->first_name . ' ' . $user->last_name }}
                                             </div>
@@ -429,19 +487,20 @@
                                         </div>
 
                                         <div class="comment_actions">
-                                            <input type="hidden" value="{{ $comment->id }}" id="comment_id_{{ $comment->id }}">
+                                            <input type="hidden" value="{{ $comment->id }}"
+                                                id="comment_id_{{ $comment->id }}">
 
                                             <button type="button" class="like_button">
                                                 <i class="fas fa-thumbs-up"></i>
                                                 <span id="like_count" class="badge badge-primary">
-                                                <span class="count"> {{ $comment->likes }}</span>
-                                            </span>
+                                                    <span class="count"> {{ $comment->likes }}</span>
+                                                </span>
                                             </button>
                                             <button type="button" class="dislike_button">
                                                 <i class="fas fa-thumbs-down"></i>
                                                 <span id="dislike_count" class="badge badge-danger">
-                                                 <span class="count"> {{ $comment->dislikes }}</span>
-                                            </span>
+                                                    <span class="count"> {{ $comment->dislikes }}</span>
+                                                </span>
                                             </button>
                                         </div>
 
@@ -452,33 +511,39 @@
                                         display: inline-block;
                                         margin-right: 10px;
                                     }
+
                                     .comment_actions form:last-child {
                                         margin-right: 0;
                                     }
+
                                     .badge .count {
-                                        color: black; /* Adjust color as needed */
+                                        color: black;
+                                        /* Adjust color as needed */
                                     }
                                 </style>
                             @endforeach
                         @endif
 
                         <div class="comment_container">
-                                <div class="comment_icon">
-                                    <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
-                                </div>
-                                <input type="hidden" name="unit_id" id="comment_unit_id" value="<?=  $unit_id ?>">
-                                <input type="hidden" name="section_id" id="comment_section_id" value="<?=  $section_id ?>">
-                                <input type="hidden" name="object_id" id="comment_object_id" value="<?=  $object_id ?>">
-                                <div class="comment_content">
-                                    <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
-                                    <button id="comment_form"  class="btn">Submit</button>
-                                </div>
+                            <div class="comment_icon">
+                                <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt=""
+                                    class="img-fluid">
+                            </div>
+                            <input type="hidden" name="unit_id" id="comment_unit_id" value="<?= $unit_id ?>">
+                            <input type="hidden" name="section_id" id="comment_section_id" value="<?= $section_id ?>">
+                            <input type="hidden" name="object_id" id="comment_object_id" value="<?= $object_id ?>">
+                            <div class="comment_content">
+                                <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
+                                <button id="comment_form" class="btn">Submit</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="#" class="see_more">See more</a>
-                </div>
+                    <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
+                        New</a>
+                        <div class="separator"></div>    <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
+                    </div>
             </div>
         </div>
     </div>
@@ -498,33 +563,32 @@
                     var unitId = $('#unit_id').val();
                     var typeId = $('#objective_id').val();
                     $.ajax({
-                        url: '{{ url("priorities") }}',
+                        url: '{{ url('priorities') }}',
                         type: 'POST',
                         data: {
-                            type_value   : 3,
-                            rating :selectedRating,
-                            unit_id : unitId,
-                            type_id : typeId,
+                            type_value: 3,
+                            rating: selectedRating,
+                            unit_id: unitId,
+                            type_id: typeId,
                             _token: $('input[name="_token"]').val(),
                         },
-                        success: function (response, xhr, textStatus) {
+                        success: function(response, xhr, textStatus) {
                             if (response.status === 201) {
                                 $('#exampleModal').modal('hide');
                                 location.reload();
                             }
                         },
-                        error: function (xhr, textStatus, errorThrown) {
+                        error: function(xhr, textStatus, errorThrown) {
                             console.log(xhr.responseText);
                         },
                     });
-                }else {
+                } else {
                     alert("Please select a rating.");
                 }
 
             });
 
-            $("#comment_form").click(function(e)
-            {
+            $("#comment_form").click(function(e) {
                 var unitId = $('#comment_unit_id').val();
                 var sectionId = $('#comment_section_id').val();
                 var objectId = $('#comment_object_id').val();
@@ -532,20 +596,20 @@
 
                 $.ajax({
                     type: "POST",
-                    url: '{{ url("/forum/submitauto") }}',
+                    url: '{{ url('/forum/submitauto') }}',
                     data: {
-                        unit_id : unitId,
-                        section_id : sectionId,
-                        object_id : objectId,
-                        desc : desc,
+                        unit_id: unitId,
+                        section_id: sectionId,
+                        object_id: objectId,
+                        desc: desc,
                         _token: $('input[name="_token"]').val(),
                     },
-                    success: function (response, xhr, textStatus) {
+                    success: function(response, xhr, textStatus) {
                         if (response.status === 201) {
                             location.reload();
                         }
                     },
-                    error: function (xhr, textStatus, errorThrown) {
+                    error: function(xhr, textStatus, errorThrown) {
                         console.log(xhr.responseText);
                     },
                 });
@@ -554,7 +618,7 @@
             $('.like_button').click(function() {
                 var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
                 $.ajax({
-                    url: '{{ route("like") }}',
+                    url: '{{ route('like') }}',
                     method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -574,7 +638,7 @@
             $('.dislike_button').click(function() {
                 var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
                 $.ajax({
-                    url: '{{ route("dislike") }}',
+                    url: '{{ route('dislike') }}',
                     method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -592,6 +656,37 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.watchlist-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const url = this.dataset.url;
+                    const objectiveId = this.dataset.id;
+                    const eyeIcon = document.getElementById('eye-icon-' + objectiveId);
+                    const eyeOffIcon = document.getElementById('eye-off-icon-' + objectiveId);
+                    const anchor = document.getElementById('eye-link-' + objectiveId);
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Hide eye icon and link
+                            anchor.style.display = "none";
+
+                            // Show eye-off icon
+                            eyeOffIcon.style.display = "inline-block";
+
+                            alert(data.message || "Added to watchlist!");
+                        })
+                        .catch(err => {
+                            console.error('Watchlist error:', err);
+                            alert("Something went wrong!");
+                        });
+                });
             });
+        });
     </script>
 @endsection
