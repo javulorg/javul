@@ -43,7 +43,51 @@
                 @endif
                 </tbody>
 
+
+                <div class="mob_table d-sm-none d-block">
+                    @if(isset($topics[1]) && count($topics[1]) > 0)
+                        @foreach($topics[1] as $key => $topic)
+                            <div class="mob_table_section">
+                                <div class="mob_table_row">
+                                    <div class="mob_table_ttl">Thread Title</div>
+                                    <div class="mob_table_val">
+                                        <a href="{!! url('forum/post').'/'.$topic['topic_id'].'/'.$topic['slug'] !!}">
+                                            {{ $topic['title'] }}
+                                        </a>
+                                    </div>
+                                </div>
+                
+                                <div class="mob_table_row">
+                                    <div class="mob_table_ttl">Created By</div>
+                                    <div class="mob_table_val">
+                                        <a href="{!! $topic['link_user'] !!}">
+                                            {{ $topic['first_name'] . ' ' . $topic['last_name'] }}
+                                        </a>
+                                    </div>
+                                </div>
+                
+                                <div class="mob_table_row">
+                                    <div class="mob_table_ttl">Replies</div>
+                                    <div class="mob_table_val">
+                                        {{ $topic['post'] }}
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="mob_table_section">
+                            <div class="mob_table_row">
+                                <div class="mob_table_val text-center">No record(s) found.</div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+                
+
             </table>
+
+
+            
 
         </div>
     </div>

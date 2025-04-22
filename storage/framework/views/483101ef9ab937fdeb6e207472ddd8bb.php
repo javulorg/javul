@@ -45,7 +45,7 @@
                             <div class="table_block_icon">
                                 <img src="<?php echo e(asset('v2/assets/img/bug.svg')); ?>" alt="" class="img-fluid">
                             </div>
-                            Issues
+                            Issues 
                             <div class="arrow">
                                 <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                             </div>
@@ -107,7 +107,75 @@
                                     </tr>
                                 <?php endif; ?>
                                 </tbody>
+
+                                
                             </table>
+
+                            <div class="mob_table d-sm-none d-block">
+                                <?php if(isset($unitIssues) && count($unitIssues) > 0): ?>
+                                    <?php $__currentLoopData = $unitIssues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
+                                            $status_class = '';
+                                            $verified_by = '';
+                                            $resolved_by = '';
+                            
+                                            if ($obj->status == "unverified") {
+                                                $status_class = "text-danger";
+                                            } elseif ($obj->status == "verified") {
+                                                $status_class = "text-info";
+                                                $verified_by = " (by " . App\Models\User::getUserName($obj->verified_by) . ")";
+                                            } elseif ($obj->status == "resolved") {
+                                                $status_class = "text-success";
+                                                $resolved_by = " (by " . App\Models\User::getUserName($obj->resolved_by) . ")";
+                                            }
+                                        ?>
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Issue Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="<?php echo url('issues/'.$issueIDHashID->encode($obj->id).'/view'); ?>">
+                                                        <?php echo e($obj->title); ?>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Status</div>
+                                                <div class="mob_table_val">
+                                                    <span class="<?php echo e($status_class); ?>"><?php echo e(ucfirst($obj->status) . $verified_by . $resolved_by); ?></span>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Created By</div>
+                                                <div class="mob_table_val">
+                                                    <a href="<?php echo url('userprofiles/'.$userIDHashID->encode($obj->user_id).'/'.strtolower(str_replace(" ","_",App\Models\User::getUserName($obj->user_id)))); ?>">
+                                                        <?php echo e(App\Models\User::getUserName($obj->user_id)); ?>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Created Date</div>
+                                                <div class="mob_table_val">
+                                                    <?php echo e($obj->created_at); ?>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">
+                                                No record(s) found.
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            
+
+                            
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">
@@ -169,6 +237,46 @@
                                     <?php endif; ?>
                                     </tbody>
                                 </table>
+
+                                <div class="mob_table d-sm-none d-block">
+                                    <?php if(isset($issuesMaster) && count($issuesMaster) > 0): ?>
+                                        <?php $__currentLoopData = $issuesMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <div class="mob_table_section">
+                                                <div class="mob_table_row">
+                                                    <div class="mob_table_ttl">
+                                                        Issue Name
+                                                    </div>
+                                                    <div class="mob_table_val">
+                                                        <a href="<?php echo url('issues/'.$issueIDHashID->encode($issue->id).'/view'); ?>">
+                                                            <?php echo e($issue->title); ?>
+
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="mob_table_row">
+                                                    <div class="mob_table_ttl">
+                                                        Unit Name
+                                                    </div>
+                                                    <div class="mob_table_val">
+                                                        <a href="<?php echo url('units/'.$unitIDHashID->encode($issue->unit_id).'/'.\App\Models\Unit::getSlug($issue->unit_id)); ?>">
+                                                            <?php echo e(\App\Models\Unit::getUnitName($issue->unit_id)); ?>
+
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_val text-center">
+                                                    No record(s) found.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                
                             </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">

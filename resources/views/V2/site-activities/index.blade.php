@@ -7,7 +7,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 @endsection
 
@@ -78,6 +78,36 @@
                             </tbody>
 
                         </table>
+
+
+                        <div class="mob_table d-sm-none d-block">
+                            @if($total > 0)
+                                @foreach($activities as $activity)
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_ttl">Action</div>
+                                            <div class="mob_table_val">
+                                                {!! $activity->comment !!}
+                                            </div>
+                                        </div>
+                        
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_ttl">Time</div>
+                                            <div class="mob_table_val">
+                                                {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="mob_table_section">
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_val text-center">No record(s) found.</div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        
                     </div>
                     <div class="d-flex justify-content-between mt-2">
                         <div class="pagination-left">

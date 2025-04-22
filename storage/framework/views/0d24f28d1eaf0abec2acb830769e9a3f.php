@@ -6,7 +6,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -79,6 +79,38 @@
                             </tbody>
 
                         </table>
+
+
+                        <div class="mob_table d-sm-none d-block">
+                            <?php if($total > 0): ?>
+                                <?php $__currentLoopData = $activities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_ttl">Action</div>
+                                            <div class="mob_table_val">
+                                                <?php echo $activity->comment; ?>
+
+                                            </div>
+                                        </div>
+                        
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_ttl">Time</div>
+                                            <div class="mob_table_val">
+                                                <?php echo \App\Library\Helpers::timetostr($activity->created_at); ?>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
+                                <div class="mob_table_section">
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_val text-center">No record(s) found.</div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
                     </div>
                     <div class="d-flex justify-content-between mt-2">
                         <div class="pagination-left">

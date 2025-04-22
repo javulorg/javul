@@ -283,7 +283,7 @@ alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
                             <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
                         </div>
                     </div>
-                    <div class="table_block_body">
+                    {{-- <div class="table_block_body">
                         <table>
                             <thead>
                                 <tr>
@@ -322,14 +322,69 @@ alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
                                 @endif
                             </tbody>
                         </table>
+                    </div> --}}
+                    <div class="table_block_body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="title_col">Title</th>
+                                    <th class="status_col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (count($objectiveObj->tasks) > 0)
+                                    @foreach ($objectiveObj->tasks as $obj)
+                                        <tr>
+                                            <td class="title_col">
+                                                <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}" title="edit">
+                                                    {{ $obj->name }}
+                                                </a>
+                                            </td>
+                                            <td class="status_col">
+                                                <span class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="2">No record(s) found.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+
+                        {{-- Mobile View --}}
+                        <div class="mob_table d-sm-none d-block">
+                            @if (count($objectiveObj->tasks) > 0)
+                                @foreach ($objectiveObj->tasks as $obj)
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_cell">
+                                            <strong>Title:</strong>
+                                            <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}">
+                                                {{ $obj->name }}
+                                            </a>
+                                        </div>
+                                        <div class="mob_table_cell">
+                                            <strong>Status:</strong>
+                                            <span class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="mob_table_row text-center">
+                                    No record(s) found.
+                                </div>
+                            @endif
+                        </div>
                     </div>
+
                 </div>
                 <div class="content_block_bottom">
                     <a href="{!! url('objectives/' . $object_hash_id . '/' . $objectiveObj->slug . '/' . $unitData->id . '/tasks') !!}">
                         <img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt="">
                         Add New
                     </a>
-                    <div class="separator"></div>
+
                     <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
 
 
@@ -400,7 +455,7 @@ alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
                             <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
                         </div>
                     </div>
-                    <div class="table_block_body">
+                    {{-- <div class="table_block_body">
                         <table>
                             <thead>
                                 <tr>
@@ -412,7 +467,7 @@ alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
 
                                 @if (isset($objectiveIdeas->ideas))
                                     @foreach ($objectiveIdeas->ideas as $idea)
-                                        {{-- @dd($idea) --}}
+
                                         <tr>
                                             <td class="title_col">
                                                 <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
@@ -437,7 +492,75 @@ alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
                         </table>
                         <div class="mob_table d-sm-none d-block">
                         </div>
+                    </div> --}}
+
+                    <div class="table_block_body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="title_col">Idea Name</th>
+                                    <th class="status_col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (isset($objectiveIdeas->ideas) && count($objectiveIdeas->ideas) > 0)
+                                    @foreach ($objectiveIdeas->ideas as $idea)
+                                        <tr>
+                                            <td class="title_col">
+                                                <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
+                                                    {{ $idea->title }}
+                                                </a>
+                                            </td>
+                                            <td class="type_col">
+                                                @if ($idea->status == 1)
+                                                    Draft
+                                                @elseif ($idea->status == 2)
+                                                    Assigned to Task
+                                                @else
+                                                    Implemented
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="2">No record(s) found.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+
+                        {{-- Mobile View --}}
+                        <div class="mob_table d-sm-none d-block">
+                            @if (isset($objectiveIdeas->ideas) && count($objectiveIdeas->ideas) > 0)
+                                @foreach ($objectiveIdeas->ideas as $idea)
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_cell">
+                                            <strong>Idea Name:</strong>
+                                            <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
+                                                {{ $idea->title }}
+                                            </a>
+                                        </div>
+                                        <div class="mob_table_cell">
+                                            <strong>Status:</strong>
+                                            @if ($idea->status == 1)
+                                                Draft
+                                            @elseif ($idea->status == 2)
+                                                Assigned to Task
+                                            @else
+                                                Implemented
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="mob_table_row text-center">
+                                    No record(s) found.
+                                </div>
+                            @endif
+                        </div>
                     </div>
+
                 </div>
                 <div class="content_block_bottom">
                     <a href="{!! url('ideas/' . $unitIDHashID->encode($unitData->id) . '/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}"

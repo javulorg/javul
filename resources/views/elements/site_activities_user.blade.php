@@ -1,6 +1,6 @@
 <div class="panel-grey panel-default">
     <div class="panel-heading loading_content_hide">
-        <h4>ACTIVITY LOG</h4>
+        <h4>ACTIVITY LOG </h4>
     </div>
     <div class="panel-body list-group loading_content_hide">
         @if(count($site_activity) > 0)

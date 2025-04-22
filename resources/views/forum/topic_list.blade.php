@@ -7,7 +7,7 @@
 @section('site-name')
     <h1>{{ $unitObj->name }}</h1>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 @endsection
 @section('navbar')

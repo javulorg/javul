@@ -8,7 +8,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 @endsection
 
@@ -97,6 +97,52 @@
                                 </tbody>
 
                             </table>
+
+                            <div class="mob_table d-sm-none d-block">
+                                @if(count($unitTasks) > 0)
+                                    @foreach($unitTasks as $obj)
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Task Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url('tasks/'.$taskIDHashID->encode($obj->id).'/'.$obj->slug) !!}" title="edit">
+                                                        {{ $obj->name }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Status</div>
+                                                <div class="mob_table_val">
+                                                    <span class="colorLightGreen">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl"><i class="fa fa-trophy"></i> In Progress</div>
+                                                <div class="mob_table_val">
+                                                    {{ \App\Models\Task::getTaskCount('in-progress', $obj->id) }}
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl"><i class="fa fa-clock"></i> Completed</div>
+                                                <div class="mob_table_val">
+                                                    {{ \App\Models\Task::getTaskCount('completed', $obj->id) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">No record(s) found.</div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            
+
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">
@@ -157,6 +203,42 @@
                                 </tbody>
 
                             </table>
+
+
+                            <div class="mob_table d-sm-none d-block">
+                                @if(count($tasksMasterData) > 0 )
+                                    @foreach($tasksMasterData as $task)
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Task Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id) . '/' . $task->slug) !!}">
+                                                        {{ $task->name }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Unit Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url('units/'.$unitIDHashID->encode($task->unit_id).'/'.\App\Models\Unit::getSlug($task->unit_id)) !!}">
+                                                        {{ \App\Models\Unit::getUnitName($task->unit_id) }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            {{-- Aap yahan aur bhi fields add kar sakte ho agar chahiye ho --}}
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">
+                                                No record(s) found.
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">

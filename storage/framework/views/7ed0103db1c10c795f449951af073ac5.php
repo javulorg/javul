@@ -274,16 +274,13 @@ alt="Watched" id="eye-off-icon-<?php echo e($objectiveObj->id); ?>">
                             <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                         </div>
                     </div>
+                    
                     <div class="table_block_body">
                         <table>
                             <thead>
                                 <tr>
-                                    <th class="title_col">
-                                        Title
-                                    </th>
-                                    <th class="status_col">
-                                        Status
-                                    </th>
+                                    <th class="title_col">Title</th>
+                                    <th class="status_col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -297,31 +294,51 @@ alt="Watched" id="eye-off-icon-<?php echo e($objectiveObj->id); ?>">
                                                 </a>
                                             </td>
                                             <td class="status_col">
-                                                <?php if($obj->status == 'editable'): ?>
-                                                    <span
-                                                        class="text-success"><?php echo e(\App\Models\SiteConfigs::task_status($obj->status)); ?></span>
-                                                <?php else: ?>
-                                                    <span
-                                                        class="text-success"><?php echo e(\App\Models\SiteConfigs::task_status($obj->status)); ?></span>
-                                                <?php endif; ?>
+                                                <span class="text-success"><?php echo e(\App\Models\SiteConfigs::task_status($obj->status)); ?></span>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="4">No record(s) found.</td>
+                                        <td colspan="2">No record(s) found.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
+
+                        
+                        <div class="mob_table d-sm-none d-block">
+                            <?php if(count($objectiveObj->tasks) > 0): ?>
+                                <?php $__currentLoopData = $objectiveObj->tasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_cell">
+                                            <strong>Title:</strong>
+                                            <a href="<?php echo url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug); ?>">
+                                                <?php echo e($obj->name); ?>
+
+                                            </a>
+                                        </div>
+                                        <div class="mob_table_cell">
+                                            <strong>Status:</strong>
+                                            <span class="text-success"><?php echo e(\App\Models\SiteConfigs::task_status($obj->status)); ?></span>
+                                        </div>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
+                                <div class="mob_table_row text-center">
+                                    No record(s) found.
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
+
                 </div>
                 <div class="content_block_bottom">
                     <a href="<?php echo url('objectives/' . $object_hash_id . '/' . $objectiveObj->slug . '/' . $unitData->id . '/tasks'); ?>">
                         <img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt="">
                         Add New
                     </a>
-                    <div class="separator"></div>
+
                     <div class="separator"></div> <a href="<?php echo e(url('tasks?unit=' . $unitData->id)); ?>" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
 
 
@@ -393,6 +410,8 @@ alt="Watched" id="eye-off-icon-<?php echo e($objectiveObj->id); ?>">
                             <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                         </div>
                     </div>
+                    
+
                     <div class="table_block_body">
                         <table>
                             <thead>
@@ -402,10 +421,8 @@ alt="Watched" id="eye-off-icon-<?php echo e($objectiveObj->id); ?>">
                                 </tr>
                             </thead>
                             <tbody>
-
-                                <?php if(isset($objectiveIdeas->ideas)): ?>
+                                <?php if(isset($objectiveIdeas->ideas) && count($objectiveIdeas->ideas) > 0): ?>
                                     <?php $__currentLoopData = $objectiveIdeas->ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        
                                         <tr>
                                             <td class="title_col">
                                                 <a href="<?php echo url('ideas/' . $ideaHashID->encode($idea->id)); ?>">
@@ -413,25 +430,57 @@ alt="Watched" id="eye-off-icon-<?php echo e($objectiveObj->id); ?>">
 
                                                 </a>
                                             </td>
-                                            <?php if($idea->status == 1): ?>
-                                                <td class="type_col"> Draft</td>
-                                            <?php elseif($idea->status == 2): ?>
-                                                <td class="type_col">Assigned to Task</td>
-                                            <?php else: ?>
-                                                <td class="type_col">Implemented</td>
-                                            <?php endif; ?>
+                                            <td class="type_col">
+                                                <?php if($idea->status == 1): ?>
+                                                    Draft
+                                                <?php elseif($idea->status == 2): ?>
+                                                    Assigned to Task
+                                                <?php else: ?>
+                                                    Implemented
+                                                <?php endif; ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="5">No record(s) found.</td>
+                                        <td colspan="2">No record(s) found.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
+
+                        
                         <div class="mob_table d-sm-none d-block">
+                            <?php if(isset($objectiveIdeas->ideas) && count($objectiveIdeas->ideas) > 0): ?>
+                                <?php $__currentLoopData = $objectiveIdeas->ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_cell">
+                                            <strong>Idea Name:</strong>
+                                            <a href="<?php echo url('ideas/' . $ideaHashID->encode($idea->id)); ?>">
+                                                <?php echo e($idea->title); ?>
+
+                                            </a>
+                                        </div>
+                                        <div class="mob_table_cell">
+                                            <strong>Status:</strong>
+                                            <?php if($idea->status == 1): ?>
+                                                Draft
+                                            <?php elseif($idea->status == 2): ?>
+                                                Assigned to Task
+                                            <?php else: ?>
+                                                Implemented
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
+                                <div class="mob_table_row text-center">
+                                    No record(s) found.
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
+
                 </div>
                 <div class="content_block_bottom">
                     <a href="<?php echo url('ideas/' . $unitIDHashID->encode($unitData->id) . '/add'); ?>"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>"

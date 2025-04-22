@@ -7,7 +7,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -97,6 +97,55 @@
                                 </tbody>
 
                             </table>
+
+                            <div class="mob_table d-sm-none d-block">
+                                <?php if(count($unitTasks) > 0): ?>
+                                    <?php $__currentLoopData = $unitTasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Task Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="<?php echo url('tasks/'.$taskIDHashID->encode($obj->id).'/'.$obj->slug); ?>" title="edit">
+                                                        <?php echo e($obj->name); ?>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Status</div>
+                                                <div class="mob_table_val">
+                                                    <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($obj->status)); ?></span>
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl"><i class="fa fa-trophy"></i> In Progress</div>
+                                                <div class="mob_table_val">
+                                                    <?php echo e(\App\Models\Task::getTaskCount('in-progress', $obj->id)); ?>
+
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl"><i class="fa fa-clock"></i> Completed</div>
+                                                <div class="mob_table_val">
+                                                    <?php echo e(\App\Models\Task::getTaskCount('completed', $obj->id)); ?>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">No record(s) found.</div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            
+
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">
@@ -159,6 +208,44 @@
                                 </tbody>
 
                             </table>
+
+
+                            <div class="mob_table d-sm-none d-block">
+                                <?php if(count($tasksMasterData) > 0 ): ?>
+                                    <?php $__currentLoopData = $tasksMasterData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Task Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="<?php echo url('tasks/'.$taskIDHashID->encode($task->id) . '/' . $task->slug); ?>">
+                                                        <?php echo e($task->name); ?>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Unit Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="<?php echo url('units/'.$unitIDHashID->encode($task->unit_id).'/'.\App\Models\Unit::getSlug($task->unit_id)); ?>">
+                                                        <?php echo e(\App\Models\Unit::getUnitName($task->unit_id)); ?>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">
+                                                No record(s) found.
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">

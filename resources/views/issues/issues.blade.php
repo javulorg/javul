@@ -11,7 +11,7 @@
             <div class="col-md-8 col-md-push-4">
                 <div class="panel panel-grey panel-default">
                     <div class="panel-heading">
-                        <h4>ISSUES</h4>
+                        <h4>ISSUES </h4>
                     </div>
                     <div class="panel-body table-inner table-responsive loading_content_hide">
                         <div class="loading_dots unit_loading" style="position: absolute;top:20%;left:43%;z-index: 9999;display:none;">
