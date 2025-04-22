@@ -7,7 +7,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 @endsection
 
@@ -44,7 +44,7 @@
                             <div class="table_block_icon">
                                 <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt="" class="img-fluid">
                             </div>
-                            Ideas ({{ $ideasTotal }})
+                            Ideas  ({{ $ideasTotal }})
                             <div class="arrow">
                                 <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
                             </div>
@@ -81,9 +81,48 @@
                                 </tr>
                             @endif
                             </tbody>
+
+                            <div class="mob_table d-sm-none d-block">
+                                @if(count($unitIdea) > 0)
+                                    @foreach($unitIdea as $idea)
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Idea Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url('ideas/'.$ideaHashID->encode($idea->id)) !!}">
+                                                        {{ $idea->title }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Status</div>
+                                                <div class="mob_table_val">
+                                                    @if($idea->status == 1)
+                                                        Draft
+                                                    @elseif($idea->status == 2)
+                                                        Assigned to Task
+                                                    @else
+                                                        Implemented
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">
+                                                No record(s) found.
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            
                         </table>
-                        <div class="mob_table d-sm-none d-block">
-                        </div>
+
+                     
+                     
                     </div>
                 </div>
                     <div class="d-flex justify-content-between mt-2">
@@ -140,7 +179,42 @@
                                 </tbody>
                             </table>
                             <div class="mob_table d-sm-none d-block">
+                                @if(count($ideasMaster) > 0)
+                                    @foreach($ideasMaster as $idea)
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">
+                                                    Idea Name
+                                                </div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url('ideas/'.$ideaHashID->encode($idea->id)) !!}">
+                                                        {{$idea->title}}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">
+                                                    Unit Name
+                                                </div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url('units/'.$unitIDHashID->encode($idea->unit_id).'/'.\App\Models\Unit::getSlug($idea->unit_id)) !!}">
+                                                        {{\App\Models\Unit::getUnitName($idea->unit_id)}}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">
+                                                No record(s) found.
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
+                            
                         </div>
                     </div>
                     <div class="content_block_bottom">

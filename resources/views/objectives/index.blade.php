@@ -8,7 +8,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 @endsection
 
@@ -47,12 +47,12 @@
                             <div class="table_block_icon">
                                 <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
                             </div>
-
+                            Objectives ({{ $objectivesTotal }})
                             <div class="arrow">
                                 <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
                             </div>
                         </div>
-                        {{-- <div class="table_block_body">
+                        <div class="table_block_body">
                             @if (isset($unitData))
                                 <input type="hidden" name="unit" value="{{ $unitData->id }}" id="unit_id">
                             @else
@@ -93,76 +93,56 @@
                                 </tbody>
 
                             </table>
-                        </div> --}}
 
-
-
-                        <div class="table_block_body">
-                            <input type="hidden" name="unit" value="{{ isset($unitData) ? $unitData->id : null }}" id="unit_id">
-
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="title_col">Objective Name</th>
-                                        <th class="type_col">Support</th>
-                                        <th class="type_col">In progress</th>
-                                        <th class="type_col">Available</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(count($unitObjectives) > 0)
-                                        @foreach($unitObjectives as $obj)
-                                            <tr>
-                                                <td class="title_col">
+                            <div class="mob_table d-sm-none d-block">
+                                @if (count($unitObjectives) > 0)
+                                    @foreach ($unitObjectives as $obj)
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Objective Name</div>
+                                                <div class="mob_table_val">
                                                     <a href="{!! url('objectives/' . $objectiveIDHashID->encode($obj->id) . '/' . $obj->slug) !!}" title="edit">
                                                         {{ $obj->name }}
                                                     </a>
-                                                </td>
-                                                <td class="type_col text-center">{{ \App\Models\Task::getTaskCount('available', $obj->id) }}</td>
-                                                <td class="type_col text-center">{{ \App\Models\Task::getTaskCount('in-progress', $obj->id) }}</td>
-                                                <td class="type_col text-center">{{ \App\Models\Task::getTaskCount('completed', $obj->id) }}</td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="4" class="text-center">No record(s) found.</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-
-                            {{-- Mobile View --}}
-                            <div class="mob_table d-sm-none d-block">
-                                @if(count($unitObjectives) > 0)
-                                    @foreach($unitObjectives as $obj)
-                                        <div class="mob_table_row">
-                                            <div class="mob_table_cell">
-                                                <strong>Objective Name:</strong>
-                                                <a href="{!! url('objectives/' . $objectiveIDHashID->encode($obj->id) . '/' . $obj->slug) !!}">
-                                                    {{ $obj->name }}
-                                                </a>
+                                                </div>
                                             </div>
-                                            <div class="mob_table_cell">
-                                                <strong>Support:</strong>
-                                                {{ \App\Models\Task::getTaskCount('available', $obj->id) }}
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Support</div>
+                                                <div class="mob_table_val text-center">
+                                                    {{ \App\Models\Task::getTaskCount('available', $obj->id) }}
+                                                </div>
                                             </div>
-                                            <div class="mob_table_cell">
-                                                <strong>In Progress:</strong>
-                                                {{ \App\Models\Task::getTaskCount('in-progress', $obj->id) }}
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">In Progress</div>
+                                                <div class="mob_table_val text-center">
+                                                    {{ \App\Models\Task::getTaskCount('in-progress', $obj->id) }}
+                                                </div>
                                             </div>
-                                            <div class="mob_table_cell">
-                                                <strong>Available:</strong>
-                                                {{ \App\Models\Task::getTaskCount('completed', $obj->id) }}
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Available</div>
+                                                <div class="mob_table_val text-center">
+                                                    {{ \App\Models\Task::getTaskCount('completed', $obj->id) }}
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="mob_table_row text-center">
-                                        No record(s) found.
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">No record(s) found.</div>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
+                            
                         </div>
+
+
+
+                   
 
 
                     </div>
@@ -228,51 +208,53 @@
 
                             </table>
                             <div class="mob_table d-sm-none d-block">
-                                @if(count($objectivesMasterData) > 0 )
-                                @foreach($objectivesMasterData as $objective)
-                                <div class="mob_table_section">
-                                    <div class="mob_table_row">
-                                        <div class="mob_table_ttl">
-                                        Objective Name
+                                @if (count($objectivesMasterData) > 0)
+                                    @foreach ($objectivesMasterData as $objective)
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">
+                                                    Objective Name
+                                                </div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url('objectives/' . $objectiveIDHashID->encode($objective->id) . '/' . $objective->slug) !!}">
+                                                        {{ $objective->name }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">
+                                                    Unit Name
+                                                </div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url(
+                                                        'units/' . $unitIDHashID->encode($objective->unit_id) . '/' . \App\Models\Unit::getSlug($objective->unit_id),
+                                                    ) !!}">
+                                                        {{ $objective->unit->name }}
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="mob_table_val">
-                                            <a href="{!! url('objectives/'.$objectiveIDHashID->encode($objective->id).'/'.$objective->slug)!!}">
-                                                {{ $objective->name }}
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="mob_table_row">
-                                        <div class="mob_table_ttl">
-                                            Unit Name
-                                        </div>
-                                        <div class="mob_table_val">
-                                            <a href="{!! url('units/'.$unitIDHashID->encode($objective->unit_id).'/'. \App\Models\Unit::getSlug($objective->unit_id) )!!}">
-                                                {{ $objective->unit->name }}
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="4">No record(s) found.</td>
-                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="4">No record(s) found.</td>
+                                    </tr>
                                 @endif
                             </div>
                         </div>
                     </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-2">
-                        <div class="pagination-left">
-                        </div>
-                        {{--                        <div class="pagination-right"> --}}
-                        {{--                            <a href="{{ url('objectives/create') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> --}}
-                        {{--                        </div> --}}
-                    </div>
                 </div>
-            @endif
         </div>
+        <div class="d-flex justify-content-between mt-2">
+            <div class="pagination-left">
+            </div>
+            {{--                        <div class="pagination-right"> --}}
+            {{--                            <a href="{{ url('objectives/create') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> --}}
+            {{--                        </div> --}}
+        </div>
+    </div>
+    @endif
+    </div>
     </div>
 @endsection
 @section('scripts')

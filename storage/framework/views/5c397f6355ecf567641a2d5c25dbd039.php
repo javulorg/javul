@@ -10,7 +10,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -265,6 +265,49 @@
                                 </tr>
                                 </tbody>
                             </table>
+
+
+                            <div class="mob_table d-sm-none d-block">
+
+                        
+                                <?php if(isset($idea->task)): ?>
+                                <div class="mob_table_section">
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Title</div>
+                                        <div class="mob_table_val">
+                                            <a href="<?php echo url('tasks/'.$taskIDHashID->encode($idea->task->id).'/'.$idea->task->name); ?>" title="edit">
+                                                <?php echo e($idea->task->name); ?>
+
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Status</div>
+                                        <div class="mob_table_val">
+                                            <span class="colorLightGreen">
+                                                <?php echo e(\App\Models\SiteConfigs::task_status($idea->task->status)); ?>
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">In Progress</div>
+                                        <div class="mob_table_val">
+                                            <?php echo e(\App\Models\Task::getTaskCount('in-progress', $idea->task->id)); ?>
+
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Completed</div>
+                                        <div class="mob_table_val">
+                                            <?php echo e(\App\Models\Task::getTaskCount('completed', $idea->task->id)); ?>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+
                         </div>
                     </div>
                     <div class="content_block_bottom">
@@ -329,6 +372,49 @@
                                 </tr>
                                 </tbody>
                             </table>
+
+                            <div class="mob_table d-sm-none d-block">
+
+                                
+                                <?php if(isset($idea->issue)): ?>
+                                <div class="mob_table_section">
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Issue Name</div>
+                                        <div class="mob_table_val">
+                                            <a href="<?php echo url('issues/'.$issueIDHashID->encode($idea->issue->id).'/view'); ?>" title="edit">
+                                                <?php echo e($idea->issue->title); ?>
+
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Status</div>
+                                        <div class="mob_table_val">
+                                            <span class="<?php echo e($status_class); ?>">
+                                                <?php echo e(ucfirst($idea->issue->status) . $verified_by . $resolved_by); ?>
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Created By</div>
+                                        <div class="mob_table_val">
+                                            <a href="<?php echo url('userprofiles/'.$userIDHashID->encode($idea->issue->user_id).'/'.strtolower(str_replace(" ","_",App\Models\User::getUserName($idea->issue->user_id)))); ?>">
+                                                <?php echo e(App\Models\User::getUserName($idea->issue->user_id)); ?>
+
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Created Date</div>
+                                        <div class="mob_table_val">
+                                            <?php echo e($idea->issue->created_at); ?>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -425,7 +511,7 @@
                         </div>
                     </div>
                     <div class="content_block_bottom">
-                        <a href="#"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New</a> <div class="separator"></div> <a href="<?php echo e(url('ideas?unit=' . $unitData->id)); ?>" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
+                        <a href="<?php echo url('ideas/'.$unitIDHashID->encode($unitData->id).'/add'); ?>"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New</a> <div class="separator"></div> <a href="<?php echo e(url('ideas?unit=' . $unitData->id)); ?>" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
                     </div>
                 </div>
 

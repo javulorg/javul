@@ -111,7 +111,7 @@ class TasksController extends Controller
 
         $task_objective_id = $objectiveIDHashID->decode($objectiveId);
 
-        $task_objective_id = $task_objective_id[0];
+        // $task_objective_id = $task_objective_id[0];
 
         $taskUnitObj = Unit::find($unitId);
         $taskObjectiveObj = Objective::find($task_objective_id);

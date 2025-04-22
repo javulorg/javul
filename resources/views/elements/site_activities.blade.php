@@ -1,3 +1,4 @@
+
 @if(!$ajax)
     <div class="panel panel-grey panel-default">
         <div class="panel-heading loading_content_hide">

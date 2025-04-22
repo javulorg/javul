@@ -342,7 +342,7 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
+                    <a href="{!! url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
                         New</a>
                     <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
                 </div>
@@ -379,7 +379,7 @@
                     @endif
                 </div>
                 <div class="content_block_bottom">
-                    <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
+                    <a href="{!! url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
                         New</a>
                     <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
                 </div>
@@ -480,7 +480,7 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
+                    <a href="{!! url('issues/'.$unitIDHashID->encode($unit_activity_id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
                         New</a>
                     <div class="separator"></div> <a href="{{ url('issues?unit=' . $unitData->id) }}"  class="see_more" onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
                 </div>

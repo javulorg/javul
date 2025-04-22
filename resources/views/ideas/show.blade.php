@@ -11,7 +11,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 @endsection
 
@@ -260,6 +260,45 @@
                                 </tr>
                                 </tbody>
                             </table>
+
+
+                            <div class="mob_table d-sm-none d-block">
+
+                        
+                                @if(isset($idea->task))
+                                <div class="mob_table_section">
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Title</div>
+                                        <div class="mob_table_val">
+                                            <a href="{!! url('tasks/'.$taskIDHashID->encode($idea->task->id).'/'.$idea->task->name) !!}" title="edit">
+                                                {{ $idea->task->name }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Status</div>
+                                        <div class="mob_table_val">
+                                            <span class="colorLightGreen">
+                                                {{ \App\Models\SiteConfigs::task_status($idea->task->status) }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">In Progress</div>
+                                        <div class="mob_table_val">
+                                            {{ \App\Models\Task::getTaskCount('in-progress', $idea->task->id) }}
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Completed</div>
+                                        <div class="mob_table_val">
+                                            {{ \App\Models\Task::getTaskCount('completed', $idea->task->id) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+
                         </div>
                     </div>
                     <div class="content_block_bottom">
@@ -322,6 +361,45 @@
                                 </tr>
                                 </tbody>
                             </table>
+
+                            <div class="mob_table d-sm-none d-block">
+
+                                
+                                @if(isset($idea->issue))
+                                <div class="mob_table_section">
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Issue Name</div>
+                                        <div class="mob_table_val">
+                                            <a href="{!! url('issues/'.$issueIDHashID->encode($idea->issue->id).'/view') !!}" title="edit">
+                                                {{ $idea->issue->title }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Status</div>
+                                        <div class="mob_table_val">
+                                            <span class="{{ $status_class }}">
+                                                {{ ucfirst($idea->issue->status) . $verified_by . $resolved_by }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Created By</div>
+                                        <div class="mob_table_val">
+                                            <a href="{!! url('userprofiles/'.$userIDHashID->encode($idea->issue->user_id).'/'.strtolower(str_replace(" ","_",App\Models\User::getUserName($idea->issue->user_id)))) !!}">
+                                                {{ App\Models\User::getUserName($idea->issue->user_id) }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mob_table_row">
+                                        <div class="mob_table_ttl">Created Date</div>
+                                        <div class="mob_table_val">
+                                            {{ $idea->issue->created_at }}
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -415,7 +493,7 @@
                         </div>
                     </div>
                     <div class="content_block_bottom">
-                        <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="{{ url('ideas?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
+                        <a href="{!! url('ideas/'.$unitIDHashID->encode($unitData->id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="{{ url('ideas?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
                     </div>
                 </div>
 

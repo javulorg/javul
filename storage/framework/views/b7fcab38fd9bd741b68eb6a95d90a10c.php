@@ -6,7 +6,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society 
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -43,7 +43,7 @@
                             <div class="table_block_icon">
                                 <img src="<?php echo e(asset('v2/assets/img/humbleicons_bulb.svg')); ?>" alt="" class="img-fluid">
                             </div>
-                            Ideas (<?php echo e($ideasTotal); ?>)
+                            Ideas  (<?php echo e($ideasTotal); ?>)
                             <div class="arrow">
                                 <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                             </div>
@@ -81,9 +81,49 @@
                                 </tr>
                             <?php endif; ?>
                             </tbody>
+
+                            <div class="mob_table d-sm-none d-block">
+                                <?php if(count($unitIdea) > 0): ?>
+                                    <?php $__currentLoopData = $unitIdea; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Idea Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="<?php echo url('ideas/'.$ideaHashID->encode($idea->id)); ?>">
+                                                        <?php echo e($idea->title); ?>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Status</div>
+                                                <div class="mob_table_val">
+                                                    <?php if($idea->status == 1): ?>
+                                                        Draft
+                                                    <?php elseif($idea->status == 2): ?>
+                                                        Assigned to Task
+                                                    <?php else: ?>
+                                                        Implemented
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">
+                                                No record(s) found.
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            
                         </table>
-                        <div class="mob_table d-sm-none d-block">
-                        </div>
+
+                     
+                     
                     </div>
                 </div>
                     <div class="d-flex justify-content-between mt-2">
@@ -142,7 +182,44 @@
                                 </tbody>
                             </table>
                             <div class="mob_table d-sm-none d-block">
+                                <?php if(count($ideasMaster) > 0): ?>
+                                    <?php $__currentLoopData = $ideasMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">
+                                                    Idea Name
+                                                </div>
+                                                <div class="mob_table_val">
+                                                    <a href="<?php echo url('ideas/'.$ideaHashID->encode($idea->id)); ?>">
+                                                        <?php echo e($idea->title); ?>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">
+                                                    Unit Name
+                                                </div>
+                                                <div class="mob_table_val">
+                                                    <a href="<?php echo url('units/'.$unitIDHashID->encode($idea->unit_id).'/'.\App\Models\Unit::getSlug($idea->unit_id)); ?>">
+                                                        <?php echo e(\App\Models\Unit::getUnitName($idea->unit_id)); ?>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">
+                                                No record(s) found.
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
+                            
                         </div>
                     </div>
                     <div class="content_block_bottom">

@@ -310,7 +310,7 @@
                     </div>
                 </div>
                 <div class="content_block_bottom">
-                    <a href="#"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a> <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
+                    <a href="{{url('objectives/'.$userIDHashID->encode($object_id).'/'. $objSlug .'/'.$unit_id.'/tasks')}}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a>  <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
                 </div>
             </div>
 
@@ -383,6 +383,70 @@
                             @endif
                             </tbody>
 
+                            <div class="mob_table d-sm-none d-block">
+                                @if(count($taskBidders) > 0)
+                                    @foreach($taskBidders as $bidder)
+                                        <div class="mob_table_section">
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Bidder Name</div>
+                                                <div class="mob_table_val">
+                                                    <a href="{!! url('userprofiles/'.$userIDHashID->encode($bidder->user_id).'/'.
+                                                        strtolower($bidder->first_name.'_'.$bidder->last_name)) !!}">
+                                                        {{$bidder->first_name . ' ' . $bidder->last_name}}
+                                                    </a>
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Amount</div>
+                                                <div class="mob_table_val">
+                                                    {{$bidder->amount}} 
+                                                    <span class="badge" style="color: #0d1217; font-size:12px;">
+                                                        {{$bidder->charge_type}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                            
+                                            <div class="mob_table_row">
+                                                <div class="mob_table_ttl">Status</div>
+                                                <div class="mob_table_val">
+                                                    @if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to)
+                                                        <span class="btn btn-sm btn-warning" style="color:#fff;">Assigned</span>
+                                                    @elseif($taskObj->status=="completion_evaluation" && $bidder->user_id == $taskObj->assign_to)
+                                                        <span class="btn btn-sm btn-success" style="color:#fff;">Completed</span>
+                                                    @elseif($bidder->status == "offer_rejected")
+                                                        <span class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</span>
+                                                    @elseif($taskObj->status=="in_progress" && $bidder->user_id == $taskObj->assign_to)
+                                                        <span class="btn btn-sm btn-info" style="color:#fff;">In Progress</span>
+                                                    @elseif(
+                                                        (
+                                                            (empty($taskObj->assign_to) && ($isUnitAdminOfTask || (auth()->user()?->role == 1) || (auth()->user()?->role == 3)))
+                                                            ||
+                                                            (!empty($taskObj->assign_to) && ($isUnitAdminOfTask || (auth()->user()?->role == 1) || (auth()->user()?->role == 3)) && $taskObj->status=="open_for_bidding")
+                                                        )
+                                                    )
+                                                        <a class="btn btn-sm btn-primary assign_now"
+                                                           data-uid="{{$userIDHashID->encode($bidder->user_id)}}"
+                                                           data-tid="{{$taskIDHashID->encode($bidder->task_id)}}"
+                                                           style="color:#fff;">Assign now</a>
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="mob_table_section">
+                                        <div class="mob_table_row">
+                                            <div class="mob_table_val text-center">
+                                                No record(s) found.
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            
                         </table>
                     </div>
                 </div>
