@@ -12,97 +12,98 @@
             </div>
             <div class="sidebar_block_right">
                 <?php if(isset($unitObj) && $unitObj->unit_type == 0 ): ?>
-                    Product
+                Product
                 <?php elseif(isset($unitObj) && $unitObj->unit_type == 1): ?>
-                    Service
+                Service
                 <?php else: ?>
-                    People’s Government
+                People’s Government
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <?php if(isset($unitObj) && ( $unitObj->unit_type == 0 || $unitObj->unit_type == 1) ): ?>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Product Name:
+            </div>
+            <div class="sidebar_block_right">
+                <?php echo e($unitObj->product_name); ?>
+
+            </div>
+        </div>
+
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Service Name:
+            </div>
+            <div class="sidebar_block_right">
+                <?php echo e($unitObj->service_name); ?>
+
+            </div>
+        </div>
+
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Business Model:
+            </div>
+            <div class="sidebar_block_right">
+                <?php if($unitObj->business_model == 0): ?>
+                Community-owned
+                <?php else: ?>
+                Corporate
                 <?php endif; ?>
             </div>
         </div>
 
-        <?php if(isset($unitObj) && ( $unitObj->unit_type == 0 || $unitObj->unit_type == 1) ): ?>
-            <div class="sidebar_block_row">
-                <div class="sidebar_block_left">
-                    Product Name:
-                </div>
-                <div class="sidebar_block_right">
-                   <?php echo e($unitObj->product_name); ?>
-
-                </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Operational Grade:
             </div>
-
-            <div class="sidebar_block_row">
-                <div class="sidebar_block_left">
-                    Service Name:
-                </div>
-                <div class="sidebar_block_right">
-                    <?php echo e($unitObj->service_name); ?>
-
-                </div>
+            <div class="sidebar_block_right">
+                <?php echo e($unitObj->operational_grade); ?> <img src="<?php echo e(asset('v2/assets/img/question.svg')); ?>" alt=""
+                    class="question">
             </div>
+        </div>
 
-            <div class="sidebar_block_row">
-                <div class="sidebar_block_left">
-                    Business Model:
-                </div>
-                <div class="sidebar_block_right">
-                    <?php if($unitObj->business_model == 0): ?>
-                        Community-owned
-                    <?php else: ?>
-                        Corporate
-                    <?php endif; ?>
-                </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Company :
             </div>
+            <div class="sidebar_block_right">
+                <?php echo e($unitObj->company); ?>
 
-            <div class="sidebar_block_row">
-                <div class="sidebar_block_left">
-                    Operational Grade:
-                </div>
-                <div class="sidebar_block_right">
-                    <?php echo e($unitObj->operational_grade); ?> <img src="<?php echo e(asset('v2/assets/img/question.svg')); ?>" alt="" class="question">
-                </div>
             </div>
-
-            <div class="sidebar_block_row">
-                <div class="sidebar_block_left">
-                   Company :
-                </div>
-                <div class="sidebar_block_right">
-                    <?php echo e($unitObj->company); ?>
-
-                </div>
-            </div>
+        </div>
         <?php elseif(isset($unitObj) && ($unitObj->unit_type == 2)): ?>
-            <div class="sidebar_block_row">
-                <div class="sidebar_block_left">
-                    Scope :
-                </div>
-                <div class="sidebar_block_right">
-                    <?php if($unitObj->scope == 0): ?>
-                        City
-                    <?php elseif($unitObj->scope == 1): ?>
-                        County
-                    <?php elseif($unitObj->scope == 2): ?>
-                        State
-                    <?php elseif($unitObj->scope == 3): ?>
-                        National
-                    <?php elseif($unitObj->scope == 4): ?>
-                        International
-                    <?php else: ?>
-                    <?php endif; ?>
-
-                </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Scope :
             </div>
+            <div class="sidebar_block_right">
+                <?php if($unitObj->scope == 0): ?>
+                City
+                <?php elseif($unitObj->scope == 1): ?>
+                County
+                <?php elseif($unitObj->scope == 2): ?>
+                State
+                <?php elseif($unitObj->scope == 3): ?>
+                National
+                <?php elseif($unitObj->scope == 4): ?>
+                International
+                <?php else: ?>
+                <?php endif; ?>
+
+            </div>
+        </div>
         <?php else: ?>
-            <div class="sidebar_block_row">
-                <div class="sidebar_block_left">
-                    Scope :
-                </div>
-                <div class="sidebar_block_right">
-
-                </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                Scope :
             </div>
+            <div class="sidebar_block_right">
+
+            </div>
+        </div>
         <?php endif; ?>
 
 
@@ -139,20 +140,78 @@
         </div>
         <?php if(isset($unitObj)): ?>
         <div class="sidebar_block_content_bottom">
-            <a href="<?php echo route('unit_revison',[$unitIDHashID->encode($unitObj->id)]); ?>"><i class="fa fa-history"></i></a>
+            
+          <?php
+    $isWatched = \App\Models\Watchlist::where('user_id', auth()->id())
+        ->where('unit_id', $unitObj->id)
+        ->exists();
+        ?>
+
+<a href="javascript:void(0);"
+   class="edit_icon watchlist-link"
+   data-user-id="<?php echo e(auth()->id()); ?>"
+   data-unit-id="<?php echo e($unitObj->id); ?>"
+   data-url="<?php echo e(route('watchlistU.store', ['userId' => auth()->id(), 'unitId' => $unitObj->id])); ?>"
+   id="eye-link-<?php echo e($unitObj->id); ?>"
+   style="<?php echo e($isWatched ? 'display: none;' : ''); ?>">
+   <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;" alt="Watch">
+</a>
+
+<img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
+     style="height: 20px; width: 20px; <?php echo e($isWatched ? '' : 'display: none;'); ?>"
+     alt="Watched"
+     id="eye-off-icon-<?php echo e($unitObj->id); ?>">
+
+
+            <div class="separator"></div>
+            <a href="<?php echo route('unit_revison',[$unitIDHashID->encode($unitObj->id)]); ?>"><i
+                    class="fa fa-history"></i></a>
             <div class="separator"></div>
             <a href="<?php echo url('units/'.$unitIDHashID->encode($unitObj->id).'/edit'); ?>"><i class="fa fa-edit"></i></a>
             <div class="separator"></div>
-            <a class="add_to_my_watchlist" data-type="unit"  data-id="<?php echo e($unitIDHashID->encode($unitObj->id)); ?>" data-redirect="<?php echo e(url()->current()); ?>"><i class="fa fa-list"></i></a>
+            <a class="add_to_my_watchlist" data-type="unit" data-id="<?php echo e($unitIDHashID->encode($unitObj->id)); ?>"
+                data-redirect="<?php echo e(url()->current()); ?>"><i class="fa fa-list"></i></a>
 
             <?php if(auth()->guard()->check()): ?>
-                <?php if(Auth::user()->role == 2): ?>
-                    <div class="separator"></div>
-                    <a href="<?php echo url('admin/settings/'.$unitIDHashID->encode($unitObj->id)); ?>"><i class="fa fa-cogs"></i></a>
-                <?php endif; ?>
+            <?php if(Auth::user()->role == 2): ?>
+            <div class="separator"></div>
+            <a href="<?php echo url('admin/settings/'.$unitIDHashID->encode($unitObj->id)); ?>"><i class="fa fa-cogs"></i></a>
+            <?php endif; ?>
             <?php endif; ?>
         </div>
         <?php endif; ?>
     </div>
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const unitId = this.dataset.unitId;
+            const userId = this.dataset.userId;
+            const url = this.dataset.url;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                },
+                body: JSON.stringify({ userId, unitId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Added to watchlist!') {
+                    document.getElementById(`eye-link-${unitId}`).style.display = 'none';
+                    document.getElementById(`eye-off-icon-${unitId}`).style.display = 'inline';
+                }
+            })
+            .catch(err => console.error('Error:', err));
+        });
+    });
+});
+</script>
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/layout/v2/global-unit-overview.blade.php ENDPATH**/ ?>

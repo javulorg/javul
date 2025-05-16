@@ -217,21 +217,21 @@
 
                         <div class="row mt-2">
                             <div class="col-sm-12 mt-1 mb-2 form-group">
-                                <label class="control-label">Summary</label>
+                                <label class="control-label">Summary <span id="desc-error" class="text-danger">*</span></label>
                                 <textarea class="form-control" id="task-summary" name="summary">
-@if (!empty($taskObj))
-{{ $taskObj->summary }}
-@endif
-</textarea>
+                                    @if (!empty($taskObj))
+                                    {{ $taskObj->summary }}
+                                    @endif
+                                    </textarea>
                             </div>
 
                             <div class="col-sm-12 mt-1 mb-2 form-group">
                                 <label class="control-label">Description <span id="desc-error" class="text-danger">*</span></label>
                                 <textarea class="form-control" id="description" name="description">
-@if (!empty($taskObj))
-{{ $taskObj->description }}
-@endif
-</textarea>
+                                @if (!empty($taskObj))
+                                {{ $taskObj->description }}
+                                @endif
+                                </textarea>
                             </div>
 
                             <div class="col-sm-12 mt-1 mb-2 form-group">

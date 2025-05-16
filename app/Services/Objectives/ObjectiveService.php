@@ -4,7 +4,9 @@
 namespace App\Services\Objectives;
 
 
+
 use Illuminate\Support\Facades\DB;
+use App\Models\Objective;
 
 class ObjectiveService
 {
@@ -24,4 +26,13 @@ class ObjectiveService
         }
         return $comments;
     }
+
+    public function listAll()
+    {
+        return Objective::query();  // ✅ Correct class name
+    }
+
+
 }
+
+

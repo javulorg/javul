@@ -51,5 +51,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('tasks');
+
+    // Schema::disableForeignKeyConstraints();
+    // Schema::dropIfExists('tasks');
+    // Schema::enableForeignKeyConstraints();
+
     }
 };

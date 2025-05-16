@@ -97,22 +97,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($allUnits) > 0)
-                                    @foreach ($allUnits as $unit)
+                                @if (count($pagination) > 0)
+                                    @foreach ($pagination as $unit)
                                         @php
                                             $category_ids = explode(',', $unit->category_id);
-                                            $category_names = explode(',', \App\Models\UnitCategory::getName($unit->category_id));
+                                            $category_names = explode(
+                                                ',',
+                                                \App\Models\UnitCategory::getName($unit->category_id),
+                                            );
                                         @endphp
                                         <tr>
                                             <td class="title_col">
-                                                <a href="{{ url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug) }}">
+                                                <a
+                                                    href="{{ url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug) }}">
                                                     {{ $unit->name }}
                                                 </a>
                                             </td>
                                             <td class="last_reply_col">
                                                 @if (count($category_ids) > 0)
                                                     @foreach ($category_ids as $index => $category)
-                                                        <a href="{{ url('units/category=' . strtolower($category_names[$index])) }}">
+                                                        <a
+                                                            href="{{ url('units/category=' . strtolower($category_names[$index])) }}">
                                                             {{ $category_names[$index] }}
                                                         </a>
                                                         @if ($index !== count($category_ids) - 1)
@@ -133,17 +138,21 @@
 
                         <!-- Mobile Table -->
                         <div class="mob_table d-sm-none d-block">
-                            @if (count($allUnits) > 0)
-                                @foreach ($allUnits as $unit)
+                            @if (count($pagination) > 0)
+                                @foreach ($pagination as $unit)
                                     @php
                                         $category_ids = explode(',', $unit->category_id);
-                                        $category_names = explode(',', \App\Models\UnitCategory::getName($unit->category_id));
+                                        $category_names = explode(
+                                            ',',
+                                            \App\Models\UnitCategory::getName($unit->category_id),
+                                        );
                                     @endphp
                                     <div class="mob_table_section">
                                         <div class="mob_table_row">
                                             <div class="mob_table_ttl">{{ __('messages.unit_name') }}</div>
                                             <div class="mob_table_val">
-                                                <a href="{{ url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug) }}">
+                                                <a
+                                                    href="{{ url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug) }}">
                                                     {{ $unit->name }}
                                                 </a>
                                             </div>
@@ -152,7 +161,8 @@
                                             <div class="mob_table_ttl">{{ __('messages.unit_category') }}</div>
                                             <div class="mob_table_val">
                                                 @foreach ($category_ids as $index => $category)
-                                                    <a href="{{ url('units/category=' . strtolower($category_names[$index])) }}">
+                                                    <a
+                                                        href="{{ url('units/category=' . strtolower($category_names[$index])) }}">
                                                         {{ $category_names[$index] }}
                                                     </a>
                                                     @if ($index !== count($category_ids) - 1)
@@ -173,12 +183,22 @@
                         </div>
                     </div>
 
+
+                <div class="d-flex justify-content-between mt-2">
+                    <div class="pagination-left">
+                        {!! $pagination->links('layout.pagination') !!}
+                    </div>
                 </div>
+
+                </div>
+
+
                 <div class="content_block_bottom">
                     <a href="{{ url('units/create') }}">
                         <img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New
                     </a>
                 </div>
+
             </div>
         </div>
     </div>

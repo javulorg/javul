@@ -7,7 +7,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society h
     </div>
 @endsection
 
@@ -46,7 +46,7 @@
                             <div class="table_block_icon">
                                 <img src="{{ asset('v2/assets/img/bug.svg') }}" alt="" class="img-fluid">
                             </div>
-                            Issues 
+                            Issues ({{ $issuesTotal }})
                             <div class="arrow">
                                 <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
                             </div>
@@ -68,8 +68,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if(isset($unitIssues) && count($unitIssues) > 0)
-                                    @foreach($unitIssues as $obj)
+                                @if(isset($pagination) && count($pagination) > 0)
+                                    @foreach($pagination as $obj)
                                         <tr>
                                             <td class="title_col">
                                                 <a href="{!! url('issues/'.$issueIDHashID->encode($obj->id).'/view') !!}"
@@ -107,17 +107,17 @@
                                 @endif
                                 </tbody>
 
-                                
+
                             </table>
 
                             <div class="mob_table d-sm-none d-block">
-                                @if(isset($unitIssues) && count($unitIssues) > 0)
-                                    @foreach($unitIssues as $obj)
+                                @if(isset($pagination) && count($pagination) > 0)
+                                    @foreach($pagination as $obj)
                                         <?php
                                             $status_class = '';
                                             $verified_by = '';
                                             $resolved_by = '';
-                            
+
                                             if ($obj->status == "unverified") {
                                                 $status_class = "text-danger";
                                             } elseif ($obj->status == "verified") {
@@ -169,10 +169,17 @@
                                     </div>
                                 @endif
                             </div>
-                            
 
-                            
+
+
                         </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="pagination-left">
+                                {!! $pagination->links('layout.pagination') !!}
+                            </div>
+                        </div>
+
+
                     </div>
                     <div class="d-flex justify-content-between mt-2">
                         <div class="pagination-left">
@@ -209,8 +216,8 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @if(isset($issuesMaster) && count($issuesMaster) > 0 )
-                                        @foreach($issuesMaster as $issue)
+                                    @if(isset($pagination) && count($pagination) > 0 )
+                                        @foreach($pagination as $issue)
                                             <tr>
                                                 <td class="type_col">
                                                     <a href="{!! url('issues/'.$issueIDHashID->encode($issue->id).'/view') !!}">
@@ -233,8 +240,8 @@
                                 </table>
 
                                 <div class="mob_table d-sm-none d-block">
-                                    @if(isset($issuesMaster) && count($issuesMaster) > 0)
-                                        @foreach($issuesMaster as $issue)
+                                    @if(isset($pagination) && count($pagination) > 0)
+                                        @foreach($pagination as $issue)
                                             <div class="mob_table_section">
                                                 <div class="mob_table_row">
                                                     <div class="mob_table_ttl">
@@ -268,7 +275,12 @@
                                         </div>
                                     @endif
                                 </div>
-                                
+
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <div class="pagination-left">
+                                    {!! $pagination->links('layout.pagination') !!}
+                                </div>
                             </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">

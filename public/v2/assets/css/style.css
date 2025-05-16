@@ -1451,6 +1451,13 @@ footer .nav-item:last-child {
     }
 }
 
+.panel.panel-grey.panel-default {
+    width: 100%;
+ }
+/*
+ body {
+    overflow-x: hidden;
+ } */
 
 
 

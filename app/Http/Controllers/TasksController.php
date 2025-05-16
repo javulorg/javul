@@ -45,15 +45,18 @@ class TasksController extends Controller
 {
     use UnitTrait;
     public $user_messages;
+    protected $service;
 
-    public function __construct()
+    public function __construct(TaskService $service)
     {
         $this->middleware('auth', ['except' => ['index', 'view', 'get_tasks_paginate', 'lists', 'search_by_skills', 'search_by_status', 'search_tasks']]);
         $this->user_messages = new UserMessages;
+        $this->service = $service;
     }
 
     public function index(Request $request)
     {
+        $pagination = $this->service->listAll()->paginate(10);
         $msg_flag = false;
         $msg_val = '';
         $msg_type = '';
@@ -96,7 +99,7 @@ class TasksController extends Controller
         $tasksTotal = $tasks->get()->count();
         $homeCheck = isset($request->home) ??  false;
 
-        return view('tasks.index', compact('homeCheck', 'tasksTotal'));
+        return view('tasks.index', compact('homeCheck', 'tasksTotal', 'pagination'));
     }
 
     public function getObjectiveTask($objectiveId, $slug, $unitId)
@@ -533,7 +536,7 @@ class TasksController extends Controller
         ActivityPoint::create([
             'user_id'        => Auth::user()->id,
             'task_id'        => $task_id_decoded,
-            'points'         => 5,
+            'points'         => 3,
             'comments'       => 'Task Created',
             'type'           => 'task',
             'unit_id'        => $unit_id[0]
@@ -776,7 +779,7 @@ class TasksController extends Controller
         ActivityPoint::create([
             'user_id'         => Auth::user()->id,
             'task_id'         => $task_id_decoded,
-            'points'          => 2,
+            'points'          => 1,
             'comments'        => 'Task Updated',
             'type'            => 'task',
             'unit_id'         => $unit_id[0]
@@ -1447,7 +1450,7 @@ class TasksController extends Controller
                 view()->share('awardedFunds', $awardedFunds);
                 view()->share('unitData', $unitData);
                 view()->share('unitObj', $unitData);
-                view()->share('taskHashId', $taskHashId)    ;
+                view()->share('taskHashId', $taskHashId);
                 view()->share('ideas', $ideas);
                 return view('tasks.edit');
             }
@@ -1661,7 +1664,7 @@ class TasksController extends Controller
                     view()->share('unitData', $unitData);
                     view()->share('unitObj', $unitData);
                     $object_hash_id = 'abc123';
-                    return view('tasks.view' , ['object_hash_id'=>1]);
+                    return view('tasks.view', ['object_hash_id' => 1]);
                 }
             }
         }
@@ -2122,10 +2125,11 @@ class TasksController extends Controller
                 $rewardAssigned = true;
 
 
-                if (empty($taskEditors) || count($taskEditors) == 0) {
-                    $taskEditors = TaskEditor::where('task_id', $task_id)->where('user_id', '!=', $taskObj->assign_to)->get();
-                    $rewardAssigned = false;
-                }
+
+                // if (empty($taskEditors) || count($taskEditors) == 0) {
+                //     $taskEditors = TaskEditor::where('task_id', $task_id)->where('user_id', '!=', $taskObj->assign_to)->get();
+                //     $rewardAssigned = false;
+                // }
 
                 if (!empty($taskObj)) {
                     if ($request->isMethod('post')) {
@@ -2761,4 +2765,15 @@ class TasksController extends Controller
 
         return response()->json(['message' => 'Added to watchlist!']);
     }
+
+
+    public function destroy($id)
+    {
+        $task = Task::findOrFail($id);
+        $task->delete();
+
+        return redirect()->back()->with('success', 'Task deleted successfully.');
+    }
+
+
 }

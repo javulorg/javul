@@ -205,4 +205,7 @@ class Task extends Model
             return $task->slug;
         return null;
     }
+
+
+
 }

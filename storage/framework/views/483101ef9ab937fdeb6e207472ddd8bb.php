@@ -6,7 +6,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society
+        Open-source Society h
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -45,7 +45,7 @@
                             <div class="table_block_icon">
                                 <img src="<?php echo e(asset('v2/assets/img/bug.svg')); ?>" alt="" class="img-fluid">
                             </div>
-                            Issues 
+                            Issues (<?php echo e($issuesTotal); ?>)
                             <div class="arrow">
                                 <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                             </div>
@@ -67,8 +67,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php if(isset($unitIssues) && count($unitIssues) > 0): ?>
-                                    <?php $__currentLoopData = $unitIssues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(isset($pagination) && count($pagination) > 0): ?>
+                                    <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td class="title_col">
                                                 <a href="<?php echo url('issues/'.$issueIDHashID->encode($obj->id).'/view'); ?>"
@@ -108,17 +108,17 @@
                                 <?php endif; ?>
                                 </tbody>
 
-                                
+
                             </table>
 
                             <div class="mob_table d-sm-none d-block">
-                                <?php if(isset($unitIssues) && count($unitIssues) > 0): ?>
-                                    <?php $__currentLoopData = $unitIssues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(isset($pagination) && count($pagination) > 0): ?>
+                                    <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <?php
                                             $status_class = '';
                                             $verified_by = '';
                                             $resolved_by = '';
-                            
+
                                             if ($obj->status == "unverified") {
                                                 $status_class = "text-danger";
                                             } elseif ($obj->status == "verified") {
@@ -173,10 +173,18 @@
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            
 
-                            
+
+
                         </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="pagination-left">
+                                <?php echo $pagination->links('layout.pagination'); ?>
+
+                            </div>
+                        </div>
+
+
                     </div>
                     <div class="d-flex justify-content-between mt-2">
                         <div class="pagination-left">
@@ -213,8 +221,8 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <?php if(isset($issuesMaster) && count($issuesMaster) > 0 ): ?>
-                                        <?php $__currentLoopData = $issuesMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php if(isset($pagination) && count($pagination) > 0 ): ?>
+                                        <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td class="type_col">
                                                     <a href="<?php echo url('issues/'.$issueIDHashID->encode($issue->id).'/view'); ?>">
@@ -239,8 +247,8 @@
                                 </table>
 
                                 <div class="mob_table d-sm-none d-block">
-                                    <?php if(isset($issuesMaster) && count($issuesMaster) > 0): ?>
-                                        <?php $__currentLoopData = $issuesMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php if(isset($pagination) && count($pagination) > 0): ?>
+                                        <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <div class="mob_table_section">
                                                 <div class="mob_table_row">
                                                     <div class="mob_table_ttl">
@@ -276,7 +284,13 @@
                                         </div>
                                     <?php endif; ?>
                                 </div>
-                                
+
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <div class="pagination-left">
+                                    <?php echo $pagination->links('layout.pagination'); ?>
+
+                                </div>
                             </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">

@@ -7,7 +7,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society 
+        Open-source Society
     </div>
 @endsection
 
@@ -82,7 +82,9 @@
 
                         <div class="mob_table d-sm-none d-block">
                             @if($total > 0)
+
                                 @foreach($activities as $activity)
+
                                     <div class="mob_table_section">
                                         <div class="mob_table_row">
                                             <div class="mob_table_ttl">Action</div>
@@ -90,7 +92,7 @@
                                                 {!! $activity->comment !!}
                                             </div>
                                         </div>
-                        
+
                                         <div class="mob_table_row">
                                             <div class="mob_table_ttl">Time</div>
                                             <div class="mob_table_val">
@@ -107,14 +109,15 @@
                                 </div>
                             @endif
                         </div>
-                        
+
                     </div>
+
                     <div class="d-flex justify-content-between mt-2">
                         <div class="pagination-left">
                             {!! $activities->links('layout.pagination') !!}
                         </div>
-
                     </div>
+
                 </div>
             </div>
         </div>

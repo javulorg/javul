@@ -7,7 +7,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society 
+        Open-source Society
     </div>
 @endsection
 
@@ -118,11 +118,11 @@
                                     </div>
                                 @endif
                             </div>
-                            
+
                         </table>
 
-                     
-                     
+
+
                     </div>
                 </div>
                     <div class="d-flex justify-content-between mt-2">
@@ -156,8 +156,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if(count($ideasMaster) > 0 )
-                                    @foreach($ideasMaster as $idea)
+                                @if(count($pagination) > 0 )
+                                    @foreach($pagination as $idea)
                                         <tr>
                                             <td class="type_col">
                                                 <a href="{!! url('ideas/'.$ideaHashID->encode($idea->id)) !!}">
@@ -179,8 +179,8 @@
                                 </tbody>
                             </table>
                             <div class="mob_table d-sm-none d-block">
-                                @if(count($ideasMaster) > 0)
-                                    @foreach($ideasMaster as $idea)
+                                @if(count($pagination) > 0)
+                                    @foreach($pagination as $idea)
                                         <div class="mob_table_section">
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl">
@@ -214,7 +214,12 @@
                                     </div>
                                 @endif
                             </div>
-                            
+
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="pagination-left">
+                                {!! $pagination->links('layout.pagination') !!}
+                            </div>
                         </div>
                     </div>
                     <div class="content_block_bottom">

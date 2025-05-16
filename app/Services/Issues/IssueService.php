@@ -6,6 +6,7 @@ namespace App\Services\Issues;
 
 use Hashids\Hashids;
 use Illuminate\Support\Facades\Config;
+use App\Models\Issue;
 use Illuminate\Support\Facades\DB;
 
 class IssueService
@@ -15,29 +16,26 @@ class IssueService
         $comments = [];
         $forumTopic =  DB::table("forum_topic")
             ->select("topic_id")
-            ->where("unit_id",$unitId)
-            ->where("section_id",$sectionId)
-            ->where("object_id",$objectId)
+            ->where("unit_id", $unitId)
+            ->where("section_id", $sectionId)
+            ->where("object_id", $objectId)
             ->first();
-        if($forumTopic){
+        if ($forumTopic) {
             $comments = DB::table('forum_post')
                 ->where('topic_id', $forumTopic->topic_id)
                 ->get();
-//            dd($comments->toArray());
+            //            dd($comments->toArray());
         }
 
         return $comments;
     }
 
-    public function store($request)
+    public function store($request) {}
+
+    public function update($request, $issueId) {}
+
+    public function listAll()
     {
-
+        return Issue::query();
     }
-
-    public function update($request, $issueId)
-    {
-
-    }
-
-
 }

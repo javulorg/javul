@@ -8,7 +8,7 @@
         <h1>Javul.org</h1>
     @endif
     <div class="banner_desc d-md-block d-none">
-        Open-source Society 
+        Open-source Society
     </div>
 @endsection
 
@@ -110,21 +110,21 @@
                                                     </a>
                                                 </div>
                                             </div>
-                            
+
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl">Status</div>
                                                 <div class="mob_table_val">
                                                     <span class="colorLightGreen">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
                                                 </div>
                                             </div>
-                            
+
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl"><i class="fa fa-trophy"></i> In Progress</div>
                                                 <div class="mob_table_val">
                                                     {{ \App\Models\Task::getTaskCount('in-progress', $obj->id) }}
                                                 </div>
                                             </div>
-                            
+
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl"><i class="fa fa-clock"></i> Completed</div>
                                                 <div class="mob_table_val">
@@ -141,7 +141,7 @@
                                     </div>
                                 @endif
                             </div>
-                            
+
 
                         </div>
                     </div>
@@ -180,8 +180,8 @@
                                 </thead>
 
                                 <tbody>
-                                @if(count($tasksMasterData) > 0 )
-                                    @foreach($tasksMasterData as $task)
+                                @if(count($pagination) > 0 )
+                                    @foreach($pagination as $task)
                                         <tr>
                                             <td class="type_col">
                                                 <a href="{!! url('tasks/'.$taskIDHashID->encode($task->id) . '/' . $task->slug) !!}">
@@ -206,8 +206,8 @@
 
 
                             <div class="mob_table d-sm-none d-block">
-                                @if(count($tasksMasterData) > 0 )
-                                    @foreach($tasksMasterData as $task)
+                                @if(count($pagination) > 0 )
+                                    @foreach($pagination as $task)
                                         <div class="mob_table_section">
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl">Task Name</div>
@@ -239,6 +239,12 @@
                                 @endif
                             </div>
 
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="pagination-left">
+                                {!! $pagination->links('layout.pagination') !!}
+                            </div>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">

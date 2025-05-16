@@ -1,104 +1,104 @@
 @extends('layout.master')
 @section('title', 'Objective: ' . $objectiveObj->name)
 @section('style')
-    <style>
-        a.modal-link {
-            font-size: 13px;
-            text-decoration: none;
-            /* Remove underline */
-        }
-    </style>
+<style>
+    a.modal-link {
+        font-size: 13px;
+        text-decoration: none;
+        /* Remove underline */
+    }
+</style>
 @endsection
 @section('site-name')
-    @if (isset($unitData))
-        <h1>{{ $unitData->name }}</h1>
-    @else
-        <h1>Javul.org</h1>
-    @endif
-    <div class="banner_desc d-md-block d-none">
-        Open-source Society
-    </div>
+@if (isset($unitData))
+<h1>{{ $unitData->name }}</h1>
+@else
+<h1>Javul.org</h1>
+@endif
+<div class="banner_desc d-md-block d-none">
+    Open-source Society
+</div>
 @endsection
 
 @section('navbar')
-    @if (isset($unitData))
-        @include('layout.navbar', ['unitData' => $unitData])
-    @endif
+@if (isset($unitData))
+@include('layout.navbar', ['unitData' => $unitData])
+@endif
 @endsection
 
 @section('content')
-    <div class="content_row">
-        <div class="sidebar">
-            @if (isset($unitData))
-                @include('layout.v2.global-unit-overview')
-                <?php
+<div class="content_row">
+    <div class="sidebar">
+        @if (isset($unitData))
+        @include('layout.v2.global-unit-overview')
+        <?php
                 $title = 'Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id])
+        @include('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id])
 
-                @include('layout.v2.global-finances')
+        @include('layout.v2.global-finances')
 
-                @include('layout.v2.global-about-site')
-            @else
-                <?php
+        @include('layout.v2.global-about-site')
+        @else
+        <?php
                 $title = 'Global Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log', ['title' => $title])
-            @endif
-        </div>
+        @include('layout.v2.global-activity-log', ['title' => $title])
+        @endif
+    </div>
 
-        <input type="hidden" id="objective_id" name="objective_id" value="{{ $objectiveObj->id }}">
-        <input type="hidden" id="unit_id" name="unit_id" value="{{ $unitData->id }}">
-        <div class="main_content">
-            <div class="content_block">
-                <div class="table_block table_block_objectives active">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
-                        </div>
-                        {{ $objectiveObj->name }}
-                        <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
-                        </div>
+    <input type="hidden" id="objective_id" name="objective_id" value="{{ $objectiveObj->id }}">
+    <input type="hidden" id="unit_id" name="unit_id" value="{{ $unitData->id }}">
+    <div class="main_content">
+        <div class="content_block">
+            <div class="table_block table_block_objectives active">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
                     </div>
-                    <div class="objective_content">
-                        <div class="objective_content_row d-sm-flex d-none">
-                            <div>
-                                <p>
-                                    {!! $objectiveObj->description !!}
-                                </p>
-                            </div>
-                            <div class="objective_content_info">
-                                <div class="sidebar_block">
-                                    <div class="sidebar_block_ttl">
-                                        Objective Overview
-                                        <div class="arrow">
-                                            <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
-                                        </div>
+                    {{ $objectiveObj->name }}
+                    <div class="arrow">
+                        <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                    </div>
+                </div>
+                <div class="objective_content">
+                    <div class="objective_content_row d-sm-flex d-none">
+                        <div>
+                            <p>
+                                {!! $objectiveObj->description !!}
+                            </p>
+                        </div>
+                        <div class="objective_content_info">
+                            <div class="sidebar_block">
+                                <div class="sidebar_block_ttl">
+                                    Objective Overview
+                                    <div class="arrow">
+                                        <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
                                     </div>
-                                    <div class="sidebar_block_content">
-                                        <div class="sidebar_block_row">
-                                            <div class="sidebar_block_left">
-                                                Priority:
-                                            </div>
+                                </div>
+                                <div class="sidebar_block_content">
+                                    <div class="sidebar_block_row">
+                                        <div class="sidebar_block_left">
+                                            Priority:
+                                        </div>
 
-                                            @if (isset($ratingResult) && $ratingResult >= 3.5)
-                                                <div class="sidebar_block_right">
-                                                    High
-                                                    <div class="progress">
-                                                        <div class="progress-bar"
-                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
-                                                    </div>
+                                        @if (isset($ratingResult) && $ratingResult >= 3.5)
+                                        <div class="sidebar_block_right">
+                                            High
+                                            <div class="progress">
+                                                <div class="progress-bar"
+                                                    style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                            </div>
+                                        </div>
+                                        @elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult> 2.5))
+                                            <div class="sidebar_block_right">
+                                                Medium
+                                                <div class="progress">
+                                                    <div class="progress-bar"
+                                                        style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                 </div>
-                                            @elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult > 2.5))
-                                                <div class="sidebar_block_right">
-                                                    Medium
-                                                    <div class="progress">
-                                                        <div class="progress-bar"
-                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
-                                                    </div>
-                                                </div>
-                                            @elseif(isset($ratingResult) && $ratingResult < 2.5 && $ratingResult > 2)
+                                            </div>
+                                            @elseif(isset($ratingResult) && $ratingResult < 2.5 && $ratingResult> 2)
                                                 <div class="sidebar_block_right">
                                                     Low
                                                     <div class="progress">
@@ -106,7 +106,7 @@
                                                             style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
-                                            @else
+                                                @else
                                                 <div class="sidebar_block_right">
                                                     Medium
                                                     <div class="progress">
@@ -114,9 +114,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            @endif
+                                                @endif
 
-                                            @auth()
+                                                @auth()
                                                 <div class="sidebar_block_right">
                                                     <a href="#" class="modal-link" data-bs-toggle="modal"
                                                         data-bs-target="#exampleModal">Rate</a>
@@ -125,25 +125,30 @@
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Priority
+                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                                                        Priority
                                                                     </h1>
                                                                     <button type="button" class="btn-close"
-                                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <form id="ratingForm">
                                                                         <div class="form-group">
-                                                                            <label for="rating">Select rating:</label><br>
+                                                                            <label for="rating">Select
+                                                                                rating:</label><br>
 
                                                                             <div class="form-check mt-3">
-                                                                                <input type="radio" class="form-check-input"
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
                                                                                     id="rating5" name="rating"
                                                                                     value="5">
                                                                                 <label class="form-check-label"
                                                                                     for="rating5">High</label>
                                                                             </div>
                                                                             <div class="form-check">
-                                                                                <input type="radio" class="form-check-input"
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
                                                                                     id="rating4" name="rating"
                                                                                     value="4">
                                                                                 <label class="form-check-label"
@@ -151,7 +156,8 @@
                                                                             </div>
 
                                                                             <div class="form-check">
-                                                                                <input type="radio" class="form-check-input"
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
                                                                                     id="rating3" name="rating"
                                                                                     value="3">
                                                                                 <label class="form-check-label"
@@ -159,7 +165,8 @@
                                                                             </div>
 
                                                                             <div class="form-check">
-                                                                                <input type="radio" class="form-check-input"
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
                                                                                     id="rating2" name="rating"
                                                                                     value="2">
                                                                                 <label class="form-check-label"
@@ -167,7 +174,8 @@
                                                                             </div>
 
                                                                             <div class="form-check">
-                                                                                <input type="radio" class="form-check-input"
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
                                                                                     id="rating1" name="rating"
                                                                                     value="1">
                                                                                 <label class="form-check-label"
@@ -187,493 +195,507 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            @endauth
+                                                @endauth
 
+                                    </div>
+                                    <div class="sidebar_block_row">
+                                        <div class="sidebar_block_left">
+                                            Status:
                                         </div>
-                                        <div class="sidebar_block_row">
-                                            <div class="sidebar_block_left">
-                                                Status:
-                                            </div>
-                                            <div class="sidebar_block_right">
-                                                {{ \App\Models\Objective::objectiveStatus()[$objectiveObj->status] }}
-                                            </div>
+                                        <div class="sidebar_block_right">
+                                            {{ \App\Models\Objective::objectiveStatus()[$objectiveObj->status] }}
                                         </div>
-                                        <div class="sidebar_line"></div>
-                                        <div class="sidebar_block_row">
-                                            <div class="sidebar_block_left">
-                                                Funds:
-                                            </div>
-                                            <div class="sidebar_block_right">
-                                                Received $2500<br>
-                                                Awarded ${{ number_format($awardedObjFunds, 2) }}<br>
-                                                Available ${{ number_format($availableObjFunds, 2) }}<br>
-                                            </div>
+                                    </div>
+                                    <div class="sidebar_line"></div>
+                                    <div class="sidebar_block_row">
+                                        <div class="sidebar_block_left">
+                                            Funds:
+                                        </div>
+                                        <div class="sidebar_block_right">
+                                            Received $2500<br>
+                                            Awarded ${{ number_format($awardedObjFunds, 2) }}<br>
+                                            Available ${{ number_format($availableObjFunds, 2) }}<br>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="objective_content_info_links">
-                                    {{-- <a href="#" class="edit_icon"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
-{{--
-<a href="{{ route('watchlist.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}" class="edit_icon">
-    <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
-</a> --}}
+                            </div>
+                            <div class="objective_content_info_links">
+                                {{-- <a href="#" class="edit_icon"><img src="{{ asset('v2/assets/img/eye.svg') }}"
+                                        alt=""></a> --}}
+                                {{--
+                                <a href="{{ route('watchlist.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}"
+                                    class="edit_icon">
+                                    <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
+                                </a> --}}
 
-@php
-$isWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
-    ->where('unit_id', $unitData->id)
-    ->where('objective_id', $objectiveObj->id)
-    ->exists();
-@endphp
+                                @php
+                                $isObjectivesWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
+                                ->where('unit_id', $unitData->id)
+                                ->where('Objective_id', $objectiveObj->id)
+                                ->exists();
+                                @endphp
 
-<a href="{{ route('watchlist.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}" class="edit_icon watchlist-link"
-data-id="{{ $objectiveObj->id }}"
-data-url="{{ route('watchlist.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}"
-id="eye-link-{{ $objectiveObj->id }}"
-style="{{ $isWatched ? 'display: none;' : '' }}">
-<img src="{{ asset('v2/assets/img/eye.svg') }}"
-    style="height: 20px; width: 20px;" alt="Watch"
-    id="eye-icon-{{ $objectiveObj->id }}">
-</a>
+                                <a href="javascript:void(0);" class="edit_icon watchlist-link"
+                                    data-id="{{ $objectiveObj->id }}"
+                                    data-url="{{ route('watchlist.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'objective_id' => $objectiveObj->id]) }}"
+                                    id="task-eye-link-{{ $objectiveObj->id }}"
+                                    style="{{ $isObjectivesWatched ? 'display: none;' : '' }}">
+                                    <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;"
+                                        alt="Watch" id="task-eye-icon-{{ $objectiveObj->id }}">
+                                </a>
 
-<img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
-style="height: 20px; width: 20px; {{ $isWatched ? '' : 'display: none;' }}"
-alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
-
-
-
-
-
-
-
-{{--
-                                    @if (session('success'))
-                                        <div class="alert alert-success">{{ session('success') }}</div>
-                                    @endif
-
-                                    @if (session('info'))
-                                        <div class="alert alert-info">{{ session('info') }}</div>
-                                    @endif
- --}}
+                                <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
+                                    style="height: 20px; width: 20px; {{ $isObjectivesWatched ? '' : 'display: none;' }}"
+                                    alt="Watched" id="task-eye-off-icon-{{ $objectiveObj->id }}">
 
 
 
 
-                                    <div class="separat"></div>
-                                    <a href="{!! route('objectives_revison', [$objectiveIDHashID->encode($objectiveObj->id)]) !!}" class="edit_icon"> Revision History</a>
-                                    <div class="separat"></div>
-                                    <a href="{!! url('objectives/' . $objectiveIDHashID->encode($objectiveObj->id) . '/edit') !!}" class="edit_icon"><img
-                                            src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt=""></a>
-                                </div>
+
+
+
+
+
+
+
+                                {{--
+                                @if (session('success'))
+                                <div class="alert alert-success">{{ session('success') }}</div>
+                                @endif
+
+                                @if (session('info'))
+                                <div class="alert alert-info">{{ session('info') }}</div>
+                                @endif
+                                --}}
+
+
+
+
+                                <div class="separat"></div>
+                                <a href="{!! route('objectives_revison', [$objectiveIDHashID->encode($objectiveObj->id)]) !!}"
+                                    class="edit_icon"> Revision History</a>
+                                <div class="separat"></div>
+                                <a href="{!! url('objectives/' . $objectiveIDHashID->encode($objectiveObj->id) . '/edit') !!}"
+                                    class="edit_icon"><img src="{{ asset('v2/assets/img/pencil-create.svg') }}"
+                                        alt=""></a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
 
 
-            <div class="content_block">
-                <div class="table_block table_block_tasks">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
-                        </div>
-                        Tasks
-                        <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
-                        </div>
+        <div class="content_block">
+            <div class="table_block table_block_tasks">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
                     </div>
-                    {{-- <div class="table_block_body">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="title_col">
-                                        Title
-                                    </th>
-                                    <th class="status_col">
-                                        Status
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (count($objectiveObj->tasks) > 0)
-                                    @foreach ($objectiveObj->tasks as $obj)
-                                        <tr>
-                                            <td class="title_col">
-                                                <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}" title="edit">
-                                                    {{ $obj->name }}
-                                                </a>
-                                            </td>
-                                            <td class="status_col">
-                                                @if ($obj->status == 'editable')
-                                                    <span
-                                                        class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
-                                                @else
-                                                    <span
-                                                        class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="4">No record(s) found.</td>
-                                    </tr>
-                                @endif
-                            </tbody>
-                        </table>
-                    </div> --}}
-                    <div class="table_block_body">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="title_col">Title</th>
-                                    <th class="status_col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (count($objectiveObj->tasks) > 0)
-                                    @foreach ($objectiveObj->tasks as $obj)
-                                        <tr>
-                                            <td class="title_col">
-                                                <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}" title="edit">
-                                                    {{ $obj->name }}
-                                                </a>
-                                            </td>
-                                            <td class="status_col">
-                                                <span class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="2">No record(s) found.</td>
-                                    </tr>
-                                @endif
-                            </tbody>
-                        </table>
-
-                        {{-- Mobile View --}}
-                        <div class="mob_table d-sm-none d-block">
+                    Tasks
+                    <div class="arrow">
+                        <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                    </div>
+                </div>
+                {{-- <div class="table_block_body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="title_col">
+                                    Title
+                                </th>
+                                <th class="status_col">
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @if (count($objectiveObj->tasks) > 0)
-                                @foreach ($objectiveObj->tasks as $obj)
-                                    <div class="mob_table_row">
-                                        <div class="mob_table_cell">
-                                            <strong>Title:</strong>
-                                            <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}">
-                                                {{ $obj->name }}
-                                            </a>
-                                        </div>
-                                        <div class="mob_table_cell">
-                                            <strong>Status:</strong>
-                                            <span class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status) }}</span>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="mob_table_row text-center">
-                                    No record(s) found.
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                </div>
-                <div class="content_block_bottom">
-                    <a href="{!! url('objectives/' . $object_hash_id . '/' . $objectiveObj->slug . '/' . $unitData->id . '/tasks') !!}">
-                        <img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt="">
-                        Add New
-                    </a>
-
-                    <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
-
-
-                </div>
-            </div>
-
-            <div class="content_block">
-                <div class="table_block table_block_objective">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/User_Rounded.svg') }}" alt="" class="img-fluid">
-                        </div>
-                        Parent Objectives
-                        <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
-                        </div>
-                    </div>
-
-                    <?php $objSlug = \App\Models\Objective::getSlug($objectiveObj->parent_id); ?>
-                    <div class="table_block_txt">
-                        <a style="font-weight: normal;" class="no-decoration" href="{!! url('objectives/' . $objectiveIDHashID->encode($objectiveObj->parent_id) . '/' . $objSlug) !!}">
-                            {{ \App\Models\Objective::getObjectiveName($objectiveObj->parent_id) }}
-                        </a>
-                    </div>
-                </div>
-                <div class="content_block_bottom">
-                    <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img
-                            src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a>
-                    <div class="separator"></div>
-                    <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
-
-                </div>
-            </div>
-
-            <div class="content_block">
-                <div class="table_block table_block_objective">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/Users_Two_Rounded.svg') }}" alt=""
-                                class="img-fluid">
-                        </div>
-                        Child Objectives
-                        <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
-                        </div>
-                    </div>
-                    <div class="table_block_txt">
-
-                    </div>
-                </div>
-                <div class="content_block_bottom">
-                    <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img
-                            src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a>
-                            <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
-
-                </div>
-            </div>
-
-            <div class="content_block">
-                <div class="table_block table_block_ideas">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt=""
-                                class="img-fluid">
-                        </div>
-                        Ideas
-                        <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
-                        </div>
-                    </div>
-                    {{-- <div class="table_block_body">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="title_col">Idea Name</th>
-                                    <th class="status_col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @if (isset($objectiveIdeas->ideas))
-                                    @foreach ($objectiveIdeas->ideas as $idea)
-
-                                        <tr>
-                                            <td class="title_col">
-                                                <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
-                                                    {{ $idea->title }}
-                                                </a>
-                                            </td>
-                                            @if ($idea->status == 1)
-                                                <td class="type_col"> Draft</td>
-                                            @elseif($idea->status == 2)
-                                                <td class="type_col">Assigned to Task</td>
-                                            @else
-                                                <td class="type_col">Implemented</td>
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="5">No record(s) found.</td>
-                                    </tr>
-                                @endif
-                            </tbody>
-                        </table>
-                        <div class="mob_table d-sm-none d-block">
-                        </div>
-                    </div> --}}
-
-                    <div class="table_block_body">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="title_col">Idea Name</th>
-                                    <th class="status_col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (isset($objectiveIdeas->ideas) && count($objectiveIdeas->ideas) > 0)
-                                    @foreach ($objectiveIdeas->ideas as $idea)
-                                        <tr>
-                                            <td class="title_col">
-                                                <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
-                                                    {{ $idea->title }}
-                                                </a>
-                                            </td>
-                                            <td class="type_col">
-                                                @if ($idea->status == 1)
-                                                    Draft
-                                                @elseif ($idea->status == 2)
-                                                    Assigned to Task
-                                                @else
-                                                    Implemented
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="2">No record(s) found.</td>
-                                    </tr>
-                                @endif
-                            </tbody>
-                        </table>
-
-                        {{-- Mobile View --}}
-                        <div class="mob_table d-sm-none d-block">
-                            @if (isset($objectiveIdeas->ideas) && count($objectiveIdeas->ideas) > 0)
-                                @foreach ($objectiveIdeas->ideas as $idea)
-                                    <div class="mob_table_row">
-                                        <div class="mob_table_cell">
-                                            <strong>Idea Name:</strong>
-                                            <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
-                                                {{ $idea->title }}
-                                            </a>
-                                        </div>
-                                        <div class="mob_table_cell">
-                                            <strong>Status:</strong>
-                                            @if ($idea->status == 1)
-                                                Draft
-                                            @elseif ($idea->status == 2)
-                                                Assigned to Task
-                                            @else
-                                                Implemented
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="mob_table_row text-center">
-                                    No record(s) found.
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                </div>
-                <div class="content_block_bottom">
-                    <a href="{!! url('ideas/' . $unitIDHashID->encode($unitData->id) . '/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}"
-                            alt=""> Add New</a>
-                            <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
-
-                </div>
-            </div>
-
-
-            <div class="content_block_comments">
-                <div class="table_block table_block_comments">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/Dialog.svg') }}" alt="" class="img-fluid">
-                        </div>
-                        Comments
-                    </div>
-                    <div class="comments_content">
-                        <div class="comment_stat">
-                        </div>
-
-                        @if (isset($comments))
-                            @foreach ($comments as $comment)
-                                <div class="comment_container">
-                                    <div class="comment_icon">
-                                        <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt=""
-                                            class="img-fluid">
-                                    </div>
-                                    <div class="comment_content">
-                                        <div class="comment_info">
-                                            <div class="comment_autor">
-                                                @php
-                                                    $user = \App\Models\User::where('id', $comment->user_id)
-                                                        ->select('first_name', 'last_name')
-                                                        ->first();
-                                                @endphp
-                                                {{ $user->first_name . ' ' . $user->last_name }}
-                                            </div>
-                                            <div class="comment_time">
-                                                {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}
-
-                                            </div>
-                                        </div>
-                                        <div class="comment_txt">
-                                            {{ $comment->post }}
-                                        </div>
-
-                                        <div class="comment_actions">
-                                            <input type="hidden" value="{{ $comment->id }}"
-                                                id="comment_id_{{ $comment->id }}">
-
-                                            <button type="button" class="like_button">
-                                                <i class="fas fa-thumbs-up"></i>
-                                                <span id="like_count" class="badge badge-primary">
-                                                    <span class="count"> {{ $comment->likes }}</span>
-                                                </span>
-                                            </button>
-                                            <button type="button" class="dislike_button">
-                                                <i class="fas fa-thumbs-down"></i>
-                                                <span id="dislike_count" class="badge badge-danger">
-                                                    <span class="count"> {{ $comment->dislikes }}</span>
-                                                </span>
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <style>
-                                    .comment_actions form {
-                                        display: inline-block;
-                                        margin-right: 10px;
-                                    }
-
-                                    .comment_actions form:last-child {
-                                        margin-right: 0;
-                                    }
-
-                                    .badge .count {
-                                        color: black;
-                                        /* Adjust color as needed */
-                                    }
-                                </style>
+                            @foreach ($objectiveObj->tasks as $obj)
+                            <tr>
+                                <td class="title_col">
+                                    <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}"
+                                        title="edit">
+                                        {{ $obj->name }}
+                                    </a>
+                                </td>
+                                <td class="status_col">
+                                    @if ($obj->status == 'editable')
+                                    <span class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status)
+                                        }}</span>
+                                    @else
+                                    <span class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status)
+                                        }}</span>
+                                    @endif
+                                </td>
+                            </tr>
                             @endforeach
-                        @endif
+                            @else
+                            <tr>
+                                <td colspan="4">No record(s) found.</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div> --}}
+                <div class="table_block_body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="title_col">Title</th>
+                                <th class="status_col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (count($objectiveObj->tasks) > 0)
+                            @foreach ($objectiveObj->tasks as $obj)
+                            <tr>
+                                <td class="title_col">
+                                    <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}"
+                                        title="edit">
+                                        {{ $obj->name }}
+                                    </a>
+                                </td>
+                                <td class="status_col">
+                                    <span class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status)
+                                        }}</span>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @else
+                            <tr>
+                                <td colspan="2">No record(s) found.</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
 
-                        <div class="comment_container">
-                            <div class="comment_icon">
-                                <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt=""
-                                    class="img-fluid">
+                    {{-- Mobile View --}}
+                    <div class="mob_table d-sm-none d-block">
+                        @if (count($objectiveObj->tasks) > 0)
+                        @foreach ($objectiveObj->tasks as $obj)
+                        <div class="mob_table_row">
+                            <div class="mob_table_cell">
+                                <strong>Title:</strong>
+                                <a href="{!! url('tasks/' . $taskIDHashID->encode($obj->id) . '/' . $obj->slug) !!}">
+                                    {{ $obj->name }}
+                                </a>
                             </div>
-                            <input type="hidden" name="unit_id" id="comment_unit_id" value="<?= $unit_id ?>">
-                            <input type="hidden" name="section_id" id="comment_section_id" value="<?= $section_id ?>">
-                            <input type="hidden" name="object_id" id="comment_object_id" value="<?= $object_id ?>">
-                            <div class="comment_content">
-                                <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
-                                <button id="comment_form" class="btn">Submit</button>
+                            <div class="mob_table_cell">
+                                <strong>Status:</strong>
+                                <span class="text-success">{{ \App\Models\SiteConfigs::task_status($obj->status)
+                                    }}</span>
                             </div>
+                        </div>
+                        @endforeach
+                        @else
+                        <div class="mob_table_row text-center">
+                            No record(s) found.
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+            </div>
+            <div class="content_block_bottom">
+                <a
+                    href="{!! url('objectives/' . $object_hash_id . '/' . $objectiveObj->slug . '/' . $unitData->id . '/tasks') !!}">
+                    <img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt="">
+                    Add New
+                </a>
+
+                <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more"
+                    onclick="window.location.href=this.href; return true;">See more</a>
+
+
+            </div>
+        </div>
+
+        <div class="content_block">
+            <div class="table_block table_block_objective">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/User_Rounded.svg') }}" alt="" class="img-fluid">
+                    </div>
+                    Parent Objectives
+                    <div class="arrow">
+                        <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                    </div>
+                </div>
+
+                <?php $objSlug = \App\Models\Objective::getSlug($objectiveObj->parent_id); ?>
+                <div class="table_block_txt">
+                    <a style="font-weight: normal;" class="no-decoration"
+                        href="{!! url('objectives/' . $objectiveIDHashID->encode($objectiveObj->parent_id) . '/' . $objSlug) !!}">
+                        {{ \App\Models\Objective::getObjectiveName($objectiveObj->parent_id) }}
+                    </a>
+                </div>
+            </div>
+            <div class="content_block_bottom">
+                <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img
+                        src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a>
+                <div class="separator"></div>
+                <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more"
+                    onclick="window.location.href=this.href; return true;">See more</a>
+
+            </div>
+        </div>
+
+        <div class="content_block">
+            <div class="table_block table_block_objective">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/Users_Two_Rounded.svg') }}" alt="" class="img-fluid">
+                    </div>
+                    Child Objectives
+                    <div class="arrow">
+                        <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                    </div>
+                </div>
+                <div class="table_block_txt">
+
+                </div>
+            </div>
+            <div class="content_block_bottom">
+                <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img
+                        src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a>
+                <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more"
+                    onclick="window.location.href=this.href; return true;">See more</a>
+
+            </div>
+        </div>
+
+        <div class="content_block">
+            <div class="table_block table_block_ideas">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt="" class="img-fluid">
+                    </div>
+                    Ideas
+                    <div class="arrow">
+                        <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                    </div>
+                </div>
+                {{-- <div class="table_block_body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="title_col">Idea Name</th>
+                                <th class="status_col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (isset($objectiveIdeas->ideas))
+                            @foreach ($objectiveIdeas->ideas as $idea)
+
+                            <tr>
+                                <td class="title_col">
+                                    <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
+                                        {{ $idea->title }}
+                                    </a>
+                                </td>
+                                @if ($idea->status == 1)
+                                <td class="type_col"> Draft</td>
+                                @elseif($idea->status == 2)
+                                <td class="type_col">Assigned to Task</td>
+                                @else
+                                <td class="type_col">Implemented</td>
+                                @endif
+                            </tr>
+                            @endforeach
+                            @else
+                            <tr>
+                                <td colspan="5">No record(s) found.</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                    <div class="mob_table d-sm-none d-block">
+                    </div>
+                </div> --}}
+
+                <div class="table_block_body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="title_col">Idea Name</th>
+                                <th class="status_col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (isset($objectiveIdeas->ideas) && count($objectiveIdeas->ideas) > 0)
+                            @foreach ($objectiveIdeas->ideas as $idea)
+                            <tr>
+                                <td class="title_col">
+                                    <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
+                                        {{ $idea->title }}
+                                    </a>
+                                </td>
+                                <td class="type_col">
+                                    @if ($idea->status == 1)
+                                    Draft
+                                    @elseif ($idea->status == 2)
+                                    Assigned to Task
+                                    @else
+                                    Implemented
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                            @else
+                            <tr>
+                                <td colspan="2">No record(s) found.</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
+
+                    {{-- Mobile View --}}
+                    <div class="mob_table d-sm-none d-block">
+                        @if (isset($objectiveIdeas->ideas) && count($objectiveIdeas->ideas) > 0)
+                        @foreach ($objectiveIdeas->ideas as $idea)
+                        <div class="mob_table_row">
+                            <div class="mob_table_cell">
+                                <strong>Idea Name:</strong>
+                                <a href="{!! url('ideas/' . $ideaHashID->encode($idea->id)) !!}">
+                                    {{ $idea->title }}
+                                </a>
+                            </div>
+                            <div class="mob_table_cell">
+                                <strong>Status:</strong>
+                                @if ($idea->status == 1)
+                                Draft
+                                @elseif ($idea->status == 2)
+                                Assigned to Task
+                                @else
+                                Implemented
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
+                        @else
+                        <div class="mob_table_row text-center">
+                            No record(s) found.
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+            </div>
+            <div class="content_block_bottom">
+                <a href="{!! url('ideas/' . $unitIDHashID->encode($unitData->id) . '/add') !!}"><img
+                        src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add New</a>
+                <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more"
+                    onclick="window.location.href=this.href; return true;">See more</a>
+
+            </div>
+        </div>
+
+
+        <div class="content_block_comments">
+            <div class="table_block table_block_comments">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/Dialog.svg') }}" alt="" class="img-fluid">
+                    </div>
+                    Comments
+                </div>
+                <div class="comments_content">
+                    <div class="comment_stat">
+                    </div>
+
+                    @if (isset($comments))
+                    @foreach ($comments as $comment)
+                    <div class="comment_container">
+                        <div class="comment_icon">
+                            <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
+                        </div>
+                        <div class="comment_content">
+                            <div class="comment_info">
+                                <div class="comment_autor">
+                                    @php
+                                    $user = \App\Models\User::where('id', $comment->user_id)
+                                    ->select('first_name', 'last_name')
+                                    ->first();
+                                    @endphp
+                                    {{ $user->first_name . ' ' . $user->last_name }}
+                                </div>
+                                <div class="comment_time">
+                                    {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}
+
+                                </div>
+                            </div>
+                            <div class="comment_txt">
+                                {{ $comment->post }}
+                            </div>
+
+                            <div class="comment_actions">
+                                <input type="hidden" value="{{ $comment->id }}" id="comment_id_{{ $comment->id }}">
+
+                                <button type="button" class="like_button">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span id="like_count" class="badge badge-primary">
+                                        <span class="count"> {{ $comment->likes }}</span>
+                                    </span>
+                                </button>
+                                <button type="button" class="dislike_button">
+                                    <i class="fas fa-thumbs-down"></i>
+                                    <span id="dislike_count" class="badge badge-danger">
+                                        <span class="count"> {{ $comment->dislikes }}</span>
+                                    </span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <style>
+                        .comment_actions form {
+                            display: inline-block;
+                            margin-right: 10px;
+                        }
+
+                        .comment_actions form:last-child {
+                            margin-right: 0;
+                        }
+
+                        .badge .count {
+                            color: black;
+                            /* Adjust color as needed */
+                        }
+                    </style>
+                    @endforeach
+                    @endif
+
+                    <div class="comment_container">
+                        <div class="comment_icon">
+                            <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
+                        </div>
+                        <input type="hidden" name="unit_id" id="comment_unit_id" value="<?= $unit_id ?>">
+                        <input type="hidden" name="section_id" id="comment_section_id" value="<?= $section_id ?>">
+                        <input type="hidden" name="object_id" id="comment_object_id" value="<?= $object_id ?>">
+                        <div class="comment_content">
+                            <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
+                            <button id="comment_form" class="btn">Submit</button>
                         </div>
                     </div>
                 </div>
-                <div class="content_block_bottom">
-                    <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
-                        New</a>
-                        <div class="separator"></div>    <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;">See more</a>
-                    </div>
+            </div>
+            <div class="content_block_bottom">
+                <a href="{{ url('objectives/' . $unitIDHashID->encode($unitObj->id) . '/add') }}"><img
+                        src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
+                    New</a>
+                <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more"
+                    onclick="window.location.href=this.href; return true;">See more</a>
             </div>
         </div>
     </div>
+</div>
 @endsection
 @section('scripts')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('.modal-link').click(function() {
                 var modalId = $(this).data('modal-id');
                 $('#modalIdSpan').text(modalId);
@@ -780,36 +802,93 @@ alt="Watched" id="eye-off-icon-{{ $objectiveObj->id }}">
                 });
             });
         });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.watchlist-link').forEach(function(link) {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
+</script>
 
-                    const url = this.dataset.url;
-                    const objectiveId = this.dataset.id;
-                    const eyeIcon = document.getElementById('eye-icon-' + objectiveId);
-                    const eyeOffIcon = document.getElementById('eye-off-icon-' + objectiveId);
-                    const anchor = document.getElementById('eye-link-' + objectiveId);
 
-                    fetch(url)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Hide eye icon and link
-                            anchor.style.display = "none";
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+                    document.querySelectorAll('.watchlist-link').forEach(function(link) {
+                        link.addEventListener('click', function(e) {
+                            e.preventDefault();
 
-                            // Show eye-off icon
-                            eyeOffIcon.style.display = "inline-block";
+                            const url = this.dataset.url;
+                            const objectiveId = this.dataset.id;
+                            const eyeIcon = document.getElementById('eye-icon-' + objectiveId);
+                            const eyeOffIcon = document.getElementById('eye-off-icon-' + objectiveId);
+                            const anchor = document.getElementById('eye-link-' + objectiveId);
 
-                            alert(data.message || "Added to watchlist!");
-                        })
-                        .catch(err => {
-                            console.error('Watchlist error:', err);
-                            alert("Something went wrong!");
-                        });
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ userId, unitId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        });
+
                 });
             });
         });
-    </script>
+</script> --}}
+
+<scrip>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-link').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const url = this.dataset.url;
+            const userId = this.dataset.userid;
+            const unitId = this.dataset.unitid;
+            const objectiveId = this.dataset.id;
+
+            console.log('Sending request to URL:', url); // Debugging line
+            console.log('With data:', { userId, unitId, objectiveId }); // Debugging line
+
+            // Send the fetch request to the server
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    unitId: unitId,
+                    objective_id: objectiveId
+                })
+            })
+            .then(response => {
+                console.log('Response status:', response.status); // Log the response status
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                console.log('Response from server:', data); // Debugging line
+
+                // Check if success
+                if (data.success) {
+                    alert(data.message); // Show the alert with message
+                    this.style.display = 'none'; // Hide the "add to watchlist" button
+                } else {
+                    alert(data.message); // Alert when there is an issue (like already added)
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('An error occurred while adding to watchlist.');
+            });
+        });
+    });
+});
+
+</script>
+
 @endsection
