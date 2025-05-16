@@ -10,7 +10,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society jj
+        Open-source Society
     </div>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('navbar'); ?>

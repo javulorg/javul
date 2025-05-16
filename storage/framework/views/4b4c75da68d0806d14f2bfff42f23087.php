@@ -54,15 +54,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if(count($allUnits) > 0): ?>
-                                    <?php $__currentLoopData = $allUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(count($pagination) > 0): ?>
+                                    <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <?php
                                             $category_ids = explode(',', $unit->category_id);
-                                            $category_names = explode(',', \App\Models\UnitCategory::getName($unit->category_id));
+                                            $category_names = explode(
+                                                ',',
+                                                \App\Models\UnitCategory::getName($unit->category_id),
+                                            );
                                         ?>
                                         <tr>
                                             <td class="title_col">
-                                                <a href="<?php echo e(url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug)); ?>">
+                                                <a
+                                                    href="<?php echo e(url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug)); ?>">
                                                     <?php echo e($unit->name); ?>
 
                                                 </a>
@@ -70,7 +74,8 @@
                                             <td class="last_reply_col">
                                                 <?php if(count($category_ids) > 0): ?>
                                                     <?php $__currentLoopData = $category_ids; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <a href="<?php echo e(url('units/category=' . strtolower($category_names[$index]))); ?>">
+                                                        <a
+                                                            href="<?php echo e(url('units/category=' . strtolower($category_names[$index]))); ?>">
                                                             <?php echo e($category_names[$index]); ?>
 
                                                         </a>
@@ -92,17 +97,21 @@
 
                         <!-- Mobile Table -->
                         <div class="mob_table d-sm-none d-block">
-                            <?php if(count($allUnits) > 0): ?>
-                                <?php $__currentLoopData = $allUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php if(count($pagination) > 0): ?>
+                                <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <?php
                                         $category_ids = explode(',', $unit->category_id);
-                                        $category_names = explode(',', \App\Models\UnitCategory::getName($unit->category_id));
+                                        $category_names = explode(
+                                            ',',
+                                            \App\Models\UnitCategory::getName($unit->category_id),
+                                        );
                                     ?>
                                     <div class="mob_table_section">
                                         <div class="mob_table_row">
                                             <div class="mob_table_ttl"><?php echo e(__('messages.unit_name')); ?></div>
                                             <div class="mob_table_val">
-                                                <a href="<?php echo e(url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug)); ?>">
+                                                <a
+                                                    href="<?php echo e(url('units/' . $unitIDHashID->encode($unit->id) . '/' . $unit->slug)); ?>">
                                                     <?php echo e($unit->name); ?>
 
                                                 </a>
@@ -112,7 +121,8 @@
                                             <div class="mob_table_ttl"><?php echo e(__('messages.unit_category')); ?></div>
                                             <div class="mob_table_val">
                                                 <?php $__currentLoopData = $category_ids; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <a href="<?php echo e(url('units/category=' . strtolower($category_names[$index]))); ?>">
+                                                    <a
+                                                        href="<?php echo e(url('units/category=' . strtolower($category_names[$index]))); ?>">
                                                         <?php echo e($category_names[$index]); ?>
 
                                                     </a>
@@ -134,12 +144,23 @@
                         </div>
                     </div>
 
+
+                <div class="d-flex justify-content-between mt-2">
+                    <div class="pagination-left">
+                        <?php echo $pagination->links('layout.pagination'); ?>
+
+                    </div>
                 </div>
+
+                </div>
+
+
                 <div class="content_block_bottom">
                     <a href="<?php echo e(url('units/create')); ?>">
                         <img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New
                     </a>
                 </div>
+
             </div>
         </div>
     </div>

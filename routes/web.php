@@ -382,9 +382,23 @@ Route::resource('activities', SiteActivityController::class);
 Route::post('priorities', [\App\Http\Controllers\V2\PriorityController::class, 'store']);
 
 
-Route::get('/watchlist/add/{userId}/{unitId}/{objective_id}', [ObjectivesController::class, 'storeW'])->name('watchlist.store');
+// Route::get('/watchlist/add/{userId}/{unitId}/{objective_id}', [ObjectivesController::class, 'storeW'])->name('watchlist.store');
 
 Route::get('/watchlistTask/add/{userId}/{unitId}/{task_id}', [TasksController::class, 'storeW'])->name('watchlistTask.store');
 
 
 Route::get('/watchlistIssue/add/{userId}/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
+
+Route::get('/watchlistIdea/add/{userId}/{unitId}/{idea_id}', [IdeaController::class, 'storeW'])->name('watchlistIdea.store');
+
+// Route::get('/watchlistUnit/add/{userId}/{unitId}', [UnitsController::class, 'storeU'])->name('watchlistU.store');
+
+
+
+Route::post('/watchlistU/store/{userId}/{unitId}', [UnitsController::class, 'storeU'])->name('watchlistU.store');
+
+
+Route::post('/watchlist/store', [ObjectivesController::class, 'storeW'])->name('watchlist.store');
+
+
+Route::delete('/tasks/{id}', [TasksController::class, 'destroy'])->name('tasks.destroy');

@@ -4,165 +4,306 @@
 
 @endsection
 @section('content')
-    <div class="bg-light p-3 mb-4">
-        <div class="row">
-            <div class="col-sm-4 text-center">
-                <div>
-                    @if(!empty($userObj->profile_pic))
-                        <img src="{{ $userObj->profile_pic }}" class="rounded-circle" style="width: 160px;">
-                    @else
-                        <img src="{!! url('assets/images/user.png') !!}" class="rounded-circle" style="width: 160px;">
-                    @endif
-                </div>
-                <label class="form-label d-block mb-0">Task Completion Ratings</label>
-                <div class="rating" style="font-size: 2rem;">
-                    <!-- Rating stars code remains unchanged -->
-                </div>
-                <span class="d-block text-center fw-bold">{{$rating_points}}/5</span>
+<div class="bg-light p-3 mb-4">
+    <div class="row">
+        <div class="col-sm-4 text-center">
+            <div>
+                @if(!empty($userObj->profile_pic))
+                <img src="{{ $userObj->profile_pic }}" class="rounded-circle" style="width: 160px;">
+                @else
+                <img src="{!! url('assets/images/user.png') !!}" class="rounded-circle" style="width: 160px;">
+                @endif
             </div>
-            <div class="col-sm-8">
-                <div class="user-header">
-                    <h3>{{$userObj->first_name.' '.$userObj->last_name}}</h3>
+            <label class="form-label d-block mb-0">Task Completion Ratings </label>
+            <div class="rating" style="font-size: 2rem;">
+                <!-- Rating stars code remains unchanged -->
+            </div>
+            <span class="d-block text-center fw-bold">{{$rating_points}}/5</span>
+        </div>
+        <div class="col-sm-8">
+            <div class="user-header">
+                <h3>{{$userObj->first_name.' '.$userObj->last_name}}</h3>
+            </div>
+            <div class="user-header">
+                <span class="bi bi-clock"></span>
+                Account age: {{$userObj->created_at}}
+            </div>
+            <div class="user-header">
+                <span class="bi bi-hand-thumbs-up"></span>
+                Skills:
+                <?php $job_skills = explode(",",$userObj->job_skills); ?>
+                @if(!empty($job_skills))
+                <div class="mt-2">
+                    @foreach($job_skills as $skill)
+                    <span class="badge bg-info mb-2">{{\App\Models\JobSkill::getName($skill)}}</span>
+                    @endforeach
                 </div>
-                <div class="user-header">
-                    <span class="bi bi-clock"></span>
-                    Account age: {{$userObj->created_at}}
+                @endif
+            </div>
+            <div class="user-header mb-2">
+                <span class="bi bi-bookmark"></span>
+                Area of Interest:
+                <?php $area_of_interest = explode(",",$userObj->area_of_interest); ?>
+                @if(!empty($area_of_interest))
+                <div class="mt-2">
+                    @foreach($area_of_interest as $interest)
+                    <span class="badge bg-info mb-2"
+                        style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{\App\Models\AreaOfInterest::getName($interest)}}</span>
+                    @endforeach
                 </div>
-                <div class="user-header">
-                    <span class="bi bi-hand-thumbs-up"></span>
-                    Skills:
-                    <?php $job_skills = explode(",",$userObj->job_skills); ?>
-                    @if(!empty($job_skills))
-                        <div class="mt-2">
-                            @foreach($job_skills as $skill)
-                                <span class="badge bg-info mb-2">{{\App\Models\JobSkill::getName($skill)}}</span>
-                            @endforeach
-                        </div>
-                    @endif
+                @endif
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="bi bi-geo-alt"></span>
+                    {{\App\Models\Country::getName($userObj->country_id)}}
+                    <span class="bi bi-caret-right"></span>
+                    {{\App\Models\State::getName($userObj->state_id)}}
+                    <span class="bi bi-caret-right"></span>
+                    {{\App\Models\City::getName($userObj->city_id)}}
                 </div>
-                <div class="user-header mb-2">
-                    <span class="bi bi-bookmark"></span>
-                    Area of Interest:
-                    <?php $area_of_interest = explode(",",$userObj->area_of_interest); ?>
-                    @if(!empty($area_of_interest))
-                        <div class="mt-2">
-                            @foreach($area_of_interest as $interest)
-                                <span class="badge bg-info mb-2" style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{\App\Models\AreaOfInterest::getName($interest)}}</span>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <span class="bi bi-geo-alt"></span>
-                        {{\App\Models\Country::getName($userObj->country_id)}}
-                        <span class="bi bi-caret-right"></span>
-                        {{\App\Models\State::getName($userObj->state_id)}}
-                        <span class="bi bi-caret-right"></span>
-                        {{\App\Models\City::getName($userObj->city_id)}}
-                    </div>
-                    <div>
-                        <a href="{{ route('user_wiki_page_list',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}" class="btn btn-info" style="text-decoration: none;">User Wiki</a>
-                    </div>
+                <div>
+                    <a href="{{ route('user_wiki_page_list',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}"
+                        class="btn btn-info" style="text-decoration: none;">User Wiki</a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 
-    <div class="row col-lg-12">
-        <div class="col-md-3">
-            <div class="sidebar_block">
-                <div class="sidebar_block_ttl">
-                    User Activity Log
-                    <div class="arrow">
-                        <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
-                    </div>
-                </div>
-                <div class="sidebar_block_content">
-                    @if(count($site_activity) > 0)
-                        @foreach($site_activity as $index => $activity)
-                            <div class="log_item">
-                                <div class="log_icon">
-                                    <img src="{{ asset('v2/assets/img/commen.svg') }}" alt="">
-                                </div>
-                                <div class="log_txt">
-                                    <a href="#">{!! $activity->comment !!}</a> {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <div class="log_item">
-                            No activity found.
-                        </div>
-                    @endif
-
-                    <div class="sidebar_block_content_bottom">
-                        <a href="#">Top Contributors</a>
-                        <div class="separator"></div>
-                        <a href="{{ url('activities') }}">More Activity</a>
-                    </div>
+<div class="row col-lg-12">
+    <div class="col-md-3">
+        <div class="sidebar_block">
+            <div class="sidebar_block_ttl">
+                User Activity Log
+                <div class="arrow">
+                    <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
                 </div>
             </div>
+            {{-- <div class="sidebar_block_content">
+                @if(count($site_activity) > 0)
+                @foreach($site_activity as $index => $activity)
+                <div class="log_item">
+                    <div class="log_icon">
+                        <img src="{{ asset('v2/assets/img/commen.svg') }}" alt="">
+                    </div>
+                    <div class="log_txt">
+                        <a href="#">{!! $activity->comment !!}</a> {!!
+                        \App\Library\Helpers::timetostr($activity->created_at) !!}
+                    </div>
+                </div>
+                @endforeach
+                @else
+                <div class="log_item">
+                    No activity found.
+                </div>
+                @endif
+
+                <div class="sidebar_block_content_bottom">
+                    <a href="#">Top Contributors</a>
+                    <div class="separator"></div>
+                    <a href="{{ url('activities') }}">More Activity</a>
+                </div>
+            </div> --}}
+
+            {{-- <div class="sidebar_block_content">
+                @if(count($site_activity) > 0)
+                @foreach($site_activity as $index => $activity)
+                @php
+                if (!empty($activity->task_id)) {
+                $type = 'task';
+                } elseif (!empty($activity->idea_id)) {
+                $type = 'idea';
+                } elseif (!empty($activity->objective_id)) {
+                $type = 'objective';
+                } elseif (!empty($activity->issue_id)) {
+                $type = 'issue';
+                } else {
+                $type = 'comment';
+                }
+
+                $isComplete = isset($activity->status) && strtolower($activity->status) === 'complete';
+                @endphp
+
+                <div class="log_item">
+                    <div class="log_icon">
+                        @if($isComplete)
+                        <i class="fa-solid fa-circle-check" style="color: green;"></i>
+                        @elseif($type === 'task')
+                        <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                        @elseif($type === 'idea')
+                        <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt="" class="img-fluid">
+                        @elseif($type === 'objective')
+                        <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
+                        @elseif($type === 'issue')
+                        <img src="{{ asset('v2/assets/img/bug.svg') }}" alt="" class="img-fluid">
+                        @elseif($type === 'comment')
+                        <i class="fa-solid fa-comment-dots"></i>
+                        @else
+                        <i class="fa-solid fa-comment"></i>
+                        @endif
+                    </div>
+
+                    <div class="log_txt">
+                        <a href="#">{!! $activity->comment !!}</a> {!!
+                        \App\Library\Helpers::timetostr($activity->created_at) !!}
+                    </div>
+                </div>
+                @endforeach
+                @else
+                <div class="log_item">
+                    No activity found.
+                </div>
+                @endif
+
+                <div class="sidebar_block_content_bottom">
+                    <a href="#">Top Contributors</a>
+                    <div class="separator"></div>
+                    <a href="{{ url('activities') }}">More Activity</a>
+                </div>
+            </div> --}}
+
+            @php
+            $loggedInUserId = auth()->id();
+            $userActivities = $site_activity->where('user_id', $loggedInUserId);
+            @endphp
+
+            <div class="sidebar_block_content">
+                @if($userActivities->count() > 0)
+                @foreach($userActivities as $index => $activity)
+                @php
+                if (!empty($activity->task_id)) {
+                $type = 'task';
+                } elseif (!empty($activity->idea_id)) {
+                $type = 'idea';
+                } elseif (!empty($activity->objective_id)) {
+                $type = 'objective';
+                } elseif (!empty($activity->issue_id)) {
+                $type = 'issue';
+                } elseif (!empty($activity->unit_id)) {
+                $type = 'unit';
+                } else {
+                $type = 'comment';
+                }
+
+                $isComplete = isset($activity->status) && strtolower($activity->status) === 'complete';
+                @endphp
+
+                <div class="log_item">
+                    <div class="log_icon">
+                        @if($isComplete)
+                        <i class="fa-solid fa-circle-check" style="color: green;"></i>
+                        @elseif($type === 'task')
+                        <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                        @elseif($type === 'idea')
+                        <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt="" class="img-fluid">
+                        @elseif($type === 'objective')
+                        <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
+                        @elseif($type === 'issue')
+                        <img src="{{ asset('v2/assets/img/bug.svg') }}" alt="" class="img-fluid">
+                        @elseif($type === 'unit')
+                        <i class="fa-brands fa-stack-overflow"></i>
+                        @elseif($type === 'comment')
+                        <i class="fa-solid fa-comment-dots"></i>
+                        @else
+                        <i class="fa-solid fa-comment"></i>
+                        @endif
+                    </div>
+
+                    <div class="log_txt">
+                        <a href="#">{!! $activity->comment !!}</a>
+                        {!! \App\Library\Helpers::timetostr($activity->created_at) !!}
+
+                        @if($type === 'unit' && isset($activity->unit->name))
+                        <div><strong>Unit:</strong> {{ $activity->unit->name }}</div>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+                @else
+                <div class="log_item">
+                    No activity found for this user.
+                </div>
+                @endif
+
+                <div class="sidebar_block_content_bottom">
+                    <a href="#">Top Contributors</a>
+                    <div class="separator"></div>
+                    <a href="{{ url('activities') }}">More Activity</a>
+                </div>
+            </div>
+
 
         </div>
 
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h3 class="card-title">
-                        Total Activity Points: {{ $activityPoints }}
-                        | Idea Points: {{$activityPoints_forum}}
-                    </h3>
-                    @if($userObj->paypal_email)
-                        <a class="btn btn-outline-dark btn-sm float-end" id="add_funds_btn"
-                           href="{!! url('funds/donate/user/'.$userIDHashID->encode($userObj->id)) !!}">
-                            <i class="fas fa-plus me-1"></i>
-                            {!! trans('messages.add_funds') !!}
-                        </a>
-                    @endif
+    </div>
 
-                    @auth()
-                        @php
-                            $userIDHashID = new Hashids\Hashids('user id hash',10,Config::get('app.encode_chars'));
-                        @endphp
-                        <input type="hidden" value="{{ $userIDHashID->encode(auth()->user()->id) }}" id="user_id">
-                        <input type="hidden" value="{{ auth()->user()->username }}" id="username">
-                    @endauth
-                    <div class="input-icon right float-end">
-                        <label for="amount" class="control-label">&nbsp;</label>
-                        <input id="amount-toggle" checked
-                               data-on="Last 6 Months" data-off="Lifetime"
-                               data-toggle="toggle" data-width="140" data-height="30" data-onstyle="light" data-offstyle="info"
-                               type="checkbox" name="charge_type">
-                    </div>
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">
+                    Total Activity Points: {{ $activityPoints }}
+                    {{-- @dd($activityPoints) --}}
+                    | Idea Points: {{$activityPoints_forum}}
+                </h3>
+                @if($userObj->paypal_email)
+                <a class="btn btn-outline-dark btn-sm float-end" id="add_funds_btn"
+                    href="{!! url('funds/donate/user/'.$userIDHashID->encode($userObj->id)) !!}">
+                    <i class="fas fa-plus me-1"></i>
+                    {!! trans('messages.add_funds') !!}
+                </a>
+                @endif
 
+                @auth()
+                @php
+                $userIDHashID = new Hashids\Hashids('user id hash',10,Config::get('app.encode_chars'));
+                @endphp
+                <input type="hidden" value="{{ $userIDHashID->encode(auth()->user()->id) }}" id="user_id">
+                <input type="hidden" value="{{ auth()->user()->username }}" id="username">
+                @endauth
+                <div class="input-icon right float-end">
+                    <label for="amount" class="control-label">&nbsp;</label>
+                    <input id="amount-toggle" checked data-on="Last 6 Months" data-off="Lifetime" data-toggle="toggle"
+                        data-width="140" data-height="30" data-onstyle="light" data-offstyle="info" type="checkbox"
+                        name="charge_type">
                 </div>
+
             </div>
+        </div>
 
-            <!-- Card for Most Active Units -->
-            <div class="card mb-3">
-                <div class="card-header">
-                    Most Active Units
-                </div>
-                <div class="card-body">
-                    @include('users.profile-partials.unit-details')
-                </div>
+        <!-- Card for Most Active Units -->
+        <div class="card mb-3">
+            <div class="card-header">
+                Most Active Units
             </div>
+            <div class="card-body">
+                @include('users.profile-partials.unit-details')
+            </div>
+        </div>
+
+        {{-- <div class="d-flex justify-content-between mt-2">
+            <div class="pagination-left">
+                {!! $pagination->links('layout.pagination') !!}
+            </div>
+        </div> --}}
 
 
-            <!-- Card for Objectives Details -->
-            <div class="card mb-3">
-                <div class="card-header">
-                    Objectives Details
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <tbody>
+
+
+        <!-- Card for Objectives Details -->
+        <div class="card mb-3">
+            <div class="card-header">
+                Objectives Details
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
                         <tr>
                             <td>Objectives Created</td>
                             <td>{{ $totalObjectivesCreated ?? 0 }}</td>
+                            {{-- @dd($totalObjectivesCreated) --}}
                         </tr>
                         <tr>
                             <td>Objectives Edited</td>
@@ -176,26 +317,26 @@
                             <td>Edits Upvote Ratio</td>
                             <td>{{ $upvoteEditRatio ?? 0 }}</td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <!-- Card for Tasks Details -->
+        <!-- Card for Tasks Details -->
 
-            <div class="card mb-3">
-                <div class="card-header">
-                    Task Details
-                </div>
-                <div class="card-body">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <thead>
+        <div class="card mb-3">
+            <div class="card-header">
+                Task Details
+            </div>
+            <div class="card-body">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
                         <tr>
                             <th style="border: 1px solid #ddd; padding: 8px;">Task Metrics</th>
                             <th style="border: 1px solid #ddd; padding: 8px;">Feedback Provided for Task Completion</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr>
                             <td style="border: 1px solid #ddd; padding: 8px;">
                                 <ul>
@@ -208,52 +349,54 @@
                                 <ul>
                                     <li>Quality of Work: 5</li>
                                     <li>Timeliness: 6</li>
-                                    <li>Edits Upvote Ratio: {{ $tasksUpvoteEditRatio ?? 0 }}</li>
+                                    <li>Edits Upvote Ratio: {{ $taskUpvoteEditRatio ?? 0 }}</li>
                                 </ul>
                             </td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <!-- Card for Issues Details -->
-            <div class="card mb-3">
-                <div class="card-header">
-                    Issue Details
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <tbody>
+        <!-- Card for Issues Details -->
+        <div class="card mb-3">
+            <div class="card-header">
+                Issue Details
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
                         <tr>
                             <td>Issue Created</td>
-                            <td>{{ $totalTasksCreated }}</td>
+                            <td>{{ $totalIssueCreated }}</td>
+
                         </tr>
                         <tr>
                             <td>Issue Edited</td>
-                            <td>{{ $totalTasksEdited }}</td>
+                            <td>{{ $totalIssueEdited }}</td>
                         </tr>
                         <tr>
                             <td>Creation Upvote Ratio</td>
+                            {{-- @dd($issueUpvoteCreationRatio) --}}
                             <td>{{ $issueUpvoteCreationRatio ?? 0 }}</td>
                         </tr>
                         <tr>
                             <td>Edits Upvote Ratio</td>
                             <td>{{ $issueUpvoteEditRatio ?? 0 }}</td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <!-- Card for Idea Details -->
-            <div class="card mb-3">
-                <div class="card-header">
-                    Idea Details
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <tbody>
+        <!-- Card for Idea Details -->
+        <div class="card mb-3">
+            <div class="card-header">
+                Idea Details
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
                         <tr>
                             <td>Idea Created</td>
                             <td>{{ $totalIdeasCreated }}</td>
@@ -270,19 +413,19 @@
                             <td>Edits Upvote Ratio</td>
                             <td>{{ $ideaUpvoteEditRatio ?? 0 }}</td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <!-- Card for Comment Statistics -->
-            <div class="card mb-3">
-                <div class="card-header">
-                    Comment Statistics
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <tbody>
+        <!-- Card for Comment Statistics -->
+        <div class="card mb-3">
+            <div class="card-header">
+                Comment Statistics
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
                         <tr>
                             <td>Total Comments</td>
                             <td><span id="totalComments">{{ $totalUserComments }}</span></td>
@@ -299,48 +442,48 @@
                             <td>Comments/Upvotes Ratio</td>
                             <td><span id="commentsUpvotesRatio">{{ $totalUpvotesCommentsRatio }}</span></td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
-
-            <div class="card mb-3">
-                <div class="card-header">
-                    Most Recent Comments
-                </div>
-                <div class="card-body">
-                    @include('users.profile-partials.most-recent-comments')
-                </div>
-            </div>
-
-            <div class="card mb-3">
-                <div class="card-header">
-                    Top Comments
-                </div>
-                <div class="card-body">
-                    @include('users.profile-partials.top-comments')
-                </div>
-            </div>
-
         </div>
 
-        <style>
-            .card-header {
-                background-color: #f8f9fa;
-                color: #333;
-                font-weight: bold;
-            }
-            .card-body {
-                background-color: #ffffff;
-            }
+        <div class="card mb-3">
+            <div class="card-header">
+                Most Recent Comments
+            </div>
+            <div class="card-body">
+                @include('users.profile-partials.most-recent-comments')
+            </div>
+        </div>
 
-        </style>
+        <div class="card mb-3">
+            <div class="card-header">
+                Top Comments
+            </div>
+            <div class="card-body">
+                @include('users.profile-partials.top-comments')
+            </div>
+        </div>
+
     </div>
+
+    <style>
+        .card-header {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .card-body {
+            background-color: #ffffff;
+        }
+    </style>
+</div>
 @endsection
 @section('scripts')
 
-    <script>
-        $(document).ready(function () {
+<script>
+    $(document).ready(function () {
             $('#amount-toggle').change(function () {
                 var isChecked = $(this).prop('checked');
                 var value = isChecked ? 'specific' : 'Lifetime';
@@ -360,6 +503,6 @@
                 });
             });
         });
-    </script>
+</script>
 
 @endsection

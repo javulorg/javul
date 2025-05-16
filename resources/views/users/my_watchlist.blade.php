@@ -242,6 +242,8 @@
 
                 @include('users.watchlist-partials.issues')
 
+                @include('users.watchlist-partials.idea')
+
             </div>
         </div>
 

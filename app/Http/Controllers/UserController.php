@@ -31,7 +31,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth',['except'=>['user_profile']]);
+        $this->middleware('auth', ['except' => ['user_profile']]);
     }
 
     public function date_calculateToNow($date)
@@ -39,72 +39,68 @@ class UserController extends Controller
         $created_date = new DateTime($date);
         $now_date = $created_date->diff(new DateTime());
 
-        if($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0 && $now_date->i == 0)
-            return $now_date->s .' seconds ';
+        if ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0 && $now_date->i == 0)
+            return $now_date->s . ' seconds ';
         elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0 && $now_date->h == 0)
-            return $now_date->i .' min '. $now_date->s .' seconds';
+            return $now_date->i . ' min ' . $now_date->s . ' seconds';
         elseif ($now_date->y == 0 && $now_date->m == 0 && $now_date->d == 0)
-            if($now_date->d == 0){
-                return $now_date->h .' hours '. $now_date->i .' min';
-            }else{
-                return $now_date->d .' days '. $now_date->h .' hours';
+            if ($now_date->d == 0) {
+                return $now_date->h . ' hours ' . $now_date->i . ' min';
+            } else {
+                return $now_date->d . ' days ' . $now_date->h . ' hours';
             }
         elseif ($now_date->y == 0 && $now_date->m == 0)
-            if($now_date->h == 0){
-                return $now_date->m .' months '. $now_date->i .' min';
-            }else{
-                return  $now_date->d .' days '. $now_date->h .' hours';
+            if ($now_date->h == 0) {
+                return $now_date->m . ' months ' . $now_date->i . ' min';
+            } else {
+                return  $now_date->d . ' days ' . $now_date->h . ' hours';
             }
-        elseif ($now_date->y == 0 )
-            if($now_date->d == 0){
-                return-$now_date->m .' months '. $now_date->h .' hours';
-            }else{
-                return $now_date->m .' months '. $now_date->d .' days';
+        elseif ($now_date->y == 0)
+            if ($now_date->d == 0) {
+                return -$now_date->m . ' months ' . $now_date->h . ' hours';
+            } else {
+                return $now_date->m . ' months ' . $now_date->d . ' days';
             }
-        elseif ($now_date->y != 0 )
-            if($now_date->m == 0){
-                return  $now_date->y .' year '. $now_date->d .' days';
-            }else{
-                return  $now_date->y .' year '. $now_date->m .' months';
+        elseif ($now_date->y != 0)
+            if ($now_date->m == 0) {
+                return  $now_date->y . ' year ' . $now_date->d . ' days';
+            } else {
+                return  $now_date->y . ' year ' . $now_date->m . ' months';
             }
-
     }
 
-    public function user_profile(Request $request,$user_id,$slug=null)
+    public function user_profile(Request $request, $user_id, $slug = null)
     {
-        view()->share('user_id_hash',$user_id);
-        if(!empty($user_id))
-        {
-            $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
+        view()->share('user_id_hash', $user_id);
+        if (!empty($user_id)) {
+            $userIDHashID = new Hashids('user id hash', 10, Config::get('app.encode_chars'));
             $user_id = $userIDHashID->decode($user_id);
-            if(!empty($user_id))
-            {
-                $user_id = $user_id [0];
+            if (!empty($user_id)) {
+                $user_id = $user_id[0];
                 $userObj = User::find($user_id);
-                $unitsObj = Unit::with(['objectives','tasks'])
-                    ->where('units.user_id',$user_id)
+                $unitsObj = Unit::with(['objectives', 'tasks'])
+                    ->where('units.user_id', $user_id)
                     ->get();
 
 
-                $objectivesObj = Objective::where('user_id',$user_id)->get();
-                $tasksObj = Task::where('user_id',$user_id)->get();
+                $objectivesObj = Objective::where('user_id', $user_id)->get();
+                $tasksObj = Task::where('user_id', $user_id)->get();
 
-                $activityPoints = ActivityPoint::where('user_id',$user_id)->sum('points');
+                $activityPoints = ActivityPoint::where('user_id', $user_id)->sum('points');
 
                 $skills = [];
-                if(!empty($userObj->job_skills))
-                    $skills = JobSkill::whereIn('id',explode(",",$userObj->job_skills))->get();
+                if (!empty($userObj->job_skills))
+                    $skills = JobSkill::whereIn('id', explode(",", $userObj->job_skills))->get();
 
                 $interestObj = [];
-                if(!empty($userObj->job_skills))
-                    $interestObj = AreaOfInterest::whereIn('id',explode(",",$userObj->area_of_interest))->get();
+                if (!empty($userObj->job_skills))
+                    $interestObj = AreaOfInterest::whereIn('id', explode(",", $userObj->area_of_interest))->get();
 
-                $userWiki = UserWiki::select(['page_content','id'])
-                                    ->where("user_id","=",$user_id)
-                                    ->where("page_type","=","2")
-                                    ->get();
-                if( $userWiki->count() == 0)
-                {
+                $userWiki = UserWiki::select(['page_content', 'id'])
+                    ->where("user_id", "=", $user_id)
+                    ->where("page_type", "=", "2")
+                    ->get();
+                if ($userWiki->count() == 0) {
 
                     $wikipage =  new UserWiki;
                     $wikipage->page_content = 'Welcome to the User wiki home page';
@@ -119,55 +115,73 @@ class UserController extends Controller
                     $userWiki[0] = $wikipage;
                 }
 
-                $userPageIDHashID= new Hashids('userpage id hash',10,Config::get('app.encode_chars'));
+                $userPageIDHashID = new Hashids('userpage id hash', 10, Config::get('app.encode_chars'));
                 $page_id = $userPageIDHashID->encode($userWiki[0]->id);
-                $activityPoints_forum = ActivityPoint::where('user_id',$user_id)->where('type','forum')->sum('points');
-                view()->share('activityPoints_forum',$activityPoints_forum);
+                $activityPoints_forum = ActivityPoint::where('user_id', $user_id)->where('type', 'forum')->sum('points');
+                view()->share('activityPoints_forum', $activityPoints_forum);
 
                 $userWiki[0]->page_content = Wiki::parse($userWiki[0]->page_content);
 
-                $rating_points = TaskRatings::where('user_id',$user_id)->sum('quality_of_work');
-                $total_rating_points = TaskRatings::where('user_id',$user_id)->count();
-                if(is_null($rating_points))
+                $rating_points = TaskRatings::where('user_id', $user_id)->sum('quality_of_work');
+                $total_rating_points = TaskRatings::where('user_id', $user_id)->count();
+                if (is_null($rating_points))
                     $rating_points = 0;
-                else if($rating_points > 0)
-                {
+                else if ($rating_points > 0) {
                     $rating_points = $rating_points / $total_rating_points;
-                    if(is_float($rating_points))
-                        $rating_points = round($rating_points,1);
+                    if (is_float($rating_points))
+                        $rating_points = round($rating_points, 1);
                 }
 
 
                 /**
                  * Account age.
                  */
-                 $userObj->age = $this->date_calculateToNow($userObj->created_at);
+                $userObj->age = $this->date_calculateToNow($userObj->created_at);
 
 
 
-                view()->share('rating_points',$rating_points);
-                view()->share("page_id_hase",$page_id);
+                view()->share('rating_points', $rating_points);
+                view()->share("page_id_hase", $page_id);
 
-                view()->share('userWiki',$userWiki);
-                view()->share('objectivesObj',$objectivesObj);
-                view()->share('tasksObj',$tasksObj);
-                view()->share('interestObj',$interestObj);
-                view()->share('skills',$skills);
-                view()->share('activityPoints',$activityPoints);
-                view()->share('userObj',$userObj);
-                view()->share('unitsObj',$unitsObj);
+                view()->share('userWiki', $userWiki);
+                view()->share('objectivesObj', $objectivesObj);
+                view()->share('tasksObj', $tasksObj);
+                view()->share('interestObj', $interestObj);
+                view()->share('skills', $skills);
+                view()->share('activityPoints', $activityPoints);
+                view()->share('userObj', $userObj);
+                view()->share('unitsObj', $unitsObj);
 
 
                 $filter = $request->query('filter', 'specific');
 
                 if ($filter == 'specific') {
                     // Your logic for the specific filter
-                    $mostActiveUnits = ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
-                        ->where('created_at', '>=', now()->subMonths(6)) // Adjust the date range as needed
-                        ->groupBy('unit_id')
+                    // $mostActiveUnits = ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
+                    //     ->where('created_at', '>=', now()->subMonths(6)) // Adjust the date range as needed
+                    //     ->groupBy('unit_id')
+                    //     ->orderByDesc('total_points')
+                    //     ->limit(5)
+                    //     ->get();
+
+                    $userId = Auth::id(); // get currently logged-in user ID
+
+                    $mostActiveUnits = \App\Models\Unit::leftJoin('activity_points', function ($join) use ($userId) {
+                        $join->on('units.id', '=', 'activity_points.unit_id')
+                            ->where('activity_points.user_id', '=', $userId)
+                            ->where('activity_points.created_at', '>=', now()->subMonths(6));
+                    })
+                        ->select(
+                            'units.id as unit_id',
+                            'units.name as unit_name',
+                            DB::raw('COALESCE(SUM(activity_points.points), 0) as total_points')
+                        )
+                        ->groupBy('units.id', 'units.name')
+                        ->having('total_points', '>', 0)
                         ->orderByDesc('total_points')
-                        ->limit(5)
                         ->get();
+
+
 
                     $totalTasksEdited =  ActivityPoint::query()
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
@@ -175,7 +189,7 @@ class UserController extends Controller
                         ->where('comments', 'Task Updated')
                         ->count();
 
-                    $totalCompletedTasks=  Task::query()
+                    $totalCompletedTasks =  Task::query()
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
                         ->where('user_id', $user_id)
                         ->where('status', 'completed')
@@ -232,7 +246,6 @@ class UserController extends Controller
                     $totalTasksCreated = Task::query()
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
                         ->where('user_id', $user_id)->count();
-
                 } else {
                     // Default logic for 'Last 6 Months' or 'Lifetime'
                     $mostActiveUnits = ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
@@ -246,7 +259,7 @@ class UserController extends Controller
                         ->where('comments', 'Task Updated')
                         ->count();
 
-                    $totalCompletedTasks=  Task::query()
+                    $totalCompletedTasks =  Task::query()
                         ->where('user_id', $user_id)
                         ->where('status', 'completed')
                         ->count();
@@ -274,6 +287,14 @@ class UserController extends Controller
                     $totalObjectivesCreated = Objective::query()
                         ->where('user_id', $user_id)->count();
 
+                    // $upvoteCreationPoints = Objective::query()
+                    //     ->where('user_id', $user_id)
+                    //     ->sum('upvotes');
+
+                    $upvoteEditPoints = Objective::query()
+                        ->where('editor_id', $user_id) // assuming edits tracked this way
+                        ->sum('edit_upvotes');
+
                     $objectivesPriority = DB::table('priorities')
                         ->whereIn('type_id', $userObjectivesIds)
                         ->where('type', 3)
@@ -283,14 +304,15 @@ class UserController extends Controller
                     $userIssueIds = Issue::where('user_id', $user_id)->pluck('id');
                     $userIdeaIds = Idea::where('user_id', $user_id)->pluck('id');
                     $totalTasksCreated = Task::query()->where('user_id', $user_id)->count();
+                    $totalIssueCreated = Issue::query()->where('user_id', $user_id)->count();
                 }
 
 
-                $upvoteCreationRatio = 0;
-                if($objectivesPriority > 0){
-                    $upvoteCreationRatio = $objectivesPriority / $totalObjectivesCreated;
-                    $upvoteCreationRatio = round($upvoteCreationRatio,2);
-                }
+                $upvoteCreationRatio = $totalObjectivesCreated*30;
+                // if ($objectivesPriority > 0) {
+                //     $upvoteCreationRatio = $objectivesPriority / $totalObjectivesCreated;
+                //     $upvoteCreationRatio = round($upvoteCreationRatio, 2);
+                // }
 
 
                 $objectiveRevisions = DB::table('objective_revisions')
@@ -299,11 +321,11 @@ class UserController extends Controller
                 $objectivesUpvote = DB::table('objectives')
                     ->whereIn('id', $userObjectivesIds)
                     ->sum('upvote_edit_count');
-                $upvoteEditRatio = 0;
-                if($objectivesUpvote > 0){
-                    $upvoteEditRatio = $objectivesUpvote / $objectiveRevisions;
-                    $upvoteEditRatio = round($upvoteEditRatio,2);
-                }
+                $upvoteEditRatio = $totalObjectivesEdited*30;
+                // if ($objectivesUpvote > 0) {
+                //     $upvoteEditRatio = $objectivesUpvote / $objectiveRevisions;
+                //     $upvoteEditRatio = round($upvoteEditRatio, 2);
+                // }
 
 
 
@@ -314,9 +336,9 @@ class UserController extends Controller
                     ->whereIn('id', $userTasksIds)
                     ->sum('upvote_edit_count');
                 $tasksUpvoteEditRatio = 0;
-                if($taskUpvote > 0){
+                if ($taskUpvote > 0) {
                     $tasksUpvoteEditRatio = $taskUpvote / $taskRevisions;
-                    $tasksUpvoteEditRatio = round($tasksUpvoteEditRatio,2);
+                    $tasksUpvoteEditRatio = round($tasksUpvoteEditRatio, 2);
                 }
 
 
@@ -328,9 +350,9 @@ class UserController extends Controller
                     ->sum('upvote_edit_count');
 
                 $issueUpvoteEditRatio = 0;
-                if($issueUpvote > 0){
+                if ($issueUpvote > 0) {
                     $issueUpvoteEditRatio = $issueUpvote / $issueRevisions;
-                    $issueUpvoteEditRatio = round($issueUpvoteEditRatio,2);
+                    $issueUpvoteEditRatio = round($issueUpvoteEditRatio, 2);
                 }
 
 
@@ -338,11 +360,12 @@ class UserController extends Controller
                     ->whereIn('type_id', $userIssueIds)
                     ->where('type', 1)
                     ->count();
-                $issueUpvoteCreationRatio = 0;
-                if($issuePriority > 0){
-                    $issueUpvoteCreationRatio = $issuePriority / $totalObjectivesCreated;
-                    $issueUpvoteCreationRatio = round($issueUpvoteCreationRatio,2);
-                }
+                // $issueUpvoteCreationRatio = $issuePriority / $totalObjectivesCreated;
+                // $issueUpvoteCreationRatio = 0;
+                // if ($issuePriority > 0) {
+                //     $issueUpvoteCreationRatio = $issuePriority / $totalObjectivesCreated;
+                //     $issueUpvoteCreationRatio = round($issueUpvoteCreationRatio, 2);
+                // }
 
 
                 $ideaRevisions = DB::table('idea_revisions')
@@ -352,21 +375,21 @@ class UserController extends Controller
                     ->whereIn('id', $userIdeaIds)
                     ->sum('upvote_edit_count');
 
-                $ideaUpvoteEditRatio = 0;
-                if($ideaUpvote > 0){
-                    $ideaUpvoteEditRatio = $ideaUpvote / $ideaRevisions;
-                    $ideaUpvoteEditRatio = round($ideaUpvoteEditRatio,2);
-                }
+                $ideaUpvoteEditRatio = $totalIdeasUpdated*30;
+                // if ($ideaUpvote > 0) {
+                //     $ideaUpvoteEditRatio = $ideaUpvote / $ideaRevisions;
+                //     $ideaUpvoteEditRatio = round($ideaUpvoteEditRatio, 2);
+                // }
 
                 $ideaPriority = DB::table('priorities')
                     ->whereIn('type_id', $userIdeaIds)
                     ->where('type', 2)
                     ->count();
-                $ideaUpvoteCreationRatio = 0;
-                if($ideaPriority > 0){
-                    $ideaUpvoteCreationRatio = $ideaPriority / $totalIdeasCreated;
-                    $ideaUpvoteCreationRatio = round($ideaUpvoteCreationRatio,2);
-                }
+                $ideaUpvoteCreationRatio = $totalIdeasCreated*30;
+                // if ($ideaPriority > 0) {
+                //     $ideaUpvoteCreationRatio = $ideaPriority / $totalIdeasCreated;
+                //     $ideaUpvoteCreationRatio = round($ideaUpvoteCreationRatio, 2);
+                // }
 
 
 
@@ -383,7 +406,7 @@ class UserController extends Controller
                     ->sum('dislikes');
 
                 $totalUpvotesCommentsRatio = 0;
-                if($totalUpvotesComments > 0){
+                if ($totalUpvotesComments > 0) {
                     $totalUpvotesCommentsRatio = $totalUserComments / $totalUpvotesComments;
                     $totalUpvotesCommentsRatio = round($totalUpvotesCommentsRatio, 2);
                 }
@@ -397,41 +420,64 @@ class UserController extends Controller
 
                 $topComments = DB::table('forum_post')
                     ->where('user_id', $user_id)
-                    ->where('likes', '>' , 0)
+                    ->where('likes', '>', 0)
                     ->orderBy('likes', 'desc')
                     ->take(10)
                     ->get();
 
-                view()->share('totalUserComments',$totalUserComments);
-                view()->share('totalUpvotesComments',$totalUpvotesComments);
-                view()->share('totalDownvotesComments',$totalDownvotesComments);
-                view()->share('totalUpvotesCommentsRatio',$totalUpvotesCommentsRatio);
-                view()->share('mostRecentComments',$mostRecentComments);
-                view()->share('topComments',$topComments);
+                view()->share('totalUserComments', $totalUserComments);
+                view()->share('totalUpvotesComments', $totalUpvotesComments);
+                view()->share('totalDownvotesComments', $totalDownvotesComments);
+                view()->share('totalUpvotesCommentsRatio', $totalUpvotesCommentsRatio);
+                view()->share('mostRecentComments', $mostRecentComments);
+                view()->share('topComments', $topComments);
 
 
-                view()->share('issueUpvoteCreationRatio',$issueUpvoteCreationRatio);
-                view()->share('issueUpvoteEditRatio',$issueUpvoteEditRatio);
+                // view()->share('issueUpvoteCreationRatio', $issueUpvoteCreationRatio);
+                view()->share('issueUpvoteEditRatio', $issueUpvoteEditRatio);
 
-                view()->share('ideaUpvoteCreationRatio',$ideaUpvoteCreationRatio);
-                view()->share('ideaUpvoteEditRatio',$ideaUpvoteEditRatio);
+                view()->share('ideaUpvoteCreationRatio', $ideaUpvoteCreationRatio);
+                view()->share('ideaUpvoteEditRatio', $ideaUpvoteEditRatio);
 
-                view()->share('upvoteCreationRatio',$upvoteCreationRatio);
-                view()->share('upvoteEditRatio',$upvoteEditRatio);
+                view()->share('upvoteCreationRatio', $upvoteCreationRatio);
+                view()->share('upvoteEditRatio', $upvoteEditRatio);
 
 
-                view()->share('tasksUpvoteEditRatio',$tasksUpvoteEditRatio);
+                view()->share('tasksUpvoteEditRatio', $tasksUpvoteEditRatio);
 
-                view()->share('mostActiveUnits',$mostActiveUnits);
-                view()->share('totalObjectivesCreated',$totalObjectivesCreated);
-                view()->share('totalObjectivesEdited',$totalObjectivesEdited);
-                view()->share('totalTasksCreated',$totalTasksCreated);
-                view()->share('totalTasksEdited',$totalTasksEdited);
-                view()->share('totalCompletedTasks',$totalCompletedTasks);
-                view()->share('totalIdeasCreated',$totalIdeasCreated);
-                view()->share('totalIdeasUpdated',$totalIdeasUpdated);
+                view()->share('mostActiveUnits', $mostActiveUnits);
+                view()->share('totalObjectivesCreated', $totalObjectivesCreated);
+                view()->share('totalObjectivesEdited', $totalObjectivesEdited);
+                view()->share('totalTasksCreated', $totalTasksCreated);
+                view()->share('totalTasksEdited', $totalTasksEdited);
+                view()->share('totalCompletedTasks', $totalCompletedTasks);
+                view()->share('totalIdeasCreated', $totalIdeasCreated);
+                view()->share('totalIdeasUpdated', $totalIdeasUpdated);
+                // view()->share('totalIssueCreated',$totalIssueCreated);
 
-                return view('users.profile');
+                $totalIssueEdited = ActivityPoint::query()->where('user_id', $user_id)->where('comments', 'Issue Updated')->count();
+
+                $totalIssueCreated = Issue::query()->where('user_id', $user_id)->count();
+
+                $issueUpvoteCreationRatio = $totalIssueCreated *30;
+                $issueUpvoteEditRatio = $totalIssueEdited * 30;
+
+
+                $taskUpvoteCreationRatio = $totalTasksCreated *30;
+                $taskUpvoteEditRatio = $totalTasksEdited * 30;
+
+
+                return view('users.profile', [
+                    'totalObjectivesCreated' => $totalObjectivesCreated,
+                    'totalObjectivesEdited' => $totalObjectivesEdited,
+                    'totalIssueCreated' => $totalIssueCreated,
+                    'totalIssueEdited' => $totalIssueEdited,
+                    'issueUpvoteCreationRatio' => $issueUpvoteCreationRatio,
+                    'issueUpvoteEditRatio' => $issueUpvoteEditRatio,
+                    'taskUpvoteCreationRatio' => $taskUpvoteCreationRatio,
+                    'taskUpvoteEditRatio' => $taskUpvoteEditRatio
+                ]);
+
             }
         }
         return view('errors.404');
@@ -440,68 +486,75 @@ class UserController extends Controller
     public function my_contribution()
     {
 
-        $site_activities = SiteActivity::where('user_id',Auth::user()->id)->orderBy('id','desc')->paginate(Config::get('app.global_site_activity_page'));
-        view()->share('site_activities',$site_activities );
+        $site_activities = SiteActivity::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(Config::get('app.global_site_activity_page'));
+        view()->share('site_activities', $site_activities);
 
         return view('users.my_contributions');
     }
 
     public function my_tasks(Request $request)
     {
-        $myBids = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')
+        $myBids = TaskBidder::join('tasks', 'task_bidders.task_id', '=', 'tasks.id')
             ->where('task_bidders.user_id', Auth::user()->id)
             ->whereNull('task_bidders.status')
-            ->select(['tasks.name','tasks.id as task_id','tasks.slug','tasks.status as task_status', 'task_bidders.*'])
+            ->select(['tasks.name', 'tasks.id as task_id', 'tasks.slug', 'tasks.status as task_status', 'task_bidders.*'])
             ->get();
-        $myAssignedTask = Task::where('status','in_progress')->where('assign_to',Auth::user()->id)->get();
+        $myAssignedTask = Task::where('status', 'in_progress')->where('assign_to', Auth::user()->id)->get();
 
         $assignedTasks = Task::query()
-            ->where('assign_to',Auth::user()->id)
+            ->where('assign_to', Auth::user()->id)
             ->get();
-        view()->share('assignedTasks',$assignedTasks);
+        view()->share('assignedTasks', $assignedTasks);
 
         $inProgressTasks = Task::query()
-            ->where('assign_to',Auth::user()->id)
-            ->where('status','in_progress')
+            ->where('assign_to', Auth::user()->id)
+            ->where('status', 'in_progress')
             ->get();
+
+      $underTasks = Task::query()
+    ->where('assign_to', Auth::user()->id)
+    ->whereIn('status', ['completed_under_evaluation', 'completed'])
+    ->get();
+
+
+
 
         $completedTasks = Task::query()
-            ->where('assign_to',Auth::user()->id)
-            ->where('status','completed')
+            ->where('assign_to', Auth::user()->id)
+            ->where('status', 'completed')
             ->get();
 
-        view()->share('inProgressTasks',$inProgressTasks);
-        view()->share('myBids',$myBids);
-        view()->share('completedTasks',$completedTasks);
+        view()->share('inProgressTasks', $inProgressTasks);
+        view()->share('myBids', $myBids);
+        view()->share('completedTasks', $completedTasks);
 
 
-        $myEvaluationTask =[];
+        $myEvaluationTask = [];
         $myCancelledTask = [];
         $zcashTransferList = [];
 
-        if(Auth::user()->role == 1)
-        {
-            $myEvaluationTask = Task::join('task_complete','tasks.id','=','task_complete.task_id')
-                ->join('users','task_complete.user_id','=','users.id')
+        if (Auth::user()->role == 1) {
+            $myEvaluationTask = Task::join('task_complete', 'tasks.id', '=', 'task_complete.task_id')
+                ->join('users', 'task_complete.user_id', '=', 'users.id')
                 ->selectRaw('max(tasks.name),max(slug),max(tasks.status),
                     max(users.first_name),max(users.last_name),max(users.id) as user_id,
                     max(tasks.id) as task_id,max(task_complete.attachments),max(task_complete.comments)')
-                ->where('tasks.status','completion_evaluation')
+                ->where('tasks.status', 'completed_under_evaluation')
                 ->groupBy('task_complete.task_id')
                 ->get();
 
-            $myCancelledTask = Task::join('task_cancel','tasks.id','=','task_cancel.task_id')
-                ->join('users','task_cancel.user_id','=','users.id')
+            $myCancelledTask = Task::join('task_cancel', 'tasks.id', '=', 'task_cancel.task_id')
+                ->join('users', 'task_cancel.user_id', '=', 'users.id')
                 ->selectRaw('max(tasks.name),max(slug),max(tasks.status),max(users.first_name),max(users.last_name),max(users.id) as user_id,
                     max(tasks.id) as task_id,max(task_cancel.comments)')
-                ->where('tasks.status','cancelled')
+                ->where('tasks.status', 'cancelled')
                 ->groupBy('task_cancel.task_id')
                 ->get();
 
-            $zcashTransferList = ZcashWithdrawRequest::join('users','users.id','=','zcash_withdraw_request.user_id')
-            ->select('users.first_name','users.last_name','users.id as user_id','zcash_withdraw_request.*')
-            ->where('zcash_withdraw_request.status','withdrawal')
-            ->get();
+            $zcashTransferList = ZcashWithdrawRequest::join('users', 'users.id', '=', 'zcash_withdraw_request.user_id')
+                ->select('users.first_name', 'users.last_name', 'users.id as user_id', 'zcash_withdraw_request.*')
+                ->where('zcash_withdraw_request.status', 'withdrawal')
+                ->get();
         }
 
 
@@ -510,21 +563,21 @@ class UserController extends Controller
         $availableFunds = Fund::getUnitDonatedFund($request->unit);
         $awardedFunds = Fund::getUnitAwardedFund($request->unit);
 
-        view()->share('availableFunds',$availableFunds );
-        view()->share('awardedFunds',$awardedFunds );
-        view()->share('unitData',$unitData);
-        view()->share('unitObj',$unitData);
+        view()->share('availableFunds', $availableFunds);
+        view()->share('awardedFunds', $awardedFunds);
+        view()->share('unitData', $unitData);
+        view()->share('unitObj', $unitData);
 
-        $site_activity = SiteActivity::orderBy('id','desc')->paginate(Config::get('app.site_activity_page_limit'));
-        view()->share('site_activity',$site_activity);
-        view()->share('site_activity_text','Global Activity Log');
+        $site_activity = SiteActivity::orderBy('id', 'desc')->paginate(Config::get('app.site_activity_page_limit'));
+        view()->share('site_activity', $site_activity);
+        view()->share('site_activity_text', 'Global Activity Log');
 
-        view()->share('myCancelledTask',$myCancelledTask);
-        view()->share('myEvaluationTask',$myEvaluationTask);
-        view()->share('myBids',$myBids);
-        view()->share('myAssignedTask',$myAssignedTask);
-        view()->share('zcashTransferList',$zcashTransferList);
+        view()->share('myCancelledTask', $myCancelledTask);
+        view()->share('myEvaluationTask', $myEvaluationTask);
+        view()->share('myBids', $myBids);
+        view()->share('myAssignedTask', $myAssignedTask);
+        view()->share('zcashTransferList', $zcashTransferList);
 
-        return view('users.my_tasks');
+        return view('users.my_tasks',['underTask'=> $underTasks]);
     }
 }

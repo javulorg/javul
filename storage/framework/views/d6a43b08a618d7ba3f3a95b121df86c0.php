@@ -7,7 +7,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society 
+        Open-source Society
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -111,14 +111,14 @@
                                                     </a>
                                                 </div>
                                             </div>
-                            
+
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl">Status</div>
                                                 <div class="mob_table_val">
                                                     <span class="colorLightGreen"><?php echo e(\App\Models\SiteConfigs::task_status($obj->status)); ?></span>
                                                 </div>
                                             </div>
-                            
+
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl"><i class="fa fa-trophy"></i> In Progress</div>
                                                 <div class="mob_table_val">
@@ -126,7 +126,7 @@
 
                                                 </div>
                                             </div>
-                            
+
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl"><i class="fa fa-clock"></i> Completed</div>
                                                 <div class="mob_table_val">
@@ -144,7 +144,7 @@
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            
+
 
                         </div>
                     </div>
@@ -183,8 +183,8 @@
                                 </thead>
 
                                 <tbody>
-                                <?php if(count($tasksMasterData) > 0 ): ?>
-                                    <?php $__currentLoopData = $tasksMasterData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(count($pagination) > 0 ): ?>
+                                    <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td class="type_col">
                                                 <a href="<?php echo url('tasks/'.$taskIDHashID->encode($task->id) . '/' . $task->slug); ?>">
@@ -211,8 +211,8 @@
 
 
                             <div class="mob_table d-sm-none d-block">
-                                <?php if(count($tasksMasterData) > 0 ): ?>
-                                    <?php $__currentLoopData = $tasksMasterData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(count($pagination) > 0 ): ?>
+                                    <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="mob_table_section">
                                             <div class="mob_table_row">
                                                 <div class="mob_table_ttl">Task Name</div>
@@ -246,6 +246,13 @@
                                 <?php endif; ?>
                             </div>
 
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="pagination-left">
+                                <?php echo $pagination->links('layout.pagination'); ?>
+
+                            </div>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-2">

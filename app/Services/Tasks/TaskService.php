@@ -2,6 +2,7 @@
 
 namespace App\Services\Tasks;
 
+use App\Models\Task;
 use Illuminate\Support\Facades\DB;
 
 class TaskService
@@ -22,4 +23,11 @@ class TaskService
         }
         return $comments;
     }
+
+
+    public function listAll()
+    {
+        return Task::query();  // ✅ Correct class name
+    }
+
 }

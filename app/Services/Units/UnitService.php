@@ -109,4 +109,12 @@ class UnitService
             'title'     => 'uncategorized',
         ]);
     }
+
+    // app/Services/Units/UnitService.php
+
+public function listAll()
+{
+    return Unit::query(); // ya koi bhi query jo tumhe chahiye
+}
+
 }

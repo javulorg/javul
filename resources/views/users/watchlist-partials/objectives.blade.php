@@ -14,27 +14,20 @@
                 <thead>
                     <tr>
                         <th class="title_col">Objective Name</th>
-                        <th class="title_col">{!! trans('messages.description') !!}</th>
+                        <th class="title_col">Description</th>
                     </tr>
                 </thead>
+                <tbody>
 
-                {{-- @foreach ($watchedUnits as $watchedUnit)
-
+                    @foreach ($watchedUnits as $watchedUnit)
                         <tr>
                             <td>{{ $watchedUnit->name }}</td>
                             <td style="display: none"></td>
-                            <td>{{ $watchedUnit->description }}</td>
+                            <!-- Use strip_tags to remove HTML tags from description -->
+                            <td>{{ strip_tags($watchedUnit->description) }}</td>
                         </tr>
-                    @endforeach --}}
-                @foreach ($watchedUnits as $watchedUnit)
-                    <tr>
-                        <td>{{ $watchedUnit->name }}</td>
-                        <td style="display: none"></td>
-                        <!-- Use strip_tags to remove HTML tags from description -->
-                        <td>{{ strip_tags($watchedUnit->description) }}</td>
-                    </tr>
-                @endforeach
-
+                    @endforeach
+                </tbody>
             </table>
         </div>
 

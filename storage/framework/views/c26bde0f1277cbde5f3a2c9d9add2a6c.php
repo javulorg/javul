@@ -1,6 +1,11 @@
+<!-- Include these in your <head> or before </body> -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <div class="content_block">
     <div class="table_block table_block_units">
-        <div class="table_block_head">
+        <div class="table_block_head" onclick="toggleUnitsTable()" style="cursor: pointer;">
             <div class="table_block_icon">
                 <i class="fa-brands fa-stack-overflow"></i>
             </div>
@@ -9,20 +14,36 @@
                 <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
             </div>
         </div>
-        <div class="table_block_body">
-            <table id="watchlist-units-table-id">
+
+        <div class="table_block_body" id="unitsTableBody">
+            <table id="watchlist-units-table-id" class="display" style="width:100%">
                 <thead>
-                <tr>
-                    <th class="title_col"><?php echo e(__('messages.unit_name')); ?></th>
-                    <th class="last_reply_col"><?php echo e(__('messages.unit_category')); ?></th>
-                    <th><?php echo e(__('messages.description')); ?></th>
-                </tr>
+                    <tr>
+                        <th class="title_col">Unit Name</th>
+                        <th class="title_col">Description</th>
+                    </tr>
                 </thead>
                 <tbody>
+                    <?php $__currentLoopData = $watchedUnittotal; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $watchedUnit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <tr>
+                            <td><?php echo e($watchedUnit->name); ?></td>
+                            
+                            <td><?php echo e(strip_tags($watchedUnit->description)); ?></td>
 
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#watchlist-units-table-id').DataTable({
+            dom: 't',
+            paging: false,
+        });
+    });
+</script>
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/users/watchlist-partials/units.blade.php ENDPATH**/ ?>

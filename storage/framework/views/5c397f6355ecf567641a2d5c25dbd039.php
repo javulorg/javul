@@ -10,7 +10,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society 
+        Open-source Society
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -41,6 +41,7 @@
         </div>
 
         <input type="hidden" id="idea_id" name="idea_id" value="<?php echo e($idea->id); ?>">
+
         <input type="hidden" id="unit_id" name="unit_id" value="<?php echo e($unitData->id); ?>">
 
         <div class="main_content">
@@ -192,14 +193,48 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="objective_content_info_links">
-                                    <a href="<?php echo url('ideas/'. $ideaHashId .'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" alt=""></a>
-                                    <div class="separat"></div>
-                                    <a href="<?php echo route('idea_revisions',[$ideaHashId]); ?>" class="edit_icon"> Revision History</a>
-                                    <div class="separat"></div>
-                                    <a href="<?php echo url('ideas/'. $ideaHashId .'/edit'); ?>" class="edit_icon"><img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt=""></a>
+                                
 
+                                <div class="objective_content_info_links">
+                                    <?php
+                                        $isIssueWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
+                                            ->where('unit_id', $unitData->id)
+                                            ->where('idea_id', $idea->id)
+                                            ->exists();
+                                    ?>
+
+                                    <a class="edit_icon watchlist-link"
+                                       data-id="<?php echo e($idea->id); ?>"
+                                       data-url="<?php echo e(route('watchlistIdea.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'idea_id' => $idea->id])); ?>"
+                                       id="idea-eye-link-<?php echo e($idea->id); ?>"
+                                       style="<?php echo e($isIssueWatched ? 'display: none;' : ''); ?>">
+                                        <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>"
+                                             style="height: 20px; width: 20px;"
+                                             alt="Watch"
+                                             id="idea-eye-icon-<?php echo e($idea->id); ?>">
+                                    </a>
+
+                                    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
+                                         style="height: 20px; width: 20px; <?php echo e($isIssueWatched ? '' : 'display: none;'); ?>"
+                                         alt="Watched"
+                                         id="idea-eye-off-icon-<?php echo e($idea->id); ?>">
+
+
+
+                                    <div class="separat"></div>
+
+                                    <a href="<?php echo route('idea_revisions', [$ideaHashId]); ?>" class="edit_icon">
+                                        Revision History
+                                    </a>
+
+                                    <div class="separat"></div>
+
+                                    <a href="<?php echo url('ideas/' . $ideaHashId . '/edit'); ?>" class="edit_icon">
+                                        <img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt="">
+                                    </a>
                                 </div>
+                            </div>
+
                             </div>
                         </div>
                     </div>
@@ -269,7 +304,7 @@
 
                             <div class="mob_table d-sm-none d-block">
 
-                        
+
                                 <?php if(isset($idea->task)): ?>
                                 <div class="mob_table_section">
                                     <div class="mob_table_row">
@@ -375,7 +410,7 @@
 
                             <div class="mob_table d-sm-none d-block">
 
-                                
+
                                 <?php if(isset($idea->issue)): ?>
                                 <div class="mob_table_section">
                                     <div class="mob_table_row">
@@ -628,6 +663,47 @@
                     });
                 });
             </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.watchlist-link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.dataset.url;
+                const ideaId = this.dataset.id;
+
+                const eyeIcon = document.getElementById('idea-eye-icon-' + ideaId);
+                const eyeOffIcon = document.getElementById('idea-eye-off-icon-' + ideaId);
+                const anchor = document.getElementById('idea-eye-link-' + ideaId);
+
+                // Guard checks to avoid null errors
+                if (!url || !anchor || !eyeOffIcon) {
+                    console.error("Missing required elements or attributes.");
+                    return;
+                }
+
+                fetch(url, {
+                    method: 'GET', // 🔄 your route uses GET
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    anchor.style.display = "none";
+                    eyeOffIcon.style.display = "inline-block";
+                    alert(data.message || "Added to watchlist!");
+                })
+                .catch(err => {
+                    console.error('Watchlist error:', err);
+                    alert("Something went wrong!");
+                });
+            });
+        });
+    });
+</script>
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/ideas/show.blade.php ENDPATH**/ ?>

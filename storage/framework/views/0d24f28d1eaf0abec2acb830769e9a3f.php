@@ -6,7 +6,7 @@
         <h1>Javul.org</h1>
     <?php endif; ?>
     <div class="banner_desc d-md-block d-none">
-        Open-source Society 
+        Open-source Society
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -83,7 +83,9 @@
 
                         <div class="mob_table d-sm-none d-block">
                             <?php if($total > 0): ?>
+
                                 <?php $__currentLoopData = $activities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
                                     <div class="mob_table_section">
                                         <div class="mob_table_row">
                                             <div class="mob_table_ttl">Action</div>
@@ -92,7 +94,7 @@
 
                                             </div>
                                         </div>
-                        
+
                                         <div class="mob_table_row">
                                             <div class="mob_table_ttl">Time</div>
                                             <div class="mob_table_val">
@@ -110,15 +112,16 @@
                                 </div>
                             <?php endif; ?>
                         </div>
-                        
+
                     </div>
+
                     <div class="d-flex justify-content-between mt-2">
                         <div class="pagination-left">
                             <?php echo $activities->links('layout.pagination'); ?>
 
                         </div>
-
                     </div>
+
                 </div>
             </div>
         </div>

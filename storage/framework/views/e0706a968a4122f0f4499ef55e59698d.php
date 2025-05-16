@@ -248,7 +248,7 @@
                                                             <input id="amount-toggle" <?php if(!empty($taskBidder) && $taskBidder->charge_type == "amount"): ?> checked
                                                                    disabled
                                                                    <?php endif; ?>
-                                                                   data-on="Amount" data-off="Points12"
+                                                                   data-on="Amount" data-off="Points"
                                                                    data-toggle="toggle" data-width="100" data-height="40" data-onstyle="primary"
                                                                    type="checkbox" name="charge_type">
                                                         </div>

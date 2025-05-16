@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Fund;
 use App\Models\Idea;
+use App\Models\Watchlist;
 use App\Models\Issue;
 use App\Models\Objective;
 use App\Models\RelatedUnit;
@@ -47,45 +48,51 @@ class UnitsController extends Controller
 
     public function index(Request $request, $category_search = false)
     {
+        // Paginated activities
+        $pagination = $this->service->listAll()->paginate(10);
+
+        // Message handling
         $msg_flag = false;
         $msg_val = '';
         $msg_type = '';
-        if($request->session()->has('msg_val')){
-            $msg_val =  $request->session()->get('msg_val');
+        if ($request->session()->has('msg_val')) {
+            $msg_val = $request->session()->get('msg_val');
             $request->session()->forget('msg_val');
             $msg_flag = true;
             $msg_type = "success";
         }
-        view()->share('msg_flag',$msg_flag);
-        view()->share('msg_val',$msg_val);
-        view()->share('msg_type',$msg_type);
+        view()->share('msg_flag', $msg_flag);
+        view()->share('msg_val', $msg_val);
+        view()->share('msg_type', $msg_type);
 
-        // get all units for listing
-        if($category_search) {
-            $units = Unit::whereRaw('FIND_IN_SET(?, category_id)', [$category_search->id])->orderBy('id','desc')->paginate(Config::get('app.page_limit'));
+        // Paginated units
+        if ($category_search) {
+            $units = Unit::whereRaw('FIND_IN_SET(?, category_id)', [$category_search->id])
+                        ->orderBy('id', 'desc')
+                        ->paginate(Config::get('app.page_limit'));
         } else {
-            $units = Unit::orderBy('id','desc')->paginate(Config::get('app.page_limit'));
+            $units = Unit::orderBy('id', 'desc')->paginate(Config::get('app.page_limit'));
         }
 
-        view()->share('units',$units );
+        view()->share('units', $units);
 
+        // Other shared data
         $countries = Unit::getAllCountryWithFrequent();
-        view()->share('countries',$countries);
+        view()->share('countries', $countries);
 
-        $unit_category_arr = UnitCategory::where('status','approved')->pluck('name','id');
-        view()->share('unit_category_arr',$unit_category_arr);
+        $unit_category_arr = UnitCategory::where('status', 'approved')->pluck('name', 'id');
+        view()->share('unit_category_arr', $unit_category_arr);
 
-        if($category_search) {
+        if ($category_search) {
             view()->share('category_search', $category_search);
         }
+
         $homeCheck = $request->home;
-        return view('units.index', compact('homeCheck'));
+        return view('units.index', compact('homeCheck', 'pagination'));
     }
 
-    public function show($unitId)
-    {
 
-    }
+
 
     public function create(Request $request)
     {
@@ -1022,5 +1029,29 @@ class UnitsController extends Controller
         $category = UnitCategory::where('name', $type)->first();
 
         return $this->index($request, $category);
+    }
+
+
+
+    public function storeU($userId, $unitId)
+    {
+        try {
+            $existing = Watchlist::where('user_id', $userId)
+                ->where('unit_id', $unitId)
+                ->first();
+
+            if ($existing) {
+                return response()->json(['message' => 'Already in Watchlist'], 200);
+            }
+
+            $watchlist = new Watchlist();
+            $watchlist->user_id = $userId;
+            $watchlist->unit_id = $unitId;
+            $watchlist->save();
+
+            return response()->json(['message' => 'Added to watchlist!']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
