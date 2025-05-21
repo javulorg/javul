@@ -264,9 +264,11 @@
                         <tr>
                             <td style="border: 1px solid #ddd; padding: 8px;">
                                 <ul>
-                                    <li>Tasks Created: <?php echo e($totalTasksCreated); ?></li>
+
+                                    
+                                    <li>Tasks Created: <?php echo e($totaltaskscreatedd); ?></li>
                                     <li>Tasks Edited: <?php echo e($totalTasksEdited); ?></li>
-                                    <li>Tasks Completed: <?php echo e($totalCompletedTasks); ?></li>
+                                    <li>Tasks Completed: <?php echo e($totalTasksCompleted); ?></li>
                                 </ul>
                             </td>
                             <td style="border: 1px solid #ddd; padding: 8px;">

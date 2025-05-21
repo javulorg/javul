@@ -44,7 +44,7 @@
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
-                    <form role="form" method="post" action="<?php echo e(url('ideas')); ?>" id="myForm">
+                    <form role="form" method="post" action="<?php echo e(url('ideas')); ?>" id="myForm" enctype="multipart/form-data">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('post'); ?>
                         <div class="row">
@@ -132,6 +132,8 @@
     </div>
 <?php $__env->stopSection(); ?>
 
+
+
 <?php $__env->startSection('scripts'); ?>
     <script type="text/javascript">
         ClassicEditor
@@ -157,8 +159,7 @@
                 })
                 .then(response => {
                     if (response.redirected) {
-                        window.location.href = response.url; // Follow the redirect
-                        location.replace(location.href); // Force page refresh after redirect
+                     window.location.href = response.url;
                     } else if (response.ok) {
                         // If not redirected, fallback to history go
                         window.history.go(-1);

@@ -169,7 +169,7 @@
                             <div class="col-sm-12 form-group">
                                 <label class="control-label">Compensation <span class="text-danger">*</span></label>
                                 <div class="input-group mb-3">
-                                    <input type="text" id="compensation" required name="compensation"
+                                    <input type="number" id="compensation" required name="compensation"
                                         value="<?php echo e(!empty($taskObj) ? $taskObj->compensation : old('compensation')); ?>"
                                         class="form-control border-radius-0 onlyDigits" placeholder="Compensation" />
                                     <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>

@@ -3,6 +3,20 @@
 @section('style')
     <style>
     </style>
+
+<script>
+    let lastUrl = location.href;
+
+    new MutationObserver(() => {
+        const currentUrl = location.href;
+        if (currentUrl !== lastUrl) {
+            lastUrl = currentUrl;
+            location.reload(); // ✅ Refresh when URL changes
+        }
+    }).observe(document, {subtree: true, childList: true});
+</script>
+
+
 @endsection
 @section('site-name')
     <h1>{{ $unitObj->name }}</h1>

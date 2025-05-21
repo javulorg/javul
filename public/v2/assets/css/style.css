@@ -46,7 +46,7 @@ header {
 }
 
 .wrapper {
-    /* overflow: hidden; */
+    overflow: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
