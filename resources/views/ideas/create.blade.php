@@ -45,7 +45,7 @@
             </div>
             <div class="panel-body list-group">
                 <div class="list-group-item">
-                    <form role="form" method="post" action="{{ url('ideas') }}" id="myForm">
+                    <form role="form" method="post" action="{{ url('ideas') }}" id="myForm" enctype="multipart/form-data">
                         @csrf
                         @method('post')
                         <div class="row">
@@ -171,6 +171,8 @@
         });
     </script>
 @endsection --}}
+
+
 @section('scripts')
     <script type="text/javascript">
         ClassicEditor
@@ -196,8 +198,7 @@
                 })
                 .then(response => {
                     if (response.redirected) {
-                        window.location.href = response.url; // Follow the redirect
-                        location.replace(location.href); // Force page refresh after redirect
+                     window.location.href = response.url;
                     } else if (response.ok) {
                         // If not redirected, fallback to history go
                         window.history.go(-1);

@@ -465,8 +465,18 @@ class UserController extends Controller
 
                 $taskUpvoteCreationRatio = $totalTasksCreated *30;
                 $taskUpvoteEditRatio = $totalTasksEdited * 30;
+                // $totaltaskscreatedd =  Task::where('status','created')->get();
+                  $totalTasksCreated =  ActivityPoint::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Task Created')
+                        ->count();
 
-
+                        $totalTasksCompleted =  ActivityPoint::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)
+                        ->where('comments', 'Task Completed')
+                        ->count();
                 return view('users.profile', [
                     'totalObjectivesCreated' => $totalObjectivesCreated,
                     'totalObjectivesEdited' => $totalObjectivesEdited,
@@ -475,7 +485,9 @@ class UserController extends Controller
                     'issueUpvoteCreationRatio' => $issueUpvoteCreationRatio,
                     'issueUpvoteEditRatio' => $issueUpvoteEditRatio,
                     'taskUpvoteCreationRatio' => $taskUpvoteCreationRatio,
-                    'taskUpvoteEditRatio' => $taskUpvoteEditRatio
+                    'taskUpvoteEditRatio' => $taskUpvoteEditRatio,
+                    'totaltaskscreatedd'=> $totalTasksCreated,
+                    'totalTasksCompleted' => $totalTasksCompleted
                 ]);
 
             }

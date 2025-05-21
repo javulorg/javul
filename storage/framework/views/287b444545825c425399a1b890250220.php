@@ -2,6 +2,20 @@
 <?php $__env->startSection('style'); ?>
     <style>
     </style>
+
+<script>
+    let lastUrl = location.href;
+
+    new MutationObserver(() => {
+        const currentUrl = location.href;
+        if (currentUrl !== lastUrl) {
+            lastUrl = currentUrl;
+            location.reload(); // ✅ Refresh when URL changes
+        }
+    }).observe(document, {subtree: true, childList: true});
+</script>
+
+
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('site-name'); ?>
     <h1><?php echo e($unitObj->name); ?></h1>

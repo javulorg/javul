@@ -340,9 +340,11 @@
                         <tr>
                             <td style="border: 1px solid #ddd; padding: 8px;">
                                 <ul>
-                                    <li>Tasks Created: {{ $totalTasksCreated }}</li>
+
+                                    {{-- @dd($totalTasksCreated) --}}
+                                    <li>Tasks Created: {{ $totaltaskscreatedd }}</li>
                                     <li>Tasks Edited: {{ $totalTasksEdited }}</li>
-                                    <li>Tasks Completed: {{ $totalCompletedTasks }}</li>
+                                    <li>Tasks Completed: {{ $totalTasksCompleted }}</li>
                                 </ul>
                             </td>
                             <td style="border: 1px solid #ddd; padding: 8px;">
