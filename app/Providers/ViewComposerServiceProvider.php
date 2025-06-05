@@ -1,8 +1,5 @@
 <?php
-
-
 namespace App\Providers;
-
 
 use App\Http\Controllers\Mc;
 use App\Http\Controllers\UserController;
@@ -26,192 +23,212 @@ use Illuminate\Support\ServiceProvider;
 
 class ViewComposerServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     *
-     * @return void
-     */
     public function boot()
     {
-        view()->composer('*',function($view){
-            $view->with('authUserObj',auth()->user());
-            if(auth()->check())
-            {
-                $notifications = TaskBidder::join('tasks','task_bidders.task_id','=','tasks.id')
-                    ->whereIn('task_bidders.status',['offer_sent','re_assigned'])
-                    ->where('task_bidders.user_id', Auth::user()->id)
-                    ->select(['tasks.name', 'tasks.slug', 'task_bidders.*'])
-                    ->get();
-                view()->share('notifications', $notifications);
+        view()->composer('*', function ($view) {
+            $view->with('authUserObj', auth()->user());
+            if (auth()->check()) {
+                if (DB::connection()->getSchemaBuilder()->hasTable('task_bidders') && DB::connection()->getSchemaBuilder()->hasTable('tasks')) {
+                    $notifications = TaskBidder::join('tasks', 'task_bidders.task_id', '=', 'tasks.id')
+                        ->whereIn('task_bidders.status', ['offer_sent', 're_assigned'])
+                        ->where('task_bidders.user_id', Auth::user()->id)
+                        ->select(['tasks.name', 'tasks.slug', 'task_bidders.*'])
+                        ->get();
+                    view()->share('notifications', $notifications);
+                } else {
+                    view()->share('notifications', collect());
+                }
             }
 
-            $view->with('totalUnits',Unit::count());
-            $view->with('totalObjectives',Objective::count());
-            $view->with('totalTasks',Task::count());
-            $view->with('totalIssues',Issue::count());
-            $view->with('totalFundsAvailable',Fund::where('status', 'approved')->where('transaction_type', 'donated')->sum('amount'));
+            $view->with('totalUnits', DB::connection()->getSchemaBuilder()->hasTable('units') ? Unit::count() : 0);
+            $view->with('totalObjectives', DB::connection()->getSchemaBuilder()->hasTable('objectives') ? Objective::count() : 0);
+            $view->with('totalTasks', DB::connection()->getSchemaBuilder()->hasTable('tasks') ? Task::count() : 0);
+            $view->with('totalIssues', DB::connection()->getSchemaBuilder()->hasTable('issues') ? Issue::count() : 0);
+            $view->with('totalFundsAvailable', DB::connection()->getSchemaBuilder()->hasTable('funds') ? Fund::where('status', 'approved')->where('transaction_type', 'donated')->sum('amount') : 0);
         });
 
-        //----------------- for footer ---------------------------
-        $ideaHashID = new Hashids('idea id hash',10,Config::get('app.encode_chars'));
-        $userIDHashID = new Hashids('user id hash',10,Config::get('app.encode_chars'));
-        $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
-        $unitCategoryIDHashID = new Hashids('unit category id hash',10,Config::get('app.encode_chars'));
-        $objectiveIDHashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
-        $taskIDHashID = new Hashids('task id hash',10,Config::get('app.encode_chars'));
-        $taskDocumentIDHashID = new Hashids('task document id hash',10,Config::get('app.encode_chars'));
-        $issueIDHashID = new Hashids('issue id hash',10,Config::get('app.encode_chars'));
-        $issueDocumentIDHashID = new Hashids('issue document id hash',10,Config::get('app.encode_chars'));
-        $jobSkillIDHashID = new Hashids('job skills id hash',10,Config::get('app.encode_chars'));
-        $areaOfInterestIDHashID = new Hashids('area of interest id hash',10,Config::get('app.encode_chars'));
-        $btcTransactionIDHashID = new Hashids('btc transaction id hash',10,Config::get('app.encode_chars'));
+        // Hashids
+        $ideaHashID             = new Hashids('idea id hash', 10, Config::get('app.encode_chars'));
+        $userIDHashID           = new Hashids('user id hash', 10, Config::get('app.encode_chars'));
+        $unitIDHashID           = new Hashids('unit id hash', 10, Config::get('app.encode_chars'));
+        $unitCategoryIDHashID   = new Hashids('unit category id hash', 10, Config::get('app.encode_chars'));
+        $objectiveIDHashID      = new Hashids('objective id hash', 10, Config::get('app.encode_chars'));
+        $taskIDHashID           = new Hashids('task id hash', 10, Config::get('app.encode_chars'));
+        $taskDocumentIDHashID   = new Hashids('task document id hash', 10, Config::get('app.encode_chars'));
+        $issueIDHashID          = new Hashids('issue id hash', 10, Config::get('app.encode_chars'));
+        $issueDocumentIDHashID  = new Hashids('issue document id hash', 10, Config::get('app.encode_chars'));
+        $jobSkillIDHashID       = new Hashids('job skills id hash', 10, Config::get('app.encode_chars'));
+        $areaOfInterestIDHashID = new Hashids('area of interest id hash', 10, Config::get('app.encode_chars'));
+        $btcTransactionIDHashID = new Hashids('btc transaction id hash', 10, Config::get('app.encode_chars'));
 
         $loggedInUser = 0;
-        if(DB::connection()->getSchemaBuilder()->hasTable('users')){
+        if (DB::connection()->getSchemaBuilder()->hasTable('users')) {
             $loggedInUser = DB::table('users')->whereRaw('unix_timestamp() - loggedin < 30')->count();
         }
-
-        view()->share('totalLoggedinUsers',$loggedInUser);
+        view()->share('totalLoggedinUsers', $loggedInUser);
 
         //Get all system messages
-        $user_msg = new UserMessages;
+        $user_msg      = new UserMessages;
         $user_messages = $user_msg->getAllMessages();
-        view()->share('user_messages',json_encode($user_messages));
-        //end
+        view()->share('user_messages', json_encode($user_messages));
 
         $totalUsers = 0;
-        if(DB::connection()->getSchemaBuilder()->hasTable('users'))
-        {
+        if (DB::connection()->getSchemaBuilder()->hasTable('users')) {
             $totalUsers = User::count();
         }
-        view()->share('totalRegisteredUsers',$totalUsers );
-        view()->share('userIDHashID',$userIDHashID );
-        view()->share('ideaHashID',$ideaHashID);
-        view()->share('unitIDHashID',$unitIDHashID );
-        view()->share('unitCategoryIDHashID',$unitCategoryIDHashID);
-        view()->share('objectiveIDHashID',$objectiveIDHashID );
-        view()->share('taskIDHashID',$taskIDHashID );
-        view()->share('taskDocumentIDHashID',$taskDocumentIDHashID);
-        view()->share('issueIDHashID',$issueIDHashID);
-        view()->share('issueDocumentIDHashID',$issueDocumentIDHashID);
-        view()->share('jobSkillIDHashID',$jobSkillIDHashID);
-        view()->share('areaOfInterestIDHashID',$areaOfInterestIDHashID);
-        view()->share('btcTransactionIDHashID',$btcTransactionIDHashID);
+        view()->share('totalRegisteredUsers', $totalUsers);
 
-        view()->composer('elements.header',function($view){
+        view()->share('userIDHashID', $userIDHashID);
+        view()->share('ideaHashID', $ideaHashID);
+        view()->share('unitIDHashID', $unitIDHashID);
+        view()->share('unitCategoryIDHashID', $unitCategoryIDHashID);
+        view()->share('objectiveIDHashID', $objectiveIDHashID);
+        view()->share('taskIDHashID', $taskIDHashID);
+        view()->share('taskDocumentIDHashID', $taskDocumentIDHashID);
+        view()->share('issueIDHashID', $issueIDHashID);
+        view()->share('issueDocumentIDHashID', $issueDocumentIDHashID);
+        view()->share('jobSkillIDHashID', $jobSkillIDHashID);
+        view()->share('areaOfInterestIDHashID', $areaOfInterestIDHashID);
+        view()->share('btcTransactionIDHashID', $btcTransactionIDHashID);
+
+        view()->composer('elements.header', function ($view) {
             Mc::putMcData();
-            $question=Mc::getMcQuestion();
-            $view->with('report_question',$question);
+            $question = Mc::getMcQuestion();
+            $view->with('report_question', $question);
 
             $notificationCount = 0;
-            if(auth()->check()) {
-                $notificationCount = UserNotification::where('user_id',auth()->user()->id)->where('message_read',0)->count();
+            if (auth()->check() && DB::connection()->getSchemaBuilder()->hasTable('user_notifications')) {
+                $notificationCount = UserNotification::where('user_id', auth()->user()->id)->where('message_read', 0)->count();
             }
-            $view->with('notificationCount',$notificationCount);
+            $view->with('notificationCount', $notificationCount);
         });
 
-        view()->share('site_activity_text','Activity Log');
-        $site_activity = SiteActivity::orderBy('created_at','desc')->paginate(Config::get('app.site_activity_page_limit'));
-        view()->share('site_activity',$site_activity);
+        view()->share('site_activity_text', 'Activity Log');
+        if (DB::connection()->getSchemaBuilder()->hasTable('site_activities')) {
+            $site_activity = SiteActivity::orderBy('created_at', 'desc')->paginate(Config::get('app.site_activity_page_limit'));
+            view()->share('site_activity', $site_activity);
+        } else {
+            view()->share('site_activity', collect());
+        }
 
         $userController = new UserController;
 
+        if (DB::connection()->getSchemaBuilder()->hasTable('tasks')) {
+            $tasksMaster = Task::query()
+                ->with('unit')
+                ->orderByDesc('id')
+                ->limit(5)
+                ->get();
 
+            $tasksMasterData = Task::query()
+                ->with('unit')
+                ->orderByDesc('id')
+                ->get();
 
-        $tasksMaster = Task::query()
-            ->with('unit')
-            ->orderByDesc('id')
-            ->limit(5)
-            ->get();
+            $tasksMasterTotal = Task::count();
+        } else {
+            $tasksMaster = collect();
+            $tasksMasterData = collect();
+            $tasksMasterTotal = 0;
+        }
 
-        $tasksMasterData = Task::query()
-            ->with('unit')
-            ->orderByDesc('id')
-            ->get();
+        if (DB::connection()->getSchemaBuilder()->hasTable('objectives')) {
+            $objectivesTotal  = Objective::count();
+            $objectivesMaster = Objective::query()
+                ->with('unit')
+                ->orderBy('id', 'DESC')
+                ->limit(5)
+                ->get();
 
-        $tasksMasterTotal = Task::count();
+            $objectivesMasterData = Objective::query()
+                ->with('unit')
+                ->orderBy('id', 'DESC')
+                ->limit(5)
+                ->get();
+        } else {
+            $objectivesTotal = 0;
+            $objectivesMaster = collect();
+            $objectivesMasterData = collect();
+        }
 
+        if (DB::connection()->getSchemaBuilder()->hasTable('units')) {
+            $units      = Unit::query();
+            $unitsTotal = Unit::count();
 
-        $objectivesTotal = Objective::get()->count();
-        $objectivesMaster = Objective::query()
-            ->with('unit')
-            ->orderBy('id', 'DESC')
-            ->limit(5)
-            ->get();
+            $allUnits = Unit::query()
+                ->orderBy('id', 'DESC')
+                ->get();
+            $unitsMaster = Unit::query()
+                ->orderBy('id', 'DESC')
+                ->limit(5)
+                ->get();
+        } else {
+            $units = collect();
+            $unitsTotal = 0;
+            $allUnits = collect();
+            $unitsMaster = collect();
+        }
 
-        $objectivesMasterData = Objective::query()
-            ->with('unit')
-            ->orderBy('id', 'DESC')
-            ->limit(5)
-            ->get();
+        if (DB::connection()->getSchemaBuilder()->hasTable('issues')) {
+            $issuesMaster = Issue::query()
+                ->with('unit')
+                ->orderBy('id', 'DESC')
+                ->limit(5)
+                ->get();
+            $issuesMasterTotal = Issue::count();
 
+            $issuesMasterData = Issue::query()
+                ->with('unit')
+                ->orderBy('id', 'DESC')
+                ->get();
+        } else {
+            $issuesMaster = collect();
+            $issuesMasterTotal = 0;
+            $issuesMasterData = collect();
+        }
 
-        $units = Unit::query();
-        $unitsTotal = Unit::count();
+        if (DB::connection()->getSchemaBuilder()->hasTable('ideas')) {
+            $ideasMasterTotal = Idea::count();
+            $ideasMaster      = Idea::query()
+                ->with('unit')
+                ->orderBy('id', 'DESC')
+                ->get();
+        } else {
+            $ideasMasterTotal = 0;
+            $ideasMaster = collect();
+        }
 
-        view()->share('tasksMaster',$tasksMaster);
-        view()->share('tasksMasterData',$tasksMasterData);
-        view()->share('tasksMasterTotal',$tasksMasterTotal);
-        view()->share('objectivesTotal',$objectivesTotal);
-        view()->share('objectivesMaster',$objectivesMaster);
-        view()->share('unitsData',$units);
-        view()->share('unitsTotal',$unitsTotal);
-        view()->share('objectivesMasterData',$objectivesMasterData);
-
-
-        $allUnits = Unit::query()
-            ->orderBy('id', 'DESC')
-            ->get();
-        view()->share('allUnits',$allUnits);
-        $unitsMaster = Unit::query()
-            ->orderBy('id', 'DESC')
-            ->limit(5)
-            ->get();
-        $issuesMaster = Issue::query()
-            ->with('unit')
-            ->orderBy('id', 'DESC')
-            ->limit(5)
-            ->get();
-        $issuesMasterTotal = Issue::count();
-
-        $issuesMasterData = Issue::query()
-            ->with('unit')
-            ->orderBy('id', 'DESC')
-            ->get();
-        view()->share('issuesMasterData',$issuesMasterData);
-
-        $ideasMasterTotal = Idea::count();
-        $ideasMaster = Idea::query()
-            ->with('unit')
-            ->orderBy('id', 'DESC')
-            ->get();
-
-        $changeOpenForBiddingTasks = Task::where('status', 'open_for_bidding')
-            ->where('open_for_bidding_date', '<', Carbon::now()->format('Y-m-d'))
-            ->get();
-        if($changeOpenForBiddingTasks)
-        {
-            foreach ($changeOpenForBiddingTasks as $task)
-            {
-                $task->update([
-                   'status'    => 'bid_selection',
-                    'open_for_bidding_date'  => null
-                ]);
+        if (DB::connection()->getSchemaBuilder()->hasTable('tasks')) {
+            $changeOpenForBiddingTasks = Task::where('status', 'open_for_bidding')
+                ->where('open_for_bidding_date', '<', Carbon::now()->format('Y-m-d'))
+                ->get();
+            if ($changeOpenForBiddingTasks) {
+                foreach ($changeOpenForBiddingTasks as $task) {
+                    $task->update([
+                        'status'                => 'bid_selection',
+                        'open_for_bidding_date' => null,
+                    ]);
+                }
             }
         }
 
-        view()->share('issuesMaster',$issuesMaster);
-        view()->share('issuesMasterTotal',$issuesMasterTotal);
-        view()->share('unitsMaster',$unitsMaster);
-        view()->share('ideasMasterTotal',$ideasMasterTotal);
-        view()->share('ideasMaster',$ideasMaster);
+        view()->share('tasksMaster', $tasksMaster);
+        view()->share('tasksMasterData', $tasksMasterData);
+        view()->share('tasksMasterTotal', $tasksMasterTotal);
+        view()->share('objectivesTotal', $objectivesTotal);
+        view()->share('objectivesMaster', $objectivesMaster);
+        view()->share('unitsData', $units);
+        view()->share('unitsTotal', $unitsTotal);
+        view()->share('objectivesMasterData', $objectivesMasterData);
+        view()->share('allUnits', $allUnits);
+        view()->share('unitsMaster', $unitsMaster);
+        view()->share('issuesMaster', $issuesMaster);
+        view()->share('issuesMasterTotal', $issuesMasterTotal);
+        view()->share('issuesMasterData', $issuesMasterData);
+        view()->share('ideasMasterTotal', $ideasMasterTotal);
+        view()->share('ideasMaster', $ideasMaster);
     }
 
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
     public function register()
     {
         //

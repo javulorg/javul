@@ -1063,7 +1063,7 @@ public function storeW(Request $request)
     if ($existing) {
         return response()->json([
             'success' => false,
-            'message' => 'Already in watchlist.'
+            'message' => 'Added to watchlist'
         ]);
     }
 

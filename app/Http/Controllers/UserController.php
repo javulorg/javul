@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivityPoint;
 use App\Models\AreaOfInterest;
 use App\Models\CommentLike;
+use App\Models\TaskRating;
 use App\Models\Fund;
 use App\Models\Idea;
 use App\Models\Issue;
@@ -246,6 +247,8 @@ class UserController extends Controller
                     $totalTasksCreated = Task::query()
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
                         ->where('user_id', $user_id)->count();
+
+                    $upvoteCreationRatio = $totalObjectivesCreated*30;
                 } else {
                     // Default logic for 'Last 6 Months' or 'Lifetime'
                     $mostActiveUnits = ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
@@ -287,6 +290,8 @@ class UserController extends Controller
                     $totalObjectivesCreated = Objective::query()
                         ->where('user_id', $user_id)->count();
 
+                    $upvoteCreationRatio = $totalObjectivesCreated*30;
+
                     // $upvoteCreationPoints = Objective::query()
                     //     ->where('user_id', $user_id)
                     //     ->sum('upvotes');
@@ -308,7 +313,7 @@ class UserController extends Controller
                 }
 
 
-                $upvoteCreationRatio = $totalObjectivesCreated*30;
+
                 // if ($objectivesPriority > 0) {
                 //     $upvoteCreationRatio = $objectivesPriority / $totalObjectivesCreated;
                 //     $upvoteCreationRatio = round($upvoteCreationRatio, 2);
@@ -477,6 +482,16 @@ class UserController extends Controller
                         ->where('user_id', $user_id)
                         ->where('comments', 'Task Completed')
                         ->count();
+
+                      $totals = TaskRating::where('user_id', $user_id)
+    ->selectRaw('SUM(quality_of_work) as total_quality_of_work, SUM(timeliness) as total_timeliness')
+    ->first();
+
+    $totalQualityOfWork = $totals->total_quality_of_work;
+    $totalTimeliness = $totals->total_timeliness;
+
+
+
                 return view('users.profile', [
                     'totalObjectivesCreated' => $totalObjectivesCreated,
                     'totalObjectivesEdited' => $totalObjectivesEdited,
@@ -487,7 +502,9 @@ class UserController extends Controller
                     'taskUpvoteCreationRatio' => $taskUpvoteCreationRatio,
                     'taskUpvoteEditRatio' => $taskUpvoteEditRatio,
                     'totaltaskscreatedd'=> $totalTasksCreated,
-                    'totalTasksCompleted' => $totalTasksCompleted
+                    'totalTasksCompleted' => $totalTasksCompleted,
+                    'totalQualityOfWork'  => $totalQualityOfWork,
+                    'totalTimeliness'  => $totalTimeliness
                 ]);
 
             }

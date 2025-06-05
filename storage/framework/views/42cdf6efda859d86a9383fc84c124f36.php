@@ -13,7 +13,7 @@
 <h1>Javul.org</h1>
 <?php endif; ?>
 <div class="banner_desc d-md-block d-none">
-    Open-source Society
+    Open-source Society hh
 </div>
 <?php $__env->stopSection(); ?>
 
@@ -604,40 +604,62 @@
             });
         });
 </script>
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.watchlist-link').forEach(function (link) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
+    document.querySelectorAll('.watchlist-link').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
 
-                const url = this.dataset.url;
-                const taskId = this.dataset.id;
+            const url = this.dataset.url;
+            const taskId = this.dataset.id;
+            const viewUrl = this.dataset.viewUrl; // ✅ Add this data-view-url in HTML
 
-                const eyeIcon = document.getElementById('task-eye-icon-' + taskId);
-                const eyeOffIcon = document.getElementById('task-eye-off-icon-' + taskId);
-                const anchor = document.getElementById('task-eye-link-' + taskId);
+            const eyeIcon = document.getElementById('task-eye-icon-' + taskId);
+            const eyeOffIcon = document.getElementById('task-eye-off-icon-' + taskId);
+            const anchor = document.getElementById('task-eye-link-' + taskId);
 
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Hide clickable eye icon
-                        anchor.style.display = "none";
+            this.classList.add('pointer-events-none', 'opacity-50');
 
-                        // Show eye-off icon permanently
-                        if (eyeOffIcon) {
-                            eyeOffIcon.style.display = "inline-block";
-                        }
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (anchor) anchor.style.display = "none";
+                    if (eyeOffIcon) eyeOffIcon.style.display = "inline-block";
 
-                        alert(data.message || "Added to watchlist!");
-                    })
-                    .catch(err => {
-                        console.error('Watchlist error:', err);
-                        alert("Something went wrong!");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Watchlist',
+                        html: `
+                            <p>${data.message || 'Task added successfully!'}</p>
+                            <a href="${viewUrl}" target="_blank" style="color:#3085d6; text-decoration: underline;">
+                                View Task
+                            </a>
+                        `,
+                        showConfirmButton: false,
+                        timer: 3000
                     });
-            });
+                })
+                .catch(err => {
+                    console.error('Watchlist error:', err);
+                    this.classList.remove('pointer-events-none', 'opacity-50');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Something went wrong. Please try again.',
+                    });
+                });
         });
     });
+});
 </script>
+
 
 <script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js">

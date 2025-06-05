@@ -25,7 +25,7 @@
             </div>
             <div class="user-header">
                 <span class="bi bi-clock"></span>
-                Account age: <?php echo e($userObj->created_at); ?>
+             Account age: <?php echo e($userObj->created_at); ?>
 
             </div>
             <div class="user-header">
@@ -273,8 +273,8 @@
                             </td>
                             <td style="border: 1px solid #ddd; padding: 8px;">
                                 <ul>
-                                    <li>Quality of Work: 5</li>
-                                    <li>Timeliness: 6</li>
+                                    <li>Quality of Work: <?php echo e($totalQualityOfWork); ?></li>
+                                    <li>Timeliness: <?php echo e($totalTimeliness); ?></li>
                                     <li>Edits Upvote Ratio: <?php echo e($taskUpvoteEditRatio ?? 0); ?></li>
                                 </ul>
                             </td>

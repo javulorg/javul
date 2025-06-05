@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="nav-item">
-                    <a class="nav-link<?php echo e(request()->is('ideas') ? ' active' : ''); ?>" href="<?php echo e(url('ideas?unit=' . $unitData->id)); ?>">Ideas</a>
+                    <a class="nav-link<?php echo e(request()->is('ideas') ? ' active' : ''); ?>" href="<?php echo e(url('ideas?unit=' . $unitData->id)); ?>">Ideas </a>
                 </div>
 
                 <div class="nav-item">

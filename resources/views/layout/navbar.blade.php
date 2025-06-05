@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="nav-item">
-                    <a class="nav-link{{ request()->is('ideas') ? ' active' : '' }}" href="{{ url('ideas?unit=' . $unitData->id) }}">Ideas</a>
+                    <a class="nav-link{{ request()->is('ideas') ? ' active' : '' }}" href="{{ url('ideas?unit=' . $unitData->id) }}">Ideas </a>
                 </div>
 
                 <div class="nav-item">

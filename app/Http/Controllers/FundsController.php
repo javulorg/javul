@@ -169,7 +169,7 @@ class FundsController extends Controller
                     break;
             }
 
-            if($exists){
+            if(!$exists){
                 //$creditedBalance = 50;//Transaction::where('user_id',Auth::user()->id)->where('trans_type','credit')->sum('amount');
                 //$debitedBalance = 10;//Transaction::where('user_id',Auth::user()->id)->where('trans_type','debit')->sum('amount');
                 //$availableBalance = $creditedBalance - $debitedBalance;
@@ -211,7 +211,7 @@ class FundsController extends Controller
                 return view('funds.donation');
             }
         }
-        return view('errors.404');
+        return view('funds.donation');
     }
 
     public function donate_amount(Request $request)

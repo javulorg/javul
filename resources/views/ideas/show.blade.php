@@ -653,45 +653,71 @@
                     });
                 });
             </script>
+<!-- Make sure this is included in your HTML head or before this script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.watchlist-link').forEach(function (link) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-link').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
 
-                const url = this.dataset.url;
-                const ideaId = this.dataset.id;
+            const url = this.dataset.url;
+            const ideaId = this.dataset.id;
+            const viewUrl = this.dataset.viewUrl; // Optional link to view idea
 
-                const eyeIcon = document.getElementById('idea-eye-icon-' + ideaId);
-                const eyeOffIcon = document.getElementById('idea-eye-off-icon-' + ideaId);
-                const anchor = document.getElementById('idea-eye-link-' + ideaId);
+            const eyeIcon = document.getElementById('idea-eye-icon-' + ideaId);
+            const eyeOffIcon = document.getElementById('idea-eye-off-icon-' + ideaId);
+            const anchor = document.getElementById('idea-eye-link-' + ideaId);
 
-                // Guard checks to avoid null errors
-                if (!url || !anchor || !eyeOffIcon) {
-                    console.error("Missing required elements or attributes.");
-                    return;
-                }
+            // Guard checks to avoid null errors
+            if (!url || !anchor || !eyeOffIcon) {
+                console.error("Missing required elements or attributes.");
+                return;
+            }
 
-                fetch(url, {
-                    method: 'GET', // 🔄 your route uses GET
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    anchor.style.display = "none";
-                    eyeOffIcon.style.display = "inline-block";
-                    alert(data.message || "Added to watchlist!");
-                })
-                .catch(err => {
-                    console.error('Watchlist error:', err);
-                    alert("Something went wrong!");
+            this.classList.add('pointer-events-none', 'opacity-50');
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                anchor.style.display = "none";
+                eyeOffIcon.style.display = "inline-block";
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Watchlist',
+                    html: `
+                        <p>${data.message || 'Idea added successfully!'}</p>
+                        ${viewUrl ? `<a href="${viewUrl}" target="_blank" style="color:#3085d6; text-decoration: underline;">View Idea</a>` : ''}
+                    `,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            })
+            .catch(err => {
+                console.error('Watchlist error:', err);
+                this.classList.remove('pointer-events-none', 'opacity-50');
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something went wrong. Please try again.',
                 });
             });
         });
     });
+});
 </script>
+
 
 @endsection
