@@ -12,6 +12,7 @@
                         Units
                     </div>
                     <div class="statistic_block_bottom">
+
                         {{$totalUnits}}
                     </div>
                 </div>

@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="sidebar_block_content">
                                     <div class="sidebar_block_row">
-                                        <div class="sidebar_block_left">
+                                        <div class="" style="margin-right: 10px !important;">
                                             Priority:
                                         </div>
 
@@ -109,7 +109,7 @@
                                                 </div>
                                                 <?php else: ?>
                                                 <div class="sidebar_block_right">
-                                                    Medium
+                                                    Medium-High
                                                     <div class="progress">
                                                         <div class="progress-bar" style="width: <?php echo e((2.5 / 5) * 100); ?>%">
                                                         </div>
@@ -222,8 +222,7 @@
                                 </div>
                             </div>
                             <div class="objective_content_info_links">
-                                
-                                
+
 
                                 <?php
                                 $isObjectivesWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
@@ -725,8 +724,9 @@
 
 
 
-<scrip>
-document.addEventListener('DOMContentLoaded', function () {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.watchlist-link').forEach(function (link) {
         link.addEventListener('click', function (e) {
             e.preventDefault();
@@ -736,10 +736,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const unitId = this.dataset.unitid;
             const objectiveId = this.dataset.id;
 
-            console.log('Sending request to URL:', url); // Debugging line
-            console.log('With data:', { userId, unitId, objectiveId }); // Debugging line
+            console.log('Sending request to URL:', url);
+            console.log('With data:', { userId, unitId, objectiveId });
 
-            // Send the fetch request to the server
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -754,32 +753,43 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
             })
             .then(response => {
-                console.log('Response status:', response.status); // Log the response status
+                console.log('Response status:', response.status);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json(); // Parse the response as JSON
+                return response.json();
             })
             .then(data => {
-                console.log('Response from server:', data); // Debugging line
-
-                // Check if success
                 if (data.success) {
-                    alert(data.message); // Show the alert with message
-                    this.style.display = 'none'; // Hide the "add to watchlist" button
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Watchlist',
+                        text: data.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    this.style.display = 'none';
                 } else {
-                    alert(data.message); // Alert when there is an issue (like already added)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Watchlist',
+                        text: data.message
+                    });
                 }
             })
             .catch(error => {
                 console.error('Fetch error:', error);
-                alert('An error occurred while adding to watchlist.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while adding to watchlist.'
+                });
             });
         });
     });
 });
-
 </script>
+
 
 <?php $__env->stopSection(); ?>
 

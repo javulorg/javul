@@ -603,40 +603,65 @@
 
         });
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.watchlist-link').forEach(function(link) {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
+ <!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                    const url = this.dataset.url;
-                    const issueId = this.dataset.id;
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-link').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
 
-                    const eyeIcon = document.getElementById('issue-eye-icon-' + issueId);
-                    const eyeOffIcon = document.getElementById('issue-eye-off-icon-' + issueId);
-                    const anchor = document.getElementById('issue-eye-link-' + issueId);
+            const url = this.dataset.url;
+            const issueId = this.dataset.id;
+            const viewUrl = this.dataset.viewUrl; // Optional link to the issue view
 
-                    fetch(url)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Hide the clickable link (eye icon)
-                            anchor.style.display = "none";
+            const eyeIcon = document.getElementById('issue-eye-icon-' + issueId);
+            const eyeOffIcon = document.getElementById('issue-eye-off-icon-' + issueId);
+            const anchor = document.getElementById('issue-eye-link-' + issueId);
 
-                            // Show the eye-off icon
-                            if (eyeOffIcon) {
-                                eyeOffIcon.style.display = "inline-block";
-                            }
+            // Disable the link to prevent repeated clicks
+            this.classList.add('pointer-events-none', 'opacity-50');
 
-                            alert(data.message || "Added to watchlist!");
-                        })
-                        .catch(err => {
-                            console.error('Watchlist error:', err);
-                            alert("Something went wrong!");
-                        });
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide clickable eye icon
+                    if (anchor) anchor.style.display = "none";
+
+                    // Show eye-off icon
+                    if (eyeOffIcon) eyeOffIcon.style.display = "inline-block";
+
+                    // Show SweetAlert with optional link
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Watchlist',
+                        html: `
+                            <p>${data.message || 'Issue added successfully!'}</p>
+                            ${viewUrl ? `<a href="${viewUrl}" target="_blank" style="color:#3085d6; text-decoration: underline;">View Issue</a>` : ''}
+                        `,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                })
+                .catch(err => {
+                    console.error('Watchlist error:', err);
+                    this.classList.remove('pointer-events-none', 'opacity-50');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Something went wrong. Please try again.',
+                    });
                 });
-            });
         });
-    </script>
+    });
+});
+</script>
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/issues/view.blade.php ENDPATH**/ ?>

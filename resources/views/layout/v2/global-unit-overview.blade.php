@@ -1,6 +1,6 @@
 <div class="sidebar_block">
     <div class="sidebar_block_ttl">
-        Unit Overview
+        Unit Overview hh
         <div class="arrow">
             <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
         </div>
@@ -180,6 +180,9 @@
 </div>
 
 
+<!-- Include SweetAlert2 (CDN link if not already included) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.watchlist-link').forEach(link => {
@@ -203,10 +206,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.message === 'Added to watchlist!') {
                     document.getElementById(`eye-link-${unitId}`).style.display = 'none';
                     document.getElementById(`eye-off-icon-${unitId}`).style.display = 'inline';
+
+                    // ✅ SweetAlert2 Success Alert
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Unit added to your watchlist successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                } else if (data.message === 'Already in Watchlist') {
+                    Swal.fire({
+                        title: 'Info',
+                        text: 'Unit is already in your watchlist.',
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    });
                 }
             })
-            .catch(err => console.error('Error:', err));
+            .catch(err => {
+                console.error('Error:', err);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Something went wrong. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
         });
     });
 });
 </script>
+
