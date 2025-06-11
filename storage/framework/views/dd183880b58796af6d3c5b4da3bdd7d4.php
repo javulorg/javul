@@ -14,23 +14,28 @@
 
             <table id="watchlist-idea-table-id">
                 <thead>
-                <tr>
-                    <th class="title_col">Idea Name</th>
-                    <th class="type_col">Description</th>
-                </tr>
+                    <tr>
+                        <th class="title_col">Idea Name</th>
+                        <th class="type_col">Description</th>
+                    </tr>
                 </thead>
                 <tbody>
                     
                     <?php $__currentLoopData = $watchedIdea; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $watchedIdeas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <tr>
-                            <td><?php echo e($watchedIdeas->title); ?></td>
-                            <td style="display: none"></td>
-                            <td><?php echo e(strip_tags($watchedIdeas->description)); ?></td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <a href="<?php echo url('ideas/'.$ideaHashID->encode($watchedIdeas->id)); ?>">
+                                <?php echo e($watchedIdeas->title); ?>
+
+                            </a>
+                        </td>
+                        
+                        <td style="display: none"></td>
+                        <td><?php echo e(strip_tags($watchedIdeas->description)); ?></td>
+                    </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
     </div>
-</div>
-<?php /**PATH C:\xampp\htdocs\javul\resources\views/users/watchlist-partials/idea.blade.php ENDPATH**/ ?>
+</div><?php /**PATH C:\xampp\htdocs\javul\resources\views/users/watchlist-partials/idea.blade.php ENDPATH**/ ?>

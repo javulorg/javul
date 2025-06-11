@@ -14,19 +14,24 @@
 
             <table id="watchlist-idea-table-id">
                 <thead>
-                <tr>
-                    <th class="title_col">Idea Name</th>
-                    <th class="type_col">Description</th>
-                </tr>
+                    <tr>
+                        <th class="title_col">Idea Name</th>
+                        <th class="type_col">Description</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {{-- @dd($watchedIdea) --}}
                     @foreach ($watchedIdea as $watchedIdeas)
-                        <tr>
-                            <td>{{ $watchedIdeas->title }}</td>
-                            <td style="display: none"></td>
-                            <td>{{strip_tags($watchedIdeas->description)  }}</td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <a href="{!! url('ideas/'.$ideaHashID->encode($watchedIdeas->id)) !!}">
+                                {{$watchedIdeas->title }}
+                            </a>
+                        </td>
+                        {{-- <td>{{ $watchedIdeas->title }}</td> --}}
+                        <td style="display: none"></td>
+                        <td>{{strip_tags($watchedIdeas->description) }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>

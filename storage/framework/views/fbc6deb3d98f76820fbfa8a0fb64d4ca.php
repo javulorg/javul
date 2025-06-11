@@ -521,67 +521,26 @@
         $form.find('.help-block').empty(); // Clear old error messages
 
         $.ajax({
-            type: 'POST',
-            url: '<?php echo e(url("/account/update_personal_info")); ?>',
-            data: dataString,
-            success: function(resp) {
-                if (resp.success) {
-                    toastr.success('Profile updated successfully', 'Success', {
-                        progressBar: true,
-                        timeOut: 2000,
-                        extendedTimeOut: 1000,
-                        closeButton: true,
-                        tapToDismiss: false,
-                        positionClass: 'toast-top-right',
-                        onShown: function() {
-                            $('.toast-success').css('background-color', '#28a745');
-                        },
-                        onHidden: function() {
-                            // 🔁 Page refresh after toast disappears
-                            location.reload();
-                        }
-                    });
-                } else {
-                    $.each(resp.errors, function(index, value) {
-                        $form.find("#" + index).parent('.col-sm-4').find('.help-block').append(value);
-                    });
-                }
-            }
-        });
+    type: 'POST',
+    url: '<?php echo e(url("/account/update_personal_info")); ?>',
+    data: dataString,
+    success: function(resp) {
+        if (resp.success) {
+            // ✅ Directly reload the page after success
+            location.reload();
+        } else {
+            $.each(resp.errors, function(index, value) {
+                $form.find("#" + index).parent('.col-sm-4').find('.help-block').append(value);
+            });
+        }
+    }
+});
+
     });
 });
 
     </script>
-    <script>
-        document.getElementById('personal-info').addEventListener('submit', function (e) {
-            e.preventDefault(); // Stop default submit behavior
-
-            const form = e.target;
-            const url = form.action;
-            const formData = new FormData(form);
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                },
-                body: formData
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json(); // Agar aap JSON return kar rahe ho controller se
-                })
-                .then(data => {
-                    // Optional message
-                    alert('Profile updated successfully!');
-                    location.reload(); // 🔁 Page refresh
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Profile updated successfully.');
-                });
-        });
-    </script>
+    
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/users/my_account.blade.php ENDPATH**/ ?>

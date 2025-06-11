@@ -78,35 +78,47 @@
                                             <div class="sidebar_block_left">
                                                 Priority:
                                             </div>
-                                            @if(isset($ratingResult) && $ratingResult >= 3.5)
+                                          @if (isset($ratingResult) && $ratingResult >= 4.9)
                                                 <div class="sidebar_block_right">
                                                     High
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
-                                            @elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult > 2.5))
+                                            @elseif (isset($ratingResult) && $ratingResult >= 3.6)
+                                                <div class="sidebar_block_right">
+                                                    Medium-High
+                                                    <div class="progress">
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            @elseif (isset($ratingResult) && $ratingResult >= 2.6)
                                                 <div class="sidebar_block_right">
                                                     Medium
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
-                                            @elseif(isset($ratingResult) && ($ratingResult < 2.5) && ($ratingResult > 2))
+                                            @elseif (isset($ratingResult) && $ratingResult >= 2)
                                                 <div class="sidebar_block_right">
-                                                    Low
+                                                    Medium-Low
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
                                             @else
                                                 <div class="sidebar_block_right">
-                                                    Medium
+                                                    Low
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ (2.5 / 5) * 100 }}%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
-                                            @endif
+                                            @endif
 
 
                                             @auth()

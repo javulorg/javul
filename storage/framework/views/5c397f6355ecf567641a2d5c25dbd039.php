@@ -79,35 +79,47 @@
                                             <div class="sidebar_block_left">
                                                 Priority:
                                             </div>
-                                            <?php if(isset($ratingResult) && $ratingResult >= 3.5): ?>
+                                          <?php if(isset($ratingResult) && $ratingResult >= 4.9): ?>
                                                 <div class="sidebar_block_right">
                                                     High
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
                                                     </div>
                                                 </div>
-                                            <?php elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult > 2.5)): ?>
+                                            <?php elseif(isset($ratingResult) && $ratingResult >= 3.6): ?>
+                                                <div class="sidebar_block_right">
+                                                    Medium-High
+                                                    <div class="progress">
+                                                        <div class="progress-bar"
+                                                            style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                    </div>
+                                                </div>
+                                            <?php elseif(isset($ratingResult) && $ratingResult >= 2.6): ?>
                                                 <div class="sidebar_block_right">
                                                     Medium
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
                                                     </div>
                                                 </div>
-                                            <?php elseif(isset($ratingResult) && ($ratingResult < 2.5) && ($ratingResult > 2)): ?>
+                                            <?php elseif(isset($ratingResult) && $ratingResult >= 2): ?>
                                                 <div class="sidebar_block_right">
-                                                    Low
+                                                    Medium-Low
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
                                                     </div>
                                                 </div>
                                             <?php else: ?>
                                                 <div class="sidebar_block_right">
-                                                    Medium
+                                                    Low
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: <?php echo e((2.5 / 5) * 100); ?>%"></div>
+                                                        <div class="progress-bar"
+                                                            style="width: <?php echo e(($ratingResult / 5) * 100); ?>%"></div>
                                                     </div>
                                                 </div>
-                                            <?php endif; ?>
+                                            <?php endif; ?>
 
 
                                             <?php if(auth()->guard()->check()): ?>

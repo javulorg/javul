@@ -1040,46 +1040,67 @@ class ObjectivesController extends Controller
 
 
 
-public function storeW(Request $request)
-{
-    $userId = $request->input('userId');
-    $unitId = $request->input('unitId');
-    $objective_id = $request->input('objective_id');
+    public function storeW(Request $request)
+    {
+        $userId = $request->input('userId');
+        $unitId = $request->input('unitId');
+        $objective_id = $request->input('objective_id');
 
-    // Check if all inputs are present
-    if (!$userId || !$unitId || !$objective_id) {
+        if (!$userId || !$unitId || !$objective_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Missing input data.'
+            ], 400);
+        }
+
+        $existing = Watchlist::where('user_id', $userId)
+            ->where('unit_id', $unitId)
+            ->where('objective_id', $objective_id)
+            ->first();
+
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Already in watchlist'
+            ]);
+        }
+
+        Watchlist::create([
+            'user_id' => $userId,
+            'unit_id' => $unitId,
+            'objective_id' => $objective_id,
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Missing input data.'
-        ], 400); // Return a 400 error for invalid request
-    }
-
-    // Check for existing watchlist entry
-    $existing = Watchlist::where('user_id', $userId)
-        ->where('unit_id', $unitId)
-        ->where('objective_id', $objective_id)
-        ->first();
-
-    if ($existing) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Added to watchlist'
+            'success' => true,
+            'message' => 'Added to watchlist.'
         ]);
     }
 
-    // Add the new watchlist entry
-    Watchlist::create([
-        'user_id' => $userId,
-        'unit_id' => $unitId,
-        'objective_id' => $objective_id,
-    ]);
+    public function remove(Request $request)
+{
+    $userId = $request->input('userId');
+    $unitId = $request->input('unitId');
+    $objectiveId = $request->input('objective_id');
 
-    // Return success response
+    $watchlist = Watchlist::where('user_id', $userId)
+        ->where('unit_id', $unitId)
+        ->where('objective_id', $objectiveId)
+        ->first();
+
+    if ($watchlist) {
+        $watchlist->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Removed from watchlist.'
+        ]);
+    }
+
     return response()->json([
-        'success' => true,
-        'message' => 'Added to watchlist.'
+        'success' => false,
+        'message' => 'Watchlist item not found.'
     ]);
 }
-
 
 }

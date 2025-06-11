@@ -143,7 +143,7 @@ class AccountController extends Controller
             //    'first_name' => 'required',
             //    'last_name' => 'required',
                 'email' => 'required|unique:users,email,'.Auth::user()->id,
-                'paypal_email' => 'email'
+                'paypal_email' => 'email|required'
                 /*'phone'=>'required|numeric',
                 'mobile'=>'required|numeric',
                 'country'=>'required',
@@ -206,8 +206,8 @@ class AccountController extends Controller
             Auth::user()->timezone=$request->input('timezone');
             Auth::user()->paypal_email=$request->input('paypal_email');
             Auth::user()->save();
-            // return response()->json(['success'=>true]);
-            return redirect()->back()->with('success', 'Profile updated successfully.');
+            return response()->json(['success'=>true]);
+            // return redirect()->back()->with('success', 'Profile updated successfully.');
 
         }
     }

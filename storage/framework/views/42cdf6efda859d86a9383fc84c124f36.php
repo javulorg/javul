@@ -13,7 +13,7 @@
 <h1>Javul.org</h1>
 <?php endif; ?>
 <div class="banner_desc d-md-block d-none">
-    Open-source Society hh
+    Open-source Society
 </div>
 <?php $__env->stopSection(); ?>
 
@@ -169,31 +169,29 @@
                                 </div>
                             </div>
                             <div class="objective_content_info_links">
-                                
-                                
+
+
                                 <?php
-                                $isTaskWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
+                                $isLoggedIn = auth()->check();
+                                $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
                                 ->where('unit_id', $unitData->id)
                                 ->where('task_id', $taskObj->id)
                                 ->exists();
                                 ?>
 
-                                <a href="javascript:void(0);" class="edit_icon watchlist-link"
-                                    data-id="<?php echo e($taskObj->id); ?>"
-                                    data-url="<?php echo e(route('watchlistTask.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'task_id' => $taskObj->id])); ?>"
-                                    id="task-eye-link-<?php echo e($taskObj->id); ?>"
-                                    style="<?php echo e($isTaskWatched ? 'display: none;' : ''); ?>">
-                                    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;"
-                                        alt="Watch" id="task-eye-icon-<?php echo e($taskObj->id); ?>">
+                                <a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
+                                    data-id="<?php echo e($taskObj->id); ?>" data-url="<?php echo e(route('watchlistTask.toggle')); ?>"
+                                    data-unit-id="<?php echo e($unitData->id); ?>" data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
+                                    id="task-eye-toggle-<?php echo e($taskObj->id); ?>">
+
+                                    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>"
+                                        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? 'display: none;' : ''); ?>"
+                                        alt="Watch" class="watch-icon" data-type="show">
+
+                                    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
+                                        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? '' : 'display: none;'); ?>"
+                                        alt="Watched" class="watch-icon" data-type="hide">
                                 </a>
-
-                                <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
-                                    style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? '' : 'display: none;'); ?>"
-                                    alt="Watched" id="task-eye-off-icon-<?php echo e($taskObj->id); ?>">
-
-
-
-
 
                                 
                                 <div class="separat"></div>
@@ -207,7 +205,7 @@
                                 $allowedRoles = [1, 2, 3];
                                 ?>
 
-                                <?php if(in_array(auth()->user()->role, $allowedRoles)): ?>
+                                <?php if(auth()->check() && in_array(auth()->user()->role, $allowedRoles)): ?>
                                 <a href="javascript:void(0);" class="delete-task" data-id="<?php echo e($taskObj->id); ?>">
                                     <i class="fa fa-trash" aria-hidden="true" style="color: red;"></i>
                                 </a>
@@ -606,6 +604,7 @@
 </script>
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -692,6 +691,162 @@
         });
     });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-link-task').forEach(function (el) {
+        el.addEventListener('click', function () {
+            const isAuth = el.getAttribute('data-auth');
+            const loginUrl = "<?php echo e(route('login')); ?>";
+
+            if (isAuth === 'no') {
+                // alert("Please login to add this task to your watchlist.");
+                window.location.href = loginUrl;
+                return;
+            }
+
+            // ✅ Proceed with AJAX
+            const url = el.getAttribute('data-url');
+            const taskId = el.getAttribute('data-id');
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                },
+                body: JSON.stringify({ task_id: taskId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Toggle icons
+                document.getElementById('task-eye-link-' + taskId).style.display = 'none';
+                document.getElementById('task-eye-off-icon-' + taskId).style.display = 'inline';
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+});
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('.watchlist-link-task').click(function () {
+    let isAuth = $(this).data('auth');
+    if (isAuth === 'no') {
+        window.location.href = "<?php echo e(route('login')); ?>";
+        return;
+    }
+
+    let url = $(this).data('url');
+    let taskId = $(this).data('id');
+    let $eyeIcon = $('#task-eye-icon-' + taskId);
+    let $eyeOffIcon = $('#task-eye-off-icon-' + taskId);
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            _token: '<?php echo e(csrf_token()); ?>'
+        },
+        success: function (response) {
+            $eyeIcon.parent().hide();
+            $eyeOffIcon.show();
+
+            // ✅ Success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Added!',
+                text: 'Task added to your watchlist successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        },
+        error: function (xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed',
+                text: 'Unable to update watchlist.'
+            });
+        }
+    });
+});
+
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.watchlist-toggle-link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const auth = this.dataset.auth;
+                if (auth !== 'yes') {
+                   window.location.href = '/login'; // Replace this with your actual login route
+                     return;
+                }
+
+                const taskId = this.dataset.id;
+                const unitId = this.dataset.unitId;
+                const url = this.dataset.url;
+                const watchIcons = this.querySelectorAll('.watch-icon');
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ task_id: taskId, unit_id: unitId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'added') {
+                        watchIcons.forEach(img => {
+                            if (img.dataset.type === 'show') img.style.display = 'none';
+                            else img.style.display = '';
+                        });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Added!',
+                            text: 'Task added to your watchlist.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else if (data.status === 'removed') {
+                        watchIcons.forEach(img => {
+                            if (img.dataset.type === 'show') img.style.display = '';
+                            else img.style.display = 'none';
+                        });
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Removed',
+                            text: 'Task removed from your watchlist.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                        });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Network Error',
+                        text: 'Please try again later.',
+                    });
+                });
+            });
+        });
+    });
+</script>
+
 
 
 

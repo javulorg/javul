@@ -43,6 +43,8 @@
     <div class="sidebar_block_ttl">
         @if(isset($title))
             {{ $title }}
+        {{-- @dd($title) --}}
+
         @else
             Global Activity Log
         @endif

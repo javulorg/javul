@@ -25,12 +25,22 @@
                 </thead>
                 <tbody>
                     @foreach ($watchedUnittotal as $watchedUnit)
-                        <tr>
-                            <td>{{ $watchedUnit->name }}</td>
-                            {{-- <td>{{ $watchedUnit->description }}</td> --}}
-                            <td>{{ strip_tags($watchedUnit->description) }}</td>
+                    <tr>
+                        {{-- <td>{{ $watchedUnit->name }}</td> --}}
 
-                        </tr>
+                        <td>
+                            <a href="{{ url('units/' . $unitIDHashID->encode($watchedUnit->id) . '/' . $watchedUnit->slug) }}">
+                                {{ $watchedUnit->name }}  </a>
+
+
+                        </td>
+
+
+
+                        {{-- <td>{{ $watchedUnit->description }}</td> --}}
+                        <td>{{ strip_tags($watchedUnit->description) }}</td>
+
+                    </tr>
                     @endforeach
                 </tbody>
             </table>

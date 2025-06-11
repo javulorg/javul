@@ -17,9 +17,10 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
 
             $table->integer('unit_id')->nullable();
-            $table->integer('objective_id')->nullable();
-            $table->integer('task_id')->nullable();
-            $table->integer('issue_id')->nullable();
+            $table->integer('objective_id')->unique()->nullable();
+            $table->integer('task_id')->unique()->nullable();
+            $table->integer('issue_id')->unique()->nullable();
+            $table->integer('idea_id')->unique()->nullable();
             $table->timestamps();
         });
     }

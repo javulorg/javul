@@ -14,19 +14,24 @@
 
             <table id="watchlist-issues-table-id">
                 <thead>
-                <tr>
-                    <th class="title_col">Issue Name</th>
-                    <th class="type_col">Description</th>
-                </tr>
+                    <tr>
+                        <th class="title_col">Issue Name</th>
+                        <th class="type_col">Description</th>
+                    </tr>
                 </thead>
                 <tbody>
                     @foreach ($watchedissues as $watchedissue)
                     {{-- @dd($watchedissue) --}}
-                        <tr>
-                            <td>{{ $watchedissue->title }}</td>
-                            <td style="display: none"></td>
-                            <td>{{strip_tags($watchedissue->description)  }}</td>
-                        </tr>
+                    <tr>
+                        <td class="type_col">
+                            <a href="{!! url('issues/'.$issueIDHashID->encode($watchedissue->id).'/view') !!}">
+                                {{ $watchedissue->title }}
+                            </a>
+                        </td>
+                        {{-- <td>{{ $watchedissue->title }}</td> --}}
+                        <td style="display: none"></td>
+                        <td>{{strip_tags($watchedissue->description) }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>

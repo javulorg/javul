@@ -1,6 +1,6 @@
 @extends('layout.default')
 @section('page-meta')
-<title>Units - Javul.org</title>
+<title>Units - Javul.org </title>
 @endsection
 @section('page-css')
     <link href="{!! url('assets/plugins/bootstrap-summernote/summernote.css') !!}" rel="stylesheet" type="text/css" />
