@@ -21,7 +21,13 @@
 
                     @foreach ($watchedUnits as $watchedUnit)
                         <tr>
-                            <td>{{ $watchedUnit->name }}</td>
+                            <td>
+                                    <a href="{!! url('objectives/' . $objectiveIDHashID->encode($watchedUnit->id) . '/' . $watchedUnit->slug) !!}"
+                                        title="edit">
+                                        {{ $watchedUnit->name }}
+                                    </a>
+                                </td>
+                            {{-- <td>{{ $watchedUnit->name }}</td> --}}
                             <td style="display: none"></td>
                             <!-- Use strip_tags to remove HTML tags from description -->
                             <td>{{ strip_tags($watchedUnit->description) }}</td>

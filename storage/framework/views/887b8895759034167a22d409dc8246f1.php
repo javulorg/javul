@@ -5,6 +5,8 @@
         <?php if(isset($title)): ?>
             <?php echo e($title); ?>
 
+        
+
         <?php else: ?>
             Global Activity Log
         <?php endif; ?>

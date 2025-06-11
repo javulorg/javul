@@ -21,7 +21,14 @@
 
                     <?php $__currentLoopData = $watchedUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $watchedUnit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td><?php echo e($watchedUnit->name); ?></td>
+                            <td>
+                                    <a href="<?php echo url('objectives/' . $objectiveIDHashID->encode($watchedUnit->id) . '/' . $watchedUnit->slug); ?>"
+                                        title="edit">
+                                        <?php echo e($watchedUnit->name); ?>
+
+                                    </a>
+                                </td>
+                            
                             <td style="display: none"></td>
                             <!-- Use strip_tags to remove HTML tags from description -->
                             <td><?php echo e(strip_tags($watchedUnit->description)); ?></td>

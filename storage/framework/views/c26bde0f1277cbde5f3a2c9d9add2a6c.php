@@ -25,12 +25,22 @@
                 </thead>
                 <tbody>
                     <?php $__currentLoopData = $watchedUnittotal; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $watchedUnit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <tr>
-                            <td><?php echo e($watchedUnit->name); ?></td>
-                            
-                            <td><?php echo e(strip_tags($watchedUnit->description)); ?></td>
+                    <tr>
+                        
 
-                        </tr>
+                        <td>
+                            <a href="<?php echo e(url('units/' . $unitIDHashID->encode($watchedUnit->id) . '/' . $watchedUnit->slug)); ?>">
+                                <?php echo e($watchedUnit->name); ?>  </a>
+
+
+                        </td>
+
+
+
+                        
+                        <td><?php echo e(strip_tags($watchedUnit->description)); ?></td>
+
+                    </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>

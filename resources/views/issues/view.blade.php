@@ -1,89 +1,89 @@
 @extends('layout.master')
 @section('title', 'Issue: ' . $issueObj->title)
 @section('style')
-    <style>
-        a.modal-link {
-            font-size: 13px;
-            text-decoration: none;
-            /* Remove underline */
-        }
-    </style>
+<style>
+    a.modal-link {
+        font-size: 13px;
+        text-decoration: none;
+        /* Remove underline */
+    }
+</style>
 @endsection
 @section('site-name')
-    @if (isset($unitData))
-        <h1>{{ $unitData->name }}</h1>
-    @else
-        <h1>Javul.org</h1>
-    @endif
-    <div class="banner_desc d-md-block d-none">
-        Open-source Society
-    </div>
+@if (isset($unitData))
+<h1>{{ $unitData->name }}</h1>
+@else
+<h1>Javul.org</h1>
+@endif
+<div class="banner_desc d-md-block d-none">
+    Open-source Society
+</div>
 @endsection
 
 @section('navbar')
-    @if (isset($unitData))
-        @include('layout.navbar', ['unitData' => $unitData])
-    @endif
+@if (isset($unitData))
+@include('layout.navbar', ['unitData' => $unitData])
+@endif
 @endsection
 
 @section('content')
-    <div class="content_row">
-        <div class="sidebar">
-            @if (isset($unitData))
-                @include('layout.v2.global-unit-overview')
-                <?php
+<div class="content_row">
+    <div class="sidebar">
+        @if (isset($unitData))
+        @include('layout.v2.global-unit-overview')
+        <?php
                 $title = 'Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id])
+        @include('layout.v2.global-activity-log', ['title' => $title, 'unit' => $unitData->id])
 
-                @include('layout.v2.global-finances')
+        @include('layout.v2.global-finances')
 
-                @include('layout.v2.global-about-site')
-            @else
-                <?php
+        @include('layout.v2.global-about-site')
+        @else
+        <?php
                 $title = 'Global Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log', ['title' => $title])
-            @endif
-        </div>
+        @include('layout.v2.global-activity-log', ['title' => $title])
+        @endif
+    </div>
 
-        <div class="main_content">
+    <div class="main_content">
 
-            <input type="hidden" id="issue_id" name="issue_id" value="{{ $issueObj->id }}">
-            <input type="hidden" id="unit_id" name="unit_id" value="{{ $unitData->id }}">
+        <input type="hidden" id="issue_id" name="issue_id" value="{{ $issueObj->id }}">
+        <input type="hidden" id="unit_id" name="unit_id" value="{{ $unitData->id }}">
 
-            <div class="content_block">
-                <div class="table_block table_block_issues active">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/bug.svg') }}" alt="" class="img-fluid">
-                        </div>
-                        {{ $issueObj->title }}
-                        <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
-                        </div>
+        <div class="content_block">
+            <div class="table_block table_block_issues active">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/bug.svg') }}" alt="" class="img-fluid">
                     </div>
-                    <div class="objective_content">
-                        <div class="objective_content_row d-sm-flex d-none">
-                            <div>
-                                <p>
-                                    {!! $issueObj->description !!}
-                                </p>
-                            </div>
-                            <div class="objective_content_info">
-                                <div class="sidebar_block">
-                                    <div class="sidebar_block_ttl">
-                                        Issue Overview
-                                        <div class="arrow">
-                                            <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
-                                        </div>
+                    {{ $issueObj->title }}
+                    <div class="arrow">
+                        <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                    </div>
+                </div>
+                <div class="objective_content">
+                    <div class="objective_content_row d-sm-flex d-none">
+                        <div>
+                            <p>
+                                {!! $issueObj->description !!}
+                            </p>
+                        </div>
+                        <div class="objective_content_info">
+                            <div class="sidebar_block">
+                                <div class="sidebar_block_ttl">
+                                    Issue Overview
+                                    <div class="arrow">
+                                        <img src="{{ asset('v2/assets/img/bottom_y.svg') }}" alt="">
                                     </div>
-                                    <div class="sidebar_block_content">
-                                        <div class="sidebar_block_row">
-                                            <div class="sidebar_block_left">
-                                                Priority:
-                                            </div>
-                                            @if (isset($ratingResult) && $ratingResult >= 3.5)
+                                </div>
+                                <div class="sidebar_block_content">
+                                    <div class="sidebar_block_row">
+                                        <div class="sidebar_block_left">
+                                            Priority:
+                                        </div>
+@if (isset($ratingResult) && $ratingResult >= 4.9)
                                                 <div class="sidebar_block_right">
                                                     High
                                                     <div class="progress">
@@ -91,7 +91,15 @@
                                                             style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
-                                            @elseif(isset($ratingResult) && ($ratingResult < 3.5 && $ratingResult > 2.5))
+                                            @elseif (isset($ratingResult) && $ratingResult >= 3.6)
+                                                <div class="sidebar_block_right">
+                                                    Medium-High
+                                                    <div class="progress">
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            @elseif (isset($ratingResult) && $ratingResult >= 2.6)
                                                 <div class="sidebar_block_right">
                                                     Medium
                                                     <div class="progress">
@@ -99,9 +107,9 @@
                                                             style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
                                                     </div>
                                                 </div>
-                                            @elseif(isset($ratingResult) && $ratingResult < 2.5 && $ratingResult > 2)
+                                            @elseif (isset($ratingResult) && $ratingResult >= 2)
                                                 <div class="sidebar_block_right">
-                                                    Low
+                                                    Medium-Low
                                                     <div class="progress">
                                                         <div class="progress-bar"
                                                             style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
@@ -109,121 +117,119 @@
                                                 </div>
                                             @else
                                                 <div class="sidebar_block_right">
-                                                    Medium
+                                                    Low
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ (2.5 / 5) * 100 }}%">
+                                                        <div class="progress-bar"
+                                                            style="width: {{ ($ratingResult / 5) * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                        @auth()
+                                        <div class="sidebar_block_right">
+                                            <a href="#" class="modal-link" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal">Rate</a>
+                                            <div class="modal fade" id="exampleModal" tabindex="-1"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                                                Priority
+                                                            </h1>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form id="ratingForm">
+                                                                <div class="form-group">
+                                                                    <label for="rating">Select
+                                                                        rating:</label><br>
+
+                                                                    <div class="form-check mt-3">
+                                                                        <input type="radio" class="form-check-input"
+                                                                            id="rating5" name="rating" value="5">
+                                                                        <label class="form-check-label"
+                                                                            for="rating5">High</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input type="radio" class="form-check-input"
+                                                                            id="rating4" name="rating" value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="rating4">Medium-High</label>
+                                                                    </div>
+
+                                                                    <div class="form-check">
+                                                                        <input type="radio" class="form-check-input"
+                                                                            id="rating3" name="rating" value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="rating3">Medium</label>
+                                                                    </div>
+
+                                                                    <div class="form-check">
+                                                                        <input type="radio" class="form-check-input"
+                                                                            id="rating2" name="rating" value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="rating2">Medium-Low</label>
+                                                                    </div>
+
+                                                                    <div class="form-check">
+                                                                        <input type="radio" class="form-check-input"
+                                                                            id="rating1" name="rating" value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="rating1">Low</label>
+                                                                    </div>
+
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" id="submitRating"
+                                                                class="btn btn-primary">Save changes</button>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        @endauth
+                                    </div>
+                                    <div class="sidebar_block_row">
+                                        <div class="sidebar_block_left">
+                                            Status:
+                                        </div>
+                                        <div class="sidebar_block_right">
+                                            <?php $verified_by = ''; ?>
+                                            @if ($issueObj->status == 1)
+                                            <?php $verified_by = ' (by ' . App\Models\User::getUserName($issueObj->verified_by) . ')'; ?>
                                             @endif
-
-
-                                            @auth()
-                                                <div class="sidebar_block_right">
-                                                    <a href="#" class="modal-link" data-bs-toggle="modal"
-                                                        data-bs-target="#exampleModal">Rate</a>
-                                                    <div class="modal fade" id="exampleModal" tabindex="-1"
-                                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Priority
-                                                                    </h1>
-                                                                    <button type="button" class="btn-close"
-                                                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <form id="ratingForm">
-                                                                        <div class="form-group">
-                                                                            <label for="rating">Select rating:</label><br>
-
-                                                                            <div class="form-check mt-3">
-                                                                                <input type="radio" class="form-check-input"
-                                                                                    id="rating5" name="rating"
-                                                                                    value="5">
-                                                                                <label class="form-check-label"
-                                                                                    for="rating5">High</label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <input type="radio" class="form-check-input"
-                                                                                    id="rating4" name="rating"
-                                                                                    value="4">
-                                                                                <label class="form-check-label"
-                                                                                    for="rating4">Medium-High</label>
-                                                                            </div>
-
-                                                                            <div class="form-check">
-                                                                                <input type="radio" class="form-check-input"
-                                                                                    id="rating3" name="rating"
-                                                                                    value="3">
-                                                                                <label class="form-check-label"
-                                                                                    for="rating3">Medium</label>
-                                                                            </div>
-
-                                                                            <div class="form-check">
-                                                                                <input type="radio" class="form-check-input"
-                                                                                    id="rating2" name="rating"
-                                                                                    value="2">
-                                                                                <label class="form-check-label"
-                                                                                    for="rating2">Medium-Low</label>
-                                                                            </div>
-
-                                                                            <div class="form-check">
-                                                                                <input type="radio" class="form-check-input"
-                                                                                    id="rating1" name="rating"
-                                                                                    value="1">
-                                                                                <label class="form-check-label"
-                                                                                    for="rating1">Low</label>
-                                                                            </div>
-
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
-                                                                        data-bs-dismiss="modal">Close</button>
-                                                                    <button type="button" id="submitRating"
-                                                                        class="btn btn-primary">Save changes</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endauth
+                                            {{ ucfirst($issueObj->status == 1 ? 'Resolved' : 'Assigned To Task' .
+                                            $verified_by) }}
                                         </div>
-                                        <div class="sidebar_block_row">
-                                            <div class="sidebar_block_left">
-                                                Status:
-                                            </div>
-                                            <div class="sidebar_block_right">
-                                                <?php $verified_by = ''; ?>
-                                                @if ($issueObj->status == 1)
-                                                    <?php $verified_by = ' (by ' . App\Models\User::getUserName($issueObj->verified_by) . ')'; ?>
-                                                @endif
-                                                {{ ucfirst($issueObj->status == 1 ? 'Resolved' : 'Assigned To Task' . $verified_by) }}
-                                            </div>
-                                        </div>
+                                    </div>
 
-                                        <div class="sidebar_block_row">
-                                            <div class="sidebar_block_left">
-                                                Category:
-                                            </div>
-                                            <div class="sidebar_block_right">
-                                                @if (isset($issueObj->category_id))
-                                                    <?php $category = App\Models\Category::where('id', $issueObj->category_id)->first(); ?>
-                                                    {{ ucfirst($category->title) }}
-                                                @else
-                                                    -
-                                                @endif
-                                            </div>
+                                    <div class="sidebar_block_row">
+                                        <div class="sidebar_block_left">
+                                            Category:
                                         </div>
-                                        {{--                                    <div class="sidebar_line"></div> --}}
-                                        {{--                                    <div class="sidebar_block_row"> --}}
-                                        {{--                                        <div class="sidebar_block_left"> --}}
-                                        {{--                                            Support --}}
-                                        {{--                                        </div> --}}
-                                        {{--                                        <div class="sidebar_block_right"> --}}
-                                        {{--                                            <?php--}}
+                                        <div class="sidebar_block_right">
+                                            @if (isset($issueObj->category_id))
+                                            <?php $category = App\Models\Category::where('id', $issueObj->category_id)->first(); ?>
+                                            {{ ucfirst($category->title) }}
+                                            @else
+                                            -
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- <div class="sidebar_line"></div> --}}
+                                    {{-- <div class="sidebar_block_row"> --}}
+                                        {{-- <div class="sidebar_block_left"> --}}
+                                            {{-- Support --}}
+                                            {{-- </div> --}}
+                                        {{-- <div class="sidebar_block_right"> --}}
+                                            {{--
+                                            <?php--}}
                                         {{--                                            $voteClass = "";--}}
                                         {{--                                            $upvoteClass = "";--}}
                                         {{--                                            $downvoteClass = "";--}}
@@ -240,260 +246,263 @@
                                         {{--                                            }--}}
                                         {{--                                            ?> ?> --}}
 
-                                        {{--                                            <div style="float:left;">{{ $importancePercentage }}%</div> --}}
+                                            {{-- <div style="float:left;">{{ $importancePercentage }}%</div> --}}
 
-                                        {{--                                            <div class="vote-buttons"> --}}
-                                        {{--                                                <span class="fa fa-thumbs-up {{ $voteClass }} upvote {{ $upvoteClass }}" --}}
-                                        {{--                                                      @if (auth()->check()) data-id="{{ $issueIDHashID->encode($issueObj->id) }}" data-type="up" @endif --}}
-                                        {{--                                                      title="Upvote"></span> --}}
-                                        {{--                                                {{ $upvotedCnt }} --}}
+                                            {{-- <div class="vote-buttons"> --}}
+                                                {{-- <span
+                                                    class="fa fa-thumbs-up {{ $voteClass }} upvote {{ $upvoteClass }}"
+                                                    --}} {{-- @if (auth()->check()) data-id="{{
+                                                    $issueIDHashID->encode($issueObj->id) }}" data-type="up" @endif --}}
+                                                    {{-- title="Upvote"></span> --}}
+                                                {{-- {{ $upvotedCnt }} --}}
 
-                                        {{--                                                <span class="fa fa-thumbs-down {{ $voteClass }} downvote {{ $downvoteClass }}" --}}
-                                        {{--                                                      @if (auth()->check()) data-id="{{ $issueIDHashID->encode($issueObj->id) }}" data-type="down" @endif --}}
-                                        {{--                                                      title="Downvote"></span> --}}
-                                        {{--                                                {{ $downvotedCnt }} --}}
-                                        {{--                                            </div> --}}
+                                                {{-- <span
+                                                    class="fa fa-thumbs-down {{ $voteClass }} downvote {{ $downvoteClass }}"
+                                                    --}} {{-- @if (auth()->check()) data-id="{{
+                                                    $issueIDHashID->encode($issueObj->id) }}" data-type="down" @endif
+                                                    --}}
+                                                    {{-- title="Downvote"></span> --}}
+                                                {{-- {{ $downvotedCnt }} --}}
+                                                {{-- </div> --}}
 
-                                        {{--                                        </div> --}}
-                                        {{--                                    </div> --}}
-                                    </div>
-                                </div>
-                                <div class="objective_content_info_links">
-                                    {{-- <a class="add_to_my_watchlist edit_icon" data-type="issue" data-id="{{$issueIDHashID->encode($issueObj->id)}}" data-redirect="{{url()->current()}}"><img src="{{ asset('v2/assets/img/eye.svg') }}" alt=""></a> --}}
-                                    {{-- <a href="{{ route('watchlistIssue.store', ['userId' => $unitData->id , 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}" class="edit_icon">
-                                    <img src="{{ asset('v2/assets/img/eye.svg') }}" alt="">
-                                            </a> --}}
-
-                                    {{-- <a href="{{ route('watchlistIssue.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}"
-                                                class="edit_icon watchlist-link" data-id="{{ $issueObj->id }}"
-                                                data-url="{{ route('watchlistIssue.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}">
-                                                <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;" alt="Watch"
-                                                    id="eye-icon-{{ $issueObj->id }}">
-                                            </a> --}}
-
-
-                                    @php
-                                        $isIssueWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
-                                            ->where('unit_id', $unitData->id)
-                                            ->where('issue_id', $issueObj->id)
-                                            ->exists();
-                                    @endphp
-
-
-
-                                    <a href="javascript:void(0);" class="edit_icon watchlist-link"
-                                        data-id="{{ $issueObj->id }}"
-                                        data-url="{{ route('watchlistIssue.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}"
-                                        id="issue-eye-link-{{ $issueObj->id }}"
-                                        style="{{ $isIssueWatched ? 'display: none;' : '' }}">
-                                        <img src="{{ asset('v2/assets/img/eye.svg') }}"
-                                            style="height: 20px; width: 20px;" alt="Watch"
-                                            id="issue-eye-icon-{{ $issueObj->id }}">
-                                    </a>
-
-                                    <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
-                                        style="height: 20px; width: 20px; {{ $isIssueWatched ? '' : 'display: none;' }}"
-                                        alt="Watched" id="issue-eye-off-icon-{{ $issueObj->id }}">
-
-
-
-                                    @if (session('success'))
-                                        <div class="alert alert-success">{{ session('success') }}</div>
-                                    @endif
-
-                                    @if (session('info'))
-                                        <div class="alert alert-info">{{ session('info') }}</div>
-                                    @endif
-                                    <div class="separat"></div>
-                                    <a href="{!! route('issues_revison', [$issueIDHashID->encode($issueObj->id)]) !!}" class="edit_icon"> Revision History</a>
-                                    <div class="separat"></div>
-                                    <a href="{!! url('issues/' . $issueIDHashID->encode($issueObj->id) . '/edit') !!}" class="edit_icon"><img
-                                            src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt=""></a>
+                                            {{--
+                                        </div> --}}
+                                        {{-- </div> --}}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            <div class="objective_content_info_links">
+                                @php
+                                $isIssueWatched = auth()->check() && \App\Models\Watchlist::where('user_id',
+                                auth()->id())
+                                ->where('unit_id', $unitData->id)
+                                ->where('issue_id', $issueObj->id)
+                                ->exists();
+                                @endphp
 
-            <div class="content_block">
-                <div class="table_block table_block_objective">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/User_Rounded.svg') }}" alt="" class="img-fluid">
-                        </div>
-                        Associated Objective
-                        <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
-                        </div>
-                    </div>
+                                {{-- Watch --}}
+                                <a href="javascript:void(0);" class="edit_icon watchlist-link-issue"
+                                    data-id="{{ $issueObj->id }}"
+                                    data-url="{{ route('watchlistIssue.store', ['unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}"
+                                    id="issue-eye-link-{{ $issueObj->id }}"
+                                    style="{{ $isIssueWatched ? 'display: none;' : '' }}">
+                                    <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;"
+                                        alt="Watch">
+                                </a>
 
-                    @php
-                        $objectiveID = $issueObj->objective_id;
-                        $objSlug = \App\Models\Objective::getSlug($objectiveID);
-                        $objectiveUrl = url('objectives/' . $objectiveIDHashID->encode($objectiveID) . '/' . $objSlug);
-                        $objectiveName = \App\Models\Objective::getObjectiveName($objectiveID);
-                    @endphp
+                                {{-- Unwatch --}}
+                                <a href="javascript:void(0);" class="edit_icon unwatchlist-link-issue"
+                                    data-id="{{ $issueObj->id }}"
+                                    data-url="{{ route('watchlistIssue.remove', ['unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}"
+                                    id="issue-eye-off-link-{{ $issueObj->id }}"
+                                    style="{{ $isIssueWatched ? '' : 'display: none;' }}">
+                                    <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
+                                        style="height: 20px; width: 20px;" alt="Unwatch">
+                                </a>
 
-                    <div class="table_block_txt">
-                        <a style="font-weight: normal;" class="no-decoration" href="{{ $objectiveUrl }}">
-                            {{ $objectiveName }}
-                        </a>
-                    </div>
-                </div>
-                <div class="content_block_bottom">
-                    <a href="{!! url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
-                        New</a>
-                    <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
-                </div>
-            </div>
+                                {{-- Optional: Revision History --}}
+                                <div class="separat"></div>
+                                <a href="{!! route('issues_revison', [$issueIDHashID->encode($issueObj->id)]) !!}"
+                                    class="edit_icon">
+                                    Revision History
+                                </a>
 
-            <div class="content_block">
-                <div class="table_block table_block_objective">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/User_Rounded.svg') }}" alt="" class="img-fluid">
-                        </div>
-                        Associated Tasks
-                        <div class="arrow">
-                            <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
-                        </div>
-                    </div>
-
-                    @php
-                        $taskIDs = explode(',', $issueObj->task_id);
-                    @endphp
-                    @if (count($taskIDs) > 0)
-                        @foreach ($taskIDs as $taskID)
-                            @php
-                                $taskSlug = \App\Models\Task::getSlug($taskID);
-                                $taskUrl = url('tasks/' . $taskIDHashID->encode($taskID) . '/' . $taskSlug);
-                                $taskName = \App\Models\Task::getName($taskID);
-                            @endphp
-                            <div class="table_block_txt">
-                                <a style="font-weight: normal;" class="no-decoration" href="{{ $taskUrl }}">
-                                    {{ $taskName }}
+                                {{-- Optional: Edit Icon --}}
+                                <div class="separat"></div>
+                                <a href="{!! url('issues/' . $issueIDHashID->encode($issueObj->id) . '/edit') !!}"
+                                    class="edit_icon">
+                                    <img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt="">
                                 </a>
                             </div>
-                        @endforeach
-                    @endif
-                </div>
-                <div class="content_block_bottom">
-                    <a href="{!! url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
-                        New</a>
-                    <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more" onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
+
+
+
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-
-            <div class="content_block_comments">
-                <div class="table_block table_block_comments">
-                    <div class="table_block_head">
-                        <div class="table_block_icon">
-                            <img src="{{ asset('v2/assets/img/Dialog.svg') }}" alt="" class="img-fluid">
-                        </div>
-                        Comments
+        <div class="content_block">
+            <div class="table_block table_block_objective">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/User_Rounded.svg') }}" alt="" class="img-fluid">
                     </div>
-                    <div class="comments_content">
-                        <div class="comment_stat">
+                    Associated Objective
+                    <div class="arrow">
+                        <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                    </div>
+                </div>
 
+                @php
+                $objectiveID = $issueObj->objective_id;
+                $objSlug = \App\Models\Objective::getSlug($objectiveID);
+                $objectiveUrl = url('objectives/' . $objectiveIDHashID->encode($objectiveID) . '/' . $objSlug);
+                $objectiveName = \App\Models\Objective::getObjectiveName($objectiveID);
+                @endphp
+
+                <div class="table_block_txt">
+                    <a style="font-weight: normal;" class="no-decoration" href="{{ $objectiveUrl }}">
+                        {{ $objectiveName }}
+                    </a>
+                </div>
+            </div>
+            <div class="content_block_bottom">
+                <a href="{!! url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') !!}"><img
+                        src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
+                    New</a>
+                <div class="separator"></div> <a href="{{ url('objectives?unit=' . $unitData->id) }}" class="see_more"
+                    onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
+            </div>
+        </div>
+
+        <div class="content_block">
+            <div class="table_block table_block_objective">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/User_Rounded.svg') }}" alt="" class="img-fluid">
+                    </div>
+                    Associated Tasks
+                    <div class="arrow">
+                        <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
+                    </div>
+                </div>
+
+                @php
+                $taskIDs = explode(',', $issueObj->task_id);
+                @endphp
+                @if (count($taskIDs) > 0)
+                @foreach ($taskIDs as $taskID)
+                @php
+                $taskSlug = \App\Models\Task::getSlug($taskID);
+                $taskUrl = url('tasks/' . $taskIDHashID->encode($taskID) . '/' . $taskSlug);
+                $taskName = \App\Models\Task::getName($taskID);
+                @endphp
+                <div class="table_block_txt">
+                    <a style="font-weight: normal;" class="no-decoration" href="{{ $taskUrl }}">
+                        {{ $taskName }}
+                    </a>
+                </div>
+                @endforeach
+                @endif
+            </div>
+            <div class="content_block_bottom">
+                <a href="{!! url('objectives/'.$unitIDHashID->encode($unitObj->id).'/add') !!}"><img
+                        src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
+                    New</a>
+                <div class="separator"></div> <a href="{{ url('tasks?unit=' . $unitData->id) }}" class="see_more"
+                    onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
+            </div>
+        </div>
+
+
+        <div class="content_block_comments">
+            <div class="table_block table_block_comments">
+                <div class="table_block_head">
+                    <div class="table_block_icon">
+                        <img src="{{ asset('v2/assets/img/Dialog.svg') }}" alt="" class="img-fluid">
+                    </div>
+                    Comments
+                </div>
+                <div class="comments_content">
+                    <div class="comment_stat">
+
+                    </div>
+
+                    @if (isset($comments))
+                    @foreach ($comments as $comment)
+                    <div class="comment_container">
+                        <div class="comment_icon">
+                            <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
                         </div>
-
-                        @if (isset($comments))
-                            @foreach ($comments as $comment)
-                                <div class="comment_container">
-                                    <div class="comment_icon">
-                                        <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt=""
-                                            class="img-fluid">
-                                    </div>
-                                    <div class="comment_content">
-                                        <div class="comment_info">
-                                            <div class="comment_autor">
-                                                @php
-                                                    $user = \App\Models\User::where('id', $comment->user_id)
-                                                        ->select('first_name', 'last_name')
-                                                        ->first();
-                                                @endphp
-                                                {{ $user->first_name . ' ' . $user->last_name }}
-                                            </div>
-                                            <div class="comment_time">
-                                                {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}
-                                            </div>
-                                        </div>
-                                        <div class="comment_txt">
-                                            {{ $comment->post }}
-                                        </div>
-
-                                        <div class="comment_actions">
-                                            <input type="hidden" value="{{ $comment->id }}"
-                                                id="comment_id_{{ $comment->id }}">
-
-                                            <button type="button" class="like_button">
-                                                <i class="fas fa-thumbs-up"></i>
-                                                <span id="like_count" class="badge badge-primary">
-                                                    <span class="count"> {{ $comment->likes }}</span>
-                                                </span>
-                                            </button>
-                                            <button type="button" class="dislike_button">
-                                                <i class="fas fa-thumbs-down"></i>
-                                                <span id="dislike_count" class="badge badge-danger">
-                                                    <span class="count"> {{ $comment->dislikes }}</span>
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
+                        <div class="comment_content">
+                            <div class="comment_info">
+                                <div class="comment_autor">
+                                    @php
+                                    $user = \App\Models\User::where('id', $comment->user_id)
+                                    ->select('first_name', 'last_name')
+                                    ->first();
+                                    @endphp
+                                    {{ $user->first_name . ' ' . $user->last_name }}
                                 </div>
-
-                                <style>
-                                    .comment_actions form {
-                                        display: inline-block;
-                                        margin-right: 10px;
-                                    }
-
-                                    .comment_actions form:last-child {
-                                        margin-right: 0;
-                                    }
-
-                                    .badge .count {
-                                        color: black;
-                                        /* Adjust color as needed */
-                                    }
-                                </style>
-                            @endforeach
-                        @endif
-
-
-
-                        <div class="comment_container">
-                            <div class="comment_icon">
-                                <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt=""
-                                    class="img-fluid">
+                                <div class="comment_time">
+                                    {{ Carbon\Carbon::parse($comment->created_time)->diffForHumans() }}
+                                </div>
                             </div>
-                            <input type="hidden" name="unit_id" id="comment_unit_id" value="<?= $unit_id ?>">
-                            <input type="hidden" name="section_id" id="comment_section_id" value="<?= $section_id ?>">
-                            <input type="hidden" name="object_id" id="comment_object_id" value="<?= $object_id ?>">
-                            <div class="comment_content">
-                                <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
-                                <button id="comment_form" class="btn">Submit</button>
+                            <div class="comment_txt">
+                                {{ $comment->post }}
+                            </div>
+
+                            <div class="comment_actions">
+                                <input type="hidden" value="{{ $comment->id }}" id="comment_id_{{ $comment->id }}">
+
+                                <button type="button" class="like_button">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span id="like_count" class="badge badge-primary">
+                                        <span class="count"> {{ $comment->likes }}</span>
+                                    </span>
+                                </button>
+                                <button type="button" class="dislike_button">
+                                    <i class="fas fa-thumbs-down"></i>
+                                    <span id="dislike_count" class="badge badge-danger">
+                                        <span class="count"> {{ $comment->dislikes }}</span>
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="content_block_bottom">
-                    <a href="{!! url('issues/'.$unitIDHashID->encode($unit_activity_id).'/add') !!}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
-                        New</a>
-                    <div class="separator"></div> <a href="{{ url('issues?unit=' . $unitData->id) }}"  class="see_more" onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
+
+                    <style>
+                        .comment_actions form {
+                            display: inline-block;
+                            margin-right: 10px;
+                        }
+
+                        .comment_actions form:last-child {
+                            margin-right: 0;
+                        }
+
+                        .badge .count {
+                            color: black;
+                            /* Adjust color as needed */
+                        }
+                    </style>
+                    @endforeach
+                    @endif
+
+
+
+                    <div class="comment_container">
+                        <div class="comment_icon">
+                            <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
+                        </div>
+                        <input type="hidden" name="unit_id" id="comment_unit_id" value="<?= $unit_id ?>">
+                        <input type="hidden" name="section_id" id="comment_section_id" value="<?= $section_id ?>">
+                        <input type="hidden" name="object_id" id="comment_object_id" value="<?= $object_id ?>">
+                        <div class="comment_content">
+                            <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
+                            <button id="comment_form" class="btn">Submit</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-
+            <div class="content_block_bottom">
+                <a href="{!! url('issues/'.$unitIDHashID->encode($unit_activity_id).'/add') !!}"><img
+                        src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt=""> Add
+                    New</a>
+                <div class="separator"></div> <a href="{{ url('issues?unit=' . $unitData->id) }}" class="see_more"
+                    onclick="window.location.href=this.href; return true;" class="see_more">See more</a>
+            </div>
         </div>
 
     </div>
+
+</div>
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('.modal-link').click(function() {
                 var modalId = $(this).data('modal-id');
                 $('#modalIdSpan').text(modalId);
@@ -601,64 +610,152 @@
             });
 
         });
-    </script>
- <!-- Include SweetAlert2 -->
+</script>
+<!-- Include SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.watchlist-link').forEach(function (link) {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
+    document.addEventListener('DOMContentLoaded', () => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            const url = this.dataset.url;
-            const issueId = this.dataset.id;
-            const viewUrl = this.dataset.viewUrl; // Optional link to the issue view
+    // Add to watchlist
+    document.querySelectorAll('.watchlist-link-issue').forEach(link => {
+        link.addEventListener('click', () => {
+            const issueId = link.dataset.id;
+            const url = link.dataset.url;
 
-            const eyeIcon = document.getElementById('issue-eye-icon-' + issueId);
-            const eyeOffIcon = document.getElementById('issue-eye-off-icon-' + issueId);
-            const anchor = document.getElementById('issue-eye-link-' + issueId);
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                },
+            })
+            .then(res => res.json())
+            .then(data => {
+                // toggle icons
+                document.getElementById('issue-eye-link-' + issueId).style.display = 'none';
+                document.getElementById('issue-eye-off-link-' + issueId).style.display = 'inline-block';
 
-            // Disable the link to prevent repeated clicks
-            this.classList.add('pointer-events-none', 'opacity-50');
+                Swal.fire('Success', data.message, 'success');
+            })
+            .catch(error => {
+                console.error('Add Watchlist Error:', error);
+                Swal.fire('Failed', 'Could not add to watchlist.', 'error');
+            });
+        });
+    });
 
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    // Hide clickable eye icon
-                    if (anchor) anchor.style.display = "none";
+    // Remove from watchlist
+    // document.querySelectorAll('.unwatchlist-link-issue').forEach(link => {
+    //     link.addEventListener('click', () => {
+    //         const issueId = link.dataset.id;
+    //         const url = link.dataset.url;
 
-                    // Show eye-off icon
-                    if (eyeOffIcon) eyeOffIcon.style.display = "inline-block";
+    //         fetch(url, {
+    //             method: 'DELETE',
+    //             headers: {
+    //                 'X-CSRF-TOKEN': csrfToken,
+    //                 'Accept': 'application/json',
+    //             },
+    //         })
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             // toggle icons
+    //             document.getElementById('issue-eye-link-' + issueId).style.display = 'inline-block';
+    //             document.getElementById('issue-eye-off-link-' + issueId).style.display = 'none';
 
-                    // Show SweetAlert with optional link
+    //             Swal.fire('Success');
+    //         })
+    //         .catch(error => {
+    //           //  console.error('Remove Watchlist Error:', error);
+    //             //Swal.fire('Failed', 'Could not remove from watchlist.', 'error');
+    //         });
+    //     });
+    // });
+});
+</script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Add to watchlist
+    document.querySelectorAll('.watchlist-link-issue').forEach(function (el) {
+        el.addEventListener('click', function () {
+            const url = el.dataset.url;
+            const issueId = el.dataset.id;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message === 'Added to watchlist!') {
+                    document.getElementById('issue-eye-link-' + issueId).style.display = 'none';
+                    document.getElementById('issue-eye-off-link-' + issueId).style.display = 'inline-block';
+
                     Swal.fire({
                         icon: 'success',
-                        title: 'Added to Watchlist',
-                        html: `
-                            <p>${data.message || 'Issue added successfully!'}</p>
-                            ${viewUrl ? `<a href="${viewUrl}" target="_blank" style="color:#3085d6; text-decoration: underline;">View Issue</a>` : ''}
-                        `,
-                        showConfirmButton: false,
-                        timer: 3000
+                        title: 'Added!',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
                     });
-                })
-                .catch(err => {
-                    console.error('Watchlist error:', err);
-                    this.classList.remove('pointer-events-none', 'opacity-50');
+                } else {
+                    Swal.fire('Notice', data.message || 'Already in watchlist.', 'info');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'Failed to add to watchlist.', 'error');
+            });
+        });
+    });
+
+    // Remove from watchlist
+    document.querySelectorAll('.unwatchlist-link-issue').forEach(function (el) {
+        el.addEventListener('click', function () {
+            const url = el.dataset.url;
+            const issueId = el.dataset.id;
+
+            fetch(url, {
+                method: 'POST', // Keep POST if your route is defined as POST
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message === 'Removed from watchlist!') {
+                    document.getElementById('issue-eye-link-' + issueId).style.display = 'inline-block';
+                    document.getElementById('issue-eye-off-link-' + issueId).style.display = 'none';
 
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Oops!',
-                        text: 'Something went wrong. Please try again.',
+                        icon: 'success',
+                        title: 'Removed!',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
                     });
-                });
+                } else {
+                    Swal.fire('Notice', data.message || 'Watchlist item not found.', 'info');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'Failed to remove from watchlist.', 'error');
+            });
         });
     });
 });
 </script>
+
+
 
 @endsection

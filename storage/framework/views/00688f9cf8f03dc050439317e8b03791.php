@@ -30,14 +30,14 @@
             <div class="row mt-2 mb-3">
                 <div class="col-sm-4 form-group">
                     <label class="control-label" for="textinput">Phone</label>
-                    <input id="phone" name="phone" placeholder="Phone" class="form-control input-md" type="text"
+                    <input id="phone" name="phone" placeholder="Phone" class="form-control input-md" type="number"
                            <?php if(!empty(old('phone'))): ?> value="<?php echo e(old('phone')); ?>" <?php else: ?> value="<?php echo e(auth()->user()->phone); ?>" <?php endif; ?>>
                     <span class="help-block"></span>
                 </div>
 
                 <div class="col-sm-4 form-group">
                     <label class="control-label" for="textinput">Mobile</label>
-                    <input id="mobile" name="mobile" placeholder="Mobile" class="form-control input-md" type="text"
+                    <input id="mobile" name="mobile" placeholder="Mobile" class="form-control input-md" type="number"
                            <?php if(!empty(old('mobile'))): ?> value="<?php echo e(old('mobile')); ?>" <?php else: ?> value="<?php echo e(auth()->user()->mobile); ?>" <?php endif; ?>>
                     <span class="help-block"></span>
                 </div>
@@ -154,7 +154,7 @@
             <div class="row mt-2 mb-3">
                 <div class="col-sm-4 form-group">
                     <label class="control-label" for="textinput">PayPal Email ID</label>
-                    <input id="paypal_email" name="paypal_email" placeholder="PayPal Email ID" class="form-control input-md" type="text"
+                    <input id="paypal_email" required name="paypal_email" placeholder="PayPal Email ID" class="form-control input-md" type="text"
                            <?php if(!empty(old('paypal_email'))): ?> value="<?php echo e(old('paypal_email')); ?>" <?php else: ?> value="<?php echo e(auth()->user()->paypal_email); ?>"
                         <?php endif; ?>>
                     <span class="help-block"></span>

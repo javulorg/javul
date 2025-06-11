@@ -383,16 +383,23 @@ Route::post('priorities', [\App\Http\Controllers\V2\PriorityController::class, '
 
 
 // Route::get('/watchlist/add/{userId}/{unitId}/{objective_id}', [ObjectivesController::class, 'storeW'])->name('watchlist.store');
+Route::post('/watchlist/remove', [ObjectivesController::class, 'remove'])->name('watchlist.remove');
 
-Route::get('/watchlistTask/add/{userId}/{unitId}/{task_id}', [TasksController::class, 'storeW'])->name('watchlistTask.store');
+
+Route::post('/watchlistTask/add/{userId}/{unitId}/{task_id}', [TasksController::class, 'storeW'])->name('watchlistTask.store');
 
 
-Route::get('/watchlistIssue/add/{userId}/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
+Route::post('/watchlistIssue/add/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
+    Route::post('/watchlist/issue/remove/{unitId}/{issue_id}', [IssuesController::class, 'remove'])->name('watchlistIssue.remove');
+
+
+
 
 Route::get('/watchlistIdea/add/{userId}/{unitId}/{idea_id}', [IdeaController::class, 'storeW'])->name('watchlistIdea.store');
 
 // Route::get('/watchlistUnit/add/{userId}/{unitId}', [UnitsController::class, 'storeU'])->name('watchlistU.store');
 
+Route::delete('/watchlist/issue/remove/{issue_id}', [IssuesController::class, 'remove'])->name('watchlistIssue.remove');
 
 
 Route::post('/watchlistU/store/{userId}/{unitId}', [UnitsController::class, 'storeU'])->name('watchlistU.store');
@@ -402,3 +409,6 @@ Route::post('/watchlist/store', [ObjectivesController::class, 'storeW'])->name('
 
 
 Route::delete('/tasks/{id}', [TasksController::class, 'destroy'])->name('tasks.destroy');
+
+
+Route::post('/watchlist/toggle', [TasksController::class, 'toggle'])->name('watchlistTask.toggle');

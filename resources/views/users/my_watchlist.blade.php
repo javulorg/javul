@@ -250,7 +250,7 @@
     </div>
 @endsection
 @section('scripts')
-    <script type="text/javascript">
+    {{-- <script type="text/javascript">
         $(document).ready(function ()
         {
             $('#watchlist-units-table-id').DataTable({
@@ -349,6 +349,6 @@
                 ],
             });
         });
-    </script>
+    </script> --}}
 @endsection
 

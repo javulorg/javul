@@ -1218,27 +1218,55 @@ class IssuesController extends Controller
     // }
 
 
-    public function storeW($userId, $unitId, $issue_id)
+    // app/Http/Controllers/IssuesController.php
+
+    public function storeW($unitId, $issue_id)
     {
         try {
-            $existing = Watchlist::where('user_id', $userId)
+            $userId = auth()->id();
+
+            $exists = \App\Models\Watchlist::where('user_id', $userId)
                 ->where('unit_id', $unitId)
                 ->where('issue_id', $issue_id)
-                ->first();
+                ->exists();
 
-            if ($existing) {
+            if ($exists) {
                 return response()->json(['message' => 'Already in watchlist'], 200);
             }
 
-            $watchlist = new Watchlist();
-            $watchlist->user_id = $userId;
-            $watchlist->unit_id = $unitId;
-            $watchlist->issue_id = $issue_id;
-            $watchlist->save();
+            \App\Models\Watchlist::create([
+                'user_id' => $userId,
+                'unit_id' => $unitId,
+                'issue_id' => $issue_id,
+            ]);
 
             return response()->json(['message' => 'Added to watchlist!']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Server error', 'details' => $e->getMessage()], 500);
+            return response()->json([
+                'error' => 'Server error',
+                'details' => $e->getMessage()
+            ], 500);
         }
     }
+
+
+
+public function remove($unitId, $issue_id)
+{
+    $userId = auth()->id();
+
+    $watchlist = Watchlist::where('user_id', $userId)
+        ->where('unit_id', $unitId)
+        ->where('issue_id', $issue_id)
+        ->first();
+
+    if ($watchlist) {
+        $watchlist->delete();
+        return response()->json(['success' => true, 'message' => 'Removed from watchlist']);
+    }
+
+    return response()->json(['success' => false, 'message' => 'Watchlist item not found']);
+}
+
+
 }

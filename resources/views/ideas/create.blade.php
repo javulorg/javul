@@ -132,46 +132,6 @@
         </div>
     </div>
 @endsection
-{{-- @section('scripts')
-    <script type="text/javascript">
-        ClassicEditor
-            .create(document.querySelector('#description'))
-            .catch(error => {
-                console.error(error);
-            });
-    </script>
-
-    <script>
-        document.getElementById('myForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const form = e.target;
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => {
-                    if (response.redirected) {
-                        window.location.href = response.url; // Follow the redirect
-                    } else if (response.ok) {
-                        // If not redirected, fallback to history go
-                        window.history.go(-1);
-                    } else {
-                        alert('Something went wrong.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-    </script>
-@endsection --}}
-
 
 @section('scripts')
     <script type="text/javascript">
@@ -182,33 +142,43 @@
             });
     </script>
 
-    <script>
-        document.getElementById('myForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+  <script>
+    document.getElementById('myForm').addEventListener('submit', function(e) {
+        e.preventDefault();
 
-            const form = e.target;
-            const formData = new FormData(form);
+        const form = e.target;
+        const formData = new FormData(form);
 
-            fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => {
-                    if (response.redirected) {
-                     window.location.href = response.url;
-                    } else if (response.ok) {
-                        // If not redirected, fallback to history go
-                        window.history.go(-1);
-                    } else {
-                        alert('Something went wrong.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-    </script>
+        fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else if (response.ok) {
+                    // ✅ Set a flag to refresh previous page
+                    sessionStorage.setItem('refreshOnBack', 'true');
+                    window.history.go(-1);
+                } else {
+                    alert('Something went wrong.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    // ✅ Page load par check karo agar refresh flag set hai
+    window.addEventListener('load', function () {
+        if (sessionStorage.getItem('refreshOnBack') === 'true') {
+            sessionStorage.removeItem('refreshOnBack');
+            window.location.reload(); // refresh the page
+        }
+    });
+</script>
+
 @endsection

@@ -2,6 +2,9 @@
 @section('title', 'Unit: ' . $unitObj->name)
 @section('style')
     <style>
+        <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+
     </style>
 
 <script>
@@ -79,4 +82,20 @@
             chatOnline();
         }
     </script>
+   <script>
+    // Agar page refresh flag nahi hai, to reload once and set it
+    if (!sessionStorage.getItem('justReloaded')) {
+        sessionStorage.setItem('justReloaded', 'true');
+        window.location.reload(true); // 🔁 Force reload from server
+    } else {
+        sessionStorage.removeItem('justReloaded'); // ✅ Clean up
+    }
+
+    // Jab page chhode, flag hata do taaki next time firse chale
+    window.addEventListener('beforeunload', () => {
+        sessionStorage.removeItem('justReloaded');
+    });
+</script>
+
+
 @endsection

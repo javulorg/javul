@@ -40,70 +40,73 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="control-label mb-1">Unit Type <span class="text-danger">*</span></label>
-                                    <select class="form-select" required name="unit_type" id="unitType">
-                                        <option selected disabled>Select Type</option>
-                                        <option value="0">Product</option>
-                                        <option value="1">Service</option>
-                                        <option value="2">People’s Government</option>
-                                    </select>
-                                </div>
-                            </div>
+                           <div class="col-sm-4">
+    <div class="form-group">
+        <label class="control-label mb-1">Unit Type <span class="text-danger">*</span></label>
+        <select class="form-select" required name="unit_type" id="unitType">
+            <option selected disabled>Select Type</option>
+            <option value="0">Product</option>
+            <option value="1">Service</option>
+            <option value="2">People’s Government</option>
+        </select>
+    </div>
+</div>
+
 
 
 
                             <div class="row mt-3" id="product-service-div">
-                                <div class="form-group col-sm-4" id="productNameDiv">
-                                    <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" required id="productName"
-                                        placeholder="Product Name" name="product_name">
-                                </div>
+                               <div class="form-group col-sm-4 d-none" id="productNameDiv">
+        <label for="productName">Product Name <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" maxlength="128" id="productName"
+            placeholder="Product Name" name="product_name">
+    </div>
 
-                                <div class="form-group col-sm-4" id="serviceNameDiv">
-                                    <label for="serviceName">Service Name <span class="text-danger">*</span></label>
-                                    <input type="text" required class="form-control" id="serviceName"
-                                        placeholder="Service Name" name="service_name">
-                                </div>
+                                <div class="form-group col-sm-4 d-none" id="serviceNameDiv">
+        <label for="serviceName">Service Name <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" maxlength="128" id="serviceName"
+            placeholder="Service Name" name="service_name">
+    </div>
 
-                                <div class="form-group col-sm-4">
-                                    <label for="businessModel">Business Model <span class="text-danger">*</span></label>
-                                    <select class="form-control" required id="businessModel" name="business_model">
-                                        <option selected disabled>Select Business Model</option>
-                                        <option value="0">Community-owned</option>
-                                        <option value="1">Corporate</option>
-                                    </select>
-                                </div>
 
-                                <div class="form-group col-sm-4 mt-3" id="operationalGradeDiv">
-                                    <label for="operationalGrade">Operational Grade <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" required class="form-control" id="operationalGrade"
-                                        placeholder="Enter Operational Grade" name="operational_grade">
-                                </div>
+                               <div class="form-group col-sm-4 d-none" id="businessModelDiv">
+        <label for="businessModel">Business Model <span class="text-danger">*</span></label>
+        <select class="form-control" id="businessModel" name="business_model">
+            <option selected disabled>Select Business Model</option>
+            <option value="0">Community-owned</option>
+            <option value="1">Corporate</option>
+        </select>
+    </div>
+
+                              <div class="form-group col-sm-4 mt-3 d-none" id="operationalGradeDiv">
+        <label for="operationalGrade">Operational Grade <span class="text-danger">*</span></label>
+        <input type="text" maxlength="5" class="form-control" id="operationalGrade"
+            placeholder="Enter Operational Grade" name="operational_grade">
+    </div>
 
                                 <!-- Company -->
-                                <div class="form-group col-sm-4 mt-3">
-                                    <label for="company">Company <span class="text-danger">*</span></label>
-                                    <input type="text" required class="form-control" id="company"
-                                        placeholder="Enter Company Name" name="company">
-                                </div>
+                              <div class="form-group col-sm-4 mt-3" id="companyDiv">
+    <label for="company">Company <span class="text-danger">*</span></label>
+    <input type="text" required minlength="3" maxlength="128" class="form-control"
+        id="company" placeholder="Enter Company Name" name="company">
+</div>
+
                             </div>
 
 
                             <!-- Scope (Only for People's Government) -->
-                            <div class="form-group col-sm-4 mt-3" id="scopeDiv">
-                                <label for="scope">Scope <span class="text-danger">*</span></label>
-                                <select class="form-control" required id="scope" name="scope">
-                                    <option selected disabled>Select Scope</option>
-                                    <option value="0">City</option>
-                                    <option value="1">County</option>
-                                    <option value="2">State</option>
-                                    <option value="3">National</option>
-                                    <option value="4">International</option>
-                                </select>
-                            </div>
+                            <div class="form-group col-sm-4 mt-3 d-none" id="scopeDiv">
+    <label for="scope">Scope <span class="text-danger">*</span></label>
+    <select class="form-control" id="scope" name="scope">
+        <option selected disabled>Select Scope</option>
+        <option value="0">City</option>
+        <option value="1">County</option>
+        <option value="2">State</option>
+        <option value="3">National</option>
+        <option value="4">International</option>
+    </select>
+</div>
+
 
 
 
@@ -381,6 +384,44 @@
             });
         });
     </script>
+    <script>
+    $(document).ready(function () {
+        function updateFormVisibility() {
+            const unitType = $('#unitType').val();
+            const businessModel = $('#businessModel').val();
+
+            // Reset all
+            $('#productNameDiv, #serviceNameDiv, #businessModelDiv, #operationalGradeDiv, #scopeDiv').addClass('d-none');
+
+            // Always show company
+            $('#companyDiv').removeClass('d-none');
+
+            if (unitType === '0') { // Product
+                $('#productNameDiv').removeClass('d-none');
+                $('#businessModelDiv').removeClass('d-none');
+                if (businessModel === '1') {
+                    $('#operationalGradeDiv').removeClass('d-none');
+                }
+            } else if (unitType === '1') { // Service
+                $('#serviceNameDiv').removeClass('d-none');
+                $('#businessModelDiv').removeClass('d-none');
+                if (businessModel === '1') {
+                    $('#operationalGradeDiv').removeClass('d-none');
+                }
+            } else if (unitType === '2') { // People’s Government
+                $('#scopeDiv').removeClass('d-none');
+            }
+        }
+
+        // Run on change
+        $('#unitType').on('change', updateFormVisibility);
+        $('#businessModel').on('change', updateFormVisibility);
+
+        // Run on page load (in case of edit)
+        updateFormVisibility();
+    });
+</script>
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/units/create.blade.php ENDPATH**/ ?>

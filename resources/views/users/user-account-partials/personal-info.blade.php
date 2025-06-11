@@ -30,14 +30,14 @@
             <div class="row mt-2 mb-3">
                 <div class="col-sm-4 form-group">
                     <label class="control-label" for="textinput">Phone</label>
-                    <input id="phone" name="phone" placeholder="Phone" class="form-control input-md" type="text"
+                    <input id="phone" name="phone" placeholder="Phone" class="form-control input-md" type="number"
                            @if(!empty(old('phone'))) value="{{old('phone')}}" @else value="{{auth()->user()->phone}}" @endif>
                     <span class="help-block"></span>
                 </div>
 
                 <div class="col-sm-4 form-group">
                     <label class="control-label" for="textinput">Mobile</label>
-                    <input id="mobile" name="mobile" placeholder="Mobile" class="form-control input-md" type="text"
+                    <input id="mobile" name="mobile" placeholder="Mobile" class="form-control input-md" type="number"
                            @if(!empty(old('mobile'))) value="{{old('mobile')}}" @else value="{{auth()->user()->mobile}}" @endif>
                     <span class="help-block"></span>
                 </div>
@@ -154,7 +154,7 @@
             <div class="row mt-2 mb-3">
                 <div class="col-sm-4 form-group">
                     <label class="control-label" for="textinput">PayPal Email ID</label>
-                    <input id="paypal_email" name="paypal_email" placeholder="PayPal Email ID" class="form-control input-md" type="text"
+                    <input id="paypal_email" required name="paypal_email" placeholder="PayPal Email ID" class="form-control input-md" type="text"
                            @if(!empty(old('paypal_email'))) value="{{old('paypal_email')}}" @else value="{{auth()->user()->paypal_email}}"
                         @endif>
                     <span class="help-block"></span>

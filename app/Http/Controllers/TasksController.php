@@ -2775,5 +2775,27 @@ class TasksController extends Controller
         return redirect()->back()->with('success', 'Task deleted successfully.');
     }
 
+    public function toggle(Request $request)
+    {
+        $user = auth()->user();
+        $taskId = $request->task_id;
+        $unitId = $request->unit_id;
 
+        $watch = \App\Models\Watchlist::where('user_id', $user->id)
+            ->where('unit_id', $unitId)
+            ->where('task_id', $taskId)
+            ->first();
+
+        if ($watch) {
+            $watch->delete();
+            return response()->json(['status' => 'removed']);
+        } else {
+            \App\Models\Watchlist::create([
+                'user_id' => $user->id,
+                'unit_id' => $unitId,
+                'task_id' => $taskId,
+            ]);
+            return response()->json(['status' => 'added']);
+        }
+    }
 }
