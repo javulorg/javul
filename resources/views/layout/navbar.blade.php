@@ -52,7 +52,7 @@
                     <a class="nav-link" href="{{ url('activities?unit=' . $unitData->id) }}">Activity Log</a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link" href="#">Top Contributors</a>
+                    <a class="nav-link" href="{{ url('top-contribute') }}">Top Contributors</a>
                 </div>
                 <div class="nav-item">
                     <a class="nav-link" href="#">Awards</a>

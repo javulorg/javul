@@ -21,26 +21,28 @@
                 </thead>
                 <tbody>
                     <?php if($objectivesMaster->count() > 0): ?>
-                        <?php $__currentLoopData = $objectivesMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <tr>
-                                <td class="title_col">
-                                    <a href="<?php echo e(url('objectives/' . $objectiveIDHashID->encode($objective->id) . '/' . $objective->slug)); ?>">
-                                        <?php echo e($objective->name); ?>
+                    <?php $__currentLoopData = $objectivesMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <tr>
+                        <td class="title_col">
+                            <a
+                                href="<?php echo e(url('objectives/' . $objectiveIDHashID->encode($objective->id) . '/' . $objective->slug)); ?>">
+                                <?php echo e($objective->name); ?>
 
-                                    </a>
-                                </td>
-                                <td class="last_reply_col">
-                                    <a href="<?php echo e(url('units/' . $unitIDHashID->encode($objective->unit_id) . '/' . \App\Models\Unit::getSlug($objective->unit_id))); ?>">
-                                        <?php echo e($objective->unit->name); ?>
+                            </a>
+                        </td>
+                        <td class="last_reply_col">
+                            <a
+                                href="<?php echo e(url('units/' . $unitIDHashID->encode($objective->unit_id) . '/' . \App\Models\Unit::getSlug($objective->unit_id))); ?>">
+                                <?php echo e($objective->unit->name); ?>
 
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php else: ?>
-                        <tr>
-                            <td colspan="4">No record(s) found.</td>
-                        </tr>
+                    <tr>
+                        <td colspan="4">No record(s) found.</td>
+                    </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -48,40 +50,44 @@
             <!-- Mobile Table -->
             <div class="mob_table d-sm-none d-block">
                 <?php if($objectivesMaster->count() > 0): ?>
-                    <?php $__currentLoopData = $objectivesMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="mob_table_section">
-                            <div class="mob_table_row">
-                                <div class="mob_table_ttl">Objective Name</div>
-                                <div class="mob_table_val">
-                                    <a href="<?php echo e(url('objectives/' . $objectiveIDHashID->encode($objective->id) . '/' . $objective->slug)); ?>">
-                                        <?php echo e($objective->name); ?>
+                <?php $__currentLoopData = $objectivesMaster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objective): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="mob_table_section">
+                    <div class="mob_table_row">
+                        <div class="mob_table_ttl">Objective Name</div>
+                        <div class="mob_table_val">
+                            <a
+                                href="<?php echo e(url('objectives/' . $objectiveIDHashID->encode($objective->id) . '/' . $objective->slug)); ?>">
+                                <?php echo e($objective->name); ?>
 
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="mob_table_row">
-                                <div class="mob_table_ttl">Unit Name</div>
-                                <div class="mob_table_val">
-                                    <a href="<?php echo e(url('units/' . $unitIDHashID->encode($objective->unit_id) . '/' . \App\Models\Unit::getSlug($objective->unit_id))); ?>">
-                                        <?php echo e($objective->unit->name); ?>
-
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                <?php else: ?>
-                    <div class="mob_table_section">
-                        <div class="mob_table_row">
-                            <div class="mob_table_val text-center">No record(s) found.</div>
+                            </a>
                         </div>
                     </div>
+                    <div class="mob_table_row">
+                        <div class="mob_table_ttl">Unit Name</div>
+                        <div class="mob_table_val">
+                            <a
+                                href="<?php echo e(url('units/' . $unitIDHashID->encode($objective->unit_id) . '/' . \App\Models\Unit::getSlug($objective->unit_id))); ?>">
+                                <?php echo e($objective->unit->name); ?>
+
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php else: ?>
+                <div class="mob_table_section">
+                    <div class="mob_table_row">
+                        <div class="mob_table_val text-center">No record(s) found.</div>
+                    </div>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
 
     </div>
     <div class="content_block_bottom">
+        <a href="<?php echo e(url('objectives/'.$unitIDHashID->encode($objective->unit_id) .'/add')); ?>">Add New</a>
+        <div class="separator"></div>
         <a href="<?php echo e(url('objectives')); ?>">See more</a>
     </div>
 </div>

@@ -258,6 +258,10 @@
 
                     </div>
                 </div>
+
+            </div>
+            <div class="content_block_bottom">
+              <a href="<?php echo e(url('objectives/'.$unitIDHashID->encode($objective->unit_id) .'/add')); ?>">Add New</a>
             </div>
 
         </div>
