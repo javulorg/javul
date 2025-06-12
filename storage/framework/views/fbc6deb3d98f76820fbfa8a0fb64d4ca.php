@@ -2,7 +2,7 @@
 <?php $__env->startSection('style'); ?>
     <style>
         /* Customize tab styles */
-        .nav-tabs > li > a {
+        .nav-tabs>li>a {
             border: none;
             color: #222;
             font-size: 18px;
@@ -13,50 +13,53 @@
             margin-right: 10px;
         }
 
-        .nav-tabs > li.active > a,
-        .nav-tabs > li.active > a:hover,
-        .nav-tabs > li.active > a:focus {
+        .nav-tabs>li.active>a,
+        .nav-tabs>li.active>a:hover,
+        .nav-tabs>li.active>a:focus {
             color: #fff;
             background-color: #007bff;
             border: none;
         }
 
-        .nav-tabs > li > a:hover,
-        .nav-tabs > li > a:focus {
+        .nav-tabs>li>a:hover,
+        .nav-tabs>li>a:focus {
             color: #007bff;
             background-color: #f7f7f7;
             border: none;
         }
 
         /* Optional: add a bottom border to the active tab */
-        .nav-tabs > li.active > a {
+        .nav-tabs>li.active>a {
             border-bottom: 2px solid #007bff;
         }
 
         /* Change tab color when clicked */
-        .nav-tabs > li > a:active,
-        .nav-tabs > li.active > a {
+        .nav-tabs>li>a:active,
+        .nav-tabs>li.active>a {
             color: #fff;
             background-color: #6c757d;
             border: none;
         }
 
         /* Disable other tabs */
-        .nav-tabs > li.disabled > a {
+        .nav-tabs>li.disabled>a {
             color: #999;
             background-color: transparent;
             border: none;
             cursor: not-allowed;
         }
 
-        .nav-tabs > li.disabled > a:hover,
-        .nav-tabs > li.disabled > a:focus {
+        .nav-tabs>li.disabled>a:hover,
+        .nav-tabs>li.disabled>a:focus {
             color: #999;
             background-color: transparent;
             border: none;
             cursor: not-allowed;
         }
-        #address{ resize: vertical; }
+
+        #address {
+            resize: vertical;
+        }
     </style>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
@@ -75,23 +78,28 @@
     <!-- Tabs navigation -->
     <ul class="nav nav-tabs mt-4 mb-3" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#personal_info" type="button" role="tab" aria-controls="personal-info" aria-selected="true">Personal Info</button>
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#personal_info" type="button"
+                role="tab" aria-controls="personal-info" aria-selected="true">Personal Info</button>
         </li>
 
         <?php if(!empty($availableBalance) && $availableBalance > 0): ?>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="withdraw-amount-tab" data-bs-toggle="tab" data-bs-target="#withdraw_amount" type="button" role="tab" aria-controls="withdraw_amount" aria-selected="false">Withdraw</button>
+                <button class="nav-link" id="withdraw-amount-tab" data-bs-toggle="tab" data-bs-target="#withdraw_amount"
+                    type="button" role="tab" aria-controls="withdraw_amount" aria-selected="false">Withdraw</button>
             </li>
         <?php endif; ?>
 
         <?php if(!empty($withdrawal_list) && count($withdrawal_list) > 0): ?>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="withdrawal-list-tab" data-bs-toggle="tab" data-bs-target="#withdrawal_list" type="button" role="tab" aria-controls="withdrawal-list" aria-selected="false">Withdrawal List</button>
+                <button class="nav-link" id="withdrawal-list-tab" data-bs-toggle="tab" data-bs-target="#withdrawal_list"
+                    type="button" role="tab" aria-controls="withdrawal-list" aria-selected="false">Withdrawal
+                    List</button>
             </li>
         <?php endif; ?>
 
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="account-settings-tab" data-bs-toggle="tab" data-bs-target="#account_settings" type="button" role="tab" aria-controls="account-settings" aria-selected="false">Alert Settings</button>
+            <button class="nav-link" id="account-settings-tab" data-bs-toggle="tab" data-bs-target="#account_settings"
+                type="button" role="tab" aria-controls="account-settings" aria-selected="false">Alert Settings</button>
         </li>
     </ul>
 
@@ -118,10 +126,10 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
     <script>
-
         var profile_image = '<?php echo e(auth()->user()->profile_pic); ?>';
         var remove = '';
-        function bindProfilePicUpload(){
+
+        function bindProfilePicUpload() {
             $("#avatar-2").fileinput({
                 overwriteInitial: true,
                 maxFileSize: 1500,
@@ -131,42 +139,48 @@
                 browseOnZoneClick: true,
                 removeLabel: '',
                 removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
-                showRemove:false,
-                showUpload:false,
+                showRemove: false,
+                showUpload: false,
                 removeTitle: 'Cancel or reset changes',
                 elErrorContainer: '#kv-avatar-errors-1',
                 msgErrorClass: 'alert alert-block alert-danger',
                 uploadAsync: false,
                 uploadUrl: "<?php echo url('account/upload_profile'); ?>", // your upload server url
-                uploadExtraData:{_token:'<?php echo e(csrf_token()); ?>'},
+                uploadExtraData: {
+                    _token: '<?php echo e(csrf_token()); ?>'
+                },
                 allowedFileExtensions: ["jpg", "png", "gif"]
             });
 
             $('#avatar-2').on('fileuploaded', function(event, data, previewId, index) {
-                var form = data.form, files = data.files, extra = data.extra,
-                    response = data.response, reader = data.reader;
+                var form = data.form,
+                    files = data.files,
+                    extra = data.extra,
+                    response = data.response,
+                    reader = data.reader;
                 $("#avatar-2").fileinput('destroy');
 
-                var html  ='<div class="file-preview-frame" id="preview-1475558631183-0" data-fileindex="0" data-template="image"><div ' +
-                    'class="kv-file-content">'+
-                    '<img id="profpicc" src="'+response.filename+'?'+Math.random()+'"'+
-                    'class="kv-preview-dataaa file-preview-image" style="width:160px;height:auto;">'+
-                    '</div><div class="file-thumbnail-footer">'+
-                    '<div class="file-actions">'+
-                    '<div class="file-footer-buttons">'+
-                    '<button type="button" class="btn btn-xs btn-default remove_profile_pic"'+
-                    'title="Remove file"><i class="glyphicon glyphicon-trash text-danger"></i></button>'+
-                    '</div>'+
-                    '<div class="clearfix"></div>'+
-                    '</div>'+
-                    '</div>'+
+                var html =
+                    '<div class="file-preview-frame" id="preview-1475558631183-0" data-fileindex="0" data-template="image"><div ' +
+                    'class="kv-file-content">' +
+                    '<img id="profpicc" src="' + response.filename + '?' + Math.random() + '"' +
+                    'class="kv-preview-dataaa file-preview-image" style="width:160px;height:auto;">' +
+                    '</div><div class="file-thumbnail-footer">' +
+                    '<div class="file-actions">' +
+                    '<div class="file-footer-buttons">' +
+                    '<button type="button" class="btn btn-xs btn-default remove_profile_pic"' +
+                    'title="Remove file"><i class="glyphicon glyphicon-trash text-danger"></i></button>' +
+                    '</div>' +
+                    '<div class="clearfix"></div>' +
+                    '</div>' +
+                    '</div>' +
                     '</div>';
                 $(".profile-div").append(html);
 
             });
 
         }
-        if($.trim(profile_image) != ""){
+        if ($.trim(profile_image) != "") {
             $("#avatar-2").fileinput({
                 overwriteInitial: true,
                 maxFileSize: 1500,
@@ -179,42 +193,46 @@
                 removeTitle: 'remove profile picture',
                 elErrorContainer: '#kv-avatar-errors-2',
                 msgErrorClass: 'alert alert-block alert-danger',
-                defaultPreviewContent: '<img src="<?php echo url('uploads/user_profile/'.$user_id_encoded.'/'.auth()->user()->profile_pic); ?>" alt="Your Avatar" style="width:160px">',
-                layoutTemplates: {main2: '{preview} ' +  ' {remove} {browse}'},
+                defaultPreviewContent: '<img src="<?php echo url('uploads/user_profile/' . $user_id_encoded . '/' . auth()->user()->profile_pic); ?>" alt="Your Avatar" style="width:160px">',
+                layoutTemplates: {
+                    main2: '{preview} ' + ' {remove} {browse}'
+                },
                 allowedFileExtensions: ["jpg", "png", "gif"]
             });
-        }
-        else {
+        } else {
             bindProfilePicUpload();
         }
 
-        $(function(){
-            $(".alerts").on('change',function(e){
-                var flag=$(this).prop('checked');
+        $(function() {
+            $(".alerts").on('change', function(e) {
+                var flag = $(this).prop('checked');
                 var field_name = $(this).val();
                 var changedBy = $("#changed_by").val();
                 var flag_to_return = true;
-                if(field_name == "all")
+                if (field_name == "all")
                     $("#changed_by").val(1);
-                else if(changedBy == 1) {
+                else if (changedBy == 1) {
                     flag_to_return = false;
                 }
 
-                if(flag_to_return) {
+                if (flag_to_return) {
                     $.ajax({
                         type: 'post',
-                        url:  '<?php echo e(url("/alerts/set_alert")); ?>',
-                        data: {_token: '<?php echo e(csrf_token()); ?>', field_name: field_name, flag: flag},
+                        url: '<?php echo e(url('/alerts/set_alert')); ?>',
+                        data: {
+                            _token: '<?php echo e(csrf_token()); ?>',
+                            field_name: field_name,
+                            flag: flag
+                        },
                         dataType: 'json',
-                        success: function (resp) {
+                        success: function(resp) {
                             if (resp.success) {
                                 if (flag) {
                                     if (field_name == "all") {
                                         $('.dynamic_alert').bootstrapToggle('on');
                                     }
                                     toastr.success(field_name + 'enabled successfully');
-                                }
-                                else {
+                                } else {
                                     if (field_name == "all") {
                                         $('.dynamic_alert').bootstrapToggle('off');
                                     }
@@ -223,7 +241,7 @@
                                 $("#changed_by").val('');
                             }
                         },
-                        error:function(err){
+                        error: function(err) {
                             console.log(err);
                         }
                     });
@@ -233,34 +251,37 @@
         });
     </script>
     <script>
-        var url = '<?php echo e(url("assets/images")); ?>';
-        var msg_flag ='<?php echo e($msg_flag); ?>';
-        var msg_type ='<?php echo e($msg_type); ?>';
-        var msg_val ='<?php echo e($msg_val); ?>';
-        var page='account';
-        var browse_skill_box='';
-        var selected_skill_id= new Array();
+        var url = '<?php echo e(url('assets/images')); ?>';
+        var msg_flag = '<?php echo e($msg_flag); ?>';
+        var msg_type = '<?php echo e($msg_type); ?>';
+        var msg_val = '<?php echo e($msg_val); ?>';
+        var page = 'account';
+        var browse_skill_box = '';
+        var selected_skill_id = new Array();
         var selected_job_skill = '<?php echo json_encode($users_skills); ?>';
         var hasOpenJobSkill = false;
-        if(selected_job_skill && $.trim(selected_job_skill) !== ''){
+        if (selected_job_skill && $.trim(selected_job_skill) !== '') {
             selected_job_skill = JSON.parse(selected_job_skill);
             selected_skill_id = selected_job_skill;
         }
 
-        var browse_area_of_interest_box='';
+        var browse_area_of_interest_box = '';
         var actual_area_of_interest = [];
-        var selected_area_of_interest_id= new Array();
-        $(function(){
-            $(document).off("click",".remove_profile_pic").on('click',".remove_profile_pic",function(e){
+        var selected_area_of_interest_id = new Array();
+        $(function() {
+            $(document).off("click", ".remove_profile_pic").on('click', ".remove_profile_pic", function(e) {
                 e.preventDefault();
                 $.ajax({
-                    type:'post',
-                    url:'<?php echo e(url("account/remove_profile_pic")); ?>',
-                    data:{_token:'<?php echo e(csrf_token()); ?>'},
-                    dataType:'json',
-                    success:function(resp){
-                        $(".profile-div").append('<form class="text-center" method="post" enctype="multipart/form-data">'+
-                            '<input id="avatar-2" name="profile_pic" type="file" class="file-loading">'+
+                    type: 'post',
+                    url: '<?php echo e(url('account/remove_profile_pic')); ?>',
+                    data: {
+                        _token: '<?php echo e(csrf_token()); ?>'
+                    },
+                    dataType: 'json',
+                    success: function(resp) {
+                        $(".profile-div").append(
+                            '<form class="text-center" method="post" enctype="multipart/form-data">' +
+                            '<input id="avatar-2" name="profile_pic" type="file" class="file-loading">' +
                             '</form>');
                         bindProfilePicUpload();
                     }
@@ -268,49 +289,49 @@
             });
 
         })
-
     </script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#tabs').tab();
             $(".selectpicker").selectpicker('refresh');
 
-            $("#country").on('change',function(){
+            $("#country").on('change', function() {
                 $("#state").empty().append('<option value="">Select</option>');
                 $("#city").empty().append('<option value="">Select</option>');
                 var value = $(this).val();
                 var token = $('[name="_token"]').val();
-                if($.trim(value) == "" && value != 247){
+                if ($.trim(value) == "" && value != 247) {
                     // Clear the State dropdown and set it to the default "Select" option
                     $("#state").empty().append('<option value="">Select</option>');
                     // Clear the City dropdown and set it to the default "Select" option
                     $("#city").empty().append('<option value="">Select</option>');
-                }
-                else if($.trim(value) == 247){
-                    $("#state").prop('disabled',true);
+                } else if ($.trim(value) == 247) {
+                    $("#state").prop('disabled', true);
                     return false;
-                }
-                else
-                {
+                } else {
                     $(".states_loader.location_loader").show();
-                    $("#state").prop('disabled',true);
-                    $("#city").prop('disabled',true);
+                    $("#state").prop('disabled', true);
+                    $("#city").prop('disabled', true);
                     $.ajax({
-                        type:'POST',
-                        url: '<?php echo e(url("/units/get_state")); ?>',
-                        dataType:'json',
-                        async:true,
-                        data:{country_id:value,_token:token },
-                        success:function(resp){
+                        type: 'POST',
+                        url: '<?php echo e(url('/units/get_state')); ?>',
+                        dataType: 'json',
+                        async: true,
+                        data: {
+                            country_id: value,
+                            _token: token
+                        },
+                        success: function(resp) {
                             $(".states_loader.location_loader").hide();
-                            $("#state").prop('disabled',false);
-                            $("#city").prop('disabled',true);
-                            if(resp.success){
+                            $("#state").prop('disabled', false);
+                            $("#city").prop('disabled', true);
+                            if (resp.success) {
                                 console.log(resp)
                                 var html;
-                                $.each(resp.states,function(index,val){
-                                    html+='<option value="'+index+'">'+val+'</option>'
+                                $.each(resp.states, function(index, val) {
+                                    html += '<option value="' + index + '">' + val +
+                                        '</option>'
                                 });
 
                                 // Clear the State dropdown and set it to the default "Select" option
@@ -325,30 +346,32 @@
             });
 
             //get state after selecting country
-            $("#state").on('change',function(){
+            $("#state").on('change', function() {
                 var value = $(this).val();
                 var token = $('[name="_token"]').val();
-                if($.trim(value) == ""){
+                if ($.trim(value) == "") {
                     $("#city").append('<option value="">Select</option>');
-                    $("#city").prop('disabled',false);
-                }
-                else
-                {
+                    $("#city").prop('disabled', false);
+                } else {
                     $(".cities_loader.location_loader").show();
-                    $("#city").prop('disabled',true);
+                    $("#city").prop('disabled', true);
                     $.ajax({
-                        type:'POST',
-                        url: '<?php echo e(url("/units/get_city")); ?>',
-                        dataType:'json',
-                        async:true,
-                        data:{state_id:value,_token:token },
-                        success:function(resp){
+                        type: 'POST',
+                        url: '<?php echo e(url('/units/get_city')); ?>',
+                        dataType: 'json',
+                        async: true,
+                        data: {
+                            state_id: value,
+                            _token: token
+                        },
+                        success: function(resp) {
                             $(".cities_loader.location_loader").hide();
-                            $("#city").prop('disabled',false);
-                            if(resp.success){
+                            $("#city").prop('disabled', false);
+                            if (resp.success) {
                                 var html;
-                                $.each(resp.cities,function(index,val){
-                                    html+='<option value="'+index+'">'+val+'</option>'
+                                $.each(resp.cities, function(index, val) {
+                                    html += '<option value="' + index + '">' + val +
+                                        '</option>'
                                 });
                                 $("#city").append(html);
                                 $('.selectpicker').selectpicker('refresh');
@@ -359,25 +382,27 @@
             });
 
 
-            $(document).off('click',".withdraw-submit").on('click','.withdraw-submit',function(e){
+            $(document).off('click', ".withdraw-submit").on('click', '.withdraw-submit', function(e) {
                 $(".remove-alert").remove();
                 $that = $(this);
                 var $form = $("#withdraw-amount");
-                if($('#paypal_email').length > 0 && $("#payment_method").val() == "PAYPAL"){
+                if ($('#paypal_email').length > 0 && $("#payment_method").val() == "PAYPAL") {
                     var Emailflag = validateEmail();
-                    if(!Emailflag){
+                    if (!Emailflag) {
                         e.preventDefault();
                         return false;
                     }
-                }else if($("#payment_method").val() == "Zcash"){
+                } else if ($("#payment_method").val() == "Zcash") {
                     //show error message when zcash address field is empty
                     var zcash_address = $("#zcash_address").val();
-                    if($.trim(zcash_address) == ""){
-                        if($.trim(zcash_address) == ""){
+                    if ($.trim(zcash_address) == "") {
+                        if ($.trim(zcash_address) == "") {
                             $("#zcash_address").closest('.col-sm-4').addClass('has-error');
                             var icon = $("#zcash_address").parent('.input-icon').children('i');
                             icon.removeClass('fa-check').addClass("fa-warning");
-                            icon.attr("data-original-title", 'Please enter Zcash address').tooltip({'container': 'body'});
+                            icon.attr("data-original-title", 'Please enter Zcash address').tooltip({
+                                'container': 'body'
+                            });
 
                             e.preventDefault();
                             return false;
@@ -386,10 +411,12 @@
                 }
                 $(this).prop('disabled', true);
                 var modal_title = "Transfer amount to Paypal account";
-                var text = "Transfer all your balance of $"+$(".donation_received").html()+" to your Paypal account?";
-                if($("#payment_method").val() == "Zcash"){
+                var text = "Transfer all your balance of $" + $(".donation_received").html() +
+                    " to your Paypal account?";
+                if ($("#payment_method").val() == "Zcash") {
                     modal_title = "Request to transfer amount to Zcash account";
-                    text = "Transfer all your balance of "+$(".donation_received").html()+" to your Zcash account?";
+                    text = "Transfer all your balance of " + $(".donation_received").html() +
+                        " to your Zcash account?";
                 }
 
                 bootbox.dialog({
@@ -400,44 +427,63 @@
                             label: "Yes",
                             className: "btn-success",
                             callback: function() {
-                                if($("#payment_method").val() == "Zcash"){
-                                    $(".withdraw-submit").html('<span class="saving">Sending request<span>.</span><span>.</span><span>.</span></span>');
-                                }else{
-                                    $(".withdraw-submit").html('<span class="saving">Transferring amount<span>.</span><span>.</span><span>.</span></span>');
+                                if ($("#payment_method").val() == "Zcash") {
+                                    $(".withdraw-submit").html(
+                                        '<span class="saving">Sending request<span>.</span><span>.</span><span>.</span></span>'
+                                        );
+                                } else {
+                                    $(".withdraw-submit").html(
+                                        '<span class="saving">Transferring amount<span>.</span><span>.</span><span>.</span></span>'
+                                        );
                                 }
                                 $.ajax({
-                                    type:'post',
-                                    data:$form.serialize(),
-                                    url:$('#withdraw-amount').attr('action'),
-                                    success:function(resp){
-                                        if(!resp.success){
+                                    type: 'post',
+                                    data: $form.serialize(),
+                                    url: $('#withdraw-amount').attr('action'),
+                                    success: function(resp) {
+                                        if (!resp.success) {
                                             var html = '';
-                                            $.each(resp.errors,function(index,val){
-                                                html+="<span>"+val+"</span>";
+                                            $.each(resp.errors, function(index,
+                                            val) {
+                                                html += "<span>" + val +
+                                                    "</span>";
                                             })
                                             toastr.error(html, 'Error')
                                             $form.prepend(errorHTML);
                                             $that.prop('disabled', false);
-                                            if($("#payment_method").val() == "Zcash"){
-                                                $(".withdraw-submit").append('<span class="withdraw-text">Send transfer request</span>');
-                                            }else{
-                                                $(".withdraw-submit").append('<span class="withdraw-text">Transfer my full balance to my Paypal account</span>');
+                                            if ($("#payment_method").val() ==
+                                                "Zcash") {
+                                                $(".withdraw-submit").append(
+                                                    '<span class="withdraw-text">Send transfer request</span>'
+                                                    );
+                                            } else {
+                                                $(".withdraw-submit").append(
+                                                    '<span class="withdraw-text">Transfer my full balance to my Paypal account</span>'
+                                                    );
                                             }
-                                        }
-                                        else
-                                        {
-                                            toastr.success('Amount transferred successfully', 'Success');
-                                            var buttonText = "Transfer my full balance to my Paypal account";
-                                            if($("#payment_method").val() == "Zcash"){
-                                               toastr.success('Request sent successfully', 'Success');
-                                                buttonText = "Send transfer request";
+                                        } else {
+                                            toastr.success(
+                                                'Amount transferred successfully',
+                                                'Success');
+                                            var buttonText =
+                                                "Transfer my full balance to my Paypal account";
+                                            if ($("#payment_method").val() ==
+                                                "Zcash") {
+                                                toastr.success(
+                                                    'Request sent successfully',
+                                                    'Success');
+                                                buttonText =
+                                                "Send transfer request";
                                             }
                                             $form.find("input,select").val('');
                                             $form.prepend(errorHTML);
                                             $that.prop('disabled', false);
                                             $(".amount-field").hide();
-                                            $(".donation_received").append(resp.availableBalance);
-                                            $(".withdraw-submit").append('<span class="withdraw-text">'+buttonText+'</span>');
+                                            $(".donation_received").append(resp
+                                                .availableBalance);
+                                            $(".withdraw-submit").append(
+                                                '<span class="withdraw-text">' +
+                                                buttonText + '</span>');
                                         }
                                     }
                                 });
@@ -446,7 +492,7 @@
                         danger: {
                             label: "Cancel",
                             className: "btn-danger",
-                            callback:function(){
+                            callback: function() {
                                 $that.prop('disabled', false);
                             }
                         }
@@ -459,42 +505,44 @@
 
             });
 
-            $(document).off('click',".withdraw-amount-btn").on('click','.withdraw-amount-btn',function(){
+            $(document).off('click', ".withdraw-amount-btn").on('click', '.withdraw-amount-btn', function() {
                 $(".remove-alert").remove();
                 var $form = $("#withdraw-amount");
                 var Emailflag = validateEmail();
                 var amountFlag = validateAmount();
-                if(!Emailflag)
+                if (!Emailflag)
                     return false;
-                if(!amountFlag)
+                if (!amountFlag)
                     return false;
 
                 $(this).prop('disabled', true);
-                $(".withdraw-amount-btn").append('<span class="saving">Submitting<span>.</span><span>.</span><span>.</span></span>');
+                $(".withdraw-amount-btn").append(
+                    '<span class="saving">Submitting<span>.</span><span>.</span><span>.</span></span>');
                 $.ajax({
-                    type:'post',
-                    data:$form.serialize(),
-                    url:'<?php echo e(url("/account/withdraw")); ?>',
-                    success:function(resp){
-                        if(!resp.success){
+                    type: 'post',
+                    data: $form.serialize(),
+                    url: '<?php echo e(url('/account/withdraw')); ?>',
+                    success: function(resp) {
+                        if (!resp.success) {
                             var html = '';
-                            $.each(resp.errors,function(index,val){
-                                html+="<span>"+val+"</span>";
+                            $.each(resp.errors, function(index, val) {
+                                html += "<span>" + val + "</span>";
                             })
                             toastr.error('Amount transferred successfully', 'Error')
                             $form.prepend(errorHTML);
                             $that.prop('disabled', false);
-                            $(".withdraw-amount-btn").append('<span class="withdraw-text">Withdraw</span>');
-                        }
-                        else
-                        {
+                            $(".withdraw-amount-btn").append(
+                                '<span class="withdraw-text">Withdraw</span>');
+                        } else {
                             $form.find("input,select").val('');
                             toastr.error('Amount transferred successfully', 'Error')
                             $form.prepend(errorHTML);
                             $that.prop('disabled', false);
                             $(".amount-field").hide();
                             $(".donation_received").append(resp.availableBalance);
-                            $(".withdraw-amount-btn").addClass('withdraw-submit').removeClass('withdraw-amount-btnt').append('<span class="withdraw-text">Verify Email</span>');
+                            $(".withdraw-amount-btn").addClass('withdraw-submit').removeClass(
+                                'withdraw-amount-btnt').append(
+                                '<span class="withdraw-text">Verify Email</span>');
                         }
                     }
                 });
@@ -504,43 +552,49 @@
 
 
         $(document).ready(function() {
-    var $form = $("#personal-info");
+            var $form = $("#personal-info");
 
-    $form.on('submit', function(event) {
-        event.preventDefault();
+            $form.on('submit', function(event) {
+                event.preventDefault();
 
-        var token = $('[name="_token"]').val();
-        var profilePic = $(".kv-file-content").find('img').attr("src");
-        var formData = $form.serializeArray();
+                var token = $('[name="_token"]').val();
+                var profilePic = $(".kv-file-content").find('img').attr("src");
+                var formData = $form.serializeArray();
 
-        formData.push({ name: '_token', value: token });
-        formData.push({ name: 'profilePic', value: profilePic });
+                formData.push({
+                    name: '_token',
+                    value: token
+                });
+                formData.push({
+                    name: 'profilePic',
+                    value: profilePic
+                });
 
-        var dataString = $.param(formData);
+                var dataString = $.param(formData);
 
-        $form.find('.help-block').empty(); // Clear old error messages
+                $form.find('.help-block').empty(); // Clear old error messages
 
-        $.ajax({
-    type: 'POST',
-    url: '<?php echo e(url("/account/update_personal_info")); ?>',
-    data: dataString,
-    success: function(resp) {
-        if (resp.success) {
-            // ✅ Directly reload the page after success
-            location.reload();
-        } else {
-            $.each(resp.errors, function(index, value) {
-                $form.find("#" + index).parent('.col-sm-4').find('.help-block').append(value);
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php echo e(url('/account/update_personal_info')); ?>',
+                    data: dataString,
+                    success: function(resp) {
+                        if (resp.success) {
+                            // ✅ Directly reload the page after success
+                            location.reload();
+                        } else {
+                            $.each(resp.errors, function(index, value) {
+                                $form.find("#" + index).parent('.col-sm-4').find(
+                                    '.help-block').append(value);
+                            });
+                        }
+                    }
+                });
+
             });
-        }
-    }
-});
-
-    });
-});
-
+        });
     </script>
-    
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/users/my_account.blade.php ENDPATH**/ ?>

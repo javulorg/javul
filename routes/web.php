@@ -16,6 +16,7 @@ use App\Http\Controllers\ObjectivesController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\UnitsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ContributeController;
 use App\Http\Controllers\UserWikiController;
 use App\Http\Controllers\V2\SiteActivityController;
 use App\Http\Controllers\WikiController;
@@ -319,8 +320,6 @@ Route::get('wiki/{unit_id}/{wiki_page_id}/{slug}', [WikiController::class, 'view
 
 // chat controller route
 //ForumController
-Route::get('forum', [ForumController::class, 'index']);
-
 //TasksController route
 Route::any('tasks/{taskid}/{slug}', [TasksController::class, 'view']);
 Route::get('tasks/get_tasks_paginate', [TasksController::class, 'get_tasks_paginate']);
@@ -364,6 +363,9 @@ Route::resource('/funds', FundsController::class);
 Route::resource('/alerts', AlertsController::class);
 Route::get('ideas/{unit_id}/add', [IdeaController::class, 'create']);
 Route::resource('ideas', IdeaController::class);
+
+
+Route::any('top-contribute', [ContributeController::class, 'view']);
 
 /**
  * Zcash Routes
