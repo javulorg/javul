@@ -213,14 +213,14 @@
                             <tr>
                                 <th class="type_col">User Name</th>
                                 <th class="title_col">Activity Point</th>
-                                <th class="title_col">Award</th>
+                                <th class="type_col">Award </th>
 
                             </tr>
                         </thead>
                         <tbody>
 
                             <?php $__currentLoopData = $mostActiveUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mostActiveUnit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <tr class="p-2">
+                            <tr>
                                 <td class="type_col">
                                     <a
                                         href="<?php echo url('userprofiles/'.$userIDHashID->encode($mostActiveUnit->user_id)); ?>">
@@ -230,14 +230,12 @@
 
                                 </td>
                                 <td class="title_col">
-                                    <a href="">
                                         <?php echo e($mostActiveUnit->total_points); ?>
 
-                                    </a>
                                 </td>
 
                                 <td class="title_col">
-                                    -
+                                        -
                                 </td>
                             </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
