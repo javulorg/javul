@@ -216,7 +216,7 @@
                             <tr>
                                 <th class="type_col">User Name</th>
                                 <th class="title_col">Activity Point</th>
-                                <th class="title_col">Award</th>
+                                <th class="type_col">Award </th>
 
                             </tr>
                         </thead>
@@ -232,13 +232,11 @@
 
                                 </td>
                                 <td class="title_col">
-                                    <a href="">
                                         {{$mostActiveUnit->total_points}}
-                                    </a>
                                 </td>
 
                                 <td class="title_col">
-                                    -
+                                        -
                                 </td>
                             </tr>
                             @endforeach
