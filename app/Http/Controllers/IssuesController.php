@@ -1250,23 +1250,20 @@ class IssuesController extends Controller
     }
 
 
+    public function remove($unitId, $issue_id)
+    {
+        $userId = auth()->id();
 
-public function remove($unitId, $issue_id)
-{
-    $userId = auth()->id();
+        $watch = Watchlist::where('user_id', $userId)
+            ->where('unit_id', $unitId)
+            ->where('issue_id', $issue_id)
+            ->first();
 
-    $watchlist = Watchlist::where('user_id', $userId)
-        ->where('unit_id', $unitId)
-        ->where('issue_id', $issue_id)
-        ->first();
-
-    if ($watchlist) {
-        $watchlist->delete();
-        return response()->json(['success' => true, 'message' => 'Removed from watchlist']);
+        if ($watch) {
+            $watch->delete();
+            return response()->json(['message' => 'Removed from watchlist!']);
+        } else {
+            return response()->json(['message' => 'Item not found in watchlist.']);
+        }
     }
-
-    return response()->json(['success' => false, 'message' => 'Watchlist item not found']);
-}
-
-
 }

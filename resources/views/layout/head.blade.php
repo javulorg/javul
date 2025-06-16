@@ -70,3 +70,22 @@
         </footer>
     </div>
 </div>
+
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchButton = document.querySelector('.search_form button');
+    const searchInput = document.querySelector('.search_form input');
+
+    if (!searchButton || !searchInput) return;
+
+    searchButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        const keyword = searchInput.value.trim();
+        alert("You searched for: " + keyword);
+    });
+});
+</script>
+@endsection
+

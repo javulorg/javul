@@ -376,7 +376,7 @@
                                 </td>
                                 <td class="type_col">{{$bidder->amount}} <span class="badge"
                                         style="color: #0d1217; font-size:12px;">{{$bidder->charge_type}}</span></td>
-                                <td class="type_col">
+                                {{-- <td class="type_col">
                                     @if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to)
                                     <a class="btn btn-sm btn-warning" style="color:#fff;">Assigned</a>
                                     @elseif($taskObj->status=="completion_evaluation" && $bidder->user_id ==
@@ -386,10 +386,7 @@
                                     <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
                                     @elseif($taskObj->status=="in_progress" && $bidder->user_id == $taskObj->assign_to)
                                     <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
-                                    {{-- @elseif((empty($taskObj->assign_to) && ($isUnitAdminOfTask ||
-                                    auth()->user()->role == 1 || auth()->user()->role == 3)) ||
-                                    (!empty($taskObj->assign_to) && ($isUnitAdminOfTask || auth()->user()->role == 1 ||
-                                    auth()->user()->role == 3) && $taskObj->status=="open_for_bidding"))--}}
+
                                     @elseif(
                                     (
                                     (empty($taskObj->assign_to) && ($isUnitAdminOfTask || (auth()->user()?->role == 1)
@@ -406,7 +403,34 @@
                                     @else
                                     -
                                     @endif
+                                </td> --}}
+                                <td class="type_col">
+                                    @if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to)
+                                    <a class="btn btn-sm btn-warning" style="color:#fff;">Assigned</a>
+                                    @elseif($taskObj->status == "completion_evaluation" && $bidder->user_id ==
+                                    $taskObj->assign_to)
+                                    <a class="btn btn-sm btn-success" style="color:#fff;">Completed</a>
+                                    @elseif($bidder->status == "offer_rejected")
+                                    <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
+                                    @elseif($taskObj->status == "in_progress" && $bidder->user_id ==
+                                    $taskObj->assign_to)
+                                    <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
+                                    @elseif(
+                                    (empty($taskObj->assign_to) && (auth()->user()?->role == 1 || auth()->user()?->role
+                                    == 3))
+                                    ||
+                                    (!empty($taskObj->assign_to) && (auth()->user()?->role == 1 || auth()->user()?->role
+                                    == 3) && $taskObj->status == "open_for_bidding")
+                                    )
+                                    <a class="btn btn-sm btn-primary assign_now"
+                                        data-uid="{{ $userIDHashID->encode($bidder->user_id) }}"
+                                        data-tid="{{ $taskIDHashID->encode($bidder->task_id) }}"
+                                        style="color:#fff;">Assign now</a>
+                                    @else
+                                    -
+                                    @endif
                                 </td>
+
                             </tr>
                             @endforeach
                             @else
