@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="table_block_body">
-            <table>
+            <table id="units_table">
                 <thead>
                     <tr>
                         <th class="title_col">{{ __('messages.unit_name') }}</th>

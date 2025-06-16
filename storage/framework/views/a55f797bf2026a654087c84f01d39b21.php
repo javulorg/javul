@@ -84,7 +84,10 @@
 
     </div>
     <div class="content_block_bottom">
-        <a href="<?php echo url('tasks/add?unit='.$unitIDHashID->encode($task->objective_id)); ?>">Add New</a>
+        <a href="<?php echo e(isset($task) ? url('tasks/' . $unitIDHashID->encode($task->objective_id) . '/add') : '#'); ?>">
+        Add New
+        </a>
+
         <div class="separator"></div>
         <a href="<?php echo e(url('tasks')); ?>">See more</a>
     </div>

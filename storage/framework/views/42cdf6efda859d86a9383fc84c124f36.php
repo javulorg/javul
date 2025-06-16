@@ -384,34 +384,30 @@
                                 </td>
                                 <td class="type_col"><?php echo e($bidder->amount); ?> <span class="badge"
                                         style="color: #0d1217; font-size:12px;"><?php echo e($bidder->charge_type); ?></span></td>
+                                
                                 <td class="type_col">
-                                    <?php if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to): ?>
-                                    <a class="btn btn-sm btn-warning" style="color:#fff;">Assigned</a>
-                                    <?php elseif($taskObj->status=="completion_evaluation" && $bidder->user_id ==
-                                    $taskObj->assign_to): ?>
-                                    <a class="btn btn-sm btn-success" style="color:#fff;">Completed</a>
-                                    <?php elseif($bidder->status == "offer_rejected"): ?>
-                                    <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
-                                    <?php elseif($taskObj->status=="in_progress" && $bidder->user_id == $taskObj->assign_to): ?>
-                                    <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
-                                    
-                                    <?php elseif(
-                                    (
-                                    (empty($taskObj->assign_to) && ($isUnitAdminOfTask || (auth()->user()?->role == 1)
-                                    || (auth()->user()?->role == 3)))
-                                    ||
-                                    (!empty($taskObj->assign_to) && ($isUnitAdminOfTask || (auth()->user()?->role == 1)
-                                    || (auth()->user()?->role == 3)) && $taskObj->status=="open_for_bidding")
-                                    )
-                                    ): ?>
-                                    <a class="btn btn-sm btn-primary assign_now"
-                                        data-uid="<?php echo e($userIDHashID->encode($bidder->user_id)); ?>"
-                                        data-tid="<?php echo e($taskIDHashID->encode($bidder->task_id)); ?>"
-                                        style="color:#fff;">Assign now</a>
-                                    <?php else: ?>
-                                    -
-                                    <?php endif; ?>
-                                </td>
+    <?php if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to): ?>
+        <a class="btn btn-sm btn-warning" style="color:#fff;">Assigned</a>
+    <?php elseif($taskObj->status == "completion_evaluation" && $bidder->user_id == $taskObj->assign_to): ?>
+        <a class="btn btn-sm btn-success" style="color:#fff;">Completed</a>
+    <?php elseif($bidder->status == "offer_rejected"): ?>
+        <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
+    <?php elseif($taskObj->status == "in_progress" && $bidder->user_id == $taskObj->assign_to): ?>
+        <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
+    <?php elseif(
+        (empty($taskObj->assign_to) && (auth()->user()?->role == 1 || auth()->user()?->role == 3))
+        ||
+        (!empty($taskObj->assign_to) && (auth()->user()?->role == 1 || auth()->user()?->role == 3) && $taskObj->status == "open_for_bidding")
+    ): ?>
+        <a class="btn btn-sm btn-primary assign_now"
+           data-uid="<?php echo e($userIDHashID->encode($bidder->user_id)); ?>"
+           data-tid="<?php echo e($taskIDHashID->encode($bidder->task_id)); ?>"
+           style="color:#fff;">Assign now</a>
+    <?php else: ?>
+        -
+    <?php endif; ?>
+</td>
+
                             </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             <?php else: ?>

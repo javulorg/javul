@@ -772,14 +772,14 @@ class ObjectivesController extends Controller
                         $unitData = Unit::where('id', $objectiveObj->unit_id)->first();
                         $availableFunds = Fund::getUnitDonatedFund($objectiveObj->unit_id);
                         $awardedFunds = Fund::getUnitAwardedFund($objectiveObj->unit_id);
-
+                        $childobjectiveObj = Objective::where('parent_id', $objective_id)->get();
                         view()->share('availableFunds', $availableFunds);
                         view()->share('awardedFunds', $awardedFunds);
                         view()->share('unitData', $unitData);
                         view()->share('unitObj', $unitData);
                         $objectiveIdeas = Objective::with('ideas')->where('id', $objectiveObj->id)->first();
                         view()->share('objectiveIdeas', $objectiveIdeas);
-                        return view('objectives.view');
+                        return view('objectives.view', ['childobjectiveObj' => $childobjectiveObj] );
                     }
                 }
             }

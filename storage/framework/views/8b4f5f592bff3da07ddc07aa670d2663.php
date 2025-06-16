@@ -273,25 +273,25 @@
                                 ->exists();
                                 ?>
 
-                                
-                                <a href="javascript:void(0);" class="edit_icon watchlist-link-issue"
-                                    data-id="<?php echo e($issueObj->id); ?>"
-                                    data-url="<?php echo e(route('watchlistIssue.store', ['unitId' => $unitData->id, 'issue_id' => $issueObj->id])); ?>"
-                                    id="issue-eye-link-<?php echo e($issueObj->id); ?>"
-                                    style="<?php echo e($isIssueWatched ? 'display: none;' : ''); ?>">
-                                    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;"
-                                        alt="Watch">
-                                </a>
+                         
+<a href="javascript:void(0);" class="edit_icon watchlist-link-issue"
+    data-id="<?php echo e($issueObj->id); ?>"
+    data-url="<?php echo e(route('watchlistIssue.store', ['unitId' => $unitData->id, 'issue_id' => $issueObj->id])); ?>"
+    id="issue-eye-link-<?php echo e($issueObj->id); ?>"
+    style="<?php echo e($isIssueWatched ? 'display: none;' : ''); ?>">
+    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;" alt="Watch">
+</a>
 
-                                
-                                <a href="javascript:void(0);" class="edit_icon unwatchlist-link-issue"
-                                    data-id="<?php echo e($issueObj->id); ?>"
-                                    data-url="<?php echo e(route('watchlistIssue.remove', ['unitId' => $unitData->id, 'issue_id' => $issueObj->id])); ?>"
-                                    id="issue-eye-off-link-<?php echo e($issueObj->id); ?>"
-                                    style="<?php echo e($isIssueWatched ? '' : 'display: none;'); ?>">
-                                    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
-                                        style="height: 20px; width: 20px;" alt="Unwatch">
-                                </a>
+
+<a href="javascript:void(0);" class="edit_icon unwatchlist-link-issue"
+    data-id="<?php echo e($issueObj->id); ?>"
+    data-url="<?php echo e(route('watchlistIssue.remove', ['unitId' => $unitData->id, 'issue_id' => $issueObj->id])); ?>"
+    id="issue-eye-off-link-<?php echo e($issueObj->id); ?>"
+    style="<?php echo e($isIssueWatched ? '' : 'display: none;'); ?>">
+    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>" style="height: 20px; width: 20px;" alt="Unwatch">
+</a>
+
+
 
                                 
                                 <div class="separat"></div>
@@ -611,69 +611,72 @@
         });
 </script>
 <!-- Include SweetAlert2 -->
+<!-- Include SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // Add to watchlist
-    document.querySelectorAll('.watchlist-link-issue').forEach(link => {
-        link.addEventListener('click', () => {
-            const issueId = link.dataset.id;
-            const url = link.dataset.url;
+    document.body.addEventListener('click', function (e) {
+        const watchBtn = e.target.closest('.watchlist-link-issue');
+        const unwatchBtn = e.target.closest('.unwatchlist-link-issue');
+
+        // Add to Watchlist
+        if (watchBtn) {
+            const issueId = watchBtn.dataset.id;
+            const url = watchBtn.dataset.url;
 
             fetch(url, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
                 },
+                body: JSON.stringify({})
             })
             .then(res => res.json())
             .then(data => {
-                // toggle icons
-                document.getElementById('issue-eye-link-' + issueId).style.display = 'none';
-                document.getElementById('issue-eye-off-link-' + issueId).style.display = 'inline-block';
-
-                Swal.fire('Success', data.message, 'success');
+                if (data.message.includes('Added')) {
+                    document.getElementById('issue-eye-link-' + issueId).style.display = 'none';
+                    document.getElementById('issue-eye-off-link-' + issueId).style.display = 'inline-block';
+                    Swal.fire('Success', data.message, 'success');
+                } else {
+                    Swal.fire('Notice', data.message || 'Already in watchlist.', 'info');
+                }
             })
-            .catch(error => {
-                console.error('Add Watchlist Error:', error);
-                Swal.fire('Failed', 'Could not add to watchlist.', 'error');
-            });
-        });
+            .catch(() => Swal.fire('Error', 'Could not add to watchlist.', 'error'));
+        }
+
+        // Remove from Watchlist
+        if (unwatchBtn) {
+            const issueId = unwatchBtn.dataset.id;
+            const url = unwatchBtn.dataset.url;
+
+            fetch(url, {
+                method: 'POST', // POST is used even for removal
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message.includes('Removed')) {
+                    document.getElementById('issue-eye-link-' + issueId).style.display = 'inline-block';
+                    document.getElementById('issue-eye-off-link-' + issueId).style.display = 'none';
+                    Swal.fire('Removed', data.message, 'success');
+                } else {
+                    Swal.fire('Notice', data.message || 'Not found in watchlist.', 'info');
+                }
+            })
+            .catch(() => Swal.fire('Error', 'Could not remove from watchlist.', 'error'));
+        }
     });
-
-    // Remove from watchlist
-    // document.querySelectorAll('.unwatchlist-link-issue').forEach(link => {
-    //     link.addEventListener('click', () => {
-    //         const issueId = link.dataset.id;
-    //         const url = link.dataset.url;
-
-    //         fetch(url, {
-    //             method: 'DELETE',
-    //             headers: {
-    //                 'X-CSRF-TOKEN': csrfToken,
-    //                 'Accept': 'application/json',
-    //             },
-    //         })
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             // toggle icons
-    //             document.getElementById('issue-eye-link-' + issueId).style.display = 'inline-block';
-    //             document.getElementById('issue-eye-off-link-' + issueId).style.display = 'none';
-
-    //             Swal.fire('Success');
-    //         })
-    //         .catch(error => {
-    //           //  console.error('Remove Watchlist Error:', error);
-    //             //Swal.fire('Failed', 'Could not remove from watchlist.', 'error');
-    //         });
-    //     });
-    // });
 });
 </script>
+
 
 
 

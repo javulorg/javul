@@ -53,7 +53,7 @@
         </div> --}}
 
         <div class="table_block_body">
-            <table>
+            <table id="issues_table">
                 <thead>
                     <tr>
                         <th class="type_col">Issue Name</th>
@@ -119,7 +119,9 @@
 
     </div>
     <div class="content_block_bottom">
-         <a href="{{ url('issues/'. $unitIDHashID->encode($issueData->unit_id) .'/add') }}">Add New</a>
+<a href="{{ isset($issueData) ? url('issues/' . $unitIDHashID->encode($issueData->unit_id) . '/add') : '#' }}">
+    Add New
+</a>
            <div class="separator"></div>
         <a href="{{ url('issues') }}">See more</a>
     </div>

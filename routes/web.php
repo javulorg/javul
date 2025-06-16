@@ -391,10 +391,13 @@ Route::post('/watchlist/remove', [ObjectivesController::class, 'remove'])->name(
 Route::post('/watchlistTask/add/{userId}/{unitId}/{task_id}', [TasksController::class, 'storeW'])->name('watchlistTask.store');
 
 
-Route::post('/watchlistIssue/add/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
-    Route::post('/watchlist/issue/remove/{unitId}/{issue_id}', [IssuesController::class, 'remove'])->name('watchlistIssue.remove');
+// Route::post('/watchlistIssue/add/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
+//     Route::post('/watchlist/issue/remove/{unitId}/{issue_id}', [IssuesController::class, 'remove'])->name('watchlistIssue.remove');
 
 
+// web.php ya api.php
+Route::post('/watchlist/issue/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
+Route::post('/unwatchlist/issue/{unitId}/{issue_id}', [IssuesController::class, 'remove'])->name('watchlistIssue.remove');
 
 
 Route::get('/watchlistIdea/add/{userId}/{unitId}/{idea_id}', [IdeaController::class, 'storeW'])->name('watchlistIdea.store');

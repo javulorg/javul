@@ -38,3 +38,58 @@
         </div>
     </div>
 @endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchButton = document.querySelector('.search_form button');
+    const searchInput = document.querySelector('.search_form input');
+
+    searchButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        const keyword = searchInput.value.toLowerCase();
+
+        const tableIds = ['units_table', 'issues_table', 'ideas_table'];
+
+        tableIds.forEach(function (tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            const rows = table.querySelectorAll('tbody tr');
+            let matchFound = false;
+
+            rows.forEach(function (row) {
+                const rowText = row.innerText.toLowerCase();
+                if (rowText.includes(keyword)) {
+                    row.style.display = '';
+                    matchFound = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // No result logic
+            const noResultId = `${tableId}_no_result`;
+            let noResultRow = document.getElementById(noResultId);
+
+            if (!matchFound) {
+                if (!noResultRow) {
+                    noResultRow = document.createElement('tr');
+                    noResultRow.id = noResultId;
+                    noResultRow.innerHTML = `<td colspan="100%" style="text-align:center; color:red;">No results found</td>`;
+                    table.querySelector('tbody').appendChild(noResultRow);
+                }
+            } else if (noResultRow) {
+                noResultRow.remove();
+            }
+        });
+    });
+
+    // Optional: Enable Enter key search
+    searchInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            searchButton.click();
+        }
+    });
+});
+</script>
+@endsection
