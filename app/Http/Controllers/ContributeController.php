@@ -3,15 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityPoint;
+use App\Models\Fund;
+use App\Models\Unit;
+use App\Services\SiteActivity\SiteActivityService;
+use App\Traits\UnitTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ContributeController extends Controller
 {
+    use UnitTrait;
+    protected $service;
+    public function __construct(SiteActivityService $service)
+    {
+        $this->service = $service;
+    }
+
     public function view(Request $request)
     {
-        $unitId = $request->query('unit'); // 👈 get 'unit' from query string
-
+        $unitId = $request->query('unit');
         $mostActiveUnits = ActivityPoint::select(
             'units.id as unit_id',
             'units.name as unit_name',
@@ -29,6 +39,25 @@ class ContributeController extends Controller
             ->limit(5)
             ->get();
 
-        return view('top_contribute', compact('mostActiveUnits'));
+        $activities = $this->service->listAll()->paginate(10);
+        $total = $this->service->listAll()->count();
+
+        if (isset($request->unit)) {
+            $unitData = Unit::where('id', $request->unit)->first();
+            $availableFunds = Fund::getUnitDonatedFund($request->unit);
+            $awardedFunds = Fund::getUnitAwardedFund($request->unit);
+
+            view()->share('availableFunds', $availableFunds);
+            view()->share('awardedFunds', $awardedFunds);
+            view()->share('unitData', $unitData);
+            $issueResolutions = $this->calculateIssueResolution($request->unit);
+            view()->share('totalIssueResolutions', $issueResolutions);
+            view()->share('unitObj', $unitData);
+        }
+        $homeCheck = isset($request->home) ??  false;
+        return view('V2.site-activities.top_contribute', compact('mostActiveUnits', 'total', 'homeCheck'));
+
+
+        return view('V2.site-activities.top_contribute', ['mostActiveUnits' => $mostActiveUnits, 'unitData' => $unitData]);
     }
 }

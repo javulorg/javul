@@ -112,11 +112,6 @@
 
     </div>
     <div class="content_block_bottom">
-        <a href="{{ isset($task) ? url('tasks/' . $unitIDHashID->encode($task->objective_id) . '/add') : '#' }}">
-        Add New
-        </a>
-
-        <div class="separator"></div>
         <a href="{{ url('tasks') }}">See more</a>
     </div>
 </div>

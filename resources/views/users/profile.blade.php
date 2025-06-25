@@ -72,6 +72,8 @@
 </div>
 
 
+@auth
+    @if(auth()->user()->role != 1)
 
 <div class="row col-lg-12">
     <div class="col-md-3">
@@ -481,6 +483,10 @@
         }
     </style>
 </div>
+    @endif
+    @endauth
+
+
 @endsection
 @section('scripts')
 

@@ -56,7 +56,11 @@ class TasksController extends Controller
 
     public function index(Request $request)
     {
-        $pagination = $this->service->listAll()->paginate(10);
+        // $pagination = $this->service->listAll()->paginate(10);
+            $pagination = $this->service->listAll($request)
+                    ->paginate(10)
+                    ->appends($request->all());
+
         $msg_flag = false;
         $msg_val = '';
         $msg_type = '';
@@ -2775,27 +2779,40 @@ class TasksController extends Controller
         return redirect()->back()->with('success', 'Task deleted successfully.');
     }
 
-    public function toggle(Request $request)
-    {
-        $user = auth()->user();
-        $taskId = $request->task_id;
-        $unitId = $request->unit_id;
+public function toggleTask(Request $request)
+{
+    $userId = auth()->id();
+    $taskId = $request->input('task_id');
 
-        $watch = \App\Models\Watchlist::where('user_id', $user->id)
-            ->where('unit_id', $unitId)
-            ->where('task_id', $taskId)
-            ->first();
-
-        if ($watch) {
-            $watch->delete();
-            return response()->json(['status' => 'removed']);
-        } else {
-            \App\Models\Watchlist::create([
-                'user_id' => $user->id,
-                'unit_id' => $unitId,
-                'task_id' => $taskId,
-            ]);
-            return response()->json(['status' => 'added']);
-        }
+    if (!$userId || !$taskId) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Missing task or user.'
+        ], 400);
     }
+
+    $watch = \App\Models\Watchlist::where('user_id', $userId)
+        ->where('task_id', $taskId)
+        ->first();
+
+    if ($watch) {
+        $watch->delete();
+        return response()->json([
+            'success' => true,
+            'action' => 'removed',
+            'message' => 'Removed from watchlist.'
+        ]);
+    } else {
+        \App\Models\Watchlist::create([
+            'user_id' => $userId,
+            'task_id' => $taskId // ✅ No unit_id
+        ]);
+        return response()->json([
+            'success' => true,
+            'action' => 'added',
+            'message' => 'Added to watchlist.'
+        ]);
+    }
+}
+
 }

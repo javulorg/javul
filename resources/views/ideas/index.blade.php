@@ -225,9 +225,6 @@
                     </div>
                 </div>
             </div>
-            <div class="content_block_bottom">
-                <a href="{{ url('ideas/'.$unitIDHashID->encode($idea->unit_id).'/add') }}">Add New</a>
-            </div>
         </div>
         @endif
     </div>

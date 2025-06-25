@@ -303,7 +303,7 @@ Route::post('units/get_city', [UnitsController::class, 'get_city']);
 Route::get('units/category={type}', [UnitsController::class, 'categoryView']);
 
 //ObjectivesController route
-Route::any('objectives/{objectiveid}/{slug}', [ObjectivesController::class, 'view']);
+Route::any('objectives/{objectiveid}/{slug}', [ObjectivesController::class, 'viewf']);
 Route::get('objectives/get_objectives_paginate', [ObjectivesController::class, 'get_objectives_paginate']);
 Route::get('objectives/{unitid}/lists', [ObjectivesController::class, 'lists']);
 Route::post('objectives/upvote-edits/', [ObjectivesController::class, 'upvoteEdits']);
@@ -362,7 +362,7 @@ Route::resource('/user', UserController::class);
 Route::resource('/funds', FundsController::class);
 Route::resource('/alerts', AlertsController::class);
 Route::get('ideas/{unit_id}/add', [IdeaController::class, 'create']);
-Route::resource('ideas', IdeaController::class);
+// Route::resource('ideas', IdeaController::class);
 
 
 Route::any('top-contribute', [ContributeController::class, 'view']);
@@ -384,30 +384,35 @@ Route::resource('activities', SiteActivityController::class);
 Route::post('priorities', [\App\Http\Controllers\V2\PriorityController::class, 'store']);
 
 
-// Route::get('/watchlist/add/{userId}/{unitId}/{objective_id}', [ObjectivesController::class, 'storeW'])->name('watchlist.store');
+// ✅ Use POST instead of GET for adding to watchlist
+Route::post('/watchlist/add', [ObjectivesController::class, 'storeW'])->name('watchlist.store');
+
+// ✅ Already correct
 Route::post('/watchlist/remove', [ObjectivesController::class, 'remove'])->name('watchlist.remove');
 
 
 Route::post('/watchlistTask/add/{userId}/{unitId}/{task_id}', [TasksController::class, 'storeW'])->name('watchlistTask.store');
 
+Route::post('/watchlist/issue/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
 
-// Route::post('/watchlistIssue/add/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
-//     Route::post('/watchlist/issue/remove/{unitId}/{issue_id}', [IssuesController::class, 'remove'])->name('watchlistIssue.remove');
-
-
-// web.php ya api.php
-Route::post('/watchlist/issue/{unitId}/{issue_id}', [IssuesController::class, 'storeW'])->name('watchlistIssue.store');
-Route::post('/unwatchlist/issue/{unitId}/{issue_id}', [IssuesController::class, 'remove'])->name('watchlistIssue.remove');
-
-
-Route::get('/watchlistIdea/add/{userId}/{unitId}/{idea_id}', [IdeaController::class, 'storeW'])->name('watchlistIdea.store');
-
-// Route::get('/watchlistUnit/add/{userId}/{unitId}', [UnitsController::class, 'storeU'])->name('watchlistU.store');
-
+// Remove (DELETE)
 Route::delete('/watchlist/issue/remove/{issue_id}', [IssuesController::class, 'remove'])->name('watchlistIssue.remove');
 
 
-Route::post('/watchlistU/store/{userId}/{unitId}', [UnitsController::class, 'storeU'])->name('watchlistU.store');
+// Add idea to watchlist (secure, no unitId/userId from client)
+// Add to watchlist (POST)
+Route::post('/watchlist/idea/{idea_id}', [IdeaController::class, 'storeW'])->name('watchlistIdea.store');
+
+// Remove from watchlist (DELETE)
+Route::delete('/watchlist/idea/remove/{idea_id}', [IdeaController::class, 'removeFromWatchlist'])->name('watchlistIdea.remove');
+
+
+// Route::get('/watchlistUnit/add/{userId}/{unitId}', [UnitsController::class, 'storeU'])->name('watchlistU.store');
+
+
+
+Route::post('/watchlist/unit/{unitId}', [UnitsController::class, 'storeU'])->name('watchlistU.store');
+Route::delete('/watchlist/unit/remove/{unitId}', [UnitsController::class, 'removeU'])->name('watchlistU.remove');
 
 
 Route::post('/watchlist/store', [ObjectivesController::class, 'storeW'])->name('watchlist.store');
@@ -416,4 +421,6 @@ Route::post('/watchlist/store', [ObjectivesController::class, 'storeW'])->name('
 Route::delete('/tasks/{id}', [TasksController::class, 'destroy'])->name('tasks.destroy');
 
 
-Route::post('/watchlist/toggle', [TasksController::class, 'toggle'])->name('watchlistTask.toggle');
+Route::post('/watchlist/task/toggle', [TasksController::class, 'toggleTask'])->name('watchlistTask.toggle');
+
+Route::resource('ideas', IdeaController::class);

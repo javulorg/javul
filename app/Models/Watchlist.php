@@ -17,7 +17,7 @@ class Watchlist extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','unit_id','objective_id','task_id','issue_id'];
+    protected $fillable = ['user_id','unit_id','objective_id','task_id','issue_id','idea_id'];
 
     public function units()
     {

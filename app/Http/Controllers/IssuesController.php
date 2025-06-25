@@ -46,8 +46,14 @@ class IssuesController extends Controller
     {
 
 
-        $pagination = $this->service->listAll()->paginate(10);
+        // $pagination = $this->service->listAll()->paginate(10);
         //   dd($pagination);
+
+        $pagination = $this->service->listAll($request)
+            ->paginate(10)
+            ->appends($request->all());
+
+
 
         $msg_flag = false;
         $msg_val = '';
@@ -1220,13 +1226,12 @@ class IssuesController extends Controller
 
     // app/Http/Controllers/IssuesController.php
 
-    public function storeW($unitId, $issue_id)
+    public function storeW($issue_id)
     {
         try {
             $userId = auth()->id();
 
             $exists = \App\Models\Watchlist::where('user_id', $userId)
-                ->where('unit_id', $unitId)
                 ->where('issue_id', $issue_id)
                 ->exists();
 
@@ -1236,7 +1241,6 @@ class IssuesController extends Controller
 
             \App\Models\Watchlist::create([
                 'user_id' => $userId,
-                'unit_id' => $unitId,
                 'issue_id' => $issue_id,
             ]);
 
@@ -1250,12 +1254,12 @@ class IssuesController extends Controller
     }
 
 
-    public function remove($unitId, $issue_id)
+
+    public function remove($issue_id)
     {
         $userId = auth()->id();
 
         $watch = Watchlist::where('user_id', $userId)
-            ->where('unit_id', $unitId)
             ->where('issue_id', $issue_id)
             ->first();
 

@@ -7,6 +7,7 @@ namespace App\Services\Issues;
 use Hashids\Hashids;
 use Illuminate\Support\Facades\Config;
 use App\Models\Issue;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class IssueService
@@ -34,8 +35,15 @@ class IssueService
 
     public function update($request, $issueId) {}
 
-    public function listAll()
-    {
-        return Issue::query();
+public function listAll(Request $request)
+{
+    $query = Issue::query();
+
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
     }
+
+    return $query;
+}
+
 }

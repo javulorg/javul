@@ -3,6 +3,7 @@
 namespace App\Services\Ideas;
 
 use App\Models\Idea;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class IdeaService
@@ -23,8 +24,15 @@ class IdeaService
         }
         return $comments;
     }
-    public function listAll()
-    {
-        return Idea::query(); // ya koi bhi query jo tumhe chahiye
+   public function listAll(Request $request)
+{
+    $query = Idea::query();
+
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
     }
+
+    return $query;
+}
+
 }

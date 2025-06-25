@@ -171,27 +171,29 @@
                             <div class="objective_content_info_links">
 
 
-                                <?php
-                                $isLoggedIn = auth()->check();
-                                $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
-                                ->where('unit_id', $unitData->id)
-                                ->where('task_id', $taskObj->id)
-                                ->exists();
-                                ?>
+                               <?php
+    $isLoggedIn = auth()->check();
+    $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
+        ->where('task_id', $taskObj->id)
+        ->exists();
+?>
 
-                                <a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
-                                    data-id="<?php echo e($taskObj->id); ?>" data-url="<?php echo e(route('watchlistTask.toggle')); ?>"
-                                    data-unit-id="<?php echo e($unitData->id); ?>" data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
-                                    id="task-eye-toggle-<?php echo e($taskObj->id); ?>">
+<a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
+    data-id="<?php echo e($taskObj->id); ?>"
+    data-url="<?php echo e(route('watchlistTask.toggle')); ?>"
+    data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
+    id="task-eye-toggle-<?php echo e($taskObj->id); ?>">
 
-                                    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>"
-                                        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? 'display: none;' : ''); ?>"
-                                        alt="Watch" class="watch-icon" data-type="show">
+    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>"
+        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? 'display: none;' : ''); ?>"
+        alt="Watch" class="watch-icon" data-type="show">
 
-                                    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
-                                        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? '' : 'display: none;'); ?>"
-                                        alt="Watched" class="watch-icon" data-type="hide">
-                                </a>
+    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
+        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? '' : 'display: none;'); ?>"
+        alt="Watched" class="watch-icon" data-type="hide">
+</a>
+
+
 
                                 
                                 <div class="separat"></div>
@@ -386,27 +388,31 @@
                                         style="color: #0d1217; font-size:12px;"><?php echo e($bidder->charge_type); ?></span></td>
                                 
                                 <td class="type_col">
-    <?php if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to): ?>
-        <a class="btn btn-sm btn-warning" style="color:#fff;">Assigned</a>
-    <?php elseif($taskObj->status == "completion_evaluation" && $bidder->user_id == $taskObj->assign_to): ?>
-        <a class="btn btn-sm btn-success" style="color:#fff;">Completed</a>
-    <?php elseif($bidder->status == "offer_rejected"): ?>
-        <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
-    <?php elseif($taskObj->status == "in_progress" && $bidder->user_id == $taskObj->assign_to): ?>
-        <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
-    <?php elseif(
-        (empty($taskObj->assign_to) && (auth()->user()?->role == 1 || auth()->user()?->role == 3))
-        ||
-        (!empty($taskObj->assign_to) && (auth()->user()?->role == 1 || auth()->user()?->role == 3) && $taskObj->status == "open_for_bidding")
-    ): ?>
-        <a class="btn btn-sm btn-primary assign_now"
-           data-uid="<?php echo e($userIDHashID->encode($bidder->user_id)); ?>"
-           data-tid="<?php echo e($taskIDHashID->encode($bidder->task_id)); ?>"
-           style="color:#fff;">Assign now</a>
-    <?php else: ?>
-        -
-    <?php endif; ?>
-</td>
+                                    <?php if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to): ?>
+                                    <a class="btn btn-sm btn-warning" style="color:#fff;">Assigned</a>
+                                    <?php elseif($taskObj->status == "completion_evaluation" && $bidder->user_id ==
+                                    $taskObj->assign_to): ?>
+                                    <a class="btn btn-sm btn-success" style="color:#fff;">Completed</a>
+                                    <?php elseif($bidder->status == "offer_rejected"): ?>
+                                    <a class="btn btn-sm btn-danger" style="color:#fff;">Offer Rejected</a>
+                                    <?php elseif($taskObj->status == "in_progress" && $bidder->user_id ==
+                                    $taskObj->assign_to): ?>
+                                    <a class="btn btn-sm btn-info" style="color:#fff;">In Progress</a>
+                                    <?php elseif(
+                                    (empty($taskObj->assign_to) && (auth()->user()?->role == 1 || auth()->user()?->role
+                                    == 3))
+                                    ||
+                                    (!empty($taskObj->assign_to) && (auth()->user()?->role == 1 || auth()->user()?->role
+                                    == 3) && $taskObj->status == "open_for_bidding")
+                                    ): ?>
+                                    <a class="btn btn-sm btn-primary assign_now"
+                                        data-uid="<?php echo e($userIDHashID->encode($bidder->user_id)); ?>"
+                                        data-tid="<?php echo e($taskIDHashID->encode($bidder->task_id)); ?>"
+                                        style="color:#fff;">Assign now</a>
+                                    <?php else: ?>
+                                    -
+                                    <?php endif; ?>
+                                </td>
 
                             </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -773,74 +779,51 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.watchlist-toggle-link').forEach(function (link) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-toggle-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isAuth = this.dataset.auth;
+            if (isAuth === 'no') {
+                window.location.href = "<?php echo e(route('login')); ?>";
+                return;
+            }
 
-                const auth = this.dataset.auth;
-                if (auth !== 'yes') {
-                   window.location.href = '/login'; // Replace this with your actual login route
-                     return;
-                }
+            const taskId = this.dataset.id;
+            const url = this.dataset.url;
+            const eyeLink = document.getElementById('task-eye-toggle-' + taskId);
+            const showIcon = eyeLink.querySelector('img[data-type="show"]');
+            const hideIcon = eyeLink.querySelector('img[data-type="hide"]');
 
-                const taskId = this.dataset.id;
-                const unitId = this.dataset.unitId;
-                const url = this.dataset.url;
-                const watchIcons = this.querySelectorAll('.watch-icon');
-
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({ task_id: taskId, unit_id: unitId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'added') {
-                        watchIcons.forEach(img => {
-                            if (img.dataset.type === 'show') img.style.display = 'none';
-                            else img.style.display = '';
-                        });
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Added!',
-                            text: 'Task added to your watchlist.',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    } else if (data.status === 'removed') {
-                        watchIcons.forEach(img => {
-                            if (img.dataset.type === 'show') img.style.display = '';
-                            else img.style.display = 'none';
-                        });
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Removed',
-                            text: 'Task removed from your watchlist.',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                        });
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                },
+                body: JSON.stringify({ task_id: taskId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.action === 'added') {
+                        showIcon.style.display = 'none';
+                        hideIcon.style.display = 'inline';
+                        Swal.fire('Success', data.message, 'success');
+                    } else if (data.action === 'removed') {
+                        showIcon.style.display = 'inline';
+                        hideIcon.style.display = 'none';
+                        Swal.fire('Notice', data.message, 'info');
                     }
-                })
-                .catch(() => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Network Error',
-                        text: 'Please try again later.',
-                    });
-                });
+                } else {
+                    Swal.fire('Error', data.message || 'Failed to update watchlist.', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'Something went wrong.', 'error');
             });
         });
     });
+});
 </script>
 
 

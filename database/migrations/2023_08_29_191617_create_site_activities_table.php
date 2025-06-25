@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('task_id')->nullable();
 
             $table->unsignedBigInteger('issue_id')->nullable();
+            $table->unsignedBigInteger('idea_id')->nullable();
             $table->unsignedBigInteger('user_id');
 
             $table->text('comment');

@@ -290,9 +290,7 @@
                     </div>
                 </div>
             </div>
-            <div class="content_block_bottom">
-                <a href="{{ url('issues/'. $unitIDHashID->encode($issue->unit_id) .'/add') }}">Add New</a>
-            </div>
+
             <div class="d-flex justify-content-between mt-2">
                 <div class="pagination-left">
                 </div>

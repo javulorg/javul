@@ -75,6 +75,8 @@
 </div>
 
 
+<?php if(auth()->guard()->check()): ?>
+    <?php if(auth()->user()->role != 1): ?>
 
 <div class="row col-lg-12">
     <div class="col-md-3">
@@ -405,6 +407,10 @@
         }
     </style>
 </div>
+    <?php endif; ?>
+    <?php endif; ?>
+
+
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
 

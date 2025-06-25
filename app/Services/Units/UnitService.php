@@ -9,6 +9,7 @@ use App\Models\SiteActivity;
 use App\Models\Unit;
 use App\Traits\WikiTrait;
 use Hashids\Hashids;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,7 @@ class UnitService
 
 
 
-        DB::transaction(function () use($request) {
+        DB::transaction(function () use ($request) {
             $unit = $this->saveUnit($request);
             $this->saveUnitWikiPage($unit);
             $this->saveRelatedUnit($request, $unit);
@@ -47,8 +48,8 @@ class UnitService
             'company'                     => $request->company,
             'scope'                       => $request->scope,
             'name'                        => $request->unit_name,
-            'slug'                        => substr(str_replace(" ","_",strtolower($request->unit_name)),0,20),
-            'category_id'                 => implode(",",$request->unit_category),
+            'slug'                        => substr(str_replace(" ", "_", strtolower($request->unit_name)), 0, 20),
+            'category_id'                 => implode(",", $request->unit_category),
             'description'                 => trim($request->description),
             'credibility'                 => $request->credibility,
             'country_id'                  => $request->country,
@@ -62,11 +63,10 @@ class UnitService
 
     private function saveRelatedUnit($request, $unit)
     {
-        if(!empty($request->related_to))
-        {
+        if (!empty($request->related_to)) {
             RelatedUnit::create([
                 'unit_id'     => $unit->id,
-                'related_to'  =>implode(",",$request->related_to)
+                'related_to'  => implode(",", $request->related_to)
             ]);
         }
     }
@@ -84,25 +84,25 @@ class UnitService
 
     private function saveSiteActivity($unit, $request)
     {
-        $userIDHashID = new Hashids('user id hash',10,Config::get('app.encode_chars'));
+        $userIDHashID = new Hashids('user id hash', 10, Config::get('app.encode_chars'));
         $userId      = $userIDHashID->encode(Auth::user()->id);
-        $userName = Auth::user()->first_name.' '.Auth::user()->last_name;
-        if(!empty(Auth::user()->username))
+        $userName = Auth::user()->first_name . ' ' . Auth::user()->last_name;
+        if (!empty(Auth::user()->username))
             $userName = Auth::user()->username;
-        $slug = substr(str_replace(" ","_",strtolower($request->unit_name)),0,20);
-        $unitIDHashID = new Hashids('unit id hash',10,Config::get('app.encode_chars'));
+        $slug = substr(str_replace(" ", "_", strtolower($request->unit_name)), 0, 20);
+        $unitIDHashID = new Hashids('unit id hash', 10, Config::get('app.encode_chars'));
         $unitId = $unitIDHashID->encode($unit->id);
         SiteActivity::create([
             'user_id'        => Auth::user()->id,
             'unit_id'        => $unit->id,
-            'comment'        => '<a href="'.url('userprofiles/'.$userId.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                .$userName.'</a>
+            'comment'        => '<a href="' . url('userprofiles/' . $userId . '/' . strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">'
+                . $userName . '</a>
                 created
-                 unit <a href="'.url('units/'.$unitId.'/'.$slug).'">'.$request->input('unit_name').'</a>'
+                 unit <a href="' . url('units/' . $unitId . '/' . $slug) . '">' . $request->input('unit_name') . '</a>'
         ]);
     }
 
-    private function saveUnitCategory($uniId) : void
+    private function saveUnitCategory($uniId): void
     {
         Category::create([
             'unit_id'   => $uniId,
@@ -112,9 +112,14 @@ class UnitService
 
     // app/Services/Units/UnitService.php
 
-public function listAll()
-{
-    return Unit::query(); // ya koi bhi query jo tumhe chahiye
-}
+    public function listAll(Request $request)
+    {
+        $query = Unit::query();
 
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        return $query;
+    }
 }

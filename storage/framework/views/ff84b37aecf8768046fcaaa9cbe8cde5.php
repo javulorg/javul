@@ -83,10 +83,6 @@
 
     </div>
     <div class="content_block_bottom">
-        <a href="<?php echo e(isset($idea) ? url('ideas/' . $unitIDHashID->encode($idea->unit_id) . '/add') : '#'); ?>">
-            Add New
-        </a>
-        <div class="separator"></div>
         <a href="<?php echo e(url('ideas')); ?>">See more</a>
     </div>
 </div>

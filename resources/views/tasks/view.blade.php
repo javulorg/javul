@@ -165,27 +165,29 @@
                             <div class="objective_content_info_links">
 
 
-                                @php
-                                $isLoggedIn = auth()->check();
-                                $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
-                                ->where('unit_id', $unitData->id)
-                                ->where('task_id', $taskObj->id)
-                                ->exists();
-                                @endphp
+                               @php
+    $isLoggedIn = auth()->check();
+    $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
+        ->where('task_id', $taskObj->id)
+        ->exists();
+@endphp
 
-                                <a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
-                                    data-id="{{ $taskObj->id }}" data-url="{{ route('watchlistTask.toggle') }}"
-                                    data-unit-id="{{ $unitData->id }}" data-auth="{{ $isLoggedIn ? 'yes' : 'no' }}"
-                                    id="task-eye-toggle-{{ $taskObj->id }}">
+<a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
+    data-id="{{ $taskObj->id }}"
+    data-url="{{ route('watchlistTask.toggle') }}"
+    data-auth="{{ $isLoggedIn ? 'yes' : 'no' }}"
+    id="task-eye-toggle-{{ $taskObj->id }}">
 
-                                    <img src="{{ asset('v2/assets/img/eye.svg') }}"
-                                        style="height: 20px; width: 20px; {{ $isTaskWatched ? 'display: none;' : '' }}"
-                                        alt="Watch" class="watch-icon" data-type="show">
+    <img src="{{ asset('v2/assets/img/eye.svg') }}"
+        style="height: 20px; width: 20px; {{ $isTaskWatched ? 'display: none;' : '' }}"
+        alt="Watch" class="watch-icon" data-type="show">
 
-                                    <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
-                                        style="height: 20px; width: 20px; {{ $isTaskWatched ? '' : 'display: none;' }}"
-                                        alt="Watched" class="watch-icon" data-type="hide">
-                                </a>
+    <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
+        style="height: 20px; width: 20px; {{ $isTaskWatched ? '' : 'display: none;' }}"
+        alt="Watched" class="watch-icon" data-type="hide">
+</a>
+
+
 
                                 {{-- $encodedObjectiveID = $objectiveIDHashID->encode($objective_id);
 
@@ -793,74 +795,51 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.watchlist-toggle-link').forEach(function (link) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-toggle-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isAuth = this.dataset.auth;
+            if (isAuth === 'no') {
+                window.location.href = "{{ route('login') }}";
+                return;
+            }
 
-                const auth = this.dataset.auth;
-                if (auth !== 'yes') {
-                   window.location.href = '/login'; // Replace this with your actual login route
-                     return;
-                }
+            const taskId = this.dataset.id;
+            const url = this.dataset.url;
+            const eyeLink = document.getElementById('task-eye-toggle-' + taskId);
+            const showIcon = eyeLink.querySelector('img[data-type="show"]');
+            const hideIcon = eyeLink.querySelector('img[data-type="hide"]');
 
-                const taskId = this.dataset.id;
-                const unitId = this.dataset.unitId;
-                const url = this.dataset.url;
-                const watchIcons = this.querySelectorAll('.watch-icon');
-
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({ task_id: taskId, unit_id: unitId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'added') {
-                        watchIcons.forEach(img => {
-                            if (img.dataset.type === 'show') img.style.display = 'none';
-                            else img.style.display = '';
-                        });
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Added!',
-                            text: 'Task added to your watchlist.',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    } else if (data.status === 'removed') {
-                        watchIcons.forEach(img => {
-                            if (img.dataset.type === 'show') img.style.display = '';
-                            else img.style.display = 'none';
-                        });
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Removed',
-                            text: 'Task removed from your watchlist.',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                        });
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ task_id: taskId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.action === 'added') {
+                        showIcon.style.display = 'none';
+                        hideIcon.style.display = 'inline';
+                        Swal.fire('Success', data.message, 'success');
+                    } else if (data.action === 'removed') {
+                        showIcon.style.display = 'inline';
+                        hideIcon.style.display = 'none';
+                        Swal.fire('Notice', data.message, 'info');
                     }
-                })
-                .catch(() => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Network Error',
-                        text: 'Please try again later.',
-                    });
-                });
+                } else {
+                    Swal.fire('Error', data.message || 'Failed to update watchlist.', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'Something went wrong.', 'error');
             });
         });
     });
+});
 </script>
 
 

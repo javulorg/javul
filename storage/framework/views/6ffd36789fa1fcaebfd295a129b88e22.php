@@ -97,7 +97,7 @@
     </div>
 
     <div class="content_block_bottom">
-        <a href="<?php echo e(url('units/add')); ?>">Add New</a>
+        <a href="<?php echo e(url('units/add')); ?>"><img src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt="">Add New</a>
         <div class="separator"></div>
         <a href="<?php echo e(url('units')); ?>">See more</a>
 

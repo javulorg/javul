@@ -95,7 +95,7 @@
     </div>
 
     <div class="content_block_bottom">
-        <a href="{{ url('units/add') }}">Add New</a>
+        <a href="{{ url('units/add') }}"><img src="{{ asset('v2/assets/img/circle-plus.svg') }}" alt="">Add New</a>
         <div class="separator"></div>
         <a href="{{ url('units') }}">See more</a>
 

@@ -270,51 +270,50 @@
                                         {{-- </div> --}}
                                 </div>
                             </div>
-                            <div class="objective_content_info_links">
-                                @php
-                                $isIssueWatched = auth()->check() && \App\Models\Watchlist::where('user_id',
-                                auth()->id())
-                                ->where('unit_id', $unitData->id)
-                                ->where('issue_id', $issueObj->id)
-                                ->exists();
-                                @endphp
+                            @php
+                            $isLoggedIn = auth()->check();
+                            $isIssueWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
+                            ->where('issue_id', $issueObj->id)
+                            ->exists();
+                            @endphp
 
-                                {{-- Watch --}}
+                            <div class="objective_content_info_links">
+                                {{-- ✅ Watch --}}
                                 <a href="javascript:void(0);" class="edit_icon watchlist-link-issue"
-                                    data-id="{{ $issueObj->id }}"
-                                    data-url="{{ route('watchlistIssue.store', ['unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}"
+                                    data-id="{{ $issueObj->id }}" data-auth="{{ $isLoggedIn ? '1' : '0' }}"
+                                    data-url="{{ route('watchlistIssue.store', ['issue_id' => $issueObj->id]) }}"
                                     id="issue-eye-link-{{ $issueObj->id }}"
                                     style="{{ $isIssueWatched ? 'display: none;' : '' }}">
                                     <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;"
                                         alt="Watch">
                                 </a>
 
-                                {{-- Unwatch --}}
+                                {{-- ✅ Unwatch --}}
                                 <a href="javascript:void(0);" class="edit_icon unwatchlist-link-issue"
-                                    data-id="{{ $issueObj->id }}"
-                                    data-url="{{ route('watchlistIssue.remove', ['unitId' => $unitData->id, 'issue_id' => $issueObj->id]) }}"
+                                    data-id="{{ $issueObj->id }}" data-auth="{{ $isLoggedIn ? '1' : '0' }}"
+                                    data-url="{{ route('watchlistIssue.remove', ['issue_id' => $issueObj->id]) }}"
                                     id="issue-eye-off-link-{{ $issueObj->id }}"
                                     style="{{ $isIssueWatched ? '' : 'display: none;' }}">
                                     <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
                                         style="height: 20px; width: 20px;" alt="Unwatch">
                                 </a>
 
-
-
-                                {{-- Optional: Revision History --}}
+                                {{-- Revision History --}}
                                 <div class="separat"></div>
-                                <a href="{!! route('issues_revison', [$issueIDHashID->encode($issueObj->id)]) !!}"
+                                <a href="{{ route('issues_revison', [$issueIDHashID->encode($issueObj->id)]) }}"
                                     class="edit_icon">
                                     Revision History
                                 </a>
 
-                                {{-- Optional: Edit Icon --}}
+                                {{-- Edit Icon --}}
                                 <div class="separat"></div>
-                                <a href="{!! url('issues/' . $issueIDHashID->encode($issueObj->id) . '/edit') !!}"
+                                <a href="{{ url('issues/' . $issueIDHashID->encode($issueObj->id) . '/edit') }}"
                                     class="edit_icon">
-                                    <img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt="">
+                                    <img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt="Edit">
                                 </a>
                             </div>
+
+
 
 
 
@@ -625,8 +624,14 @@
         const watchBtn = e.target.closest('.watchlist-link-issue');
         const unwatchBtn = e.target.closest('.unwatchlist-link-issue');
 
-        // Add to Watchlist
+        // ✅ Watch
         if (watchBtn) {
+            const isLoggedIn = watchBtn.dataset.auth === '1';
+            if (!isLoggedIn) {
+                window.location.href = "{{ route('login') }}";
+                return;
+            }
+
             const issueId = watchBtn.dataset.id;
             const url = watchBtn.dataset.url;
 
@@ -638,128 +643,83 @@
                 },
                 body: JSON.stringify({})
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Add failed');
+                return res.json();
+            })
             .then(data => {
                 if (data.message.includes('Added')) {
                     document.getElementById('issue-eye-link-' + issueId).style.display = 'none';
                     document.getElementById('issue-eye-off-link-' + issueId).style.display = 'inline-block';
-                    Swal.fire('Success', data.message, 'success');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                 } else {
-                    Swal.fire('Notice', data.message || 'Already in watchlist.', 'info');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Notice',
+                        text: data.message || 'Already in watchlist.'
+                    });
                 }
             })
-            .catch(() => Swal.fire('Error', 'Could not add to watchlist.', 'error'));
+            .catch(() => {
+                Swal.fire('Error', 'Could not add to watchlist.', 'error');
+            });
         }
 
-        // Remove from Watchlist
+        // ✅ Unwatch
         if (unwatchBtn) {
+            const isLoggedIn = unwatchBtn.dataset.auth === '1';
+            if (!isLoggedIn) {
+                window.location.href = "{{ route('login') }}";
+                return;
+            }
+
             const issueId = unwatchBtn.dataset.id;
             const url = unwatchBtn.dataset.url;
 
             fetch(url, {
-                method: 'POST', // POST is used even for removal
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({})
+                }
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Remove failed');
+                return res.json();
+            })
             .then(data => {
                 if (data.message.includes('Removed')) {
                     document.getElementById('issue-eye-link-' + issueId).style.display = 'inline-block';
                     document.getElementById('issue-eye-off-link-' + issueId).style.display = 'none';
-                    Swal.fire('Removed', data.message, 'success');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Removed',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                 } else {
-                    Swal.fire('Notice', data.message || 'Not found in watchlist.', 'info');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Notice',
+                        text: data.message || 'Item not found in watchlist.'
+                    });
                 }
             })
-            .catch(() => Swal.fire('Error', 'Could not remove from watchlist.', 'error'));
+            .catch(() => {
+                Swal.fire('Error', 'Could not remove from watchlist.', 'error');
+            });
         }
     });
 });
 </script>
 
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-    // Add to watchlist
-    document.querySelectorAll('.watchlist-link-issue').forEach(function (el) {
-        el.addEventListener('click', function () {
-            const url = el.dataset.url;
-            const issueId = el.dataset.id;
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({})
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.message === 'Added to watchlist!') {
-                    document.getElementById('issue-eye-link-' + issueId).style.display = 'none';
-                    document.getElementById('issue-eye-off-link-' + issueId).style.display = 'inline-block';
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added!',
-                        text: data.message,
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                } else {
-                    Swal.fire('Notice', data.message || 'Already in watchlist.', 'info');
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error', 'Failed to add to watchlist.', 'error');
-            });
-        });
-    });
-
-    // Remove from watchlist
-    document.querySelectorAll('.unwatchlist-link-issue').forEach(function (el) {
-        el.addEventListener('click', function () {
-            const url = el.dataset.url;
-            const issueId = el.dataset.id;
-
-            fetch(url, {
-                method: 'POST', // Keep POST if your route is defined as POST
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({})
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.message === 'Removed from watchlist!') {
-                    document.getElementById('issue-eye-link-' + issueId).style.display = 'inline-block';
-                    document.getElementById('issue-eye-off-link-' + issueId).style.display = 'none';
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Removed!',
-                        text: data.message,
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                } else {
-                    Swal.fire('Notice', data.message || 'Watchlist item not found.', 'info');
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error', 'Failed to remove from watchlist.', 'error');
-            });
-        });
-    });
-});
-</script>
 
 
 

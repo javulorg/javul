@@ -119,10 +119,6 @@
 
     </div>
     <div class="content_block_bottom">
-<a href="{{ isset($issueData) ? url('issues/' . $unitIDHashID->encode($issueData->unit_id) . '/add') : '#' }}">
-    Add New
-</a>
-           <div class="separator"></div>
         <a href="{{ url('issues') }}">See more</a>
     </div>
 </div>

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Providers;
 
 use App\Http\Controllers\Mc;
@@ -16,6 +17,7 @@ use App\Models\UserMessages;
 use App\Models\UserNotification;
 use Carbon\Carbon;
 use Hashids\Hashids;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +25,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ViewComposerServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(Request $request)
     {
         view()->composer('*', function ($view) {
             $view->with('authUserObj', auth()->user());
@@ -43,6 +45,7 @@ class ViewComposerServiceProvider extends ServiceProvider
             $view->with('totalUnits', DB::connection()->getSchemaBuilder()->hasTable('units') ? Unit::count() : 0);
             $view->with('totalObjectives', DB::connection()->getSchemaBuilder()->hasTable('objectives') ? Objective::count() : 0);
             $view->with('totalTasks', DB::connection()->getSchemaBuilder()->hasTable('tasks') ? Task::count() : 0);
+            $view->with('totalIdeas', DB::connection()->getSchemaBuilder()->hasTable('ideas') ? Idea::count() : 0);
             $view->with('totalIssues', DB::connection()->getSchemaBuilder()->hasTable('issues') ? Issue::count() : 0);
             $view->with('totalFundsAvailable', DB::connection()->getSchemaBuilder()->hasTable('funds') ? Fund::where('status', 'approved')->where('transaction_type', 'donated')->sum('amount') : 0);
         });
@@ -116,9 +119,14 @@ class ViewComposerServiceProvider extends ServiceProvider
         if (DB::connection()->getSchemaBuilder()->hasTable('tasks')) {
             $tasksMaster = Task::query()
                 ->with('unit')
+                ->when($request->filled('search'), function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                    // ya agar 'name' column nahi ho to 'title' ya 'task_name' lagao
+                })
                 ->orderByDesc('id')
                 ->limit(5)
                 ->get();
+
 
             $tasksMasterData = Task::query()
                 ->with('unit')
@@ -136,9 +144,13 @@ class ViewComposerServiceProvider extends ServiceProvider
             $objectivesTotal  = Objective::count();
             $objectivesMaster = Objective::query()
                 ->with('unit')
+                ->when($request->filled('search'), function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                })
                 ->orderBy('id', 'DESC')
                 ->limit(5)
                 ->get();
+
 
             $objectivesMasterData = Objective::query()
                 ->with('unit')
@@ -158,7 +170,15 @@ class ViewComposerServiceProvider extends ServiceProvider
             $allUnits = Unit::query()
                 ->orderBy('id', 'DESC')
                 ->get();
+            // $unitsMaster = Unit::query()
+            //     ->orderBy('id', 'DESC')
+            //     ->limit(5)
+            //     ->get();
+
             $unitsMaster = Unit::query()
+                ->when($request->filled('search'), function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                })
                 ->orderBy('id', 'DESC')
                 ->limit(5)
                 ->get();
@@ -179,6 +199,10 @@ class ViewComposerServiceProvider extends ServiceProvider
 
             $issuesMasterData = Issue::query()
                 ->with('unit')
+                ->when($request->filled('search'), function ($query) use ($request) {
+                    $query->where('title', 'like', '%' . $request->search . '%');
+                    // Agar `name` ki jagah `title` ya `subject` ho to yaha change kar lena
+                })
                 ->orderBy('id', 'DESC')
                 ->get();
         } else {
@@ -189,8 +213,11 @@ class ViewComposerServiceProvider extends ServiceProvider
 
         if (DB::connection()->getSchemaBuilder()->hasTable('ideas')) {
             $ideasMasterTotal = Idea::count();
-            $ideasMaster      = Idea::query()
+            $ideasMaster = Idea::query()
                 ->with('unit')
+                ->when($request->filled('search'), function ($query) use ($request) {
+                    $query->where('title', 'like', '%' . $request->search . '%');
+                })
                 ->orderBy('id', 'DESC')
                 ->get();
         } else {

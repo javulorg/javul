@@ -47,7 +47,11 @@ class ObjectivesController extends Controller
     public function index(Request $request)
     {
 
-        $pagination = $this->service->listAll()->paginate(10);
+        // $pagination = $this->service->listAll()->paginate(10);
+            $pagination = $this->service->listAll($request)
+                    ->paginate(10)
+                    ->appends($request->all());
+
         $msg_flag = false;
         $msg_val = '';
         $msg_type = '';
@@ -779,7 +783,7 @@ class ObjectivesController extends Controller
                         view()->share('unitObj', $unitData);
                         $objectiveIdeas = Objective::with('ideas')->where('id', $objectiveObj->id)->first();
                         view()->share('objectiveIdeas', $objectiveIdeas);
-                        return view('objectives.view', ['childobjectiveObj' => $childobjectiveObj] );
+                        return view('objectives.view', ['childobjectiveObj' => $childobjectiveObj]);
                     }
                 }
             }
@@ -1043,10 +1047,9 @@ class ObjectivesController extends Controller
     public function storeW(Request $request)
     {
         $userId = $request->input('userId');
-        $unitId = $request->input('unitId');
-        $objective_id = $request->input('objective_id');
+        $objective_id = $request->input('objective_id'   );
 
-        if (!$userId || !$unitId || !$objective_id) {
+        if (!$userId || !$objective_id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Missing input data.'
@@ -1054,7 +1057,6 @@ class ObjectivesController extends Controller
         }
 
         $existing = Watchlist::where('user_id', $userId)
-            ->where('unit_id', $unitId)
             ->where('objective_id', $objective_id)
             ->first();
 
@@ -1067,7 +1069,6 @@ class ObjectivesController extends Controller
 
         Watchlist::create([
             'user_id' => $userId,
-            'unit_id' => $unitId,
             'objective_id' => $objective_id,
         ]);
 
@@ -1077,30 +1078,28 @@ class ObjectivesController extends Controller
         ]);
     }
 
+
     public function remove(Request $request)
-{
-    $userId = $request->input('userId');
-    $unitId = $request->input('unitId');
-    $objectiveId = $request->input('objective_id');
+    {
+        $userId = $request->input('userId');
+        $objectiveId = $request->input('objective_id');
 
-    $watchlist = Watchlist::where('user_id', $userId)
-        ->where('unit_id', $unitId)
-        ->where('objective_id', $objectiveId)
-        ->first();
+        $watchlist = Watchlist::where('user_id', $userId)
+            ->where('objective_id', $objectiveId)
+            ->first();
 
-    if ($watchlist) {
-        $watchlist->delete();
+        if ($watchlist) {
+            $watchlist->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Removed from watchlist.'
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-            'message' => 'Removed from watchlist.'
+            'success' => false,
+            'message' => 'Watchlist item not found.'
         ]);
     }
-
-    return response()->json([
-        'success' => false,
-        'message' => 'Watchlist item not found.'
-    ]);
-}
-
 }
