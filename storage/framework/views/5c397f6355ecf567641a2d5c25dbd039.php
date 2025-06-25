@@ -205,46 +205,53 @@
                                         </div>
                                     </div>
                                 </div>
-                                
 
-                                <div class="objective_content_info_links">
-                                    <?php
-                                        $isIssueWatched = \App\Models\Watchlist::where('user_id', $unitData->id)
-                                            ->where('unit_id', $unitData->id)
-                                            ->where('idea_id', $idea->id)
-                                            ->exists();
-                                    ?>
+                               <?php
+    $isLoggedIn = auth()->check();
+    $isIdeaWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
+        ->where('idea_id', $idea->id)
+        ->exists();
+?>
 
-                                    <a class="edit_icon watchlist-link"
-                                       data-id="<?php echo e($idea->id); ?>"
-                                       data-url="<?php echo e(route('watchlistIdea.store', ['userId' => $unitData->id, 'unitId' => $unitData->id, 'idea_id' => $idea->id])); ?>"
-                                       id="idea-eye-link-<?php echo e($idea->id); ?>"
-                                       style="<?php echo e($isIssueWatched ? 'display: none;' : ''); ?>">
-                                        <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>"
-                                             style="height: 20px; width: 20px;"
-                                             alt="Watch"
-                                             id="idea-eye-icon-<?php echo e($idea->id); ?>">
-                                    </a>
+<div class="objective_content_info_links">
 
-                                    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
-                                         style="height: 20px; width: 20px; <?php echo e($isIssueWatched ? '' : 'display: none;'); ?>"
-                                         alt="Watched"
-                                         id="idea-eye-off-icon-<?php echo e($idea->id); ?>">
+    
+    <a class="edit_icon watchlist-link-idea"
+       href="javascript:void(0);"
+       data-id="<?php echo e($idea->id); ?>"
+       data-auth="<?php echo e($isLoggedIn ? '1' : '0'); ?>"
+       data-url="<?php echo e(route('watchlistIdea.store', ['idea_id' => $idea->id])); ?>"
+       id="idea-eye-link-<?php echo e($idea->id); ?>"
+       style="<?php echo e($isIdeaWatched ? 'display: none;' : ''); ?>">
+        <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;" alt="Watch">
+    </a>
+
+    
+    <a class="edit_icon unwatchlist-link-idea"
+       href="javascript:void(0);"
+       data-id="<?php echo e($idea->id); ?>"
+       data-auth="<?php echo e($isLoggedIn ? '1' : '0'); ?>"
+       data-url="<?php echo e(route('watchlistIdea.remove', ['idea_id' => $idea->id])); ?>"
+       id="idea-eye-off-link-<?php echo e($idea->id); ?>"
+       style="<?php echo e($isIdeaWatched ? '' : 'display: none;'); ?>">
+        <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>" style="height: 20px; width: 20px;" alt="Unwatch">
+    </a>
+
+    
+    <div class="separat"></div>
+    <a href="<?php echo e(route('idea_revisions', [$ideaHashId])); ?>" class="edit_icon">
+        Revision History
+    </a>
+
+    
+    <div class="separat"></div>
+    <a href="<?php echo e(url('ideas/' . $ideaHashId . '/edit')); ?>" class="edit_icon">
+        <img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt="">
+    </a>
+
+</div>
 
 
-
-                                    <div class="separat"></div>
-
-                                    <a href="<?php echo route('idea_revisions', [$ideaHashId]); ?>" class="edit_icon">
-                                        Revision History
-                                    </a>
-
-                                    <div class="separat"></div>
-
-                                    <a href="<?php echo url('ideas/' . $ideaHashId . '/edit'); ?>" class="edit_icon">
-                                        <img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt="">
-                                    </a>
-                                </div>
                             </div>
 
                             </div>
@@ -680,66 +687,89 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.watchlist-link').forEach(function (link) {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            const url = this.dataset.url;
-            const ideaId = this.dataset.id;
-            const viewUrl = this.dataset.viewUrl; // Optional link to view idea
+    document.body.addEventListener('click', function (e) {
+        const watchBtn = e.target.closest('.watchlist-link-idea');
+        const unwatchBtn = e.target.closest('.unwatchlist-link-idea');
 
-            const eyeIcon = document.getElementById('idea-eye-icon-' + ideaId);
-            const eyeOffIcon = document.getElementById('idea-eye-off-icon-' + ideaId);
-            const anchor = document.getElementById('idea-eye-link-' + ideaId);
-
-            // Guard checks to avoid null errors
-            if (!url || !anchor || !eyeOffIcon) {
-                console.error("Missing required elements or attributes.");
+        // ✅ Add to Watchlist
+        if (watchBtn) {
+            const isLoggedIn = watchBtn.dataset.auth === '1';
+            if (!isLoggedIn) {
+                window.location.href = "/login"; // redirect to login
                 return;
             }
 
-            this.classList.add('pointer-events-none', 'opacity-50');
+            const ideaId = watchBtn.dataset.id;
+            const url = watchBtn.dataset.url;
 
             fetch(url, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
                 },
+                body: JSON.stringify({})
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
+            .then(res => res.json())
             .then(data => {
-                anchor.style.display = "none";
-                eyeOffIcon.style.display = "inline-block";
+                document.getElementById('idea-eye-link-' + ideaId).style.display = 'none';
+                document.getElementById('idea-eye-off-link-' + ideaId).style.display = 'inline-block';
 
                 Swal.fire({
                     icon: 'success',
                     title: 'Added to Watchlist',
-                    html: `
-                        <p>${data.message || 'Idea added successfully!'}</p>
-                        ${viewUrl ? `<a href="${viewUrl}" target="_blank" style="color:#3085d6; text-decoration: underline;">View Idea</a>` : ''}
-                    `,
+                    text: data.message || 'Idea added successfully!',
+                    timer: 2000,
                     showConfirmButton: false,
-                    timer: 3000
                 });
             })
-            .catch(err => {
-                console.error('Watchlist error:', err);
-                this.classList.remove('pointer-events-none', 'opacity-50');
+            .catch(() => {
+                Swal.fire('Error', 'Failed to add to watchlist.', 'error');
+            });
+        }
+
+        // ✅ Remove from Watchlist
+        if (unwatchBtn) {
+            const isLoggedIn = unwatchBtn.dataset.auth === '1';
+            if (!isLoggedIn) {
+                window.location.href = "/login";
+                return;
+            }
+
+            const ideaId = unwatchBtn.dataset.id;
+            const url = unwatchBtn.dataset.url;
+
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('idea-eye-link-' + ideaId).style.display = 'inline-block';
+                document.getElementById('idea-eye-off-link-' + ideaId).style.display = 'none';
 
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    text: 'Something went wrong. Please try again.',
+                    icon: 'success',
+                    title: 'Removed from Watchlist',
+                    text: data.message || 'Idea removed successfully!',
+                    timer: 2000,
+                    showConfirmButton: false,
                 });
+            })
+            .catch(() => {
+                Swal.fire('Error', 'Failed to remove from watchlist.', 'error');
             });
-        });
+        }
     });
 });
 </script>
+
+
 
 
 <?php $__env->stopSection(); ?>

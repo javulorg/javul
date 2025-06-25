@@ -86,12 +86,6 @@
 
     </div>
     <div class="content_block_bottom">
-        <a
-            href="<?php echo e(isset($objective) ? url('objectives/' . $unitIDHashID->encode($objective->unit_id) . '/add') : '#'); ?>">
-            Add New
-        </a>
-
-        <div class="separator"></div>
         <a href="<?php echo e(url('objectives')); ?>">See more</a>
     </div>
 </div>

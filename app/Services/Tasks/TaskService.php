@@ -3,6 +3,7 @@
 namespace App\Services\Tasks;
 
 use App\Models\Task;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TaskService
@@ -25,9 +26,16 @@ class TaskService
     }
 
 
-    public function listAll()
-    {
-        return Task::query();  // ✅ Correct class name
+public function listAll(Request $request)
+{
+    $query = Task::query();
+
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
     }
+
+    return $query;
+}
+
 
 }

@@ -302,64 +302,42 @@ class HomeController extends Controller
 
     public function my_watchlist(Request $request)
     {
-        // $watchedUnits = Watchlist::join('units', 'my_watchlist.unit_id', '=', 'units.id')
-        //     ->where('my_watchlist.user_id', Auth::user()->id)
-        //     ->whereNotNull('unit_id')->select(['units.*'])->get();
+        $userId = auth()->id();
 
-        // $watchedUnits = Watchlist::join('Objectives');
+        $watchedObject = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')
+            ->where('my_watchlist.user_id', $userId)
+            ->select('objectives.*')
+            ->get();
 
-        // $watchedUnits = Watchlist::join('units','my_watchlist.unit_id','=','units.id')
-        //                 ->where('my_watchlist.user_id',Auth::user()->id)
-        //                 ->whereNotNull('unit_id')->select(['units.*'])->get();
+        $watchedTask = Watchlist::join('tasks', 'my_watchlist.task_id', '=', 'tasks.id')
+            ->where('my_watchlist.user_id', $userId)
+            ->select('tasks.*')
+            ->get();
 
+        $watchedIssue = Watchlist::join('issues', 'my_watchlist.issue_id', '=', 'issues.id')
+            ->where('my_watchlist.user_id', $userId)
+            ->select('issues.*')
+            ->get();
 
-        // $watchedObjectives = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')->select('Objectives.*')->get();
-        // ->where('my_watchlist.user_id',Auth::user()->id)
-        // ->whereNotNull('objective_id')->select(['objectives.*'])->get();
-
-
-
-        // $watchedObjectives = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')
-        //     ->where('my_watchlist.user_id', Auth::user()->id)
-        //     ->whereNotNull('objective_id')->select(['objectives.*'])->get();
-
-
-
-        // $watchedTask = Watchlist::join(': tasks', 'my_watchlist.objective_id', '=', 'objectives.id')->select('Objectives.*')->get();
-
-        $watchedObject = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')->select('objectives.*')->get();
-
-        $watchedTask = Watchlist::join('tasks', 'my_watchlist.task_id', '=', 'tasks.id')->select('tasks.*')->get();
-
-        $watchedIssue = Watchlist::join('issues', 'my_watchlist.issue_id', '=', 'issues.id')->select('issues.*')->get();
-
-        $watchedIdea = Watchlist::join('ideas', 'my_watchlist.idea_id', '=', 'ideas.id')->select('ideas.*')->get();
-
+        $watchedIdea = Watchlist::join('ideas', 'my_watchlist.idea_id', '=', 'ideas.id')
+            ->where('my_watchlist.user_id', $userId)
+            ->select('ideas.*')
+            ->get();
 
         $watchedUnit = Watchlist::join('units', 'my_watchlist.unit_id', '=', 'units.id')
-    ->select('units.*')
-    ->distinct()
-    ->get();
+            ->where('my_watchlist.user_id', $userId)
+            ->select('units.*')
+            ->distinct()
+            ->get();
 
-        // $watchedTasks = Watchlist::join('tasks','my_watchlist.task_id','=','tasks.id')
-        //                 ->where('my_watchlist.user_id',Auth::user()->id)
-        //                 ->whereNotNull('task_id')->select(['tasks.*'])->get();
-
-
-        // $watchedIssues = Watchlist::join( 'issues','my_watchlist.issue_id','=','issues.id')
-        //     ->where('my_watchlist.user_id',Auth::user()->id)
-        //     ->whereNotNull('issue_id')->select(['issues.*'])->get();
-
-
-
-        //        dd($watchedIssues);
-        // view()->share('watchedUnits',$watchedUnits);
-        // view()->share('watchedObjectives',$watchedObjectives);
-        // view()->share('watchedTasks',$watchedTasks);
-        // view()->share('watchedIssues',$watchedIssues);
-        return view('users.my_watchlist', ['watchedUnits' => $watchedObject, 'watchedTasks' => $watchedTask, 'watchedissues' => $watchedIssue, 'watchedIdea' => $watchedIdea, 'watchedUnittotal' => $watchedUnit]);
+        return view('users.my_watchlist', [
+            'watchedUnits' => $watchedObject,
+            'watchedTasks' => $watchedTask,
+            'watchedissues' => $watchedIssue,
+            'watchedIdea' => $watchedIdea,
+            'watchedUnittotal' => $watchedUnit
+        ]);
     }
-
 
 
 

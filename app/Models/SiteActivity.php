@@ -10,7 +10,7 @@ class SiteActivity extends Model
     use HasFactory;
     protected $table = 'site_activities';
 
-    protected $fillable = ['user_id','unit_id','objective_id','task_id','issue_id','comment'];
+    protected $fillable = ['user_id','unit_id','objective_id','task_id','idea_id','issue_id','comment'];
 
     public function user()
     {

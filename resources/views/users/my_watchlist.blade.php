@@ -205,15 +205,6 @@
 {{--        </div>--}}
 {{--    </div>--}}
 {{--@endsection--}}
-
-
-
-
-
-
-
-
-
 @extends('layout.master')
 @section('title', 'My Watchlist')
 @section('style')
@@ -223,13 +214,11 @@
 @section('content')
     <div class="content_row">
         <div class="sidebar">
-
             <?php
             $title = 'Activity Log';
             ?>
             @include('layout.v2.global-activity-log',['title' => $title])
         </div>
-
         <div class="main_content">
             <h2>Watch List</h2>
             <div class="content_block">

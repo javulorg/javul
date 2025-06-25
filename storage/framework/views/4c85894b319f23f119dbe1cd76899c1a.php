@@ -40,7 +40,8 @@
                         Ideas
                     </div>
                     <div class="statistic_block_bottom">
-                        115
+                        <?php echo e($totalIdeas); ?>
+
                     </div>
                 </div>
                 <div class="statistic_block statistic_block_red">

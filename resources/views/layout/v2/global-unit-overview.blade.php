@@ -137,26 +137,31 @@
         @if (isset($unitObj))
             <div class="sidebar_block_content_bottom">
                 {{-- @dd($unitObj) --}}
+
                 @php
-                    $isWatched =
-                        auth()->check() &&
-                        \App\Models\Watchlist::where('user_id', auth()->id())
-                            ->where('unit_id', $unitObj->id)
-                            ->exists();
-                @endphp
+            $isWatched = auth()->check() && \App\Models\Watchlist::where('user_id', auth()->id())
+            ->where('unit_id', $unitObj->id)
+            ->exists();
+            @endphp
 
-                <a href="javascript:void(0);" class="edit_icon watchlist-link" data-user-id="{{ auth()->id() ?? '' }}"
-                    data-unit-id="{{ $unitObj->id }}"
-                    data-url="{{ route('watchlistU.store', ['userId' => auth()->id() ?? 0, 'unitId' => $unitObj->id]) }}"
-                    data-auth="{{ auth()->check() ? 'yes' : 'no' }}" id="eye-link-{{ $unitObj->id }}"
-                    style="{{ $isWatched ? 'display: none;' : '' }}">
-                    <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;" alt="Watch">
-                </a>
+            <a href="javascript:void(0);" class="edit_icon watchlist-link"
+                data-user-id="{{ auth()->id() ?? '' }}"
+                data-unit-id="{{ $unitObj->id }}"
+                data-auth="{{ auth()->check() ? 'yes' : 'no' }}"
+                data-url="{{ route('watchlistU.store', ['unitId' => $unitObj->id]) }}"
+                id="eye-link-{{ $unitObj->id }}"
+                style="{{ $isWatched ? 'display: none;' : '' }}">
+                <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;" alt="Watch">
+            </a>
 
-                <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
-                    style="height: 20px; width: 20px; {{ $isWatched ? '' : 'display: none;' }}" alt="Watched"
-                    id="eye-off-icon-{{ $unitObj->id }}">
-
+            <a href="javascript:void(0);" class="edit_icon unwatchlist-link"
+                data-unit-id="{{ $unitObj->id }}"
+                data-auth="{{ auth()->check() ? 'yes' : 'no' }}"
+                data-url="{{ route('watchlistU.remove', ['unitId' => $unitObj->id]) }}"
+                id="eye-off-link-{{ $unitObj->id }}"
+                style="{{ $isWatched ? '' : 'display: none;' }}">
+                <img src="{{ asset('v2/assets/img/eye-slash.svg') }}" style="height: 20px; width: 20px;" alt="Unwatch">
+            </a>
 
 
                 <div class="separator"></div>
@@ -184,100 +189,100 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.watchlist-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
+        const csrfToken = '{{ csrf_token() }}';
+        const loginUrl = "{{ route('login') }}";
 
-                const unitId = this.dataset.unitId;
-                const userId = this.dataset.userId;
-                const url = this.dataset.url;
+        document.body.addEventListener('click', function(e) {
+            const watchBtn = e.target.closest('.watchlist-link');
+            const unwatchBtn = e.target.closest('.unwatchlist-link');
+
+            // Add to Watchlist
+            if (watchBtn) {
+                const isAuth = watchBtn.dataset.auth;
+                if (isAuth === 'no') {
+                    return window.location.href = loginUrl;
+                }
+
+                const unitId = watchBtn.dataset.unitId;
+                const url = watchBtn.dataset.url;
 
                 fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'X-CSRF-TOKEN': csrfToken
                         },
-                        body: JSON.stringify({
-                            userId,
-                            unitId
-                        })
+                        body: JSON.stringify({})
                     })
-                    .then(response => response.json())
+                    .then(res => res.json())
                     .then(data => {
                         if (data.message === 'Added to watchlist!') {
-                            document.getElementById(eye-link-${unitId}).style.display =
-                                'none';
-                            document.getElementById(eye-off-icon-${unitId}).style
-                                .display = 'inline';
+                            document.getElementById('eye-link-' + unitId).style.display = 'none';
+                            document.getElementById('eye-off-link-' + unitId).style.display = 'inline-block';
 
-                            // ✅ SweetAlert2 Success Alert
                             Swal.fire({
                                 title: 'Success!',
-                                text: 'Unit added to your watchlist successfully.',
+                                text: 'Unit added to your watchlist.',
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             });
-                        } else if (data.message === 'Already in Watchlist') {
+                        } else {
                             Swal.fire({
                                 title: 'Info',
-                                text: 'Unit is already in your watchlist.',
+                                text: data.message || 'Already in watchlist.',
                                 icon: 'info',
                                 confirmButtonText: 'OK'
                             });
                         }
                     })
-                    .catch(err => {
-                        console.error('Error:', err);
-                        // Swal.fire({
-                        //     title: 'Error',
-                        //     text: 'Something went wrong. Please try again.',
-                        //     icon: 'error',
-                        //     confirmButtonText: 'OK'
-                        // });
+                    .catch(() => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Something went wrong. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     });
-            });
-        });
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.watchlist-link').forEach(function(el) {
-            el.addEventListener('click', function() {
-                const isAuth = el.getAttribute('data-auth');
-                const loginUrl = "{{ route('login') }}";
+            }
 
+            // Remove from Watchlist
+            if (unwatchBtn) {
+                const isAuth = unwatchBtn.dataset.auth;
                 if (isAuth === 'no') {
-                    // alert("Please login to add this to your watchlist.");
-                    window.location.href = loginUrl;
-                    return;
+                    return window.location.href = loginUrl;
                 }
 
-                // if authenticated, perform your AJAX or form submission
-                const userId = el.getAttribute('data-user-id');
-                const unitId = el.getAttribute('data-unit-id');
-                const url = el.getAttribute('data-url');
+                const unitId = unwatchBtn.dataset.unitId;
+                const url = unwatchBtn.dataset.url;
 
-                // Example AJAX code (if needed)
                 fetch(url, {
-                        method: 'POST',
+                        method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            user_id: userId,
-                            unit_id: unitId
-                        })
-                    }).then(res => res.json())
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    })
+                    .then(res => res.json())
                     .then(data => {
-                        console.log(data);
-                        document.getElementById('eye-link-' + unitId).style.display =
-                            'none';
-                        document.getElementById('eye-off-icon-' + unitId).style.display =
-                            'inline';
+                        document.getElementById('eye-link-' + unitId).style.display = 'inline-block';
+                        document.getElementById('eye-off-link-' + unitId).style.display = 'none';
+
+                        Swal.fire({
+                            title: 'Removed!',
+                            text: 'Unit removed from your watchlist.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Could not remove from watchlist.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     });
-            });
+            }
         });
-    });
+    });
 </script>

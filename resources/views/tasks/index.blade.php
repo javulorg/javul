@@ -258,9 +258,6 @@
                 </div>
 
             </div>
-            <div class="content_block_bottom">
-               <a href="{!! url('tasks/add?unit='.$unitIDHashID->encode($task->objective_id)) !!}">Add New</a>
-            </div>
             <div class="d-flex justify-content-between mt-2">
                 <div class="pagination-left">
                 </div>

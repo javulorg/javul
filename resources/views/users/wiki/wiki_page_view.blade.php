@@ -32,7 +32,7 @@
                     <div class="panel-heading">
                         <h4 class="pull-left">{{ $pageObj->page_title }} </h4>
                         <div class="user-wikihome-tool pull-right small-a">
-                           <a href="{{ route('user_wiki_newpage',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}"> + New Page </a> | 
+                           <a href="{{ route('user_wiki_newpage',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}"> + New Page </a> |
                            <a href="{{ route('user_wiki_recent_changes',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}"> Recent Changes </a> |
                            <a href="{{ route('user_wiki_page_list',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash ])  }}"> List All Pages </a>
                         </div>
@@ -42,7 +42,7 @@
                         <div class="pull-right small-a">
                             <a href="{{ route('user_wiki_editpage',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash, $page_id_hase ])  }}">Edit</a>
                             <a href="{{ route('user_wiki_history',[ str_replace(' ', '_', strtolower($userObj->first_name." ".$userObj->last_name) ),$user_id_hash, $page_id_hase ])  }}">View History</a>
-                            
+
                         </div>
                         <div class="clearfix"></div>
                         <div class="col-md-12 wiki-page-desc"><?= $pageObj->page_content ?></div>

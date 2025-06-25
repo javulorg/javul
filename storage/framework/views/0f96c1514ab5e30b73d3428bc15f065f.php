@@ -6,13 +6,11 @@
 <?php $__env->startSection('content'); ?>
     <div class="content_row">
         <div class="sidebar">
-
             <?php
             $title = 'Activity Log';
             ?>
             <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         </div>
-
         <div class="main_content">
             <h2>Watch List</h2>
             <div class="content_block">

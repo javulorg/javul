@@ -7,6 +7,7 @@ namespace App\Services\Objectives;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Objective;
+use Illuminate\Http\Request;
 
 class ObjectiveService
 {
@@ -27,10 +28,16 @@ class ObjectiveService
         return $comments;
     }
 
-    public function listAll()
-    {
-        return Objective::query();  // ✅ Correct class name
+public function listAll(Request $request)
+{
+    $query = Objective::query();
+
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
     }
+
+    return $query;
+}
 
 
 }

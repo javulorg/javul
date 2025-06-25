@@ -141,26 +141,31 @@
         <?php if(isset($unitObj)): ?>
             <div class="sidebar_block_content_bottom">
                 
+
                 <?php
-                    $isWatched =
-                        auth()->check() &&
-                        \App\Models\Watchlist::where('user_id', auth()->id())
-                            ->where('unit_id', $unitObj->id)
-                            ->exists();
-                ?>
+            $isWatched = auth()->check() && \App\Models\Watchlist::where('user_id', auth()->id())
+            ->where('unit_id', $unitObj->id)
+            ->exists();
+            ?>
 
-                <a href="javascript:void(0);" class="edit_icon watchlist-link" data-user-id="<?php echo e(auth()->id() ?? ''); ?>"
-                    data-unit-id="<?php echo e($unitObj->id); ?>"
-                    data-url="<?php echo e(route('watchlistU.store', ['userId' => auth()->id() ?? 0, 'unitId' => $unitObj->id])); ?>"
-                    data-auth="<?php echo e(auth()->check() ? 'yes' : 'no'); ?>" id="eye-link-<?php echo e($unitObj->id); ?>"
-                    style="<?php echo e($isWatched ? 'display: none;' : ''); ?>">
-                    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;" alt="Watch">
-                </a>
+            <a href="javascript:void(0);" class="edit_icon watchlist-link"
+                data-user-id="<?php echo e(auth()->id() ?? ''); ?>"
+                data-unit-id="<?php echo e($unitObj->id); ?>"
+                data-auth="<?php echo e(auth()->check() ? 'yes' : 'no'); ?>"
+                data-url="<?php echo e(route('watchlistU.store', ['unitId' => $unitObj->id])); ?>"
+                id="eye-link-<?php echo e($unitObj->id); ?>"
+                style="<?php echo e($isWatched ? 'display: none;' : ''); ?>">
+                <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;" alt="Watch">
+            </a>
 
-                <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
-                    style="height: 20px; width: 20px; <?php echo e($isWatched ? '' : 'display: none;'); ?>" alt="Watched"
-                    id="eye-off-icon-<?php echo e($unitObj->id); ?>">
-
+            <a href="javascript:void(0);" class="edit_icon unwatchlist-link"
+                data-unit-id="<?php echo e($unitObj->id); ?>"
+                data-auth="<?php echo e(auth()->check() ? 'yes' : 'no'); ?>"
+                data-url="<?php echo e(route('watchlistU.remove', ['unitId' => $unitObj->id])); ?>"
+                id="eye-off-link-<?php echo e($unitObj->id); ?>"
+                style="<?php echo e($isWatched ? '' : 'display: none;'); ?>">
+                <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>" style="height: 20px; width: 20px;" alt="Unwatch">
+            </a>
 
 
                 <div class="separator"></div>
@@ -188,101 +193,101 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.watchlist-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
+        const csrfToken = '<?php echo e(csrf_token()); ?>';
+        const loginUrl = "<?php echo e(route('login')); ?>";
 
-                const unitId = this.dataset.unitId;
-                const userId = this.dataset.userId;
-                const url = this.dataset.url;
+        document.body.addEventListener('click', function(e) {
+            const watchBtn = e.target.closest('.watchlist-link');
+            const unwatchBtn = e.target.closest('.unwatchlist-link');
+
+            // Add to Watchlist
+            if (watchBtn) {
+                const isAuth = watchBtn.dataset.auth;
+                if (isAuth === 'no') {
+                    return window.location.href = loginUrl;
+                }
+
+                const unitId = watchBtn.dataset.unitId;
+                const url = watchBtn.dataset.url;
 
                 fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                            'X-CSRF-TOKEN': csrfToken
                         },
-                        body: JSON.stringify({
-                            userId,
-                            unitId
-                        })
+                        body: JSON.stringify({})
                     })
-                    .then(response => response.json())
+                    .then(res => res.json())
                     .then(data => {
                         if (data.message === 'Added to watchlist!') {
-                            document.getElementById(eye-link-${unitId}).style.display =
-                                'none';
-                            document.getElementById(eye-off-icon-${unitId}).style
-                                .display = 'inline';
+                            document.getElementById('eye-link-' + unitId).style.display = 'none';
+                            document.getElementById('eye-off-link-' + unitId).style.display = 'inline-block';
 
-                            // ✅ SweetAlert2 Success Alert
                             Swal.fire({
                                 title: 'Success!',
-                                text: 'Unit added to your watchlist successfully.',
+                                text: 'Unit added to your watchlist.',
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             });
-                        } else if (data.message === 'Already in Watchlist') {
+                        } else {
                             Swal.fire({
                                 title: 'Info',
-                                text: 'Unit is already in your watchlist.',
+                                text: data.message || 'Already in watchlist.',
                                 icon: 'info',
                                 confirmButtonText: 'OK'
                             });
                         }
                     })
-                    .catch(err => {
-                        console.error('Error:', err);
-                        // Swal.fire({
-                        //     title: 'Error',
-                        //     text: 'Something went wrong. Please try again.',
-                        //     icon: 'error',
-                        //     confirmButtonText: 'OK'
-                        // });
+                    .catch(() => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Something went wrong. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     });
-            });
-        });
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.watchlist-link').forEach(function(el) {
-            el.addEventListener('click', function() {
-                const isAuth = el.getAttribute('data-auth');
-                const loginUrl = "<?php echo e(route('login')); ?>";
+            }
 
+            // Remove from Watchlist
+            if (unwatchBtn) {
+                const isAuth = unwatchBtn.dataset.auth;
                 if (isAuth === 'no') {
-                    // alert("Please login to add this to your watchlist.");
-                    window.location.href = loginUrl;
-                    return;
+                    return window.location.href = loginUrl;
                 }
 
-                // if authenticated, perform your AJAX or form submission
-                const userId = el.getAttribute('data-user-id');
-                const unitId = el.getAttribute('data-unit-id');
-                const url = el.getAttribute('data-url');
+                const unitId = unwatchBtn.dataset.unitId;
+                const url = unwatchBtn.dataset.url;
 
-                // Example AJAX code (if needed)
                 fetch(url, {
-                        method: 'POST',
+                        method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
-                        },
-                        body: JSON.stringify({
-                            user_id: userId,
-                            unit_id: unitId
-                        })
-                    }).then(res => res.json())
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    })
+                    .then(res => res.json())
                     .then(data => {
-                        console.log(data);
-                        document.getElementById('eye-link-' + unitId).style.display =
-                            'none';
-                        document.getElementById('eye-off-icon-' + unitId).style.display =
-                            'inline';
+                        document.getElementById('eye-link-' + unitId).style.display = 'inline-block';
+                        document.getElementById('eye-off-link-' + unitId).style.display = 'none';
+
+                        Swal.fire({
+                            title: 'Removed!',
+                            text: 'Unit removed from your watchlist.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Could not remove from watchlist.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     });
-            });
+            }
         });
-    });
+    });
 </script>
 <?php /**PATH C:\xampp\htdocs\javul\resources\views/layout/v2/global-unit-overview.blade.php ENDPATH**/ ?>

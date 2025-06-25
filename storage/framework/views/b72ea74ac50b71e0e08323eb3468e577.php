@@ -1,268 +1,83 @@
-<?php $__env->startSection('title', 'Issues'); ?>
+<?php $__env->startSection('title', 'Activities'); ?>
 <?php $__env->startSection('site-name'); ?>
-<?php if(isset($unitData)): ?>
-<h1><?php echo e($unitData->name); ?></h1>
-<?php else: ?>
-<h1>Javul.org</h1>
-<?php endif; ?>
-<div class="banner_desc d-md-block d-none">
-    Open-source Society
-</div>
+    <?php if(isset($unitData)): ?>
+        <h1><?php echo e($unitData->name); ?></h1>
+    <?php else: ?>
+        <h1>Javul.org</h1>
+    <?php endif; ?>
+    <div class="banner_desc d-md-block d-none">
+        Open-source Society
+    </div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('navbar'); ?>
-<?php if(isset($unitData)): ?>
-<?php echo $__env->make('layout.navbar', ['unitData' => $unitData], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-<?php endif; ?>
+    <?php if(isset($unitData)): ?>
+        <?php echo $__env->make('layout.navbar', ['unitData' => $unitData], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php endif; ?>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-<div class="content_row">
-    <div class="sidebar">
-        <?php if(isset($unitData)): ?>
-        <?php echo $__env->make('layout.v2.global-unit-overview', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-        <?php
+    <div class="content_row">
+        <div class="sidebar">
+            <?php if(isset($unitData)): ?>
+                <?php echo $__env->make('layout.v2.global-unit-overview', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                <?php
                 $title = 'Activity Log';
                 ?>
-        <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-        <?php echo $__env->make('layout.v2.global-finances', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                <?php echo $__env->make('layout.v2.global-finances', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-        <?php echo $__env->make('layout.v2.global-about-site', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-        <?php else: ?>
-        <?php
+                <?php echo $__env->make('layout.v2.global-about-site', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php else: ?>
+                <?php
                 $title = 'Global Activity Log';
                 ?>
-        <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-        <?php endif; ?>
-    </div>
-    <div class="main_content">
-        <?php if(isset($unitData)): ?>
-        <div class="content_block">
-            <div class="table_block table_block_issues">
-                <div class="table_block_head">
-                    <div class="table_block_icon">
-                        <img src="<?php echo e(asset('v2/assets/img/bug.svg')); ?>" alt="" class="img-fluid">
-                    </div>
-                    Issues
-                    <div class="arrow">
-                        <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
-                    </div>
-                </div>
-                <div class="table_block_body">
-                    
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="title_col">Issue Name</th>
-                                <th class="type_col">Status</th>
-                                <th class="type_col">Created By</th>
-                                <th class="type_col">Created Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if(isset($pagination) && count($pagination) > 0): ?>
-                            <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <tr>
-                                <td class="title_col">
-                                    <a href="<?php echo url('issues/'.$issueIDHashID->encode($obj->id).'/view'); ?>"
-                                        title="edit">
-                                        <?php echo e($obj->title); ?>
-
-                                    </a>
-                                </td>
-                                <td class="type_col">
-                                    <?php $status_class=''; $verified_by =''; $resolved_by ='';
-                                                if($obj->status=="unverified")
-                                                    $status_class="text-danger";
-                                                elseif($obj->status=="verified"){
-                                                    $status_class="text-info";
-                                                    $verified_by = " (by ".App\Models\User::getUserName($obj->verified_by).')';
-                                                }
-                                                elseif($obj->status == "resolved"){
-                                                    $status_class = "text-success";
-                                                    $resolved_by = " (by ".App\Models\User::getUserName($obj->resolved_by).')';
-                                                }
-                                                ?>
-                                    <span class="<?php echo e($status_class); ?>"><?php echo e(ucfirst($obj->status).$verified_by.
-                                        $resolved_by); ?></span>
-                                </td>
-                                <td class="type_col">
-                                    <a href="<?php echo url('userprofiles/'.$userIDHashID->encode($obj->user_id).'/'.strtolower(str_replace(" ","
-                                        _",App\Models\User::getUserName($obj->user_id)))); ?>">
-                                        <?php echo e(App\Models\User::getUserName($obj->user_id)); ?>
-
-                                    </a>
-                                </td>
-                                <td class="type_col"><?php echo e($obj->created_at); ?></td>
-                            </tr>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            <?php else: ?>
-                            <tr>
-                                <td colspan="5">No record(s) found.</td>
-                            </tr>
-                            <?php endif; ?>
-                        </tbody>
-
-
-                    </table>
-
-                    <div class="mob_table d-sm-none d-block">
-                        <?php if(isset($pagination) && count($pagination) > 0): ?>
-                        <?php $__currentLoopData = $pagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <?php
-                                            $status_class = '';
-                                            $verified_by = '';
-                                            $resolved_by = '';
-
-                                            if ($obj->status == "unverified") {
-                                                $status_class = "text-danger";
-                                            } elseif ($obj->status == "verified") {
-                                                $status_class = "text-info";
-                                                $verified_by = " (by " . App\Models\User::getUserName($obj->verified_by) . ")";
-                                            } elseif ($obj->status == "resolved") {
-                                                $status_class = "text-success";
-                                                $resolved_by = " (by " . App\Models\User::getUserName($obj->resolved_by) . ")";
-                                            }
-                                        ?>
-                        <div class="mob_table_section">
-                            <div class="mob_table_row">
-                                <div class="mob_table_ttl">Issue Name</div>
-                                <div class="mob_table_val">
-                                    <a href="<?php echo url('issues/'.$issueIDHashID->encode($obj->id).'/view'); ?>">
-                                        <?php echo e($obj->title); ?>
-
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="mob_table_row">
-                                <div class="mob_table_ttl">Status</div>
-                                <div class="mob_table_val">
-                                    <span class="<?php echo e($status_class); ?>"><?php echo e(ucfirst($obj->status) . $verified_by .
-                                        $resolved_by); ?></span>
-                                </div>
-                            </div>
-                            <div class="mob_table_row">
-                                <div class="mob_table_ttl">Created By</div>
-                                <div class="mob_table_val">
-                                    <a href="<?php echo url('userprofiles/'.$userIDHashID->encode($obj->user_id).'/'.strtolower(str_replace(" ","
-                                        _",App\Models\User::getUserName($obj->user_id)))); ?>">
-                                        <?php echo e(App\Models\User::getUserName($obj->user_id)); ?>
-
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="mob_table_row">
-                                <div class="mob_table_ttl">Created Date</div>
-                                <div class="mob_table_val">
-                                    <?php echo e($obj->created_at); ?>
-
-                                </div>
-                            </div>
+                <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php endif; ?>
+        </div>
+        <div class="main_content">
+            <div class="content_block">
+                <div class="table_block table_block_issues">
+                    <div class="table_block_head">
+                        <div class="table_block_icon">
+                            <i class="fa fa-list"></i>
                         </div>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        <?php else: ?>
-                        <div class="mob_table_section">
-                            <div class="mob_table_row">
-                                <div class="mob_table_val text-center">
-                                    No record(s) found.
-                                </div>
-                            </div>
+                        Activities
+                        <div class="arrow">
+                            <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
                         </div>
-                        <?php endif; ?>
+                    </div>
+                    <div class="table_block_body">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th class="title_col">Action</th>
+                                <th class="last_reply_col">Time</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                                
+
+
+                        </table>
+
+
+                        
+
                     </div>
 
-
-
-                </div>
-                <div class="d-flex justify-content-between mt-2">
-                    <div class="pagination-left">
-                        <?php echo $pagination->links('layout.pagination'); ?>
-
+                    <div class="d-flex justify-content-between mt-2">
+                        <div class="pagination-left">
+                            
+                        </div>
                     </div>
-                </div>
 
-
-            </div>
-            <div class="d-flex justify-content-between mt-2">
-                <div class="pagination-left">
-                </div>
-                <div class="pagination-right">
-                    <a href="<?php echo url('issues/'.$unitIDHashID->encode($unitData->id).'/add'); ?>"><img
-                            src="<?php echo e(asset('v2/assets/img/circle-plus.svg')); ?>" alt=""> Add New</a>
                 </div>
             </div>
         </div>
-        <?php else: ?>
-        <div class="content_block">
-            <div class="table_block table_block_issues">
-                <div class="table_block_head">
-                    <div class="table_block_icon">
-                        <img src="<?php echo e(asset('v2/assets/img/bug.svg')); ?>" alt="" class="img-fluid">
-                    </div>
-                    Top Contribute
-                    <div class="arrow">
-                        <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
-                    </div>
-                </div>
-                <div class="table_block_body">
-                    
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="type_col">User Name</th>
-                                <th class="title_col">Activity Point</th>
-                                <th class="type_col">Award </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <?php $__currentLoopData = $mostActiveUnits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mostActiveUnit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <tr>
-                                <td class="type_col">
-                                    <a
-                                        href="<?php echo url('userprofiles/'.$userIDHashID->encode($mostActiveUnit->user_id)); ?>">
-                                        <?php echo e($mostActiveUnit->user_name); ?>
-
-                                    </a>
-
-                                </td>
-                                <td class="title_col">
-                                        <?php echo e($mostActiveUnit->total_points); ?>
-
-                                </td>
-
-                                <td class="title_col">
-                                        -
-                                </td>
-                            </tr>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
-                        </tbody>
-                    </table>
-
-                    
-
-                </div>
-                
-            </div>
-            <div class="content_block_bottom">
-                
-            </div>
-            <div class="d-flex justify-content-between mt-2">
-                <div class="pagination-left">
-                </div>
-            </div>
-        </div>
-        <?php endif; ?>
     </div>
-</div>
-<?php $__env->stopSection(); ?>
-
-<?php $__env->startSection('scripts'); ?>
-
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/top_contribute.blade.php ENDPATH**/ ?>
