@@ -248,14 +248,20 @@ class UserController extends Controller
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
                         ->where('user_id', $user_id)->count();
 
-                    $upvoteCreationRatio = $totalObjectivesCreated*30;
+                    $upvoteCreationRatio = $totalObjectivesCreated * 30;
                 } else {
                     // Default logic for 'Last 6 Months' or 'Lifetime'
-                    $mostActiveUnits = ActivityPoint::select('unit_id', DB::raw('SUM(points) as total_points'))
-                        ->groupBy('unit_id')
+                    $mostActiveUnits = ActivityPoint::select(
+                        'unit_id',
+                        'units.name as unit_name',
+                        DB::raw('SUM(points) as total_points')
+                    )
+                        ->join('units', 'units.id', '=', 'activity_points.unit_id')
+                        ->groupBy('unit_id', 'units.name')
                         ->orderByDesc('total_points')
                         ->limit(5)
                         ->get();
+
 
                     $totalTasksEdited =  ActivityPoint::query()
                         ->where('user_id', $user_id)
@@ -290,15 +296,15 @@ class UserController extends Controller
                     $totalObjectivesCreated = Objective::query()
                         ->where('user_id', $user_id)->count();
 
-                    $upvoteCreationRatio = $totalObjectivesCreated*30;
+                    $upvoteCreationRatio = $totalObjectivesCreated * 30;
 
                     // $upvoteCreationPoints = Objective::query()
                     //     ->where('user_id', $user_id)
                     //     ->sum('upvotes');
 
-                    $upvoteEditPoints = Objective::query()
-                        ->where('editor_id', $user_id) // assuming edits tracked this way
-                        ->sum('edit_upvotes');
+                    // $upvoteEditPoints = Objective::query()
+                    //     ->where('editor_id', $user_id) // assuming edits tracked this way
+                    //     ->sum('edit_upvotes');
 
                     $objectivesPriority = DB::table('priorities')
                         ->whereIn('type_id', $userObjectivesIds)
@@ -326,7 +332,7 @@ class UserController extends Controller
                 $objectivesUpvote = DB::table('objectives')
                     ->whereIn('id', $userObjectivesIds)
                     ->sum('upvote_edit_count');
-                $upvoteEditRatio = $totalObjectivesEdited*30;
+                $upvoteEditRatio = $totalObjectivesEdited * 30;
                 // if ($objectivesUpvote > 0) {
                 //     $upvoteEditRatio = $objectivesUpvote / $objectiveRevisions;
                 //     $upvoteEditRatio = round($upvoteEditRatio, 2);
@@ -380,7 +386,7 @@ class UserController extends Controller
                     ->whereIn('id', $userIdeaIds)
                     ->sum('upvote_edit_count');
 
-                $ideaUpvoteEditRatio = $totalIdeasUpdated*30;
+                $ideaUpvoteEditRatio = $totalIdeasUpdated * 30;
                 // if ($ideaUpvote > 0) {
                 //     $ideaUpvoteEditRatio = $ideaUpvote / $ideaRevisions;
                 //     $ideaUpvoteEditRatio = round($ideaUpvoteEditRatio, 2);
@@ -390,7 +396,7 @@ class UserController extends Controller
                     ->whereIn('type_id', $userIdeaIds)
                     ->where('type', 2)
                     ->count();
-                $ideaUpvoteCreationRatio = $totalIdeasCreated*30;
+                $ideaUpvoteCreationRatio = $totalIdeasCreated * 30;
                 // if ($ideaPriority > 0) {
                 //     $ideaUpvoteCreationRatio = $ideaPriority / $totalIdeasCreated;
                 //     $ideaUpvoteCreationRatio = round($ideaUpvoteCreationRatio, 2);
@@ -464,31 +470,31 @@ class UserController extends Controller
 
                 $totalIssueCreated = Issue::query()->where('user_id', $user_id)->count();
 
-                $issueUpvoteCreationRatio = $totalIssueCreated *30;
+                $issueUpvoteCreationRatio = $totalIssueCreated * 30;
                 $issueUpvoteEditRatio = $totalIssueEdited * 30;
 
 
-                $taskUpvoteCreationRatio = $totalTasksCreated *30;
+                $taskUpvoteCreationRatio = $totalTasksCreated * 30;
                 $taskUpvoteEditRatio = $totalTasksEdited * 30;
-                // $totaltaskscreatedd =  Task::where('status','created')->get();
-                  $totalTasksCreated =  ActivityPoint::query()
-                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                        ->where('user_id', $user_id)
-                        ->where('comments', 'Task Created')
-                        ->count();
+                $totaltaskscreatedd =  Task::where('status','created')->get();
+                $totalTasksCreated =  ActivityPoint::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Task Created')
+                    ->count();
 
-                        $totalTasksCompleted =  ActivityPoint::query()
-                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                        ->where('user_id', $user_id)
-                        ->where('comments', 'Task Completed')
-                        ->count();
+                $totalTasksCompleted =  ActivityPoint::query()
+                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->where('user_id', $user_id)
+                    ->where('comments', 'Task Completed')
+                    ->count();
 
-                      $totals = TaskRating::where('user_id', $user_id)
-    ->selectRaw('SUM(quality_of_work) as total_quality_of_work, SUM(timeliness) as total_timeliness')
-    ->first();
+                $totals = TaskRating::where('user_id', $user_id)
+                    ->selectRaw('SUM(quality_of_work) as total_quality_of_work, SUM(timeliness) as total_timeliness')
+                    ->first();
 
-    $totalQualityOfWork = $totals->total_quality_of_work;
-    $totalTimeliness = $totals->total_timeliness;
+                $totalQualityOfWork = $totals->total_quality_of_work;
+                $totalTimeliness = $totals->total_timeliness;
 
 
 
@@ -501,12 +507,11 @@ class UserController extends Controller
                     'issueUpvoteEditRatio' => $issueUpvoteEditRatio,
                     'taskUpvoteCreationRatio' => $taskUpvoteCreationRatio,
                     'taskUpvoteEditRatio' => $taskUpvoteEditRatio,
-                    'totaltaskscreatedd'=> $totalTasksCreated,
+                    'totaltaskscreatedd' => $totalTasksCreated,
                     'totalTasksCompleted' => $totalTasksCompleted,
                     'totalQualityOfWork'  => $totalQualityOfWork,
                     'totalTimeliness'  => $totalTimeliness
                 ]);
-
             }
         }
         return view('errors.404');
@@ -540,10 +545,10 @@ class UserController extends Controller
             ->where('status', 'in_progress')
             ->get();
 
-      $underTasks = Task::query()
-    ->where('assign_to', Auth::user()->id)
-    ->whereIn('status', ['completed_under_evaluation', 'completed'])
-    ->get();
+        $underTasks = Task::query()
+            ->where('assign_to', Auth::user()->id)
+            ->whereIn('status', ['completed_under_evaluation', 'completed'])
+            ->get();
 
 
 
@@ -607,6 +612,6 @@ class UserController extends Controller
         view()->share('myAssignedTask', $myAssignedTask);
         view()->share('zcashTransferList', $zcashTransferList);
 
-        return view('users.my_tasks',['underTask'=> $underTasks]);
+        return view('users.my_tasks', ['underTask' => $underTasks]);
     }
 }
