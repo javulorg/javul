@@ -99,11 +99,84 @@ class IdeaController extends Controller
         return view('ideas.create');
     }
 
-    // public function store(Request $request)
-    // {
-    //     $unitHash = new Hashids('unit id hash', 10, Config::get('app.encode_chars'));
+    public function store(Request $request)
+    {
+        $unitHash = new Hashids('unit id hash', 10, Config::get('app.encode_chars'));
 
-    //     $unit = Unit::where('id', $request->unit_id)->first();
+        $unit = Unit::where('id', $request->unit_id)->first();
+        $validator = Validator::make($request->all(), [
+            'title'        => 'required',
+            'category_id'  => 'nullable',
+            'task_id'      => 'nullable',
+            'issue_id'     => 'nullable',
+            'description'  => 'required',
+            'comment'      => 'nullable',
+            'file'         => 'nullable',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $idea = Idea::create([
+            'title'          => $request->title,
+            'user_id'        => auth()->user()->id,
+            'unit_id'        => $request->unit_id,
+            'task_id'        => $request->task_id,
+            'issue_id'       => $request->issue_id,
+            'category_id'    => $request->category_id,
+            'description'    => $request->description,
+            'comment'        => $request->comment,
+            'status'         => 1,
+
+        ]);
+        if ($idea) {
+            ActivityPoint::create([
+                'user_id'      => Auth::user()->id,
+                'points'       => 3,
+                'idea_id'      => $idea->id,
+                'comments'     => 'Idea Created',
+                'type'         => 'idea',
+                'unit_id'      => $request->unit_id
+            ]);
+
+
+            $ideaIDHash = new \Hashids\Hashids('idea id hash', 10, config('app.encode_chars'));
+            $ideaIdEncoded = $ideaIDHash->encode($idea->id);
+
+            $userIDHashID = new \Hashids\Hashids('user id hash', 10, config('app.encode_chars'));
+            $user_id_encoded = $userIDHashID->encode(auth()->id());
+
+            $userName = auth()->user()->username ?? (auth()->user()->first_name . ' ' . auth()->user()->last_name);
+            $unitSlug = $unit->slug ?? 'unit';
+            SiteActivity::create([
+                'user_id'  => auth()->id(),
+                'unit_id'  => $idea->unit_id,
+                'idea_id'  => $idea->id, // ✅ this is key
+                'comment'  => '<a href="' . url('userprofiles/' . $user_id_encoded . '/' . strtolower($userName)) . '">' . e($userName) . '</a>' .
+                    ' created idea <a href="' . url('ideas/' . $ideaIdEncoded . '/' . \Str::slug($idea->title)) . '">' . e($idea->title) . '</a>',
+            ]);
+
+
+            // $encodedObjectiveID = $objectiveIDHashID->encode($objective_id);
+
+            // return redirect('objectives/' . $encodedObjectiveID . '/' . $unitObj->slug)
+            //     ->with('success', 'Task created successfully!');
+
+            // return redirect('objectives/' . $unitHash->encode($request->unit_id) . '/' . $unit->slug)
+            //     ->with('success', 'Idea created successfully!');
+            // return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
+            return response('Idea created successfully!', 200);
+        }
+    }
+
+
+    // public function store(Request $request)
+
+    // {
+    //     $unitHash = new \Hashids\Hashids('unit id hash', 10, config('app.encode_chars'));
+
+    //     $unit = \App\Models\Unit::where('id', $request->unit_id)->first();
+
     //     $validator = Validator::make($request->all(), [
     //         'title'        => 'required',
     //         'category_id'  => 'nullable',
@@ -113,112 +186,56 @@ class IdeaController extends Controller
     //         'comment'      => 'nullable',
     //         'file'         => 'nullable',
     //     ]);
+
     //     if ($validator->fails()) {
     //         return redirect()->back()->withErrors($validator)->withInput();
     //     }
 
-    //     $idea = Idea::create([
-    //         'title'          => $request->title,
-    //         'user_id'        => auth()->user()->id,
-    //         'unit_id'        => $request->unit_id,
-    //         'task_id'        => $request->task_id,
-    //         'issue_id'       => $request->issue_id,
-    //         'category_id'    => $request->category_id,
-    //         'description'    => $request->description,
-    //         'comment'        => $request->comment,
-    //         'status'         => 1,
-
+    //     $idea = \App\Models\Idea::create([
+    //         'title'        => $request->title,
+    //         'user_id'      => auth()->id(),
+    //         'unit_id'      => $request->unit_id,
+    //         'task_id'      => $request->task_id,
+    //         'issue_id'     => $request->issue_id,
+    //         'category_id'  => $request->category_id,
+    //         'description'  => $request->description,
+    //         'comment'      => $request->comment,
+    //         'status'       => 1,
     //     ]);
+
     //     if ($idea) {
-    //         ActivityPoint::create([
-    //             'user_id'      => Auth::user()->id,
-    //             'points'       => 3,
-    //             'idea_id'      => $idea->id,
-    //             'comments'     => 'Idea Created',
-    //             'type'         => 'idea',
-    //             'unit_id'      => $request->unit_id
+    //         \App\Models\ActivityPoint::create([
+    //             'user_id'  => auth()->id(),
+    //             'points'   => 3,
+    //             'idea_id'  => $idea->id,
+    //             'comments' => 'Idea Created',
+    //             'type'     => 'idea',
+    //             'unit_id'  => $request->unit_id,
     //         ]);
 
+    //         // Generate hash IDs
+    //         $ideaIDHash = new \Hashids\Hashids('idea id hash', 10, config('app.encode_chars'));
+    //         $ideaIdEncoded = $ideaIDHash->encode($idea->id);
 
-    //         // $encodedObjectiveID = $objectiveIDHashID->encode($objective_id);
+    //         $userIDHashID = new \Hashids\Hashids('user id hash', 10, config('app.encode_chars'));
+    //         $user_id_encoded = $userIDHashID->encode(auth()->id());
 
-    //         // return redirect('objectives/' . $encodedObjectiveID . '/' . $unitObj->slug)
-    //         //     ->with('success', 'Task created successfully!');
+    //         $userName = auth()->user()->username ?? (auth()->user()->first_name . ' ' . auth()->user()->last_name);
+    //         $unitSlug = $unit->slug ?? 'unit';
 
-    //         // return redirect('objectives/' . $unitHash->encode($request->unit_id) . '/' . $unit->slug)
-    //         //     ->with('success', 'Idea created successfully!');
-    //         // return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
-    //         return response('Idea created successfully!', 200);
+    //         SiteActivity::create([
+    //             'user_id'  => auth()->id(),
+    //             'unit_id'  => $idea->unit_id,
+    //             'idea_id'  => $idea->id, // ✅ this is key
+    //             'comment'  => '<a href="' . url('userprofiles/' . $user_id_encoded . '/' . strtolower($userName)) . '">' . e($userName) . '</a>' .
+    //                 ' created idea <a href="' . url('ideas/' . $ideaIdEncoded . '/' . \Str::slug($idea->title)) . '">' . e($idea->title) . '</a>',
+    //         ]);
+
+    //         return redirect()->back()->with('success', 'Idea created successfully and activity logged.');
     //     }
+
+    //     return redirect()->back()->with('error', 'Something went wrong. Please try again.');
     // }
-    public function store(Request $request)
-
-{
-
-
-    $unitHash = new \Hashids\Hashids('unit id hash', 10, config('app.encode_chars'));
-
-    $unit = \App\Models\Unit::where('id', $request->unit_id)->first();
-
-    $validator = Validator::make($request->all(), [
-        'title'        => 'required',
-        'category_id'  => 'nullable',
-        'task_id'      => 'nullable',
-        'issue_id'     => 'nullable',
-        'description'  => 'required',
-        'comment'      => 'nullable',
-        'file'         => 'nullable',
-    ]);
-
-    if ($validator->fails()) {
-        return redirect()->back()->withErrors($validator)->withInput();
-    }
-
-    $idea = \App\Models\Idea::create([
-        'title'        => $request->title,
-        'user_id'      => auth()->id(),
-        'unit_id'      => $request->unit_id,
-        'task_id'      => $request->task_id,
-        'issue_id'     => $request->issue_id,
-        'category_id'  => $request->category_id,
-        'description'  => $request->description,
-        'comment'      => $request->comment,
-        'status'       => 1,
-    ]);
-
-    if ($idea) {
-        \App\Models\ActivityPoint::create([
-            'user_id'  => auth()->id(),
-            'points'   => 3,
-            'idea_id'  => $idea->id,
-            'comments' => 'Idea Created',
-            'type'     => 'idea',
-            'unit_id'  => $request->unit_id,
-        ]);
-
-        // Generate hash IDs
-        $ideaIDHash = new \Hashids\Hashids('idea id hash', 10, config('app.encode_chars'));
-        $ideaIdEncoded = $ideaIDHash->encode($idea->id);
-
-        $userIDHashID = new \Hashids\Hashids('user id hash', 10, config('app.encode_chars'));
-        $user_id_encoded = $userIDHashID->encode(auth()->id());
-
-        $userName = auth()->user()->username ?? (auth()->user()->first_name . ' ' . auth()->user()->last_name);
-        $unitSlug = $unit->slug ?? 'unit';
-
-       SiteActivity::create([
-    'user_id'  => auth()->id(),
-    'unit_id'  => $idea->unit_id,
-    'idea_id'  => $idea->id, // ✅ this is key
-    'comment'  => '<a href="' . url('userprofiles/' . $user_id_encoded . '/' . strtolower($userName)) . '">' . e($userName) . '</a>' .
-        ' created idea <a href="' . url('ideas/' . $ideaIdEncoded . '/' . \Str::slug($idea->title)) . '">' . e($idea->title) . '</a>',
-]);
-
-        return redirect()->back()->with('success', 'Idea created successfully and activity logged.');
-    }
-
-    return redirect()->back()->with('error', 'Something went wrong. Please try again.');
-}
 
 
     public function show($ideaHashId)

@@ -25,10 +25,13 @@
         -webkit-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
     }
-    .chat-room .left .people,.chat-room .right .chat {
+
+    .chat-room .left .people,
+    .chat-room .right .chat {
         /*  height: 500px !important;
           overflow: auto;*/
     }
+
     .chat-room .left {
         float: left;
         width: 37.6%;
@@ -37,6 +40,7 @@
         background-color: #f9f9f9;
 
     }
+
     .chat-room .left .top {
         position: relative;
 
@@ -51,6 +55,7 @@
         font-weight: 500;
         border-bottom: 3px solid #5a5858;
     }
+
     .chat-room .left .top:after {
         position: absolute;
         bottom: 0;
@@ -65,6 +70,7 @@
         -webkit-transform: translate(-50%, 0);
         transform: translate(-50%, 0);
     }
+
     .chat-room .left input {
 
         width: 100%;
@@ -80,9 +86,11 @@
         font-weight: 400;
         padding-left: 36px;
     }
+
     .chat-room .left input:focus {
         outline: none;
     }
+
     .chat-room .left a.search {
         display: block;
         float: left;
@@ -98,6 +106,7 @@
         -webkit-border-radius: 50%;
         border-radius: 50%;
     }
+
     .chat-room .left .people {
         margin-left: -1px;
         border-right: 1px solid #e6e6e6;
@@ -111,6 +120,7 @@
         overflow: auto;
         overflow-x: hidden;
     }
+
     .chat-room .left .people .person {
         position: relative;
         width: 100%;
@@ -119,6 +129,7 @@
         background-color: #fff;
         list-style: none;
     }
+
     .chat-room .left .people .person:after {
         position: absolute;
         bottom: 0;
@@ -133,6 +144,7 @@
         -webkit-transform: translate(-50%, 0);
         transform: translate(-50%, 0);
     }
+
     .chat-room .left .people .person .img {
         float: left;
         width: 40px;
@@ -148,6 +160,7 @@
         color: #bfbfbf;
         font-size: 22px;
     }
+
     .chat-room .left .people .person .name {
         font-size: 14px;
         line-height: 36px;
@@ -155,6 +168,7 @@
         font-family: 'Source Sans Pro', sans-serif;
         font-weight: 600;
     }
+
     .chat-room .left .people .person .time {
         font-size: 14px;
         position: absolute;
@@ -164,6 +178,7 @@
         color: #999;
         background-color: #fff;
     }
+
     .chat-room .left .people .person .preview {
         font-size: 14px;
         display: inline-block;
@@ -173,7 +188,9 @@
         text-overflow: ellipsis;
         color: #999;
     }
-    .chat-room .left .people .person.active, .chat-room .left .people .person:hover {
+
+    .chat-room .left .people .person.active,
+    .chat-room .left .people .person:hover {
         margin-top: -1px;
         margin-left: -1px;
         padding-top: 13px;
@@ -188,19 +205,25 @@
         padding-left: -o-calc(10% + 1px);
         padding-left: calc(10% + 1px);
     }
-    .chat-room .left .people .person.active span, .chat-room .left .people .person:hover span {
+
+    .chat-room .left .people .person.active span,
+    .chat-room .left .people .person:hover span {
         color: #fff;
         background: transparent;
     }
-    .chat-room .left .people .person.active:after, .chat-room .left .people .person:hover:after {
+
+    .chat-room .left .people .person.active:after,
+    .chat-room .left .people .person:hover:after {
         display: none;
     }
+
     .chat-room .right {
         position: relative;
         float: left;
         width: 62.4%;
         height: 100%;
     }
+
     .chat-room .right .top {
         width: 100%;
         height: 40px;
@@ -221,6 +244,7 @@
         font-weight: 500;
         font-size: 15px;
     }
+
     .chat-room .right .chat {
         position: relative;
         display: none;
@@ -238,6 +262,7 @@
         -webkit-flex-direction: column;
         flex-direction: column;
     }
+
     .chat-room .right .chat.active-chat {
         display: block;
         background: white;
@@ -245,62 +270,74 @@
         overflow: auto;
         overflow-x: hidden;
     }
+
     .chat-room .right .chat.active-chat .bubble {
         -moz-transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
         -o-transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
         -webkit-transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
         transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(1) {
         -moz-animation-duration: 0.15s;
         -webkit-animation-duration: 0.15s;
         animation-duration: 0.15s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(2) {
         -moz-animation-duration: 0.3s;
         -webkit-animation-duration: 0.3s;
         animation-duration: 0.3s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(3) {
         -moz-animation-duration: 0.45s;
         -webkit-animation-duration: 0.45s;
         animation-duration: 0.45s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(4) {
         -moz-animation-duration: 0.6s;
         -webkit-animation-duration: 0.6s;
         animation-duration: 0.6s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(5) {
         -moz-animation-duration: 0.75s;
         -webkit-animation-duration: 0.75s;
         animation-duration: 0.75s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(6) {
         -moz-animation-duration: 0.9s;
         -webkit-animation-duration: 0.9s;
         animation-duration: 0.9s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(7) {
         -moz-animation-duration: 1.05s;
         -webkit-animation-duration: 1.05s;
         animation-duration: 1.05s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(8) {
         -moz-animation-duration: 1.2s;
         -webkit-animation-duration: 1.2s;
         animation-duration: 1.2s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(9) {
         -moz-animation-duration: 1.35s;
         -webkit-animation-duration: 1.35s;
         animation-duration: 1.35s;
     }
+
     .chat-room .right .chat.active-chat .bubble:nth-of-type(10) {
         -moz-animation-duration: 1.5s;
         -webkit-animation-duration: 1.5s;
         animation-duration: 1.5s;
     }
+
     .chat-room .right .write {
         bottom: 1px;
         left: 0;
@@ -312,6 +349,7 @@
         width: 100%;
 
     }
+
     .chat-room .right .emoji {
         width: 200px;
         float: right;
@@ -332,7 +370,7 @@
     }
     */
     .chat-room .right .emoji:after {
-        content:'';
+        content: '';
         position: absolute;
         top: 100%;
         left: 93%;
@@ -344,7 +382,8 @@
         border-right: solid 10px transparent;
     }
 
-    .chat-room .right .write input,.chat-room .right #editable {
+    .chat-room .right .write input,
+    .chat-room .right #editable {
         font-size: 16px;
         float: left;
         width: 400px;
@@ -360,6 +399,7 @@
         overflow: auto;
         overflow-x: hidden;
     }
+
     .chat-room .right .write .write-link.attach:before {
         display: inline-block;
         float: left;
@@ -370,6 +410,7 @@
         background-repeat: no-repeat;
         background-position: center;
     }
+
     .chat-room .right .write .write-link.smiley {
         margin-top: 15px;
         font-size: 18px;
@@ -414,6 +455,7 @@
         border-radius: 5px;
         padding-bottom: 0px;
     }
+
     .chat-room .right .bubble:before {
         position: absolute;
         top: 19px;
@@ -426,6 +468,7 @@
         -webkit-transform: rotate(29deg) skew(-35deg);
         transform: rotate(29deg) skew(-35deg);
     }
+
     .chat-room .right .bubble.you {
         float: left;
         color: #fff;
@@ -436,10 +479,12 @@
         -webkit-animation-name: slideFromLeft;
         animation-name: slideFromLeft;
     }
+
     .chat-room .right .bubble.you:before {
         left: -3px;
         background-color: #00b0ff;
     }
+
     .chat-room .right .bubble.me {
         float: right;
         color: #1a1a1a;
@@ -450,22 +495,27 @@
         -webkit-animation-name: slideFromRight;
         animation-name: slideFromRight;
     }
+
     .chat-room .right .bubble.me:before {
         right: -3px;
         background-color: #eceff1;
     }
+
     .chat-room .right .conversation-start {
         position: relative;
         width: 100%;
         margin-bottom: 27px;
         text-align: center;
     }
+
     .chat-room .right .conversation-start span {
         font-size: 14px;
         display: inline-block;
         color: #999;
     }
-    .chat-room .right .conversation-start span:before, .chat-room .right .conversation-start span:after {
+
+    .chat-room .right .conversation-start span:before,
+    .chat-room .right .conversation-start span:after {
         position: absolute;
         top: 10px;
         display: inline-block;
@@ -474,9 +524,11 @@
         content: '';
         background-color: #e6e6e6;
     }
+
     .chat-room .right .conversation-start span:before {
         left: 0;
     }
+
     .chat-room .right .conversation-start span:after {
         right: 0;
     }
@@ -487,48 +539,56 @@
             filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
             opacity: 0;
         }
+
         100% {
             margin-left: 0;
             filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
             opacity: 1;
         }
     }
+
     @-webkit-keyframes slideFromLeft {
         0% {
             margin-left: -200px;
             filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
             opacity: 0;
         }
+
         100% {
             margin-left: 0;
             filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
             opacity: 1;
         }
     }
+
     @keyframes slideFromRight {
         0% {
             margin-right: -200px;
             filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
             opacity: 0;
         }
+
         100% {
             margin-right: 0;
             filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
             opacity: 1;
         }
     }
+
     @-webkit-keyframes slideFromRight {
         0% {
             margin-right: -200px;
             filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
             opacity: 0;
         }
+
         100% {
             margin-right: 0;
             filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
             opacity: 1;
         }
     }
+
     .credits {
         color: white;
         font-size: 11px;
@@ -536,6 +596,7 @@
         bottom: 10px;
         right: 15px;
     }
+
     .credits a {
         color: white;
         text-decoration: none;
@@ -548,108 +609,304 @@
         color: #bfbfbf;
         font-size: 17px;
     }
+
     span.time {
         display: block;
         font-size: 10px;
         margin-top: 4px;
     }
 
+
+    .chat-app {
+        height: 100vh;
+        background-color: #f1f3f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .chat-box {
+        width: 100%;
+        max-width: 1200px;
+        height: 90%;
+        background: white;
+        display: flex;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-sidebar {
+        width: 300px;
+        border-right: 1px solid #dee2e6;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .search-bar {
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .user-item {
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #f1f3f5;
+        cursor: pointer;
+    }
+
+    .user-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        background-color: #dee2e6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #6c757d;
+        margin-right: 10px;
+    }
+
+    .chat-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-header {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        font-weight: 500;
+    }
+
+    .chat-messages {
+        flex-grow: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background-color: #fff;
+    }
+
+    .chat-messages .message {
+        max-width: 75%;
+        padding: 10px 15px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        display: inline-block;
+        position: relative;
+        clear: both;
+    }
+
+    .message.sent {
+        background-color: #d1e7dd;
+        align-self: flex-end;
+        margin-left: auto;
+        border-bottom-right-radius: 0;
+    }
+
+    .message.received {
+        background-color: #e9ecef;
+        align-self: flex-start;
+        margin-right: auto;
+        border-bottom-left-radius: 0;
+    }
+
+    .no-messages {
+        text-align: center;
+        color: #adb5bd;
+        margin-top: 50px;
+        font-size: 1rem;
+    }
+
+    .chat-input-area {
+        display: flex;
+        border-top: 1px solid #dee2e6;
+        padding: 10px 15px;
+        align-items: center;
+        background-color: #f8f9fa;
+    }
+
+    .chat-input-container {
+        position: relative;
+        flex-grow: 1;
+    }
+
+    .chat-input-container input {
+        width: 100%;
+        border-radius: 30px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .chat-input-container .input-icon-left {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+    }
+
+    .chat-input-container .input-icon-right {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+    }
+
+    .chat-input-area button {
+        margin-left: 10px;
+    }
 </style>
 @endsection
 @section('site-name')
-    @if(isset($unitData))
-        <h1>{{ $unitData->name }}</h1>
-    @else
-        <h1>Javul.org</h1>
-    @endif
-    <div class="banner_desc d-md-block d-none">
-        Open-source Society
-    </div>
+@if(isset($unitData))
+<h1>{{ $unitData->name }}</h1>
+@else
+<h1>Javul.org</h1>
+@endif
+<div class="banner_desc d-md-block d-none">
+    Open-source Society
+</div>
 @endsection
 
 @section('navbar')
-    @if(isset($unitData))
-        @include('layout.navbar', ['unitData' => $unitData])
-    @endif
+@if(isset($unitData))
+@include('layout.navbar', ['unitData' => $unitData])
+@endif
 @endsection
 @section('content')
-    <div class="content_row">
-        <div class="sidebar">
-            @if(isset($unitData))
-                @include('layout.v2.global-unit-overview')
-                <?php
+<div class="content_row">
+    <div class="sidebar">
+        @if(isset($unitData))
+        @include('layout.v2.global-unit-overview')
+        <?php
                 $title = 'Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
+        @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
 
-                @include('layout.v2.global-finances')
+        @include('layout.v2.global-finances')
 
-                @include('layout.v2.global-about-site')
-            @else
-                <?php
+        @include('layout.v2.global-about-site')
+        @else
+        <?php
                 $title = 'Global Activity Log';
                 ?>
-                @include('layout.v2.global-activity-log',['title' => $title])
-            @endif
-        </div>
-        <div class="main_content">
+        @include('layout.v2.global-activity-log',['title' => $title])
+        @endif
+    </div>
+    <div class="main_content">
 
-            <div class="col-md">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="chat-room">
-                            <div class="right">
-                                <div class="top">
-                                    <span>
-                                        <i class="fa fa-comments"></i> Chat
+        <div class="col-md">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chat-room">
+                        <div class="right">
+                            <div class="top">
+                                <span>
+                                    <i class="fa fa-comments"></i> Chat
+                                </span>
+                            </div>
+                            <div class="chat active-chat message-load" data-chat="person1"></div>
+                            <div class="write">
+                                <textarea id="emoji" hidden></textarea>
+                                <div id="container_emoji" class="hide"></div>
+                                <input id="chat-message" type="text" class="form-control" />
+                                <a href="javascript:;" class="write-link smiley" id="smiley">
+                                    <i class="fa fa-smile" aria-hidden="true"></i>
+                                </a>
+                                <a id="send-message" href="javascript:;" class="write-link send disabled">
+                                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                </a>
+                                <div class="emoji">
+                                    <?php foreach ($smily as $key => $value) { ?>
+                                    <?= $value ?>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="left">
+                            <div class="top">
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" placeholder="User Search..">
+                                    <span class="input-group-text search-icon">
+                                        <i class="fa fa-search"></i>
                                     </span>
                                 </div>
-                                <div class="chat active-chat message-load" data-chat="person1"></div>
-                                <div class="write">
-                                    <textarea id="emoji" hidden></textarea>
-                                        <div id="container_emoji" class="hide"></div>
-                                        <input id="chat-message" type="text" class="form-control"/>
-                                        <a href="javascript:;" class="write-link smiley" id="smiley">
-                                            <i class="fa fa-smile" aria-hidden="true"></i>
-                                        </a>
-                                        <a id="send-message" href="javascript:;" class="write-link send disabled">
-                                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                                        </a>
-                                    <div class="emoji">
-                                        <?php foreach ($smily as $key => $value) { ?>
-                                            <?= $value ?>
-                                         <?php } ?>
-                                    </div>
-                                </div>
                             </div>
-
-
-
-                            <div class="left">
-                                <div class="top">
-                                    <div class="input-group">
-                                        <input type="text" name="search" class="form-control" placeholder="User Search..">
-                                        <span class="input-group-text search-icon">
-                                            <i class="fa fa-search"></i>
-                                         </span>
-                                    </div>
-                                </div>
-                                <div class="filter-message" id="filterMessage"></div>
-                                <ul class="list-group people"></ul>
-                            </div>
+                            <div class="filter-message" id="filterMessage"></div>
+                            <ul class="list-group people"></ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        {{-- <div class="container-fluid chat-app">
+            <div class="chat-box">
+                <!-- Sidebar -->
+                <div class="chat-sidebar">
+                    <div class="search-bar">
+                        <input type="text" class="form-control" placeholder="User Search..." />
+                    </div>
+                    <div class="user-item">
+                        <div class="avatar">N</div>
+                        <div>Normal User</div>
+                    </div>
+                    <!-- Add more users here -->
+                </div>
+
+                <!-- Chat Area -->
+                <div class="chat-content">
+                    <div class="chat-header">
+                        <i class="fas fa-comments me-2"></i> Chat with Normal User
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Sample messages -->
+                        <div class="message received">Hi there!</div>
+                        <div class="message sent">Hey! How can I help you?</div>
+
+                        <!-- Uncomment this block if no messages exist -->
+                        <!--
+          <div class="no-messages">
+            <i class="far fa-comment-dots fa-2x mb-3 d-block"></i>
+            No messages yet. Start the conversation!
+          </div>
+          -->
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="chat-input-container">
+                            <i class="fas fa-house input-icon-left"></i>
+                            <input type="text" class="form-control" placeholder="Type your message..." />
+                        </div>
+                        <button class="btn btn-light"><i class="far fa-smile"></i></button>
+                        <button class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+
+                </div>
+            </div>
+        </div> --}}
     </div>
+</div>
 
 
 
 @endsection
 @section('scripts')
-    <script>
-        window.onload = function()
+<script>
+    window.onload = function()
         {
             function chatOnline(){
                 $.ajax({
@@ -933,5 +1190,5 @@
                 });
             });
         });
-    </script>
+</script>
 @endsection

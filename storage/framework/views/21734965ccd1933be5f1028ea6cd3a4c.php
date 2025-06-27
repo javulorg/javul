@@ -193,12 +193,11 @@
                 <input type="hidden" value="<?php echo e($userIDHashID->encode(auth()->user()->id)); ?>" id="user_id">
                 <input type="hidden" value="<?php echo e(auth()->user()->username); ?>" id="username">
                 <?php endif; ?>
-                <div class="input-icon right float-end">
-                    <label for="amount" class="control-label">&nbsp;</label>
-                    <input id="amount-toggle" checked data-on="Last 6 Months" data-off="Lifetime" data-toggle="toggle"
-                        data-width="140" data-height="30" data-onstyle="light" data-offstyle="info" type="checkbox"
-                        name="charge_type">
-                </div>
+
+                 <div id="filter-buttons">
+        <button class="btn" id="btn-6months" data-filter="specific">Last 6 Months</button>
+        <button class="btn" id="btn-lifetime" data-filter="lifetime">Lifetime</button>
+    </div>
 
             </div>
         </div>
@@ -413,29 +412,31 @@
 
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('scripts'); ?>
-
 <script>
-    $(document).ready(function () {
-            $('#amount-toggle').change(function () {
-                var isChecked = $(this).prop('checked');
-                var value = isChecked ? 'specific' : 'Lifetime';
-                var userId = $('#user_id').val();
-                var userName = $('#username').val();
-
-                $.ajax({
-                    url: '<?php echo e(url("/userprofiles")); ?>/' + userId + '/' + userName + '?filter=' + value,
-                    method: 'GET',
-                    contentType: 'application/json',
-                    success: function (response) {
-                        location.reload()
-                    },
-                    error: function (error) {
-                        console.error('Error filtering data:', error);
-                    }
-                });
-            });
+        // Step 2: JavaScript Logic
+        document.getElementById('btn-6months').addEventListener('click', function () {
+            applyFilter('specific');
         });
-</script>
+
+        document.getElementById('btn-lifetime').addEventListener('click', function () {
+            applyFilter('lifetime');
+        });
+
+        function applyFilter(filterType) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('filter', filterType);
+            window.location.href = url.toString(); // reload page with new filter
+        }
+
+        // Step 3: Highlight Active Button Based on Current URL
+        window.onload = function () {
+            const currentFilter = new URL(window.location.href).searchParams.get('filter') || 'specific';
+            const activeButton = document.querySelector(`[data-filter="${currentFilter}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        };
+    </script>
 
 <?php $__env->stopSection(); ?>
 

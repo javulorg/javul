@@ -303,7 +303,7 @@ Route::post('units/get_city', [UnitsController::class, 'get_city']);
 Route::get('units/category={type}', [UnitsController::class, 'categoryView']);
 
 //ObjectivesController route
-Route::any('objectives/{objectiveid}/{slug}', [ObjectivesController::class, 'viewf']);
+Route::any('objectives/{objectiveid}/{slug}', [ObjectivesController::class, 'view']);
 Route::get('objectives/get_objectives_paginate', [ObjectivesController::class, 'get_objectives_paginate']);
 Route::get('objectives/{unitid}/lists', [ObjectivesController::class, 'lists']);
 Route::post('objectives/upvote-edits/', [ObjectivesController::class, 'upvoteEdits']);
