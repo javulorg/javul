@@ -51,7 +51,10 @@ class FundsController extends Controller
         // get all units for listing
         $units = Unit::getUnitWithCategories();
         view()->share('units',$units );
-        return view('funds.units');
+        $rating_points='';
+         $obj = [];
+
+        return view('funds.donation',['rating_points' => $rating_points, 'obj' => $obj]);
     }
 
 
@@ -208,10 +211,10 @@ class FundsController extends Controller
                 view()->share('obj',$obj);
                 view()->share('donateTo',$donateTo);
                 view()->share('rating_points',$rating_points);
-                return view('funds.donation');
+                return view('funds.donation', ['rating_points' => $rating_points]);
             }
         }
-        return view('funds.donation');
+        return view('funds.donation',['rating_points' => $rating_points, 'obj' => $obj]);
     }
 
     public function donate_amount(Request $request)
@@ -515,6 +518,9 @@ class FundsController extends Controller
                     }
                 }
             }
+
+               $amount = $request->input('donate_amount');
+            return view('funds.success', ['messageType' => true, 'payment_id' => 'Inner Transaction', 'amount' => $amount]);
         }
     }
 

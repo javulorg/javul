@@ -424,3 +424,7 @@ Route::delete('/tasks/{id}', [TasksController::class, 'destroy'])->name('tasks.d
 Route::post('/watchlist/task/toggle', [TasksController::class, 'toggleTask'])->name('watchlistTask.toggle');
 
 Route::resource('ideas', IdeaController::class);
+
+
+
+Route::post('/message/send-message', [MessageController::class, 'sendMessage'])->name('message.send-message');

@@ -1,772 +1,6 @@
 @extends('layout.master')
 @section('title', 'Chat')
 @section('style')
-<style>
-    .wrapper {
-        position: relative;
-        left: 50%;
-        /*width: 1000px;*/
-        /*height: 800px;*/
-        -moz-transform: translate(-50%, 0);
-        -ms-transform: translate(-50%, 0);
-        -webkit-transform: translate(-50%, 0);
-        transform: translate(-50%, 0);
-    }
-
-    .chat-room {
-        position: relative;
-        top: 50%;
-        left: 50%;
-        width: 100%;
-        height: 75%;
-        background-color: #fff;
-        -moz-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        -webkit-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-    }
-
-    .chat-room .left .people,
-    .chat-room .right .chat {
-        /*  height: 500px !important;
-          overflow: auto;*/
-    }
-
-    .chat-room .left {
-        float: left;
-        width: 37.6%;
-        height: 100%;
-        border: 1px solid #e6e6e6;
-        background-color: #f9f9f9;
-
-    }
-
-    .chat-room .left .top {
-        position: relative;
-
-        width: 100%;
-        height: 39px;
-
-
-        background-color: #ebe9e9;
-        color: #3F3F3F;
-        text-transform: uppercase;
-        font-family: "Roboto" !important;
-        font-weight: 500;
-        border-bottom: 3px solid #5a5858;
-    }
-
-    .chat-room .left .top:after {
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        display: block;
-        width: 80%;
-        height: 1px;
-        content: '';
-        background-color: #e6e6e6;
-        -moz-transform: translate(-50%, 0);
-        -ms-transform: translate(-50%, 0);
-        -webkit-transform: translate(-50%, 0);
-        transform: translate(-50%, 0);
-    }
-
-    .chat-room .left input {
-
-        width: 100%;
-        height: 32px;
-        margin-top: 2px;
-
-        border: 1px solid #e6e6e6;
-
-        -moz-border-radius: 21px;
-        -webkit-border-radius: 21px;
-
-        font-family: 'Source Sans Pro', sans-serif;
-        font-weight: 400;
-        padding-left: 36px;
-    }
-
-    .chat-room .left input:focus {
-        outline: none;
-    }
-
-    .chat-room .left a.search {
-        display: block;
-        float: left;
-        width: 42px;
-        height: 42px;
-        margin-left: 10px;
-        border: 1px solid #e6e6e6;
-        background-color: #00b0ff;
-        background-image: url("http://s11.postimg.org/dpuahewmn/name_type.png");
-        background-repeat: no-repeat;
-        background-position: top 12px left 14px;
-        -moz-border-radius: 50%;
-        -webkit-border-radius: 50%;
-        border-radius: 50%;
-    }
-
-    .chat-room .left .people {
-        margin-left: -1px;
-        border-right: 1px solid #e6e6e6;
-        border-left: 1px solid #e6e6e6;
-        width: -moz-calc(100% + 2px);
-        width: -webkit-calc(100% + 2px);
-        width: -o-calc(100% + 2px);
-        width: calc(100% + 2px);
-        padding-left: 0;
-        height: 456px;
-        overflow: auto;
-        overflow-x: hidden;
-    }
-
-    .chat-room .left .people .person {
-        position: relative;
-        width: 100%;
-        padding: 12px 10% 16px;
-        cursor: pointer;
-        background-color: #fff;
-        list-style: none;
-    }
-
-    .chat-room .left .people .person:after {
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        display: block;
-        width: 80%;
-        height: 1px;
-        content: '';
-        background-color: #e6e6e6;
-        -moz-transform: translate(-50%, 0);
-        -ms-transform: translate(-50%, 0);
-        -webkit-transform: translate(-50%, 0);
-        transform: translate(-50%, 0);
-    }
-
-    .chat-room .left .people .person .img {
-        float: left;
-        width: 40px;
-        height: 40px;
-        margin-right: 12px;
-        line-height: 40px;
-        -moz-border-radius: 50%;
-        -webkit-border-radius: 50%;
-        border-radius: 50%;
-        background: #e7ecf1;
-        text-align: center;
-        font-weight: bold;
-        color: #bfbfbf;
-        font-size: 22px;
-    }
-
-    .chat-room .left .people .person .name {
-        font-size: 14px;
-        line-height: 36px;
-        color: #1a1a1a;
-        font-family: 'Source Sans Pro', sans-serif;
-        font-weight: 600;
-    }
-
-    .chat-room .left .people .person .time {
-        font-size: 14px;
-        position: absolute;
-        top: 16px;
-        right: 10%;
-        padding: 0 0 5px 5px;
-        color: #999;
-        background-color: #fff;
-    }
-
-    .chat-room .left .people .person .preview {
-        font-size: 14px;
-        display: inline-block;
-        overflow: hidden !important;
-        width: 70%;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        color: #999;
-    }
-
-    .chat-room .left .people .person.active,
-    .chat-room .left .people .person:hover {
-        margin-top: -1px;
-        margin-left: -1px;
-        padding-top: 13px;
-        border: 0;
-        background-color: #00b0ff;
-        width: -moz-calc(100% + 2px);
-        width: -webkit-calc(100% + 2px);
-        width: -o-calc(100% + 2px);
-        width: calc(100% + 2px);
-        padding-left: -moz-calc(10% + 1px);
-        padding-left: -webkit-calc(10% + 1px);
-        padding-left: -o-calc(10% + 1px);
-        padding-left: calc(10% + 1px);
-    }
-
-    .chat-room .left .people .person.active span,
-    .chat-room .left .people .person:hover span {
-        color: #fff;
-        background: transparent;
-    }
-
-    .chat-room .left .people .person.active:after,
-    .chat-room .left .people .person:hover:after {
-        display: none;
-    }
-
-    .chat-room .right {
-        position: relative;
-        float: left;
-        width: 62.4%;
-        height: 100%;
-    }
-
-    .chat-room .right .top {
-        width: 100%;
-        height: 40px;
-        padding: 10px 29px;
-        background-color: #eceff1;
-        background-color: #ebe9e9;
-        color: #3F3F3F;
-        text-transform: uppercase;
-        font-family: "Roboto" !important;
-        font-weight: 500;
-        border-bottom: 3px solid #5a5858;
-
-    }
-
-    .chat-room .right .top span .name {
-        color: #1a1a1a;
-
-        font-weight: 500;
-        font-size: 15px;
-    }
-
-    .chat-room .right .chat {
-        position: relative;
-        display: none;
-        overflow: hidden;
-        padding: 0 35px 7px;
-        border-width: 1px 1px 1px 2px;
-        border-style: solid;
-        border-color: #e6e6e6;
-        height: -moz-calc(100% - 48px);
-        height: -webkit-calc(100% - 48px);
-        height: -o-calc(100% - 48px);
-        height: calc(100% - 48px);
-        -webkit-justify-content: flex-end;
-        justify-content: flex-end;
-        -webkit-flex-direction: column;
-        flex-direction: column;
-    }
-
-    .chat-room .right .chat.active-chat {
-        display: block;
-        background: white;
-        height: 410px;
-        overflow: auto;
-        overflow-x: hidden;
-    }
-
-    .chat-room .right .chat.active-chat .bubble {
-        -moz-transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
-        -o-transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
-        -webkit-transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
-        transition-timing-function: cubic-bezier(0.4, -0.04, 1, 1);
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(1) {
-        -moz-animation-duration: 0.15s;
-        -webkit-animation-duration: 0.15s;
-        animation-duration: 0.15s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(2) {
-        -moz-animation-duration: 0.3s;
-        -webkit-animation-duration: 0.3s;
-        animation-duration: 0.3s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(3) {
-        -moz-animation-duration: 0.45s;
-        -webkit-animation-duration: 0.45s;
-        animation-duration: 0.45s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(4) {
-        -moz-animation-duration: 0.6s;
-        -webkit-animation-duration: 0.6s;
-        animation-duration: 0.6s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(5) {
-        -moz-animation-duration: 0.75s;
-        -webkit-animation-duration: 0.75s;
-        animation-duration: 0.75s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(6) {
-        -moz-animation-duration: 0.9s;
-        -webkit-animation-duration: 0.9s;
-        animation-duration: 0.9s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(7) {
-        -moz-animation-duration: 1.05s;
-        -webkit-animation-duration: 1.05s;
-        animation-duration: 1.05s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(8) {
-        -moz-animation-duration: 1.2s;
-        -webkit-animation-duration: 1.2s;
-        animation-duration: 1.2s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(9) {
-        -moz-animation-duration: 1.35s;
-        -webkit-animation-duration: 1.35s;
-        animation-duration: 1.35s;
-    }
-
-    .chat-room .right .chat.active-chat .bubble:nth-of-type(10) {
-        -moz-animation-duration: 1.5s;
-        -webkit-animation-duration: 1.5s;
-        animation-duration: 1.5s;
-    }
-
-    .chat-room .right .write {
-        bottom: 1px;
-        left: 0;
-        height: 60px;
-        padding-left: 8px;
-        border: 1px solid #e6e6e6;
-        background-color: #eceff1;
-
-        width: 100%;
-
-    }
-
-    .chat-room .right .emoji {
-        width: 200px;
-        float: right;
-        top: -185px;
-        position: relative;
-        right: 0;
-        background: white;
-        padding: 5px 9px;
-        border: solid 1px #ddd;
-        display: none;
-    }
-
-    /*  .hero {
-        position:relative;
-        background-color:#e15915;
-        height:320px !important;
-        width:100% !important;
-    }
-    */
-    .chat-room .right .emoji:after {
-        content: '';
-        position: absolute;
-        top: 100%;
-        left: 93%;
-        margin-left: -50px;
-        width: 0;
-        height: 0;
-        border-top: solid 10px #ddd;
-        border-left: solid 10px transparent;
-        border-right: solid 10px transparent;
-    }
-
-    .chat-room .right .write input,
-    .chat-room .right #editable {
-        font-size: 16px;
-        float: left;
-        width: 400px;
-        height: 40px;
-        padding: 0 10px;
-        color: #1a1a1a;
-        border: 0;
-        outline: none;
-        background-color: #eceff1;
-        font-family: 'Source Sans Pro', sans-serif;
-        font-weight: 400;
-        height: 60px;
-        overflow: auto;
-        overflow-x: hidden;
-    }
-
-    .chat-room .right .write .write-link.attach:before {
-        display: inline-block;
-        float: left;
-        width: 20px;
-        height: 60px;
-        content: '';
-        background-image: url("http://s1.postimg.org/s5gfy283f/attachemnt.png");
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-
-    .chat-room .right .write .write-link.smiley {
-        margin-top: 15px;
-        font-size: 18px;
-        color: #23527c;
-        display: inline-block;
-        float: left;
-        width: 20px;
-        height: 60px;
-        content: '';
-    }
-
-    .chat-room .right .write .write-link.smiley:hover {
-        color: #23527c;
-    }
-
-    .chat-room .right .write .write-link.send {
-        margin-top: 15px;
-        font-size: 18px;
-        display: inline-block;
-        float: left;
-        width: 20px;
-        height: 60px;
-        margin-left: 11px;
-        content: '';
-    }
-
-    .chat-room .right .write .write-link.send.disabled {
-        color: #AAAAAA;
-    }
-
-
-    .chat-room .right .bubble {
-        font-size: 13px;
-        position: relative;
-        display: inline-block;
-        clear: both;
-        margin-bottom: 8px;
-        padding: 10px 10px;
-        vertical-align: top;
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
-        border-radius: 5px;
-        padding-bottom: 0px;
-    }
-
-    .chat-room .right .bubble:before {
-        position: absolute;
-        top: 19px;
-        display: block;
-        width: 8px;
-        height: 6px;
-        content: '\00a0';
-        -moz-transform: rotate(29deg) skew(-35deg);
-        -ms-transform: rotate(29deg) skew(-35deg);
-        -webkit-transform: rotate(29deg) skew(-35deg);
-        transform: rotate(29deg) skew(-35deg);
-    }
-
-    .chat-room .right .bubble.you {
-        float: left;
-        color: #fff;
-        background-color: #00b0ff;
-        -webkit-align-self: flex-start;
-        align-self: flex-start;
-        -moz-animation-name: slideFromLeft;
-        -webkit-animation-name: slideFromLeft;
-        animation-name: slideFromLeft;
-    }
-
-    .chat-room .right .bubble.you:before {
-        left: -3px;
-        background-color: #00b0ff;
-    }
-
-    .chat-room .right .bubble.me {
-        float: right;
-        color: #1a1a1a;
-        background-color: #eceff1;
-        -webkit-align-self: flex-end;
-        align-self: flex-end;
-        -moz-animation-name: slideFromRight;
-        -webkit-animation-name: slideFromRight;
-        animation-name: slideFromRight;
-    }
-
-    .chat-room .right .bubble.me:before {
-        right: -3px;
-        background-color: #eceff1;
-    }
-
-    .chat-room .right .conversation-start {
-        position: relative;
-        width: 100%;
-        margin-bottom: 27px;
-        text-align: center;
-    }
-
-    .chat-room .right .conversation-start span {
-        font-size: 14px;
-        display: inline-block;
-        color: #999;
-    }
-
-    .chat-room .right .conversation-start span:before,
-    .chat-room .right .conversation-start span:after {
-        position: absolute;
-        top: 10px;
-        display: inline-block;
-        width: 30%;
-        height: 1px;
-        content: '';
-        background-color: #e6e6e6;
-    }
-
-    .chat-room .right .conversation-start span:before {
-        left: 0;
-    }
-
-    .chat-room .right .conversation-start span:after {
-        right: 0;
-    }
-
-    @keyframes slideFromLeft {
-        0% {
-            margin-left: -200px;
-            filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-            opacity: 0;
-        }
-
-        100% {
-            margin-left: 0;
-            filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
-            opacity: 1;
-        }
-    }
-
-    @-webkit-keyframes slideFromLeft {
-        0% {
-            margin-left: -200px;
-            filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-            opacity: 0;
-        }
-
-        100% {
-            margin-left: 0;
-            filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
-            opacity: 1;
-        }
-    }
-
-    @keyframes slideFromRight {
-        0% {
-            margin-right: -200px;
-            filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-            opacity: 0;
-        }
-
-        100% {
-            margin-right: 0;
-            filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
-            opacity: 1;
-        }
-    }
-
-    @-webkit-keyframes slideFromRight {
-        0% {
-            margin-right: -200px;
-            filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-            opacity: 0;
-        }
-
-        100% {
-            margin-right: 0;
-            filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
-            opacity: 1;
-        }
-    }
-
-    .credits {
-        color: white;
-        font-size: 11px;
-        position: absolute;
-        bottom: 10px;
-        right: 15px;
-    }
-
-    .credits a {
-        color: white;
-        text-decoration: none;
-    }
-
-    i.search-icon.fa.fa-search {
-        position: absolute;
-        left: 11px;
-        top: 12px;
-        color: #bfbfbf;
-        font-size: 17px;
-    }
-
-    span.time {
-        display: block;
-        font-size: 10px;
-        margin-top: 4px;
-    }
-
-
-    .chat-app {
-        height: 100vh;
-        background-color: #f1f3f5;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .chat-box {
-        width: 100%;
-        max-width: 1200px;
-        height: 90%;
-        background: white;
-        display: flex;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .chat-sidebar {
-        width: 300px;
-        border-right: 1px solid #dee2e6;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .search-bar {
-        padding: 15px;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    .user-item {
-        padding: 15px;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid #f1f3f5;
-        cursor: pointer;
-    }
-
-    .user-item:hover {
-        background-color: #f8f9fa;
-    }
-
-    .avatar {
-        width: 40px;
-        height: 40px;
-        background-color: #dee2e6;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #6c757d;
-        margin-right: 10px;
-    }
-
-    .chat-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .chat-header {
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-        font-weight: 500;
-    }
-
-    .chat-messages {
-        flex-grow: 1;
-        padding: 20px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        background-color: #fff;
-    }
-
-    .chat-messages .message {
-        max-width: 75%;
-        padding: 10px 15px;
-        border-radius: 20px;
-        margin-bottom: 10px;
-        display: inline-block;
-        position: relative;
-        clear: both;
-    }
-
-    .message.sent {
-        background-color: #d1e7dd;
-        align-self: flex-end;
-        margin-left: auto;
-        border-bottom-right-radius: 0;
-    }
-
-    .message.received {
-        background-color: #e9ecef;
-        align-self: flex-start;
-        margin-right: auto;
-        border-bottom-left-radius: 0;
-    }
-
-    .no-messages {
-        text-align: center;
-        color: #adb5bd;
-        margin-top: 50px;
-        font-size: 1rem;
-    }
-
-    .chat-input-area {
-        display: flex;
-        border-top: 1px solid #dee2e6;
-        padding: 10px 15px;
-        align-items: center;
-        background-color: #f8f9fa;
-    }
-
-    .chat-input-container {
-        position: relative;
-        flex-grow: 1;
-    }
-
-    .chat-input-container input {
-        width: 100%;
-        border-radius: 30px;
-        padding-left: 40px;
-        padding-right: 40px;
-    }
-
-    .chat-input-container .input-icon-left {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #adb5bd;
-    }
-
-    .chat-input-container .input-icon-right {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #adb5bd;
-    }
-
-    .chat-input-area button {
-        margin-left: 10px;
-    }
-</style>
 @endsection
 @section('site-name')
 @if(isset($unitData))
@@ -806,7 +40,7 @@
     </div>
     <div class="main_content">
 
-        <div class="col-md">
+        {{-- <div class="col-md">
             <div class="card">
                 <div class="card-body">
                     <div class="chat-room">
@@ -852,59 +86,58 @@
                     </div>
                 </div>
             </div>
-        </div>
-        {{-- <div class="container-fluid chat-app">
+        </div> --}}
+        <div class="container-fluid chat-app">
             <div class="chat-box">
                 <!-- Sidebar -->
                 <div class="chat-sidebar">
                     <div class="search-bar">
                         <input type="text" class="form-control" placeholder="User Search..." />
                     </div>
-                    <div class="user-item">
-                        <div class="avatar">N</div>
-                        <div>Normal User</div>
+
+                    {{-- Dynamic users will be appended here via JS --}}
+                    {{-- Add static "loading..." fallback if needed --}}
+                    <div id="userList">
+
                     </div>
-                    <!-- Add more users here -->
                 </div>
 
                 <!-- Chat Area -->
                 <div class="chat-content">
-                    <div class="chat-header">
-                        <i class="fas fa-comments me-2"></i> Chat with Normal User
+                    <div class="chat-header" id="chatTitle">
+                        <i class="fas fa-comments me-2"></i> Chat with <span class="chat-username">User</span>
                     </div>
 
                     <div class="chat-messages" id="chatMessages">
-                        <!-- Sample messages -->
-                        <div class="message received">Hi there!</div>
-                        <div class="message sent">Hey! How can I help you?</div>
-
-                        <!-- Uncomment this block if no messages exist -->
+                        <!-- Messages are dynamically loaded here -->
+                        <!-- If no messages -->
                         <!--
-          <div class="no-messages">
-            <i class="far fa-comment-dots fa-2x mb-3 d-block"></i>
-            No messages yet. Start the conversation!
-          </div>
-          -->
+                <div class="no-messages">
+                    <i class="far fa-comment-dots fa-2x mb-3 d-block"></i>
+                    No messages yet. Start the conversation!
+                </div>
+                -->
                     </div>
+
                     <div class="chat-input-area">
                         <div class="chat-input-container">
                             <i class="fas fa-house input-icon-left"></i>
                             <input type="text" class="form-control" placeholder="Type your message..." />
                         </div>
-                        <button class="btn btn-light"><i class="far fa-smile"></i></button>
-                        <button class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                        <button class="btn btn-light" id="smiley"><i class="far fa-smile"></i></button>
+                        <button class="btn btn-primary disabled"><i class="fas fa-paper-plane"></i></button>
                     </div>
-
                 </div>
             </div>
-        </div> --}}
+        </div>
+
     </div>
 </div>
 
 
 
 @endsection
-@section('scripts')
+{{-- @section('scripts')
 <script>
     window.onload = function()
         {
@@ -1191,4 +424,299 @@
             });
         });
 </script>
+@endsection --}}
+@section('scripts')
+{{-- <script>
+    const userId = {{ Auth::id() }};
+    const roomId = "{{ $roomId ?? '' }}";
+    const chatMessagesEl = document.getElementById("chatMessages");
+    const inputField = document.querySelector(".chat-input-container input");
+    const sendBtn = document.querySelector(".btn.btn-primary");
+
+    let lastMessageId = 0;
+    let messagePolling = null;
+
+    function loadMessages(repeat = true) {
+        $.ajax({
+            type: 'POST',
+            url: '{{ url('chat/loadmsg') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                roomId,
+                lastId: lastMessageId
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.messages && response.messages.length > 0) {
+                    response.messages.forEach(msg => {
+                        const messageDiv = document.createElement("div");
+                        messageDiv.classList.add("message", msg.user == userId ? "sent" : "received");
+                        messageDiv.textContent = msg.body;
+                        chatMessagesEl.appendChild(messageDiv);
+                        lastMessageId = Math.max(lastMessageId, parseInt(msg.id));
+                    });
+
+                    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+                }
+
+                if (repeat) {
+                    clearTimeout(messagePolling);
+                    messagePolling = setTimeout(() => loadMessages(true), 5000);
+                }
+            },
+            error: function () {
+                if (repeat) {
+                    messagePolling = setTimeout(() => loadMessages(true), 10000);
+                }
+            }
+        });
+    }
+
+    function sendMessage() {
+        const message = inputField.value.trim();
+        if (message === "") return;
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ url('chat/sendmsg') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                roomId,
+                message
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    inputField.value = "";
+                    loadMessages(false);
+                }
+            }
+        });
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    inputField.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // Load messages on page load
+    window.onload = function () {
+        loadMessages(true);
+    };
+</script> --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const roomId = "{{ $roomId }}";
+        const userId = {{ $user_id }};
+        let lastMessageId = 0;
+        let pollingTimer;
+
+        const chatInput = document.querySelector(".chat-input-container input");
+        const sendButton = document.querySelector(".btn.btn-primary");
+        const chatMessagesEl = document.querySelector("#chatMessages");
+        const searchInput = document.querySelector(".search-bar input");
+
+        function initChat() {
+            loadMessages(true);
+            loadUsers();
+            setupChatOnlinePolling();
+        }
+
+        function loadMessages(repeat = false) {
+            $.ajax({
+                type: 'POST',
+                url: '{{ url("chat/loadmsg") }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    roomId: roomId,
+                    lastId: lastMessageId,
+                    loaduser: true
+                },
+                dataType: 'json',
+                success: function (res) {
+                    if (res.messages) {
+                        res.messages.forEach(msg => {
+                            if (msg.id > lastMessageId) {
+                                lastMessageId = msg.id;
+                                const message = document.createElement("div");
+                                message.classList.add("message");
+                                message.classList.add(msg.user == userId ? "sent" : "received");
+                                message.textContent = msg.body;
+                                chatMessagesEl.appendChild(message);
+                            }
+                        });
+                        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+                    }
+
+                    if (repeat) {
+                        pollingTimer = setTimeout(() => loadMessages(true), 5000);
+                    }
+                },
+                error: function () {
+                    if (repeat) {
+                        pollingTimer = setTimeout(() => loadMessages(true), 10000);
+                    }
+                }
+            });
+        }
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ url("chat/sendmsg") }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    roomId: roomId,
+                    message: message
+                },
+                dataType: 'json',
+                beforeSend: function () {
+                    chatInput.readOnly = true;
+                },
+                complete: function () {
+                    chatInput.readOnly = false;
+                },
+                success: function (res) {
+                    if (res.success) {
+                        chatInput.value = '';
+                        sendButton.classList.add("disabled");
+                        loadMessages(false);
+                    }
+                }
+            });
+        }
+
+        function loadUsers(search = '') {
+            $.ajax({
+                type: 'POST',
+                url: '{{ url("chat/loaduser") }}',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    roomId: roomId,
+                    search: search
+                },
+                dataType: 'json',
+                success: function (res) {
+                    const sidebar = document.querySelector(".chat-sidebar");
+                    sidebar.querySelectorAll(".user-item.dynamic").forEach(el => el.remove());
+
+                    res.members.forEach(user => {
+                        const item = document.createElement("div");
+                        item.className = "user-item dynamic";
+                        item.dataset.roomId = user.room_id;
+                        item.innerHTML = `<div class="avatar">${user.name.charAt(0)}</div><div>${user.name}</div>`;
+                        item.addEventListener("click", function () {
+                            if (user.room_id !== roomId) {
+                                window.location.href = '{{ url("chat") }}/' + user.room_id;
+                            }
+                        });
+                        sidebar.appendChild(item);
+                    });
+                }
+            });
+        }
+
+        function setupChatOnlinePolling() {
+            function chatOnline() {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url("/chat/online") }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        unit_id: {!! $unitData->id !!}
+                    },
+                    dataType: 'json',
+                    complete: function () {
+                        setTimeout(chatOnline, 5000);
+                    },
+                    success: function (res) {
+                        $("#chat-online").html(res.online);
+                    }
+                });
+            }
+            chatOnline();
+        }
+
+        // Input handlers
+        chatInput.addEventListener("input", function () {
+            if (this.value.trim() !== "") {
+                sendButton.classList.remove("disabled");
+            } else {
+                sendButton.classList.add("disabled");
+            }
+        });
+
+        chatInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        sendButton.addEventListener("click", sendMessage);
+
+        // Emoji toggling (if smiley button exists)
+        const smileyBtn = document.querySelector("#smiley");
+        if (smileyBtn) {
+            smileyBtn.addEventListener("click", function (event) {
+                event.stopPropagation();
+                $(".right .emoji").fadeIn();
+                chatInput.focus();
+            });
+        }
+
+        // Search users
+        searchInput.addEventListener("input", function () {
+            loadUsers(this.value.trim());
+        });
+
+        // Insert smiley support
+        $.fn.EnableInsertAtCaret = function () {
+            $(this).on("focus", function () {
+                $(".insertatcaretactive").removeClass("insertatcaretactive");
+                $(this).addClass("insertatcaretactive");
+            });
+        };
+
+        function insert_smiley(text) {
+            $(".chat-input-container input").EnableInsertAtCaret();
+            InsertAtCaret(text);
+            $(".chat-input-container input").focus();
+        }
+
+        function InsertAtCaret(myValue) {
+            return $(".insertatcaretactive").each(function () {
+                if (document.selection) {
+                    this.focus();
+                    sel = document.selection.createRange();
+                    sel.text = myValue;
+                    this.focus();
+                } else if (this.selectionStart || this.selectionStart == '0') {
+                    const startPos = this.selectionStart;
+                    const endPos = this.selectionEnd;
+                    const scrollTop = this.scrollTop;
+                    this.value = this.value.substring(0, startPos) + myValue + this.value.substring(endPos);
+                    this.focus();
+                    this.selectionStart = startPos + myValue.length;
+                    this.selectionEnd = startPos + myValue.length;
+                    this.scrollTop = scrollTop;
+                } else {
+                    this.value += myValue;
+                    this.focus();
+                }
+
+                sendButton.classList.remove("disabled");
+            });
+        }
+
+        initChat();
+    });
+</script>
+
 @endsection

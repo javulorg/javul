@@ -2,56 +2,57 @@
 @section('title', 'New Message')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4>New Message</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-2">
-                            @include('message.menu', array())
+<div class="inbox-app">
+    <div class="card card-custom">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-md-3 bg-light border-end p-3">
+                @include('message.menu', [])
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-md-9 p-4">
+                <h5 class="mb-3">Compose New Message</h5>
+                <form method="post"  action="{{ route('message.send-message') }}" enctype="multipart/form-data">
+
+                    @csrf
+
+                    @if($user_id > 0)
+                        <input type="hidden" name="user_id" value="{{ $user_id }}">
+                    @else
+                        <div class="mb-3">
+                            <label class="form-label">To</label>
+                            <select id="user_id_fromSel2" name="user_id" class="form-control" required>
+                                <option value="">Select User</option>
+                                @foreach ($user as $value)
+                                    <option value="{{ $value->id }}">
+                                        {{ $value->first_name }} {{ $value->last_name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="col-md-10">
-                            <form role="form" method="post" id="form_topic_form" enctype="multipart/form-data">
-                                @csrf
-                                <br>
-                                @if($user_id > 0)
-                                    <input type="hidden" name="user_id" value="{{ $user_id }}">
-                                @else
-                                    <div class="col-sm-12 form-group">
-                                        <label for="user_id_fromSel2">To</label>
-                                        <select id="user_id_fromSel2" name="user_id" class="form-control">
-                                            @foreach ($user as $key => $value)
-                                                <option value="{{ $value->id }}">
-                                                    {{ $value->first_name }} {{ $value->last_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endif
-                                <div class="col-sm-12 form-group">
-                                    <label for="subject">Subject</label>
-                                    <input type="text" name="subject" id="subject" class="form-control">
-                                </div>
-                                <div class="col-sm-12 form-group">
-                                    <label for="message">Message</label>
-                                    <textarea class="form-control summernote" rows="5" name="message" id="message"></textarea>
-                                </div>
-                                <div class="col-sm-12 mt-3 form-group">
-                                    <button class="btn btn-dark float-end">Send Message</button>
-                                </div>
-                            </form>
-                        </div>
+                    @endif
+
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input type="text" name="subject" id="subject" class="form-control" placeholder="Enter subject" required>
                     </div>
-                </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control summernote" rows="6" name="message" id="message" placeholder="Write your message here..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 @endsection
+
 @section('scripts')
-    <script type="text/javascript">
+<script type="text/javascript">
         ClassicEditor
             .create( document.querySelector('#message') )
             .catch( error => {
@@ -98,5 +99,4 @@
             return false;
         })
     </script>
-
 @endsection

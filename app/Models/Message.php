@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 class Message extends Model
 {
+        protected $table = 'message';
+
     public static function send($data = array())
     {
     	$member = array(
@@ -31,35 +33,82 @@ class Message extends Model
                     ->select(["users.id","users.first_name","users.last_name"])
                     ->get();
     }
-    public static function getMsg($filter = array(),$sortDesc = false)
-    {
-    	$messages =  DB::table("message")
-    				->select("message.*","users.first_name","users.last_name")
-    				->leftJoin('users', 'users.id', '=', DB::raw(' IF( message.to = '. Auth::user()->id .' ,message.from,message.to)') )
-                    ->where(function ($query) {
-                        $query->where("to","=",DB::raw(Auth::user()->id))->orWhere("from","=",DB::raw(Auth::user()->id));
-                    })
-    				->where($filter)
-    				->orderBy("message.message_id","DESC")
-    				->paginate(10);
+    // public static function getMsg($filter = array(),$sortDesc = false)
+    // {
+    // 	$messages =  DB::table("message")
+    // 				->select("message.*","users.first_name","users.last_name")
+    // 				->leftJoin('users', 'users.id', '=', DB::raw(' IF( message.to = '. Auth::user()->id .' ,message.from,message.to)') )
+    //                 ->where(function ($query) {
+    //                     $query->where("to","=",DB::raw(Auth::user()->id))->orWhere("from","=",DB::raw(Auth::user()->id));
+    //                 })
+    // 				->where($filter)
+    // 				->orderBy("message.message_id","DESC")
+    // 				->paginate(10);
 
-    	$data = array();
-        $data['message'] = array();
+    // 	$data = array();
+    //     $data['message'] = array();
 
-    	foreach ($messages->items() as $key => $message) {
-    		$data['message'][] = array(
-    			'message_id' => $message->id,
-			    'body' => $sortDesc ?  substr(strip_tags($message->body),0,250) : $message->body,
-			    'to' => $message->to,
-                'from' => $message->from,
-			    'subject' => strip_tags( $message->subject ),
-			    'datetime' => Carbon::createFromFormat('Y-m-d H:i:s', $message->datetime)->diffForHumans(),
-			    'isRead' => $message->isRead,
-			    'first_name' => $message->first_name,
-			    'last_name' => $message->last_name,
-		    );
-    	}
-    	$data['pagination'] = $messages->links('layout.pagination');
-    	return $data;
+    // 	foreach ($messages->items() as $key => $message) {
+    // 		$data['message'][] = array(
+    // 			'message_id' => $message->id,
+	// 		    'body' => $sortDesc ?  substr(strip_tags($message->body),0,250) : $message->body,
+	// 		    'to' => $message->to,
+    //             'from' => $message->from,
+	// 		    'subject' => strip_tags( $message->subject ),
+	// 		    'datetime' => Carbon::createFromFormat('Y-m-d H:i:s', $message->datetime)->diffForHumans(),
+	// 		    'isRead' => $message->isRead,
+	// 		    'first_name' => $message->first_name,
+	// 		    'last_name' => $message->last_name,
+	// 	    );
+    // 	}
+    // 	$data['pagination'] = $messages->links('layout.pagination');
+    // 	return $data;
+    // }
+
+    public static function getMsg($filter = array(), $sortDesc = false)
+{
+    $userId = Auth::user()->id;
+
+    $messages = DB::table("message")
+        ->select("message.*", "users.first_name", "users.last_name")
+        ->leftJoin('users', 'users.id', '=', DB::raw('IF(message.to = ' . $userId . ', message.from, message.to)'))
+        ->where(function ($query) use ($userId) {
+            $query->where("message.to", "=", DB::raw($userId))
+                  ->orWhere("message.from", "=", DB::raw($userId));
+        })
+        ->where($filter)
+        ->orderBy("message.datetime", "DESC") // ✅ Order by actual datetime
+        ->paginate(10);
+
+    $data = [];
+    $data['message'] = [];
+
+    foreach ($messages->items() as $message) {
+        $formattedDatetime = '';
+        if (!empty($message->datetime)) {
+            try {
+                $formattedDatetime = Carbon::createFromFormat('Y-m-d H:i:s', $message->datetime)->diffForHumans();
+            } catch (\Exception $e) {
+                $formattedDatetime = $message->datetime;
+            }
+        }
+
+        $data['message'][] = [
+            'message_id'  => $message->id,
+            'body'        => $sortDesc ? substr(strip_tags($message->body), 0, 250) : $message->body,
+            'to'          => $message->to,
+            'from'        => $message->from,
+            'subject'     => strip_tags($message->subject),
+            'datetime'    => $formattedDatetime,
+            'isRead'      => $message->isRead,
+            'first_name'  => $message->first_name,
+            'last_name'   => $message->last_name,
+        ];
     }
+
+    $data['pagination'] = $messages->links('layout.pagination');
+
+    return $data;
+}
+
 }

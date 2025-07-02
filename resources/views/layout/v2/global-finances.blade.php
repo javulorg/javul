@@ -28,11 +28,13 @@
             <div class="sidebar_block_left">
             </div>
             <div class="sidebar_block_right">
+
                 Available: {{ $availableFunds }}
             </div>
         </div>
+
         <div class="sidebar_block_content_bottom">
-            <a href="https://givebutter.com/your-campaign-slug" target="_blank" rel="noopener noreferrer">Donate</a>
+            <a href="{{ url('funds/donate/unit/N5wJa1JeX4' )}}" target="_blank" rel="noopener noreferrer">Donate</a>
             <div class="separator"></div>
             <a href="#">Financial Activity</a>
         </div>

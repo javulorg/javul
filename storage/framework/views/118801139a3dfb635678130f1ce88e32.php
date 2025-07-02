@@ -1,13 +1,12 @@
-@extends('layout.master')
-@section('title', 'View Message')
+<?php $__env->startSection('title', 'View Message'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="inbox-app">
     <div class="card card-custom">
         <div class="row g-0">
             <!-- Sidebar -->
             <div class="col-md-3 bg-light border-end p-3">
-                @include('message.menu', [])
+                <?php echo $__env->make('message.menu', [], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
 
             <!-- Message Content -->
@@ -22,11 +21,12 @@
 
                         <!-- Subject and Sender/Receiver -->
                         <div>
-                            <h5 class="mb-1">{{ $message['subject'] }}</h5>
+                            <h5 class="mb-1"><?php echo e($message['subject']); ?></h5>
                             <p class="mb-0">
-                                <strong>{{ $message['to'] == $myId ? 'From' : 'To' }}:</strong>
-                                <a href="{{ $message['link'] }}" class="text-decoration-none">
-                                    {{ $message['first_name'] }} {{ $message['last_name'] }}
+                                <strong><?php echo e($message['to'] == $myId ? 'From' : 'To'); ?>:</strong>
+                                <a href="<?php echo e($message['link']); ?>" class="text-decoration-none">
+                                    <?php echo e($message['first_name']); ?> <?php echo e($message['last_name']); ?>
+
                                 </a>
                             </p>
                         </div>
@@ -34,7 +34,7 @@
 
                     <!-- Right: Date/Time -->
                     <div>
-                        <p class="text-muted small mb-0">{{ $message['datetime'] }}</p>
+                        <p class="text-muted small mb-0"><?php echo e($message['datetime']); ?></p>
                     </div>
                 </div>
 
@@ -43,7 +43,8 @@
 
                 <!-- Message Body -->
                 <div class="mb-4 p-3 bg-light rounded border">
-                    {!! $message['body'] !!}
+                    <?php echo $message['body']; ?>
+
                 </div>
 
                 <!-- Inline Reply Button -->
@@ -53,14 +54,14 @@
 
                                <!-- Reply Form -->
                 <div id="inlineReplyForm" class="d-none mt-3">
-                    <h6>Reply to {{ $message['first_name'] }} {{ $message['last_name'] }}</h6>
-                    <form method="POST" action="{{ url('message/send-message') }}">
-                        @csrf
-                        <input type="hidden" name="user_id" value="{{ $message['from'] }}">
+                    <h6>Reply to <?php echo e($message['first_name']); ?> <?php echo e($message['last_name']); ?></h6>
+                    <form method="POST" action="<?php echo e(url('message/send-message')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="user_id" value="<?php echo e($message['from']); ?>">
 
                         <div class="mb-2">
                             <input type="text" name="subject" class="form-control"
-                                value="Re: {{ $message['subject'] }}" required>
+                                value="Re: <?php echo e($message['subject']); ?>" required>
                         </div>
 
                         <div class="mb-2">
@@ -77,12 +78,14 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
     function toggleReplyForm() {
         document.getElementById('inlineReplyForm').classList.toggle('d-none');
     }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/message/view.blade.php ENDPATH**/ ?>
