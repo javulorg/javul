@@ -75,6 +75,67 @@ class MessageController extends Controller
     	view()->share("messages", Message::getMsg($filter,true) );
     	return view("message.inbox");
     }
+
+
+    // public function send(Request $request, $user_id = 0)
+    // {
+    //     if((integer)$user_id == Auth::user()->id){
+    //         return view("errors.404");
+    //     }
+
+    //     $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
+    //     $hashed_user_id = $userIDHashID->encode(Auth::user()->id);
+
+
+    // 	if ($request->isMethod('post')) {
+    // 		 $inputData = $request->all();
+
+	//         $validator = Validator::make($inputData, [
+	//             'message'=> 'required',
+    //             'user_id'=> 'required',
+	//             'subject'=> 'required',
+	//         ],[
+    //             'message.required'=>'Please enter message',
+	//             'subject.required'=>'Please enter subject',
+	//         ]);
+
+	//         if ($validator->fails()){
+	//             return json_encode(array(
+	// 				'errors' => $validator->getMessageBag()->toArray()
+	// 			), 200);
+	//         }
+
+    //         $messageId = Message::send($inputData);
+
+    //         $user_messages = new UserMessages();
+	//         $json = array();
+	//         if($messageId){
+    //             // send actual message to user as per said in https://github.com/javulorg/javul/issues/4
+    //             $receiverObj = User::find($inputData['user_id']);
+    //             $content = 'User <a style="text-decoration:none;" href="' . url('userprofiles/' . $hashed_user_id . '/' .
+    //                     strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . Auth::user()->first_name . ' ' . Auth::user()->last_name . '</a> ' .
+    //                 ' sent you message';
+    //             $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' sent you message';
+    //             User::SendEmailAndOnSiteAlert($content,$email_subject,[$receiverObj],$onlyemail = true,'inbox');
+	//             $json[$user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['type']] = $user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['text'];
+	//         }
+	//         else
+	//         {
+	//         	$json[$user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['type']] = $user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['text'];;
+	//         }
+	//         return json_encode($json);
+    // 	}
+    // 	else {
+    //         $user = Message::users();
+
+    //         view()->share("user_id",$user_id);
+    //         view()->share("page",'new');
+    // 		view()->share("user",$user);
+    // 		return view("message.send");
+    // 	}
+    // }
+
+
     public function send(Request $request, $user_id = 0)
     {
         if((integer)$user_id == Auth::user()->id){
@@ -82,55 +143,69 @@ class MessageController extends Controller
         }
 
 
-        $userIDHashID= new Hashids('user id hash',10,Config::get('app.encode_chars'));
-        $hashed_user_id = $userIDHashID->encode(Auth::user()->id);
-
-
-    	if ($request->isMethod('post')) {
-    		 $inputData = $request->all();
-
-	        $validator = Validator::make($inputData, [
-	            'message'=> 'required',
-                'user_id'=> 'required',
-	            'subject'=> 'required',
-	        ],[
-                'message.required'=>'Please enter message',
-	            'subject.required'=>'Please enter subject',
-	        ]);
-
-	        if ($validator->fails()){
-	            return json_encode(array(
-					'errors' => $validator->getMessageBag()->toArray()
-				), 200);
-	        }
-
-            $messageId = Message::send($inputData);
-
-            $user_messages = new UserMessages();
-	        $json = array();
-	        if($messageId){
-                // send actual message to user as per said in https://github.com/javulorg/javul/issues/4
-                $receiverObj = User::find($inputData['user_id']);
-                $content = 'User <a style="text-decoration:none;" href="' . url('userprofiles/' . $hashed_user_id . '/' .
-                        strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . Auth::user()->first_name . ' ' . Auth::user()->last_name . '</a> ' .
-                    ' sent you message';
-                $email_subject = 'User '.Auth::user()->first_name . ' ' . Auth::user()->last_name.' sent you message';
-                User::SendEmailAndOnSiteAlert($content,$email_subject,[$receiverObj],$onlyemail = true,'inbox');
-	            $json[$user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['type']] = $user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['text'];
-	        }
-	        else
-	        {
-	        	$json[$user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['type']] = $user_messages->getMessage('MESSAGE_SENT_SUCCESSFULLY')['text'];;
-	        }
-	        return json_encode($json);
-    	}
-    	else {
             $user = Message::users();
 
             view()->share("user_id",$user_id);
             view()->share("page",'new');
     		view()->share("user",$user);
     		return view("message.send");
-    	}
+
     }
+
+   public function sendMessage(Request $request, $user_id = 0)
+{
+    if ((int)$user_id === Auth::user()->id) {
+        return view("errors.404");
+    }
+
+    $userIDHashID = new Hashids('user id hash', 10, Config::get('app.encode_chars'));
+    $hashed_user_id = $userIDHashID->encode(Auth::user()->id);
+
+    if ($request->isMethod('post')) {
+        $inputData = $request->all();
+
+        $validator = Validator::make($inputData, [
+            'message' => 'required',
+            'user_id' => 'required',
+            'subject' => 'required',
+        ], [
+            'message.required' => 'Please enter message',
+            'subject.required' => 'Please enter subject',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $messageId = Message::send($inputData);
+
+        if ($messageId) {
+            $receiverObj = User::find($inputData['user_id']);
+
+            $content = 'User <a style="text-decoration:none;" href="' . url('userprofiles/' . $hashed_user_id . '/' .
+                    strtolower(Auth::user()->first_name . '_' . Auth::user()->last_name)) . '">' . Auth::user()->first_name . ' ' . Auth::user()->last_name . '</a> ' .
+                ' sent you a message';
+            $email_subject = 'User ' . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' sent you a message';
+
+            User::SendEmailAndOnSiteAlert($content, $email_subject, [$receiverObj], true, 'inbox');
+
+            return redirect('message/sent')->with('success', 'Message sent successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to send message. Please try again.');
+        }
+
+    } else {
+        $user = Message::users();
+
+        view()->share("user_id", $user_id);
+        view()->share("page", 'new');
+        view()->share("user", $user);
+        return view("message.send");
+    }
+}
+
+
+
 }

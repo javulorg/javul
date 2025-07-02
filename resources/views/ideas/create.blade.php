@@ -39,7 +39,7 @@
             @endif
         </div>
 
-        <div class="panel panel-grey panel-default col-md-9">
+        <div class="panel panel-grey panel-default ">
             <div class="panel-heading">
                 <h4>Create Idea </h4>
             </div>

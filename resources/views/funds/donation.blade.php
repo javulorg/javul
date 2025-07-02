@@ -9,7 +9,7 @@
     </style>
 @endsection
 @section('content')
-    @php $obj_identifier = get_class($obj); @endphp
+    {{-- @php $obj_identifier = get_class($obj); @endphp --}}
     <div class="bg-light p-3 mb-4">
         <div class="row">
             <div class="col-sm-4 text-center">
@@ -81,7 +81,7 @@
         </div>
 
         <div class="col-sm-8">
-            @if($obj_identifier != 'App\Objective')
+            @if(isset($obj_identifier) && $obj_identifier != 'App\Models\Objective')
                 <form accept-charset="UTF-8" action="{!! url('funds/donate-amount') !!}" class="simple_form form-horizontal" method="post"
                       novalidate="novalidate" id="donate_amount_form">
                     {{ csrf_field() }}
@@ -154,7 +154,7 @@
                             <input type="hidden" id="paymentMethod" name="paymentMethod" value="{{ $current_payment_method }}"/>
                         </div>
                         <div class="col-sm-2 col-xs-12">
-                            <button class="btn btn-primary">Transfer from Unit</button>
+                            <a  href="https://givebutter.com/G8ntYk"class="btn btn-primary">Transfer from Unit</a>
                         </div>
                     </div>
                 </form>
