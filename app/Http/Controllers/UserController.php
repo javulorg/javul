@@ -87,7 +87,6 @@ class UserController extends Controller
                 $objectivesObj = Objective::where('user_id', $user_id)->get();
                 $tasksObj = Task::where('user_id', $user_id)->get();
 
-                $activityPoints = ActivityPoint::where('user_id', $user_id)->sum('points');
 
                 $skills = [];
                 if (!empty($userObj->job_skills))
@@ -149,7 +148,7 @@ class UserController extends Controller
                 view()->share('tasksObj', $tasksObj);
                 view()->share('interestObj', $interestObj);
                 view()->share('skills', $skills);
-                view()->share('activityPoints', $activityPoints);
+                // view()->share('activityPoints', $activityPoints);
                 view()->share('userObj', $userObj);
                 view()->share('unitsObj', $unitsObj);
 
@@ -170,7 +169,7 @@ class UserController extends Controller
                     $mostActiveUnits = \App\Models\Unit::leftJoin('activity_points', function ($join) use ($userId) {
                         $join->on('units.id', '=', 'activity_points.unit_id')
                             ->where('activity_points.user_id', '=', $userId)
-                            ->where('activity_points.created_at', '>=', now()->subMonths(6));
+                            ->where('units.created_at', '>=', now()->subMonths(6));
                     })
                         ->select(
                             'units.id as unit_id',
@@ -181,6 +180,10 @@ class UserController extends Controller
                         ->having('total_points', '>', 0)
                         ->orderByDesc('total_points')
                         ->get();
+
+           $activityPoints = ActivityPoint::where('user_id', $user_id)
+    ->where('created_at', '>=', Carbon::now()->subMonths(6))
+    ->sum('points');
 
 
 
@@ -202,11 +205,22 @@ class UserController extends Controller
                         ->where('comments', 'Objective updated')
                         ->count();
 
-                    $totalIdeasCreated =  ActivityPoint::query()
+                    // $totalIdeasCreated =  ActivityPoint::query()
+                    //     ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    //     ->where('user_id', $user_id)
+                    //     ->where('comments', 'Idea Created')
+                    //     ->count();
+
+                    $totalIdeasCreated = Idea::query()
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                        ->where('user_id', $user_id)
-                        ->where('comments', 'Idea Created')
-                        ->count();
+                        ->where('user_id', $user_id)->count();
+
+                    $totalIssueCreated =Issue::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)->count();
+                    $totalTasksCreated = Idea::query()
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->where('user_id', $user_id)->count();
 
                     $totalIdeasUpdated =  ActivityPoint::query()
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
@@ -223,6 +237,8 @@ class UserController extends Controller
                     $totalObjectivesCreated = Objective::query()
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
                         ->where('user_id', $user_id)->count();
+
+
 
                     $objectivesPriority = DB::table('priorities')
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
@@ -249,6 +265,22 @@ class UserController extends Controller
                         ->where('user_id', $user_id)->count();
 
                     $upvoteCreationRatio = $totalObjectivesCreated * 30;
+
+                      $topComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                    ->where('likes', '>', 0)
+                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                    ->orderBy('likes', 'desc')
+                    ->take(10)
+                    ->get();
+
+
+                $mostRecentComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                 ->where('created_time', '>=', Carbon::now()->subMonths(6))
+                    ->orderBy('created_at', 'desc')
+                    ->take(10)
+                    ->get();
                 } else {
                     // Default logic for 'Last 6 Months' or 'Lifetime'
                     $mostActiveUnits = ActivityPoint::select(
@@ -261,6 +293,7 @@ class UserController extends Controller
                         ->orderByDesc('total_points')
                         ->limit(5)
                         ->get();
+                $activityPoints = ActivityPoint::where('user_id', $user_id)->sum('points');
 
 
                     $totalTasksEdited =  ActivityPoint::query()
@@ -282,6 +315,20 @@ class UserController extends Controller
                         ->where('user_id', $user_id)
                         ->where('comments', 'Idea Created')
                         ->count();
+
+                    $topComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                    ->where('likes', '>', 0)
+                    ->orderBy('likes', 'desc')
+                    ->take(10)
+                    ->get();
+
+
+                $mostRecentComments = DB::table('forum_post')
+                    ->where('user_id', $user_id)
+                    ->orderBy('created_at', 'desc')
+                    ->take(10)
+                    ->get();
 
                     $totalIdeasUpdated =  ActivityPoint::query()
                         ->where('user_id', $user_id)
@@ -423,18 +470,8 @@ class UserController extends Controller
                 }
 
 
-                $mostRecentComments = DB::table('forum_post')
-                    ->where('user_id', $user_id)
-                    ->orderBy('created_at', 'desc')
-                    ->take(10)
-                    ->get();
 
-                $topComments = DB::table('forum_post')
-                    ->where('user_id', $user_id)
-                    ->where('likes', '>', 0)
-                    ->orderBy('likes', 'desc')
-                    ->take(10)
-                    ->get();
+
 
                 view()->share('totalUserComments', $totalUserComments);
                 view()->share('totalUpvotesComments', $totalUpvotesComments);
@@ -468,7 +505,7 @@ class UserController extends Controller
 
                 $totalIssueEdited = ActivityPoint::query()->where('user_id', $user_id)->where('comments', 'Issue Updated')->count();
 
-                $totalIssueCreated = Issue::query()->where('user_id', $user_id)->count();
+                // $totalIssueCreated = Issue::query()->where('user_id', $user_id)->count();
 
                 $issueUpvoteCreationRatio = $totalIssueCreated * 30;
                 $issueUpvoteEditRatio = $totalIssueEdited * 30;
@@ -477,11 +514,11 @@ class UserController extends Controller
                 $taskUpvoteCreationRatio = $totalTasksCreated * 30;
                 $taskUpvoteEditRatio = $totalTasksEdited * 30;
                 // $totaltaskscreatedd =  Task::where('status','created')->get();
-                $totalTasksCreated =  ActivityPoint::query()
-                    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->where('user_id', $user_id)
-                    ->where('comments', 'Task Created')
-                    ->count();
+                // $totalTasksCreated =  ActivityPoint::query()
+                //     ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                //     ->where('user_id', $user_id)
+                //     ->where('comments', 'Task Created')
+                //     ->count();
 
                 $totalTasksCompleted =  ActivityPoint::query()
                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
@@ -499,6 +536,7 @@ class UserController extends Controller
 
 
                 return view('users.profile', [
+                    'activityPoints' => $activityPoints,
                     'totalObjectivesCreated' => $totalObjectivesCreated,
                     'totalObjectivesEdited' => $totalObjectivesEdited,
                     'totalIssueCreated' => $totalIssueCreated,
@@ -507,7 +545,7 @@ class UserController extends Controller
                     'issueUpvoteEditRatio' => $issueUpvoteEditRatio,
                     'taskUpvoteCreationRatio' => $taskUpvoteCreationRatio,
                     'taskUpvoteEditRatio' => $taskUpvoteEditRatio,
-                    'totaltaskscreatedd' => $totalTasksCreated,
+                    'totaltaskscreated' => $totalTasksCreated,
                     'totalTasksCompleted' => $totalTasksCompleted,
                     'totalQualityOfWork'  => $totalQualityOfWork,
                     'totalTimeliness'  => $totalTimeliness

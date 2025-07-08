@@ -40,7 +40,7 @@
             ?>
             @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitObj->id])
 
-            @include('layout.v2.global-finances', ['availableFunds' => $availableFunds, 'awardedFunds' => $awardedFunds])
+            @include('layout.v2.global-finances', ['availableFunds' => $availableFunds, 'awardedFunds' => $awardedFunds, 'unitData' => $unitObj])
 
             @include('layout.v2.global-about-site')
         </div>

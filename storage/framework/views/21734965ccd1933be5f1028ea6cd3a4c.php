@@ -267,7 +267,7 @@
                                 <ul>
 
                                     
-                                    <li>Tasks Created: <?php echo e($totaltaskscreatedd); ?></li>
+                                    <li>Tasks Created: <?php echo e($totaltaskscreated); ?></li>
                                     <li>Tasks Edited: <?php echo e($totalTasksEdited); ?></li>
                                     <li>Tasks Completed: <?php echo e($totalTasksCompleted); ?></li>
                                 </ul>

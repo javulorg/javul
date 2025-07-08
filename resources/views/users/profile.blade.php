@@ -343,7 +343,7 @@
                                 <ul>
 
                                     {{-- @dd($totalTasksCreated) --}}
-                                    <li>Tasks Created: {{ $totaltaskscreatedd }}</li>
+                                    <li>Tasks Created: {{ $totaltaskscreated }}</li>
                                     <li>Tasks Edited: {{ $totalTasksEdited }}</li>
                                     <li>Tasks Completed: {{ $totalTasksCompleted }}</li>
                                 </ul>

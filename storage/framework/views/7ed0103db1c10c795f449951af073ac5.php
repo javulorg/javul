@@ -218,7 +218,13 @@
                                             Awarded $<?php echo e(number_format($awardedObjFunds, 2)); ?><br>
                                             Available $<?php echo e(number_format($availableObjFunds, 2)); ?><br>
                                         </div>
+
                                     </div>
+                                    <div class="text-center">
+     <a href="<?php echo e(url('funds/donate/unit/N5wJa1JeX4' )); ?>" target="_blank" rel="noopener noreferrer">Donate</a>
+                                    </div>
+
+
                                 </div>
                             </div>
                             <?php
@@ -640,21 +646,7 @@
 
                         </div>
                     </div>
-                    <style>
-                        .comment_actions form {
-                            display: inline-block;
-                            margin-right: 10px;
-                        }
-
-                        .comment_actions form:last-child {
-                            margin-right: 0;
-                        }
-
-                        .badge .count {
-                            color: black;
-                            /* Adjust color as needed */
-                        }
-                    </style>
+                    
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endif; ?>
 
