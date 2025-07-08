@@ -216,7 +216,13 @@
                                             Awarded ${{ number_format($awardedObjFunds, 2) }}<br>
                                             Available ${{ number_format($availableObjFunds, 2) }}<br>
                                         </div>
+
                                     </div>
+                                    <div class="text-center">
+     <a href="{{ url('funds/donate/unit/N5wJa1JeX4' )}}" target="_blank" rel="noopener noreferrer">Donate</a>
+                                    </div>
+
+
                                 </div>
                             </div>
                             @php
@@ -729,7 +735,7 @@
 
                         </div>
                     </div>
-                    <style>
+                    {{-- <style>
                         .comment_actions form {
                             display: inline-block;
                             margin-right: 10px;
@@ -743,7 +749,7 @@
                             color: black;
                             /* Adjust color as needed */
                         }
-                    </style>
+                    </style> --}}
                     @endforeach
                     @endif
 

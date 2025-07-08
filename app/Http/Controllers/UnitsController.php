@@ -507,7 +507,7 @@ class UnitsController extends Controller
                     view()->share('homeCheck', $homeCheck);
                     view()->share('availableFunds', $availableUnitFunds);
                     view()->share('awardedFunds', $awardedUnitFunds);
-                    //                    return view('units.create');
+                                       return view('units.create');
                     return view('units.edit');
                 }
             }
@@ -689,67 +689,67 @@ class UnitsController extends Controller
 
                  $searchType = $request->input('search_select');
 
-$objectives = Objective::query()
-    ->with('unit')
-    ->when($searchType !== 'another', function ($query) use ($unit_id) {
-        // Apply unit filter only if NOT searching with another unit
-        $query->where('unit_id', $unit_id);
-    })
-    ->when($request->filled('search'), function ($query) use ($request) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    })
-    ->orderByDesc('id')
-    ->get();
+                $objectives = Objective::query()
+                    ->with('unit')
+                    ->when($searchType !== 'another', function ($query) use ($unit_id) {
+                        // Apply unit filter only if NOT searching with another unit
+                        $query->where('unit_id', $unit_id);
+                    })
+                    ->when($request->filled('search'), function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orderByDesc('id')
+                    ->get();
 
-$searchType = $request->input('search_select'); // 'this' or 'another'
+                $searchType = $request->input('search_select'); // 'this' or 'another'
 
-// ✅ OBJECTIVES
-$objectives = Objective::query()
-    ->with('unit')
-    ->when($searchType !== 'another', function ($query) use ($unit_id) {
-        $query->where('unit_id', $unit_id);
-    })
-    ->when($request->filled('search'), function ($query) use ($request) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    })
-    ->orderByDesc('id')
-    ->get();
+                // ✅ OBJECTIVES
+                $objectives = Objective::query()
+                    ->with('unit')
+                    ->when($searchType !== 'another', function ($query) use ($unit_id) {
+                        $query->where('unit_id', $unit_id);
+                    })
+                    ->when($request->filled('search'), function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orderByDesc('id')
+                    ->get();
 
-// ✅ TASKS
-$tasks = Task::query()
-    ->with('unit')
-    ->when($searchType !== 'another', function ($query) use ($unit_id) {
-        $query->where('unit_id', $unit_id);
-    })
-    ->when($request->filled('search'), function ($query) use ($request) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    })
-    ->orderByDesc('id')
-    ->get();
+                // ✅ TASKS
+                $tasks = Task::query()
+                    ->with('unit')
+                    ->when($searchType !== 'another', function ($query) use ($unit_id) {
+                        $query->where('unit_id', $unit_id);
+                    })
+                    ->when($request->filled('search'), function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orderByDesc('id')
+                    ->get();
 
-// ✅ ISSUES
-$issues = Issue::query()
-    ->with('unit')
-    ->when($searchType !== 'another', function ($query) use ($unit_id) {
-        $query->where('unit_id', $unit_id);
-    })
-    ->when($request->filled('search'), function ($query) use ($request) {
-        $query->where('title', 'like', '%' . $request->search . '%');
-    })
-    ->orderByDesc('id')
-    ->get();
+                // ✅ ISSUES
+                $issues = Issue::query()
+                    ->with('unit')
+                    ->when($searchType !== 'another', function ($query) use ($unit_id) {
+                        $query->where('unit_id', $unit_id);
+                    })
+                    ->when($request->filled('search'), function ($query) use ($request) {
+                        $query->where('title', 'like', '%' . $request->search . '%');
+                    })
+                    ->orderByDesc('id')
+                    ->get();
 
-// ✅ IDEAS
-$ideas = Idea::query()
-    ->with('unit')
-    ->when($searchType !== 'another', function ($query) use ($unit_id) {
-        $query->where('unit_id', $unit_id);
-    })
-    ->when($request->filled('search'), function ($query) use ($request) {
-        $query->where('title', 'like', '%' . $request->search . '%');
-    })
-    ->orderByDesc('id')
-    ->get();
+                // ✅ IDEAS
+                $ideas = Idea::query()
+                    ->with('unit')
+                    ->when($searchType !== 'another', function ($query) use ($unit_id) {
+                        $query->where('unit_id', $unit_id);
+                    })
+                    ->when($request->filled('search'), function ($query) use ($request) {
+                        $query->where('title', 'like', '%' . $request->search . '%');
+                    })
+                    ->orderByDesc('id')
+                    ->get();
 
                     $issueResolutions = $this->calculateIssueResolution($unit_id);
 

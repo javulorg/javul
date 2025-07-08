@@ -428,3 +428,5 @@ Route::resource('ideas', IdeaController::class);
 
 
 Route::post('/message/send-message', [MessageController::class, 'sendMessage'])->name('message.send-message');
+
+Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateForm']);
