@@ -507,7 +507,6 @@ class UnitsController extends Controller
                     view()->share('homeCheck', $homeCheck);
                     view()->share('availableFunds', $availableUnitFunds);
                     view()->share('awardedFunds', $awardedUnitFunds);
-                                       return view('units.create');
                     return view('units.edit');
                 }
             }
