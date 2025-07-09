@@ -34,7 +34,7 @@
     <div class="content_row">
         <div class="sidebar">
 
-            @include('layout.v2.global-unit-overview')
+            @include('layout.v2.global-unit-overview',['unitData' => $unitObj])
             <?php
             $title = 'Activity Log';
             ?>
