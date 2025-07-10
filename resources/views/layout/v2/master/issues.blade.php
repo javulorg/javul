@@ -9,48 +9,6 @@
                 <img src="{{ asset('v2/assets/img/bottom.svg') }}" alt="">
             </div>
         </div>
-        {{-- <div class="table_block_body">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="type_col">Issue Name</th>
-                        <th class="title_col">Unit Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @if (count($issuesMasterData) > 0)
-
-
-                        @foreach ($issuesMasterData->take(5) as $issueData)
-                            <tr>
-                                <td class="type_col">
-                                    <a href="{!! url('issues/' . $issueIDHashID->encode($issueData->id) . '/view') !!}">
-                                        {{ $issueData->title }}
-                                    </a>
-                                </td>
-                                <td class="title_col">
-                                    <a href="{!! url(
-                                        'units/' . $unitIDHashID->encode($issueData->unit_id) . '/' . \App\Models\Unit::getSlug($issueData->unit_id),
-                                    ) !!}">
-                                        {{ \App\Models\Unit::getUnitName($issueData->unit_id) }}
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="4">No record(s) found.</td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
-
-
-
-            <div class="mob_table d-sm-none d-block">
-            </div>
-        </div> --}}
 
         <div class="table_block_body">
             <table id="issues_table">

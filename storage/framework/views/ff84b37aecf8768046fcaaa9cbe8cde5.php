@@ -9,7 +9,7 @@
                 <img src="<?php echo e(asset('v2/assets/img/bottom.svg')); ?>" alt="">
             </div>
         </div>
-        
+
         <div class="table_block_body">
             <table id="ideas_table">
                 <thead>

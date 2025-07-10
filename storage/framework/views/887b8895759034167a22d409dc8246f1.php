@@ -1,4 +1,5 @@
 
+
 <div class="sidebar_block">
     <div class="sidebar_block_ttl">
         <?php if(isset($title)): ?>

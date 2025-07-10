@@ -1,7 +1,7 @@
 <div class="sidebar_block">
     <div class="sidebar_block_ttl ">
         About
-        
+
     </div>
     <div class="sidebar_block_content_txt" style="text-align: justify;">
     <?php if(isset($unitObj) && $unitObj->description): ?>

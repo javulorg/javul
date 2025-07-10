@@ -181,9 +181,9 @@ class UserController extends Controller
                         ->orderByDesc('total_points')
                         ->get();
 
-           $activityPoints = ActivityPoint::where('user_id', $user_id)
-    ->where('created_at', '>=', Carbon::now()->subMonths(6))
-    ->sum('points');
+                    $activityPoints = ActivityPoint::where('user_id', $user_id)
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->sum('points');
 
 
 
@@ -215,7 +215,7 @@ class UserController extends Controller
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
                         ->where('user_id', $user_id)->count();
 
-                    $totalIssueCreated =Issue::query()
+                    $totalIssueCreated = Issue::query()
                         ->where('created_at', '>=', Carbon::now()->subMonths(6))
                         ->where('user_id', $user_id)->count();
                     $totalTasksCreated = Idea::query()
@@ -266,21 +266,21 @@ class UserController extends Controller
 
                     $upvoteCreationRatio = $totalObjectivesCreated * 30;
 
-                      $topComments = DB::table('forum_post')
-                    ->where('user_id', $user_id)
-                    ->where('likes', '>', 0)
-                     ->where('created_at', '>=', Carbon::now()->subMonths(6))
-                    ->orderBy('likes', 'desc')
-                    ->take(10)
-                    ->get();
+                    $topComments = DB::table('forum_post')
+                        ->where('user_id', $user_id)
+                        ->where('likes', '>', 0)
+                        ->where('created_at', '>=', Carbon::now()->subMonths(6))
+                        ->orderBy('likes', 'desc')
+                        ->take(10)
+                        ->get();
 
 
-                $mostRecentComments = DB::table('forum_post')
-                    ->where('user_id', $user_id)
-                 ->where('created_time', '>=', Carbon::now()->subMonths(6))
-                    ->orderBy('created_at', 'desc')
-                    ->take(10)
-                    ->get();
+                    $mostRecentComments = DB::table('forum_post')
+                        ->where('user_id', $user_id)
+                        ->where('created_time', '>=', Carbon::now()->subMonths(6))
+                        ->orderBy('created_at', 'desc')
+                        ->take(10)
+                        ->get();
                 } else {
                     // Default logic for 'Last 6 Months' or 'Lifetime'
                     $mostActiveUnits = ActivityPoint::select(
@@ -293,7 +293,7 @@ class UserController extends Controller
                         ->orderByDesc('total_points')
                         ->limit(5)
                         ->get();
-                $activityPoints = ActivityPoint::where('user_id', $user_id)->sum('points');
+                    $activityPoints = ActivityPoint::where('user_id', $user_id)->sum('points');
 
 
                     $totalTasksEdited =  ActivityPoint::query()
@@ -317,18 +317,18 @@ class UserController extends Controller
                         ->count();
 
                     $topComments = DB::table('forum_post')
-                    ->where('user_id', $user_id)
-                    ->where('likes', '>', 0)
-                    ->orderBy('likes', 'desc')
-                    ->take(10)
-                    ->get();
+                        ->where('user_id', $user_id)
+                        ->where('likes', '>', 0)
+                        ->orderBy('likes', 'desc')
+                        ->take(10)
+                        ->get();
 
 
-                $mostRecentComments = DB::table('forum_post')
-                    ->where('user_id', $user_id)
-                    ->orderBy('created_at', 'desc')
-                    ->take(10)
-                    ->get();
+                    $mostRecentComments = DB::table('forum_post')
+                        ->where('user_id', $user_id)
+                        ->orderBy('created_at', 'desc')
+                        ->take(10)
+                        ->get();
 
                     $totalIdeasUpdated =  ActivityPoint::query()
                         ->where('user_id', $user_id)

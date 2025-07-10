@@ -156,86 +156,10 @@ class IdeaController extends Controller
                     ' created idea <a href="' . url('ideas/' . $ideaIdEncoded . '/' . \Str::slug($idea->title)) . '">' . e($idea->title) . '</a>',
             ]);
 
-
-            // $encodedObjectiveID = $objectiveIDHashID->encode($objective_id);
-
-            // return redirect('objectives/' . $encodedObjectiveID . '/' . $unitObj->slug)
-            //     ->with('success', 'Task created successfully!');
-
-            // return redirect('objectives/' . $unitHash->encode($request->unit_id) . '/' . $unit->slug)
-            //     ->with('success', 'Idea created successfully!');
-            // return redirect('units/'. $unitHash->encode($request->unit_id) . '/' . $unit->slug);
             return response('Idea created successfully!', 200);
         }
     }
 
-
-    // public function store(Request $request)
-
-    // {
-    //     $unitHash = new \Hashids\Hashids('unit id hash', 10, config('app.encode_chars'));
-
-    //     $unit = \App\Models\Unit::where('id', $request->unit_id)->first();
-
-    //     $validator = Validator::make($request->all(), [
-    //         'title'        => 'required',
-    //         'category_id'  => 'nullable',
-    //         'task_id'      => 'nullable',
-    //         'issue_id'     => 'nullable',
-    //         'description'  => 'required',
-    //         'comment'      => 'nullable',
-    //         'file'         => 'nullable',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return redirect()->back()->withErrors($validator)->withInput();
-    //     }
-
-    //     $idea = \App\Models\Idea::create([
-    //         'title'        => $request->title,
-    //         'user_id'      => auth()->id(),
-    //         'unit_id'      => $request->unit_id,
-    //         'task_id'      => $request->task_id,
-    //         'issue_id'     => $request->issue_id,
-    //         'category_id'  => $request->category_id,
-    //         'description'  => $request->description,
-    //         'comment'      => $request->comment,
-    //         'status'       => 1,
-    //     ]);
-
-    //     if ($idea) {
-    //         \App\Models\ActivityPoint::create([
-    //             'user_id'  => auth()->id(),
-    //             'points'   => 3,
-    //             'idea_id'  => $idea->id,
-    //             'comments' => 'Idea Created',
-    //             'type'     => 'idea',
-    //             'unit_id'  => $request->unit_id,
-    //         ]);
-
-    //         // Generate hash IDs
-    //         $ideaIDHash = new \Hashids\Hashids('idea id hash', 10, config('app.encode_chars'));
-    //         $ideaIdEncoded = $ideaIDHash->encode($idea->id);
-
-    //         $userIDHashID = new \Hashids\Hashids('user id hash', 10, config('app.encode_chars'));
-    //         $user_id_encoded = $userIDHashID->encode(auth()->id());
-
-    //         $userName = auth()->user()->username ?? (auth()->user()->first_name . ' ' . auth()->user()->last_name);
-    //         $unitSlug = $unit->slug ?? 'unit';
-
-    //         SiteActivity::create([
-    //             'user_id'  => auth()->id(),
-    //             'unit_id'  => $idea->unit_id,
-    //             'idea_id'  => $idea->id, // ✅ this is key
-    //             'comment'  => '<a href="' . url('userprofiles/' . $user_id_encoded . '/' . strtolower($userName)) . '">' . e($userName) . '</a>' .
-    //                 ' created idea <a href="' . url('ideas/' . $ideaIdEncoded . '/' . \Str::slug($idea->title)) . '">' . e($idea->title) . '</a>',
-    //         ]);
-
-    //         return redirect()->back()->with('success', 'Idea created successfully and activity logged.');
-    //     }
-
-    //     return redirect()->back()->with('error', 'Something went wrong. Please try again.');
-    // }
 
 
     public function show($ideaHashId)
@@ -506,25 +430,7 @@ class IdeaController extends Controller
         return view('errors.404');
     }
 
-    // public function storeW($userId, $unitId, $idea_id)
-    // {
-    //     $existing = Watchlist::where('user_id', $userId)
-    //         ->where('unit_id', $unitId)
-    //         ->where('idea_id', $idea_id)
-    //         ->first();
 
-    //     if ($existing) {
-    //         return response()->json(['message' => 'Already in watchlist'], 200);
-    //     }
-
-    //     $watchlist = new Watchlist();
-    //     $watchlist->user_id = $userId;
-    //     $watchlist->unit_id = $unitId;
-    //     $watchlist->idea_id = $idea_id;
-    //     $watchlist->save();
-
-    //     return response()->json(['message' => 'Added to watchlist!']);
-    // }
 
     public function storeW($idea_id)
     {

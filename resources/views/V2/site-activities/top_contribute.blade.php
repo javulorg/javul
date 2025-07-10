@@ -217,43 +217,7 @@
                         </tbody>
                     </table>
 
-                    {{-- <div class="mob_table d-sm-none d-block">
-                        @if(isset($pagination) && count($pagination) > 0)
-                        @foreach($pagination as $issue)
-                        <div class="mob_table_section">
-                            <div class="mob_table_row">
-                                <div class="mob_table_ttl">
-                                    Issue Name
-                                </div>
-                                <div class="mob_table_val">
-                                    <a href="{!! url('issues/'.$issueIDHashID->encode($issue->id).'/view') !!}">
-                                        {{$issue->title}}
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="mob_table_row">
-                                <div class="mob_table_ttl">
-                                    Unit Name
-                                </div>
-                                <div class="mob_table_val">
-                                    <a
-                                        href="{!! url('units/'.$unitIDHashID->encode($issue->unit_id).'/'.\App\Models\Unit::getSlug($issue->unit_id)) !!}">
-                                        {{\App\Models\Unit::getUnitName($issue->unit_id)}}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                        @else
-                        <div class="mob_table_section">
-                            <div class="mob_table_row">
-                                <div class="mob_table_val text-center">
-                                    No record(s) found.
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-                    </div> --}}
+
 
                 </div>
                 {{-- <div class="d-flex justify-content-between mt-2">
