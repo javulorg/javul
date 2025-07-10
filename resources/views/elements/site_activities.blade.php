@@ -13,13 +13,7 @@
                 ?>
                 @foreach($site_activity as $index=>$activity)
                     <?php
-                    /*if(!empty(\Auth::user()->timezone)){
-                        $tz = new DateTimeZone(\Auth::user()->timezone);
-                        $date = new DateTime($activity->created_at);
-                        $date->setTimezone($tz);
-                        $activity->created_at = $date->format('Y-m-d H:i:s');
-                    }else
-                        $activity->created_at = date('Y-m-d H:i:s',strtotime($activity->created_at));*/
+
                     ?>
                     <div class="list-group-item" style="padding: 0px;padding-bottom:4px">
                         <div class="row" style="padding: 7px 15px">

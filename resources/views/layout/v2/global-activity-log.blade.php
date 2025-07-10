@@ -39,6 +39,7 @@
         </div>
     </div>
 </div> --}}
+
 <div class="sidebar_block">
     <div class="sidebar_block_ttl">
         @if(isset($title))

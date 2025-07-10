@@ -1,11 +1,4 @@
-{{--<div class="d-flex justify-content-between mt-2">--}}
-{{--    <div class="pagination-left">--}}
-{{--        <a class="btn btn-secondary btn-sm" href="{!! url('forum/create').'/'.$unit_id.'/'.'issues' !!}">Create New Topic</a>--}}
-{{--    </div>--}}
-{{--    <div class="pagination-right">--}}
-{{--        <a class="btn btn-secondary btn-sm" href="{!! url('forum/'. $unit_id .'/issues') !!}">All Topics</a>--}}
-{{--    </div>--}}
-{{--</div>--}}
+
 <div class="content_block mt-3">
     <div class="table_block table_block_issues">
         <div class="table_block_head">
@@ -64,7 +57,7 @@
                                         </a>
                                     </div>
                                 </div>
-                
+
                                 <div class="mob_table_row">
                                     <div class="mob_table_ttl">Created By</div>
                                     <div class="mob_table_val">
@@ -73,7 +66,7 @@
                                         </a>
                                     </div>
                                 </div>
-                
+
                                 <div class="mob_table_row">
                                     <div class="mob_table_ttl">Replies</div>
                                     <div class="mob_table_val">
@@ -90,7 +83,7 @@
                         </div>
                     @endif
                 </div>
-                
+
             </table>
 
         </div>

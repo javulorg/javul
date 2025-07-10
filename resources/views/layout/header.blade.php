@@ -47,28 +47,7 @@
                 Explore:
             </div>
 
-            {{-- <div class="dropdown d-xl-block">
-                <div class="header_dropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    Units
-                </div>
-                <style>
-                    header .dropdown-item {
-                        padding: 8px 15px!important;
-                        font-weight: 700!important;
-                        font-size: 13px!important;
-                        line-height: 10px!important;
-                        margin-bottom: 0px!important;
-                        color: var(--second-dark-color)!important;
-                    }
-                </style>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <a class="dropdown-item" href="{!! url('units') !!}">All Units</a>
-                    <a class="dropdown-item" href="{!! url('objectives') !!}">Objectives</a>
-                    <a class="dropdown-item" href="{!! url('tasks') !!}">Tasks</a>
-                    <a class="dropdown-item" href="{!! url('issues') !!}">Issues </a>
-                    <a class="dropdown-item" href="{{ url('ideas') }}">Ideas</a>
-                </div>
-            </div> --}}
+
             <div class="dropdown d-none d-xl-block">
                 <div class="header_dropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     Units

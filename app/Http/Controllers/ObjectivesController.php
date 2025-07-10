@@ -47,7 +47,7 @@ class ObjectivesController extends Controller
     public function index(Request $request)
     {
 
-        // $pagination = $this->service->listAll()->paginate(10);
+
             $pagination = $this->service->listAll($request)
                     ->paginate(10)
                     ->appends($request->all());
@@ -857,16 +857,6 @@ class ObjectivesController extends Controller
                     $user_id_encoded = $userIDHashID->encode($user_id);
 
 
-                    // add comment : issue : skype text sir (26.07.2016)
-                    /*SiteActivity::create([
-                        'user_id'=>Auth::user()->id,
-                        'comment'=>'<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'.Auth::user()->first_name.' '.Auth::user()
-                                ->last_name
-                            .'</a>'.$site_activity_text .' <a href="'.url('objectives/'.$objectiveIDEndcoded.'/'.$objectiveObj->slug) .'">'
-                            .$objectiveObj->name
-                            .'</a>'
-                    ]);*/
-
                     return response()->json(['success' => true, 'html' => $importance_level_html]);
                 }
             }
@@ -905,8 +895,7 @@ class ObjectivesController extends Controller
                     $userIDHashID = new Hashids('user id hash', 10, Config::get('app.encode_chars'));
                     $user_id = $userIDHashID->encode(Auth::user()->id);
 
-                    /*$objectiveIDHashID = new Hashids('objective id hash',10,Config::get('app.encode_chars'));
-                    $objectiveId = $objectiveIDHashID->encode($objectiveID);*/
+
 
                     $user_name = Auth::user()->first_name . ' ' . Auth::user()->last_name;
                     if (!empty(Auth::user()->username))
@@ -929,14 +918,7 @@ class ObjectivesController extends Controller
                     $toName = $unitCreator->first_name . ' ' . $unitCreator->last_name;
                     $subject = "Objective Deleted";
 
-                    //                    \Mail::send('emails.registration', ['userObj'=> $unitCreator ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
-                    //                    {
-                    //                        $message->to($toEmail,$toName)->subject($subject);
-                    //                        if(!empty($siteAdminemails))
-                    //                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
-                    //
-                    //                        $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-                    //                    });
+
 
                     return response()->json(['success' => true]);
                 }
@@ -1005,42 +987,6 @@ class ObjectivesController extends Controller
         return response()->json(['message' => 'Objective upvoted successfully'])
             ->cookie($cookieName, true, /* expiration time if needed */);
     }
-
-    // public function storeW($userId, $unitId, $objective_id)
-    // {
-    //     $watchlist = new Watchlist();
-    //     $watchlist->user_id = $userId;
-    //     $watchlist->unit_id = $unitId;
-    //     $watchlist->objective_id = $objective_id; // still static unless made dynamic
-    //     $watchlist->save();
-
-    //     return redirect()->back()->with('success', 'Added to watchlist!');
-    // }
-
-
-    // public function storeW(Request $request)
-    // {
-    //     $userId = $request->input('userId');
-    //     $unitId = $request->input('unitId');
-    //     $objective_id = $request->input('objective_id');
-
-    //     $existing = Watchlist::where('user_id', $userId)
-    //         ->where('unit_id', $unitId)
-    //         ->where('objective_id', $objective_id)
-    //         ->first();
-
-    //     if ($existing) {
-    //         return redirect()->back()->with('message', 'Already in watchlist');
-    //     }
-
-    //     Watchlist::create([
-    //         'user_id' => $userId,
-    //         'unit_id' => $unitId,
-    //         'objective_id' => $objective_id,
-    //     ]);
-
-    //     return redirect()->back()->with('message', 'Added to watchlist!');
-    // }
 
 
 

@@ -234,70 +234,6 @@ class HomeController extends Controller
         return view('errors.404');
     }
 
-    // public function my_watchlist(Request $request)
-    // {
-    //     $watchedUnits = Watchlist::join('units','my_watchlist.unit_id','=','units.id')
-    //                     ->where('my_watchlist.user_id',Auth::user()->id)
-    //                     ->whereNotNull('unit_id')->select(['units.*'])->get();
-    //     $watchedObjectives = Watchlist::join('objectives','my_watchlist.objective_id','=','objectives.id')
-    //                         ->where('my_watchlist.user_id',Auth::user()->id)
-    //                         ->whereNotNull('objective_id')->select(['objectives.*'])->get();
-    //     $watchedTasks = Watchlist::join('tasks','my_watchlist.task_id','=','tasks.id')
-    //                     ->where('my_watchlist.user_id',Auth::user()->id)
-    //                     ->whereNotNull('task_id')->select(['tasks.*'])->get();
-
-
-    //     $watchedIssues = Watchlist::join( 'issues','my_watchlist.issue_id','=','issues.id')
-    //         ->where('my_watchlist.user_id',Auth::user()->id)
-    //         ->whereNotNull('issue_id')->select(['issues.*'])->get();
-
-    //     view()->share('watchedUnits',$watchedUnits);
-    //     view()->share('watchedObjectives',$watchedObjectives);
-    //     view()->share('watchedTasks',$watchedTasks);
-    //     view()->share('watchedIssues',$watchedIssues);
-    //     return view('users.my_watchlist');
-    // }
-
-    // public function my_watchlist(Request $request)
-    // {
-    //     $userId = Auth::id(); // Authenticated user ka ID
-
-    //     // Watchlisted Units
-    //     $watchedUnits = Watchlist::join('units', 'my_watchlist.unit_id', '=', 'units.id')
-    //         ->where('my_watchlist.user_id', $userId)
-    //         ->whereNotNull('unit_id')
-    //         ->select('units.*')
-    //         ->get();
-
-    //     // Watchlisted Objectives
-    //     $watchedObjectives = Watchlist::join('objectives', 'my_watchlist.objective_id', '=', 'objectives.id')
-    //         ->where('my_watchlist.user_id', $userId)
-    //         ->whereNotNull('objective_id')
-    //         ->select('objectives.*')
-    //         ->get();
-
-    //     // Watchlisted Tasks
-    //     $watchedTasks = Watchlist::join('tasks', 'my_watchlist.task_id', '=', 'tasks.id')
-    //         ->where('my_watchlist.user_id', $userId)
-    //         ->whereNotNull('task_id')
-    //         ->select('tasks.*')
-    //         ->get();
-
-    //     // Watchlisted Issues
-    //     $watchedIssues = Watchlist::join('issues', 'my_watchlist.issue_id', '=', 'issues.id')
-    //         ->where('my_watchlist.user_id', $userId)
-    //         ->whereNotNull('issue_id')
-    //         ->select('issues.*')
-    //         ->get();
-
-    //     // Debugging: dd() to check if data is fetched correctly
-    //     dd($watchedTasks, $watchedUnits, $watchedObjectives, $watchedIssues);
-
-    //     // Return view with all watchlist data
-    //     return view('users.my_watchlist', compact(
-    //         'watchedTasks', 'watchedUnits', 'watchedObjectives', 'watchedIssues'
-    //     ));
-    // }
 
 
     public function my_watchlist(Request $request)
@@ -506,11 +442,6 @@ class HomeController extends Controller
         view()->share('msg_flag', $msg_flag);
         view()->share('msg_val', $msg_val);
         view()->share('msg_type', $msg_type);
-
-
-        //view()->share('jobSkillsObj',$jobSkillsObj);
-        //view()->share('categoriesObj',$categoriesObj);
-        //view()->share('area_of_interestObj',$area_of_interestObj);
 
         $site_activity = SiteActivity::orderBy('id', 'desc')->paginate(Config::get('app.site_activity_page_limit'));
         view()->share('site_activity', $site_activity);
@@ -1555,11 +1486,7 @@ class HomeController extends Controller
             }
         }
 
-        /* dd($dataObj);
-        if($type  == "old")
-            $skills = JobSkill::where('parent_id',$id)->pluck('skill_name','id')->all();
-        else
-            $skills=JobSkillHistory::where('parent_id',$id)->pluck('skill_name','id')->all();*/
+
         return response()->json(['success' => true, 'data' => $skills]);
     }
 

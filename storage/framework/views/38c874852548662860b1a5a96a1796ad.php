@@ -47,7 +47,7 @@
                 Explore:
             </div>
 
-            
+
             <div class="dropdown d-none d-xl-block">
                 <div class="header_dropdown" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     Units

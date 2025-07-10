@@ -57,9 +57,9 @@ class TasksController extends Controller
     public function index(Request $request)
     {
         // $pagination = $this->service->listAll()->paginate(10);
-            $pagination = $this->service->listAll($request)
-                    ->paginate(10)
-                    ->appends($request->all());
+        $pagination = $this->service->listAll($request)
+            ->paginate(10)
+            ->appends($request->all());
 
         $msg_flag = false;
         $msg_val = '';
@@ -2322,28 +2322,6 @@ class TasksController extends Controller
                             . $taskObj->name . '</a>'
                     ]);
 
-                    /*$content = '<a href="'.url('userprofiles/'.$user_id_encoded.'/'.strtolower(Auth::user()->first_name.'_'.Auth::user()->last_name)).'">'
-                        .$user_name
-                        .'</a> re-assigned task <a href="'.url('tasks/'.$task_id_encoded .'/'.$taskObj->slug).'">'
-                        .$taskObj->name.'</a>';
-
-                    $email_subject = 'Task '.$taskObj->name.' has been re-assigned to you';
-
-                    $taskAssigneeObj = User::find($taskObj->assign_to);
-                    User::SendEmailAndOnSiteAlert($content,$email_subject,[$taskAssigneeObj],$onlyemail=false);*/
-
-                    // mail send
-                    /*$alertObj = Alerts::where('user_id',Auth::user()->id)->first();
-                    if(!empty($alertObj) && $alertObj->task_management == 1) {
-                        $toEmail = Auth::user()->email;
-                        $toName= Auth::user()->first_name.' '.Auth::user()->last_name;
-                        $subject = 'Task updated successfully. ';
-
-                        Mail::send('emails.task_creation', ['userObj' => Auth::user(), 'taskObj' => Task::find($task_id)], function($message) use($toEmail,$toName,$subject) {
-                            $message->to($toEmail, $toName)->subject($subject);
-                            $message->from(Config::get("app.support_email"), Config::get("app.site_name"));
-                        });
-                    }*/
 
 
                     $siteAdminemails = User::where('role', 'superadmin')->pluck('email')->all();
@@ -2353,14 +2331,7 @@ class TasksController extends Controller
                     $toName = $unitCreator->first_name . ' ' . $unitCreator->last_name;
                     $subject = "Task re-assigned to " . $unitCreator->first_name . ' ' . $unitCreator->last_name;
 
-                    //                    Mail::send('emails.registration', ['userObj'=> $unitCreator, 'report_concern' => false ], function($message) use ($toEmail,$toName,$subject,$siteAdminemails)
-                    //                    {
-                    //                        $message->to($toEmail,$toName)->subject($subject);
-                    //                        if(!empty($siteAdminemails))
-                    //                            $message->bcc($siteAdminemails,"Admin")->subject($subject);
-                    //
-                    //                        $message->from(Config::get("app.notification_email"), Config::get("app.site_name"));
-                    //                    });
+
                     $request->session()->flash('msg_val', $this->user_messages->getMessage('TASK_ASSIGNED')['text']);
                     return redirect('tasks');
                 }
@@ -2389,59 +2360,6 @@ class TasksController extends Controller
                     if (empty($taskEditors) || count($taskEditors) == 0)
                         $taskEditors = TaskEditor::where('task_id', $task_id)->where('user_id', '!=', $taskObj->assign_to)->get();
 
-                    //                    $percentageError = [];
-                    //                    $totalPercentage=0;
-                    //                    if(!empty($taskEditors) && count($taskEditors) > 0)
-                    //                    {
-                    //
-                    //                        $allUsersRewardPercentage = $request->input('amount_percentage');
-                    //                        if(!empty($allUsersRewardPercentage))
-                    //                        {
-                    //                            foreach($allUsersRewardPercentage  as $u_id=>$percentage){
-                    //                                $editorExist = TaskEditor::where('task_id',$task_id)->where('user_id',$u_id)->get();
-                    //                                if($taskObj->user_id != $u_id && (empty($editorExist) || count($editorExist) == 0))
-                    //                                    $percentageError['amount_percentage['.$u_id.']']="Please enter percentage";
-                    //                                else
-                    //                                    $totalPercentage+=intval($percentage);
-                    //                            }
-                    //                        }
-                    //
-                    //                        if(!empty($percentageError))
-                    //                            return redirect()->back()->withErrors($percentageError)->withInput();
-                    //
-                    //                        if($totalPercentage < 100 || $totalPercentage > 100)
-                    //                            return redirect()->back()->withErrors(['split_error'=>"Please split 100% among all users."])->withInput();
-                    //                    }
-                    //
-                    //                    // insert task reward assignment into table. to use where transaction take place. to give % of amount to user.
-                    //                    if(!empty($taskEditors) && count($taskEditors) > 0 )
-                    //                    {
-                    //                        $allUsersRewardPercentage = $request->input('amount_percentage');
-                    //                        if(!empty($allUsersRewardPercentage))
-                    //                        {
-                    //                            foreach($allUsersRewardPercentage  as $u_id=>$percentage)
-                    //                            {
-                    //                                $rewardAssignedObj = RewardAssignment::where('task_id',$task_id)->where('user_id',$u_id)->first();
-                    //                                if(!empty($rewardAssignedObj) && count($rewardAssignedObj) > 0)
-                    //                                {
-                    //                                    $rewardAssignedObj->update([
-                    //                                        'reward_percentage'=>$percentage
-                    //                                    ]);
-                    //                                }
-                    //                                else{
-                    //                                    RewardAssignment::create([
-                    //                                        'task_id'=>$task_id,
-                    //                                        'user_id'=>$u_id,
-                    //                                        'reward_percentage'=>$percentage
-                    //                                    ]);
-                    //                                }
-                    //                            }
-                    //                        }
-                    //                    }
-
-
-                    // Transfer rewards to all users
-                    //                    User::transferRewards($task_id);
 
                     Task::find($task_id)->update(['status' => 'completed']);
 
@@ -2690,8 +2608,6 @@ class TasksController extends Controller
         $task_skill_search = $request->input('task_skill_search');
         $task_status_search = $request->input('task_status_search');
 
-        /*$units = Unit::orderBy('id','desc')->paginate(Config::get('app.page_limit'));
-        view()->share('units',$units );*/
 
         $where = '';
         DB::enableQueryLog();
@@ -2739,16 +2655,7 @@ class TasksController extends Controller
     }
 
 
-    // public function storeW($userId, $unitId, $task_id)
-    // {
-    //     $watchlist = new Watchlist();
-    //     $watchlist->user_id = $userId;
-    //     $watchlist->unit_id = $unitId;
-    //     $watchlist->task_id = $task_id; // still static unless made dynamic
-    //     $watchlist->save();
 
-    //     return redirect()->back()->with('success', 'Added to watchlist!');
-    // }
 
     public function storeW($userId, $unitId, $task_id)
     {
@@ -2779,40 +2686,39 @@ class TasksController extends Controller
         return redirect()->back()->with('success', 'Task deleted successfully.');
     }
 
-public function toggleTask(Request $request)
-{
-    $userId = auth()->id();
-    $taskId = $request->input('task_id');
+    public function toggleTask(Request $request)
+    {
+        $userId = auth()->id();
+        $taskId = $request->input('task_id');
 
-    if (!$userId || !$taskId) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Missing task or user.'
-        ], 400);
+        if (!$userId || !$taskId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Missing task or user.'
+            ], 400);
+        }
+
+        $watch = \App\Models\Watchlist::where('user_id', $userId)
+            ->where('task_id', $taskId)
+            ->first();
+
+        if ($watch) {
+            $watch->delete();
+            return response()->json([
+                'success' => true,
+                'action' => 'removed',
+                'message' => 'Removed from watchlist.'
+            ]);
+        } else {
+            \App\Models\Watchlist::create([
+                'user_id' => $userId,
+                'task_id' => $taskId // ✅ No unit_id
+            ]);
+            return response()->json([
+                'success' => true,
+                'action' => 'added',
+                'message' => 'Added to watchlist.'
+            ]);
+        }
     }
-
-    $watch = \App\Models\Watchlist::where('user_id', $userId)
-        ->where('task_id', $taskId)
-        ->first();
-
-    if ($watch) {
-        $watch->delete();
-        return response()->json([
-            'success' => true,
-            'action' => 'removed',
-            'message' => 'Removed from watchlist.'
-        ]);
-    } else {
-        \App\Models\Watchlist::create([
-            'user_id' => $userId,
-            'task_id' => $taskId // ✅ No unit_id
-        ]);
-        return response()->json([
-            'success' => true,
-            'action' => 'added',
-            'message' => 'Added to watchlist.'
-        ]);
-    }
-}
-
 }
