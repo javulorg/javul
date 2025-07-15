@@ -316,7 +316,9 @@ Route::get('funds/donate/issue/{issue_id}', [FundsController::class, 'donate_to_
 Route::get('funds/donate/user/{user_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/get-card-name', [FundsController::class, 'get_card_name']);
 Route::post('funds/donate-amount', [FundsController::class, 'donate_amount']);
-Route::post('funds/transfer-from-unit', [FundsController::class, 'transfer_from_unit']);
+// Route::post('funds/transfer-from-unit', [FundsController::class, 'transfer_from_unit']);
+Route::post('funds/transfer-from-unit', [FundsController::class, 'transferFromUnit']);
+
 Route::get('funds/success', [FundsController::class, 'success']);
 Route::get('funds/cancel', [FundsController::class, 'cancel']);
 
@@ -405,3 +407,14 @@ Route::resource('ideas', IdeaController::class);
 Route::post('/message/send-message', [MessageController::class, 'sendMessage'])->name('message.send-message');
 
 Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateForm']);
+
+
+
+
+Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateToUnit']);
+Route::get('funds/donate/objective/{hashid}', [FundsController::class, 'donateToObjective']);
+Route::get('funds/donate/task/{hashid}', [FundsController::class, 'donateToTask']);
+Route::get('funds/donate/issue/{hashid}', [FundsController::class, 'donateToIssue']);
+Route::get('funds/donate/idea/{hashid}', [FundsController::class, 'donateToIdea']);
+
+Route::post('funds/transfer-from-unit', [FundsController::class, 'transferFromUnit']);

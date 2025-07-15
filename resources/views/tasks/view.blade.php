@@ -160,32 +160,38 @@
                                             $ {{ number_format($availableFunds,2) }}
                                         </div>
                                     </div>
+
+                                    <div class="text-center">
+                                        <a
+                                            href="{{ url('funds/donate/task/' . $taskIDHashID->encode($taskObj->id)) }}">Donate</a>
+                                    </div>
+
+
                                 </div>
                             </div>
                             <div class="objective_content_info_links">
 
 
-                               @php
-    $isLoggedIn = auth()->check();
-    $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
-        ->where('task_id', $taskObj->id)
-        ->exists();
-@endphp
+                                @php
+                                $isLoggedIn = auth()->check();
+                                $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
+                                ->where('task_id', $taskObj->id)
+                                ->exists();
+                                @endphp
 
-<a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
-    data-id="{{ $taskObj->id }}"
-    data-url="{{ route('watchlistTask.toggle') }}"
-    data-auth="{{ $isLoggedIn ? 'yes' : 'no' }}"
-    id="task-eye-toggle-{{ $taskObj->id }}">
+                                <a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
+                                    data-id="{{ $taskObj->id }}" data-url="{{ route('watchlistTask.toggle') }}"
+                                    data-auth="{{ $isLoggedIn ? 'yes' : 'no' }}"
+                                    id="task-eye-toggle-{{ $taskObj->id }}">
 
-    <img src="{{ asset('v2/assets/img/eye.svg') }}"
-        style="height: 20px; width: 20px; {{ $isTaskWatched ? 'display: none;' : '' }}"
-        alt="Watch" class="watch-icon" data-type="show">
+                                    <img src="{{ asset('v2/assets/img/eye.svg') }}"
+                                        style="height: 20px; width: 20px; {{ $isTaskWatched ? 'display: none;' : '' }}"
+                                        alt="Watch" class="watch-icon" data-type="show">
 
-    <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
-        style="height: 20px; width: 20px; {{ $isTaskWatched ? '' : 'display: none;' }}"
-        alt="Watched" class="watch-icon" data-type="hide">
-</a>
+                                    <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
+                                        style="height: 20px; width: 20px; {{ $isTaskWatched ? '' : 'display: none;' }}"
+                                        alt="Watched" class="watch-icon" data-type="hide">
+                                </a>
 
 
 
@@ -795,7 +801,7 @@
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.watchlist-toggle-link').forEach(link => {
         link.addEventListener('click', function (e) {
             const isAuth = this.dataset.auth;

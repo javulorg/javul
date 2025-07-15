@@ -39,7 +39,6 @@
     </div>
     <div class="main_content">
 
-        
         <div class="container-fluid chat-app">
             <div class="chat-box">
                 <!-- Sidebar -->
@@ -47,9 +46,6 @@
                     <div class="search-bar">
                         <input type="text" class="form-control" placeholder="User Search..." />
                     </div>
-
-                    
-                    
                     <div id="userList">
 
                     </div>
@@ -62,14 +58,6 @@
                     </div>
 
                     <div class="chat-messages" id="chatMessages">
-                        <!-- Messages are dynamically loaded here -->
-                        <!-- If no messages -->
-                        <!--
-                <div class="no-messages">
-                    <i class="far fa-comment-dots fa-2x mb-3 d-block"></i>
-                    No messages yet. Start the conversation!
-                </div>
-                -->
                     </div>
 
                     <div class="chat-input-area">

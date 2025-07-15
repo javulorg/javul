@@ -225,43 +225,13 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    
-                                    
-                                        
-                                            
-                                            
-                                        
-                                            
-                                        
-                                        
-                                        
 
-                                        
-                                        
-                                        
+                                    <div class="text-center">
+                                        <a
+                                            href="<?php echo e(url('funds/donate/issue/' . $issueIDHashID->encode($issueObj->id))); ?>">Donate</a>
+                                    </div>
 
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
 
-                                            
-
-                                            
-                                                 
-                                                    
-                                                
-
-                                                 
-                                                    
-                                                
-                                                
-
-                                            
-                                        
                                 </div>
                             </div>
                             <?php

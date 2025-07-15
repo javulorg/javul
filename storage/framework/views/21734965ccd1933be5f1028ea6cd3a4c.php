@@ -87,9 +87,7 @@
                     <img src="<?php echo e(asset('v2/assets/img/bottom_y.svg')); ?>" alt="">
                 </div>
             </div>
-            
 
-            
 
             <?php
             $loggedInUserId = auth()->id();

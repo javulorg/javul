@@ -128,8 +128,8 @@
             </div>
         </form>
         @else
-        <form accept-charset="UTF-8" action="{!! url('funds/transfer-from-unit') !!}"
-            class="simple_form form-horizontal" method="post" novalidate="novalidate" id="donate_amount_form">
+        {{-- <form accept-charset="UTF-8" action="{!! url('funds/transfer-from-unit') !!}"
+            class="simple_form form-horizontal" method="post" novalidate="novalidate">
             {{ csrf_field() }}
             @if(count($errors->all()) > 0)
             <?php $err_msg ='';?>
@@ -147,11 +147,13 @@
                 <div class="col-sm-4">
                     <label for="amount" class="control-label">Amount to Donate For User</label>
 
-                   <input type="text" placeholder="Unit Name" id="unit_name" class="form-control" value="{{ $obj->name }}"><br>
-<input type="text" placeholder="User Name" id="user_name" class="form-control" value="{{ Auth::user()->username }}
-"><br>
+                    <input type="text" placeholder="Unit Name" id="unit_name" class="form-control"
+                        value="{{ $obj->name }}"><br>
+                    <label for="">Username</label>
+                    <input type="text" placeholder="User Name" id="user_name" class="form-control"
+                        value="{{ Auth::user()->username }}"><br>
 
-
+                    <label for="">amount</label>
                     <input type="text" value="" name="donate_amount" id="donate_amount" data-numeric
                         placeholder="Amount" class="form-control" required autocomplete="off" maxlength="10">
 
@@ -173,10 +175,71 @@
                         value="{{ $current_payment_method }}" />
                 </div><br><br><br>
                 <div class="col-sm-2 col-xs-12">
-                    <a href="https://givebutter.com/G8ntYk" class="btn btn-primary">Transfer from Unit</a>
+                    <a type="submit" class="btn btn-primary">Transfer from Unit</a>
+                </div>
+            </div>
+        </form> --}}
+
+        @php
+    $donateToType = request()->segment(3); // 'objective' from /funds/donate/objective/abc123
+@endphp
+
+        <form accept-charset="UTF-8" action="{!! url('funds/transfer-from-unit') !!}"
+            class="simple_form form-horizontal" method="post" novalidate="novalidate" id="donationForm">
+            {{ csrf_field() }}
+
+                <input type="hidden" name="donate_to_type" value="{{ $donateToType }}">
+
+
+            @if($errors->any())
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <img src="{!! url('assets/images/error-icon.png') !!}"> <strong>Error!</strong>
+                {!! implode('', $errors->all('<span>:message</span>')) !!}
+            </div>
+            @endif
+
+            <div class="row form-group donationDiv credit_card">
+                <div class="col-sm-4">
+                    <label class="control-label">Amount to Donate For User</label>
+
+                    <label>Unit Name</label>
+                    <input type="text" name="unit_name" placeholder="Unit Name" id="unit_name" class="form-control"
+                        value="{{ $obj->name }}" readonly><br>
+
+                        <input type="hidden" name="unit_id" value="{{ $obj->id }}">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="User Name" id="user_name" class="form-control"
+                        value="{{ Auth::user()->username }}" readonly><br>
+
+                    <label>Amount</label>
+                    <input type="text" name="donate_amount" id="donate_amount" data-numeric placeholder="Amount"
+                        class="form-control" required autocomplete="off" maxlength="10">
+
+                    <label id="paypal-fees" class="control-label" @if($current_payment_method=="Zcash" )
+                        style="display:none" @endif></label>
+                </div>
+            </div>
+
+            <div class="row form-group donationDiv credit_card">
+                <div class="col-sm-2 col-xs-12">
+                    @if($current_payment_method == "Zcash")
+                    <button type="submit" class="btn black-btn" style="padding: 6px 12px;">Donate With Zcash</button>
+                    @else
+                    <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" />
+                    @endif
+                    <input type="hidden" name="paymentMethod" value="{{ $current_payment_method }}">
+                </div>
+
+                <div class="col-sm-2 col-xs-12">
+                    <button type="submit" class="btn btn-primary">Transfer from Unit</button>
                 </div>
             </div>
         </form>
+
+        <div id="responseMsg"></div>
+
+
         @endif
     </div>
 </div>
@@ -185,3 +248,41 @@
 
 
 @endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#donationForm').on('submit', function (e) {
+            e.preventDefault(); // ✅ Prevent page reload
+
+            $.ajax({
+                url: '{{ url("funds/transfer-from-unit") }}',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function (res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Transaction Successful!',
+                        text: 'Transaction ID: ' + res.transaction_id
+                    });
+
+                    $('#donationForm')[0].reset();
+                },
+                error: function (xhr) {
+                    let message = 'Something went wrong.';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        message = Object.values(xhr.responseJSON.errors).join('\n');
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Transaction Failed',
+                        text: message
+                    });
+                }
+            });
+        });
+    });
+</script>
+
