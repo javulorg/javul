@@ -36,7 +36,7 @@
         </div>
 
         <div class="sidebar_block_content_bottom">
-
+<a href="<?php echo e(url('funds/donate/unit/' . $unitIDHashID->encode($unitData->id))); ?>" rel="noopener noreferrer">Donate</a>
             <div class="separator"></div>
             <a href="#">Financial Activity</a>
         </div>

@@ -221,51 +221,52 @@
 
                                     </div>
                                     <div class="text-center">
-     <a href="<?php echo e(url('funds/donate/unit/N5wJa1JeX4' )); ?>" target="_blank" rel="noopener noreferrer">Donate</a>
+                                        <a href="<?php echo e(url('funds/donate/objective/' . $objectiveIDHashID->encode($objectiveObj->id))); ?>"
+                                            rel="noopener noreferrer">Donate</a>
+
+
                                     </div>
 
 
                                 </div>
                             </div>
                             <?php
-    $isLoggedIn = auth()->check();
-    $isObjectivesWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
-        ->where('objective_id', $objectiveObj->id)
-        ->exists();
-?>
+                            $isLoggedIn = auth()->check();
+                            $isObjectivesWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
+                            ->where('objective_id', $objectiveObj->id)
+                            ->exists();
+                            ?>
 
-<div class="objective_content_info_links">
-    
-    <a href="javascript:void(0);"
-       class="edit_icon watchlist-objective-link"
-       data-id="<?php echo e($objectiveObj->id); ?>"
-       data-url="<?php echo e(route('watchlist.store')); ?>"
-       data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
-       id="task-eye-link-<?php echo e($objectiveObj->id); ?>"
-       style="<?php echo e($isObjectivesWatched ? 'display: none;' : ''); ?>">
-        <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;" alt="Watch">
-    </a>
+                            <div class="objective_content_info_links">
+                                
+                                <a href="javascript:void(0);" class="edit_icon watchlist-objective-link"
+                                    data-id="<?php echo e($objectiveObj->id); ?>" data-url="<?php echo e(route('watchlist.store')); ?>"
+                                    data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
+                                    id="task-eye-link-<?php echo e($objectiveObj->id); ?>"
+                                    style="<?php echo e($isObjectivesWatched ? 'display: none;' : ''); ?>">
+                                    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>" style="height: 20px; width: 20px;"
+                                        alt="Watch">
+                                </a>
 
-    
-    <a href="javascript:void(0);"
-       class="edit_icon unwatchlist-objective-link"
-       data-id="<?php echo e($objectiveObj->id); ?>"
-       data-url="<?php echo e(route('watchlist.remove')); ?>"
-       data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
-       id="task-eye-off-icon-<?php echo e($objectiveObj->id); ?>"
-       style="<?php echo e($isObjectivesWatched ? '' : 'display: none;'); ?>">
-        <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>" style="height: 20px; width: 20px;" alt="Unwatch">
-    </a>
+                                
+                                <a href="javascript:void(0);" class="edit_icon unwatchlist-objective-link"
+                                    data-id="<?php echo e($objectiveObj->id); ?>" data-url="<?php echo e(route('watchlist.remove')); ?>"
+                                    data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
+                                    id="task-eye-off-icon-<?php echo e($objectiveObj->id); ?>"
+                                    style="<?php echo e($isObjectivesWatched ? '' : 'display: none;'); ?>">
+                                    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
+                                        style="height: 20px; width: 20px;" alt="Unwatch">
+                                </a>
 
-    <div class="separat"></div>
-    <a href="<?php echo e(route('objectives_revison', [$objectiveIDHashID->encode($objectiveObj->id)])); ?>"
-       class="edit_icon">Revision History</a>
-    <div class="separat"></div>
-    <a href="<?php echo e(url('objectives/' . $objectiveIDHashID->encode($objectiveObj->id) . '/edit')); ?>"
-       class="edit_icon">
-        <img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt="Edit">
-    </a>
-</div>
+                                <div class="separat"></div>
+                                <a href="<?php echo e(route('objectives_revison', [$objectiveIDHashID->encode($objectiveObj->id)])); ?>"
+                                    class="edit_icon">Revision History</a>
+                                <div class="separat"></div>
+                                <a href="<?php echo e(url('objectives/' . $objectiveIDHashID->encode($objectiveObj->id) . '/edit')); ?>"
+                                    class="edit_icon">
+                                    <img src="<?php echo e(asset('v2/assets/img/pencil-create.svg')); ?>" alt="Edit">
+                                </a>
+                            </div>
 
 
                         </div>

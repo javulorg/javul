@@ -166,32 +166,38 @@
 
                                         </div>
                                     </div>
+
+                                    <div class="text-center">
+                                        <a
+                                            href="<?php echo e(url('funds/donate/task/' . $taskIDHashID->encode($taskObj->id))); ?>">Donate</a>
+                                    </div>
+
+
                                 </div>
                             </div>
                             <div class="objective_content_info_links">
 
 
-                               <?php
-    $isLoggedIn = auth()->check();
-    $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
-        ->where('task_id', $taskObj->id)
-        ->exists();
-?>
+                                <?php
+                                $isLoggedIn = auth()->check();
+                                $isTaskWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
+                                ->where('task_id', $taskObj->id)
+                                ->exists();
+                                ?>
 
-<a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
-    data-id="<?php echo e($taskObj->id); ?>"
-    data-url="<?php echo e(route('watchlistTask.toggle')); ?>"
-    data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
-    id="task-eye-toggle-<?php echo e($taskObj->id); ?>">
+                                <a href="javascript:void(0);" class="edit_icon watchlist-toggle-link"
+                                    data-id="<?php echo e($taskObj->id); ?>" data-url="<?php echo e(route('watchlistTask.toggle')); ?>"
+                                    data-auth="<?php echo e($isLoggedIn ? 'yes' : 'no'); ?>"
+                                    id="task-eye-toggle-<?php echo e($taskObj->id); ?>">
 
-    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>"
-        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? 'display: none;' : ''); ?>"
-        alt="Watch" class="watch-icon" data-type="show">
+                                    <img src="<?php echo e(asset('v2/assets/img/eye.svg')); ?>"
+                                        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? 'display: none;' : ''); ?>"
+                                        alt="Watch" class="watch-icon" data-type="show">
 
-    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
-        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? '' : 'display: none;'); ?>"
-        alt="Watched" class="watch-icon" data-type="hide">
-</a>
+                                    <img src="<?php echo e(asset('v2/assets/img/eye-slash.svg')); ?>"
+                                        style="height: 20px; width: 20px; <?php echo e($isTaskWatched ? '' : 'display: none;'); ?>"
+                                        alt="Watched" class="watch-icon" data-type="hide">
+                                </a>
 
 
 
@@ -779,7 +785,7 @@
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.watchlist-toggle-link').forEach(link => {
         link.addEventListener('click', function (e) {
             const isAuth = this.dataset.auth;

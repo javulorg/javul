@@ -222,52 +222,13 @@
                                             @endif
                                         </div>
                                     </div>
-                                    {{-- <div class="sidebar_line"></div> --}}
-                                    {{-- <div class="sidebar_block_row"> --}}
-                                        {{-- <div class="sidebar_block_left"> --}}
-                                            {{-- Support --}}
-                                            {{-- </div> --}}
-                                        {{-- <div class="sidebar_block_right"> --}}
-                                            {{--
-                                            <?php--}}
-                                        {{--                                            $voteClass = "";--}}
-                                        {{--                                            $upvoteClass = "";--}}
-                                        {{--                                            $downvoteClass = "";--}}
 
-                                        {{--                                            if (auth()->check()) {--}}
-                                        {{--                                                $voteClass = "vote";--}}
-                                        {{--                                                $flag = \App\Models\ImportanceLevel::checkImportanceLevel($issueObj->id, 'issue_id');--}}
+                                    <div class="text-center">
+                                        <a
+                                            href="{{ url('funds/donate/issue/' . $issueIDHashID->encode($issueObj->id)) }}">Donate</a>
+                                    </div>
 
-                                        {{--                                                if ($flag == "1") {--}}
-                                        {{--                                                    $upvoteClass = "success-upvote";--}}
-                                        {{--                                                } elseif ($flag == "-1") {--}}
-                                        {{--                                                    $downvoteClass = "success-downvote";--}}
-                                        {{--                                                }--}}
-                                        {{--                                            }--}}
-                                        {{--                                            ?> ?> --}}
 
-                                            {{-- <div style="float:left;">{{ $importancePercentage }}%</div> --}}
-
-                                            {{-- <div class="vote-buttons"> --}}
-                                                {{-- <span
-                                                    class="fa fa-thumbs-up {{ $voteClass }} upvote {{ $upvoteClass }}"
-                                                    --}} {{-- @if (auth()->check()) data-id="{{
-                                                    $issueIDHashID->encode($issueObj->id) }}" data-type="up" @endif --}}
-                                                    {{-- title="Upvote"></span> --}}
-                                                {{-- {{ $upvotedCnt }} --}}
-
-                                                {{-- <span
-                                                    class="fa fa-thumbs-down {{ $voteClass }} downvote {{ $downvoteClass }}"
-                                                    --}} {{-- @if (auth()->check()) data-id="{{
-                                                    $issueIDHashID->encode($issueObj->id) }}" data-type="down" @endif
-                                                    --}}
-                                                    {{-- title="Downvote"></span> --}}
-                                                {{-- {{ $downvotedCnt }} --}}
-                                                {{-- </div> --}}
-
-                                            {{--
-                                        </div> --}}
-                                        {{-- </div> --}}
                                 </div>
                             </div>
                             @php

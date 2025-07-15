@@ -219,51 +219,52 @@
 
                                     </div>
                                     <div class="text-center">
-     <a href="{{ url('funds/donate/unit/N5wJa1JeX4' )}}" target="_blank" rel="noopener noreferrer">Donate</a>
+                                        <a href="{{ url('funds/donate/objective/' . $objectiveIDHashID->encode($objectiveObj->id)) }}"
+                                            rel="noopener noreferrer">Donate</a>
+
+
                                     </div>
 
 
                                 </div>
                             </div>
                             @php
-    $isLoggedIn = auth()->check();
-    $isObjectivesWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
-        ->where('objective_id', $objectiveObj->id)
-        ->exists();
-@endphp
+                            $isLoggedIn = auth()->check();
+                            $isObjectivesWatched = $isLoggedIn && \App\Models\Watchlist::where('user_id', auth()->id())
+                            ->where('objective_id', $objectiveObj->id)
+                            ->exists();
+                            @endphp
 
-<div class="objective_content_info_links">
-    {{-- Watch --}}
-    <a href="javascript:void(0);"
-       class="edit_icon watchlist-objective-link"
-       data-id="{{ $objectiveObj->id }}"
-       data-url="{{ route('watchlist.store') }}"
-       data-auth="{{ $isLoggedIn ? 'yes' : 'no' }}"
-       id="task-eye-link-{{ $objectiveObj->id }}"
-       style="{{ $isObjectivesWatched ? 'display: none;' : '' }}">
-        <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;" alt="Watch">
-    </a>
+                            <div class="objective_content_info_links">
+                                {{-- Watch --}}
+                                <a href="javascript:void(0);" class="edit_icon watchlist-objective-link"
+                                    data-id="{{ $objectiveObj->id }}" data-url="{{ route('watchlist.store') }}"
+                                    data-auth="{{ $isLoggedIn ? 'yes' : 'no' }}"
+                                    id="task-eye-link-{{ $objectiveObj->id }}"
+                                    style="{{ $isObjectivesWatched ? 'display: none;' : '' }}">
+                                    <img src="{{ asset('v2/assets/img/eye.svg') }}" style="height: 20px; width: 20px;"
+                                        alt="Watch">
+                                </a>
 
-    {{-- Unwatch --}}
-    <a href="javascript:void(0);"
-       class="edit_icon unwatchlist-objective-link"
-       data-id="{{ $objectiveObj->id }}"
-       data-url="{{ route('watchlist.remove') }}"
-       data-auth="{{ $isLoggedIn ? 'yes' : 'no' }}"
-       id="task-eye-off-icon-{{ $objectiveObj->id }}"
-       style="{{ $isObjectivesWatched ? '' : 'display: none;' }}">
-        <img src="{{ asset('v2/assets/img/eye-slash.svg') }}" style="height: 20px; width: 20px;" alt="Unwatch">
-    </a>
+                                {{-- Unwatch --}}
+                                <a href="javascript:void(0);" class="edit_icon unwatchlist-objective-link"
+                                    data-id="{{ $objectiveObj->id }}" data-url="{{ route('watchlist.remove') }}"
+                                    data-auth="{{ $isLoggedIn ? 'yes' : 'no' }}"
+                                    id="task-eye-off-icon-{{ $objectiveObj->id }}"
+                                    style="{{ $isObjectivesWatched ? '' : 'display: none;' }}">
+                                    <img src="{{ asset('v2/assets/img/eye-slash.svg') }}"
+                                        style="height: 20px; width: 20px;" alt="Unwatch">
+                                </a>
 
-    <div class="separat"></div>
-    <a href="{{ route('objectives_revison', [$objectiveIDHashID->encode($objectiveObj->id)]) }}"
-       class="edit_icon">Revision History</a>
-    <div class="separat"></div>
-    <a href="{{ url('objectives/' . $objectiveIDHashID->encode($objectiveObj->id) . '/edit') }}"
-       class="edit_icon">
-        <img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt="Edit">
-    </a>
-</div>
+                                <div class="separat"></div>
+                                <a href="{{ route('objectives_revison', [$objectiveIDHashID->encode($objectiveObj->id)]) }}"
+                                    class="edit_icon">Revision History</a>
+                                <div class="separat"></div>
+                                <a href="{{ url('objectives/' . $objectiveIDHashID->encode($objectiveObj->id) . '/edit') }}"
+                                    class="edit_icon">
+                                    <img src="{{ asset('v2/assets/img/pencil-create.svg') }}" alt="Edit">
+                                </a>
+                            </div>
 
 
                         </div>
