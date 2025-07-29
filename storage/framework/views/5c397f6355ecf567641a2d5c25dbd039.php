@@ -220,9 +220,12 @@
                                         </div>
                                     </div>
 
-                                   <div class="text-center">
-    <a href="<?php echo e(url('funds/donate/idea/' . $unitIDHashID->encode($idea->id))); ?>">Donate</a>
-</div>
+                                    <div class="text-center">
+                                        <a href="<?php echo e(url('funds/donate/idea/' . $unitIDHashID->encode($idea->id))); ?>"
+                                            rel="noopener noreferrer">Donate</a>
+
+                                        
+                                    </div>
 
 
                                 </div>

@@ -42,6 +42,8 @@
         <?php echo $__env->make('layout.v2.global-activity-log',['title' => $title], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         <?php endif; ?>
     </div>
+
+
     <div class="main_content">
         <div class="content_block">
             <div class="table_block table_block_tasks active">
@@ -266,12 +268,14 @@
                         <?php if(!empty($taskCompleteObj) && count($taskCompleteObj) > 0): ?>
                         <?php $i=1; ?>
                         <?php $__currentLoopData = $taskCompleteObj; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $completeObj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        
                         <div class="row">
                             <div class="col-sm-12">
                                 <img src="<?php echo url('assets/images/user.png'); ?>"
                                     style="border: 1px solid;height:50px;vertical-align: top;" />
                                 <div style="display: inline-block;padding-left: 10px;">
                                     <a href="<?php echo url('userprofiles/'.$userIDHashID->encode($completeObj->user_id).'/'.
+
                         strtolower($completeObj->first_name.'_'.$completeObj->last_name)); ?>">
                                         <?php echo e($completeObj->first_name.' '.$completeObj->last_name); ?>
 
@@ -374,8 +378,8 @@
 
                     
                     <?php if($authUserObj->role == 1): ?>
-                    <form role="form" method="post"
-                        action="<?php echo e(url('tasks/mark_task_complete/' . $taskIDHashID->encode($taskObj->id))); ?>" novalidate
+                    
+                    <form id="taskCompleteForm" role="form" method="post" action="<?php echo e(url('tasks/mark_task_complete/' . $taskIDHashID->encode($taskObj->id))); ?>" novalidate
                         enctype="multipart/form-data">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('post'); ?>
@@ -424,15 +428,15 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" style="margin-bottom:0px">Quality of Work</label>
-                                <div><input value="0" name="quality_of_work" type="number" class="rating_user" min=0
-                                        max=5 step=0.5 data-size="xs"></div>
+                                <div><input value="0" name="quality_of_work" type="number" requird class="rating_user"
+                                        min=0 max=5 step=0.5 data-size="xs"></div>
                             </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-sm-12">
                                 <label class="control-label" style="margin-bottom:0px">Timeliness</label>
-                                <div><input value="0" type="number" name="timeliness" class="rating_user" min=0 max=5
-                                        step=0.5 data-size="xs"></div>
+                                <div><input value="0" type="number" required name="timeliness" class="rating_user" min=0
+                                        max=5 step=0.5 data-size="xs"></div>
                             </div>
                         </div>
 
@@ -440,15 +444,25 @@
                         <?php echo $__env->make('tasks.partials.complete_evaluation', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
                         
-                        <div class="row form-group mt-4">
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn orange-bg">
-                                    <span class="glyphicon glyphicon-ok"></span> Complete Task
-                                </button>
-                            </div>
-                        </div>
+                        
+                        
+
+
+                        <button type="submit" class="btn orange-bg" >
+                            <span class="glyphicon glyphicon-ok"></span> Complete Task
+                        </button>
+
+
+
                     </form>
+
                     <?php endif; ?>
+                    <!-- Payment Modal -->
+                    
+
+
+
+
 
 
                 </div>
@@ -457,6 +471,7 @@
     </div>
 </div>
 <?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('scripts'); ?>
 <script>
     $(document).ready(function() {
@@ -467,6 +482,11 @@
                 } );
         });
 </script>
+
+
+
+
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/tasks/partials/complete_task.blade.php ENDPATH**/ ?>

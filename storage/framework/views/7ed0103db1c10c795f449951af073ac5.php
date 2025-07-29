@@ -214,7 +214,7 @@
                                             Funds:
                                         </div>
                                         <div class="sidebar_block_right">
-                                            Received $2500<br>
+                                           Received $<?php echo e($totalAmount); ?><br>
                                             Awarded $<?php echo e(number_format($awardedObjFunds, 2)); ?><br>
                                             Available $<?php echo e(number_format($availableObjFunds, 2)); ?><br>
                                         </div>
@@ -223,7 +223,6 @@
                                     <div class="text-center">
                                         <a href="<?php echo e(url('funds/donate/objective/' . $objectiveIDHashID->encode($objectiveObj->id))); ?>"
                                             rel="noopener noreferrer">Donate</a>
-
 
                                     </div>
 

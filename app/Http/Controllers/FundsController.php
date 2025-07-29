@@ -13,6 +13,8 @@ use App\Models\PaypalTransaction;
 use App\Models\SiteConfigs;
 use App\Models\Task;
 use App\Models\Idea;
+use Illuminate\Support\Facades\DB;
+use App\Services\SiteActivity\SiteActivityService;
 
 use App\Models\TaskRatings;
 use App\Models\Transaction;
@@ -26,15 +28,22 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use App\Models\Zcash;
 use Illuminate\Support\Facades\Validator;
+use Hashids\Hashids;
 
-use Vinkla\Hashids\Facades\Hashids;
+// use Vinkla\Hashids\Facades\Hashids;
 
 class FundsController extends Controller
 {
-    public function __construct()
+        protected $service;
+
+    public function __construct(SiteActivityService $service)
     {
+                $this->service = $service;
+
         $this->middleware('auth', ['except' => ['donate_to_unit_objective_task', 'donate_amount', 'transfer_from_unit', 'success', 'cancel']]);
     }
+
+
 
     public function index(Request $request)
     {
@@ -52,6 +61,8 @@ class FundsController extends Controller
         view()->share('msg_type', $msg_type);
 
         // get all units for listing
+
+
         $units = Unit::getUnitWithCategories();
         view()->share('units', $units);
         $rating_points = '';
@@ -116,9 +127,9 @@ class FundsController extends Controller
                     break;
                 case 'issue':
                     $exists = Issue::checkIssueExist($id, true);
-
                     if ($exists) {
                         $obj = Issue::getObj($id);
+                        // dd($obj);
                         $obj->name = $obj->title;
                         $donateTo = " issue ";
 
@@ -129,6 +140,32 @@ class FundsController extends Controller
                         $awardedFunds = Fund::getIssueAwardedFund($obj->id);
                     }
                     break;
+                case 'idea':
+
+                    $hashID = new Hashids('unit id hash', 10, Config::get('app.encode_chars'));
+                    $decoded = $hashID->decode($id);
+
+                    if (!empty($decoded)) {
+                        $realId = $decoded[0];
+                        $exists = Idea::where('id', $realId)->exists();
+
+
+
+                    if ($exists) {
+                        $obj = Idea::where('id', $realId)->get();
+                        $title = $obj->first()->title;
+                        $obj->id = $obj->first()->id;
+                        $obj->name = $title;
+                        $donateTo = " Idea ";
+
+                        //$controller="tasks";
+                        //$addFunds=['task_id'=>$obj->id];
+                        //$hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                        $availableFunds = Fund::getIssueDonatedFund( $obj->id);
+                        $awardedFunds = Fund::getIssueAwardedFund( $obj->id);
+                    }
+                }
+                     break;
                 case 'user':
                     $exists = User::checkUserExist($id, true);
                     if ($exists) {
@@ -211,12 +248,16 @@ class FundsController extends Controller
                 view()->share('availableFunds', $availableFunds);
                 view()->share('awardedFunds', $awardedFunds);
                 view()->share('obj', $obj);
+
                 view()->share('donateTo', $donateTo);
                 view()->share('rating_points', $rating_points);
                 return view('funds.donation', ['rating_points' => $rating_points]);
             }
         }
-        return view('funds.donation', ['rating_points' => $rating_points, 'obj' => $obj]);
+      $username = Auth::user()->username;
+$data = User::where('username', $username)->first();
+
+        return view('funds.donation', ['rating_points' => $rating_points, 'obj' => $obj , 'data' => $data]);
     }
 
 
@@ -288,6 +329,19 @@ class FundsController extends Controller
                         $addFunds = ['issue_id' => $obj->id];
                         $hashID = new Hashids('issue id hash', 10, Config::get('app.encode_chars'));
                         $donateToLink = '<a href="' . url('issues/' . $hashID->encode($obj->id) . '/' . strtolower(substr($obj->title, 0, 4))) . '">' . $obj->title . '</a>';
+                    }
+                    break;
+
+                case 'idea':
+                    $exists = Idea::checkIdeaExist($id, true);
+
+                    if ($exists) {
+                        $obj = Idea::getObj($id);
+                        $donateTo = " idea ";
+                        $controller = "ideas";
+                        $addFunds = ['idea_id' => $obj->id];
+                        $hashID = new Hashids('idea id hash', 10, Config::get('app.encode_chars'));
+                        $donateToLink = '<a href="' . url('ideas/' . $hashID->encode($obj->id) . '/' . strtolower(substr($obj->title, 0, 4))) . '">' . $obj->title . '</a>';
                     }
                     break;
                 case 'user':
@@ -551,42 +605,42 @@ class FundsController extends Controller
 
 
     public function showDonateForm($type, $hashid)
-{
-    $type = 'objective';
-    $id = Hashids::decode($hashid);
-    if (empty($id)) {
-        abort(404);
-    }
-
-    $decodedId = $id[0];
-    $model = null;
-
-    switch ($type) {
-        case 'unit':
-            $model = Unit::findOrFail($decodedId);
-            break;
-        case 'objective':
-            $model = Objective::findOrFail($decodedId);
-            break;
-        case 'task':
-            $model = Task::findOrFail($decodedId);
-            break;
-        case 'issue':
-            $model = Issue::findOrFail($decodedId);
-            break;
-        case 'idea':
-            $model = Idea::findOrFail($decodedId);
-            break;
-        default:
+    {
+        $type = 'objective';
+        $id = Hashids::decode($hashid);
+        if (empty($id)) {
             abort(404);
-    }
+        }
 
-    return view('funds.donation', [
-        'data' => $model,
-        'type' => $type, // ✅ This is the fix
-        'current_payment_method' => 'Zcash',
-    ]);
-}
+        $decodedId = $id[0];
+        $model = null;
+
+        switch ($type) {
+            case 'unit':
+                $model = Unit::findOrFail($decodedId);
+                break;
+            case 'objective':
+                $model = Objective::findOrFail($decodedId);
+                break;
+            case 'task':
+                $model = Task::findOrFail($decodedId);
+                break;
+            case 'issue':
+                $model = Issue::findOrFail($decodedId);
+                break;
+            case 'idea':
+                $model = Idea::findOrFail($decodedId);
+                break;
+            default:
+                abort(404);
+        }
+
+        return view('funds.donation', [
+            'data' => $model,
+            'type' => $type, // ✅ This is the fix
+            'current_payment_method' => 'Zcash',
+        ]);
+    }
 
 
 
@@ -598,28 +652,28 @@ class FundsController extends Controller
 
 
 
-// public function transferFromUnit(Request $request)
-// {
-//     $request->validate([
-//         'unit_id' => 'required|integer',
-//         'username' => 'required|string',
-//         'donate_amount' => 'required|numeric|min:1',
-//         'donate_to_type' => 'required|string|in:unit,objective,task,issue,idea',
-//     ]);
+    // public function transferFromUnit(Request $request)
+    // {
+    //     $request->validate([
+    //         'unit_id' => 'required|integer',
+    //         'username' => 'required|string',
+    //         'donate_amount' => 'required|numeric|min:1',
+    //         'donate_to_type' => 'required|string|in:unit,objective,task,issue,idea',
+    //     ]);
 
-//     $user = auth()->user();
+    //     $user = auth()->user();
 
-//     $transaction = new Transaction();
-//     $transaction->transaction_id = 'TXN-' . strtoupper(Str::random(10));
-//     $transaction->user_id = $user->id;
-//     $transaction->target_id = $request->unit_id;
-//     $transaction->target_type = $request->donate_to_type;
-//     $transaction->amount = $request->donate_amount;
-//     $transaction->payment_method = $request->paymentMethod;
-//     $transaction->save();
+    //     $transaction = new Transaction();
+    //     $transaction->transaction_id = 'TXN-' . strtoupper(Str::random(10));
+    //     $transaction->user_id = $user->id;
+    //     $transaction->target_id = $request->unit_id;
+    //     $transaction->target_type = $request->donate_to_type;
+    //     $transaction->amount = $request->donate_amount;
+    //     $transaction->payment_method = $request->paymentMethod;
+    //     $transaction->save();
 
-//     return redirect()->back()->with('success', 'Donation successful!');
-// }
+    //     return redirect()->back()->with('success', 'Donation successful!');
+    // }
 
 
 
@@ -827,104 +881,217 @@ class FundsController extends Controller
     }
 
 
-    public function donateToUnit($hashid) {
-    $id = Hashids::decode($hashid)[0] ?? null;
-    $unit = Unit::findOrFail($id);
-    return view('funds.donation_form', [
-        'data' => $unit,
-        'donate_type' => 'unit',
-        'current_payment_method' => 'Zcash',
-    ]);
-}
-
-// For Objective
-public function donateToObjective($hashid) {
-    $id = Hashids::decode($hashid)[0] ?? null;
-    $objective = Objective::findOrFail($id);
-    return view('funds.donation_form', [
-        'data' => $objective,
-        'donate_type' => 'objective',
-        'current_payment_method' => 'Zcash',
-    ]);
-}
-
-// For Task
-public function donateToTask($hashid) {
-    $id = Hashids::decode($hashid)[0] ?? null;
-    $task = Task::findOrFail($id);
-    return view('funds.donation_form', [
-        'data' => $task,
-        'donate_type' => 'task',
-        'current_payment_method' => 'Zcash',
-    ]);
-}
-
-// For Issue
-public function donateToIssue($hashid) {
-    $id = Hashids::decode($hashid)[0] ?? null;
-    $issue = Issue::findOrFail($id);
-    return view('funds.donation_form', [
-        'data' => $issue,
-        'donate_type' => 'issue',
-        'current_payment_method' => 'Zcash',
-    ]);
-}
-
-// For Idea
-public function donateToIdea($hashid) {
-    $id = Hashids::decode($hashid)[0] ?? null;
-    $idea = Idea::findOrFail($id);
-    return view('funds.donation', [
-        'data' => $idea,
-        'donate_type' => 'idea',
-        'current_payment_method' => 'Zcash',
-    ]);
-}
-
-
-public function transferFromUnit(Request $request)
-{
-    $request->validate([
-        'unit_id' => 'required|integer',
-        'username' => 'required|string',
-        'donate_amount' => 'required|numeric|min:1',
-        'donate_to_type' => 'required|in:unit,objective,task,issue,idea',
-    ]);
-
-    $donateType = $request->donate_to_type;
-    $targetId = $request->unit_id;
-
-    $transaction = new Transaction();
-    $transaction->transaction_id = 'TXN-' . strtoupper(Str::random(10));
-    $transaction->user_id = auth()->id();
-    $transaction->donated_by = $request->username;
-    $transaction->amount = $request->donate_amount;
-    // $transaction->payment_method = $request->paymentMethod ?? 'unknown';
-
-    // Dynamically assign based on donate_to_type
-    switch ($donateType) {
-        case 'unit':
-            $transaction->unit_id = $targetId;
-            break;
-        case 'objective':
-            $transaction->objective_id = $targetId;
-            break;
-        case 'task':
-            $transaction->task_id = $targetId;
-            break;
-        case 'issue':
-            $transaction->issues_id = $targetId;
-            break;
-        case 'idea':
-            $transaction->idea_id = $targetId;
-            break;
+    public function donateToUnit($hashid)
+    {
+        $id = Hashids::decode($hashid)[0] ?? null;
+        $unit = Unit::findOrFail($id);
+        return view('funds.donation_form', [
+            'data' => $unit,
+            'donate_type' => 'unit',
+            'current_payment_method' => 'Zcash',
+        ]);
     }
 
-    $transaction->save();
+    // For Objective
+    public function donateToObjective($hashid)
+    {
+        $id = Hashids::decode($hashid)[0] ?? null;
+        $objective = Objective::findOrFail($id);
+        return view('funds.donation_form', [
+            'data' => $objective,
+            'donate_type' => 'objective',
+            'current_payment_method' => 'Zcash',
+        ]);
+    }
 
-    return redirect()->back()->with('success', 'Donation successful!');
-}
+    // For Task
+    public function donateToTask($hashid)
+    {
+        $id = Hashids::decode($hashid)[0] ?? null;
+        $task = Task::findOrFail($id);
+        return view('funds.donation_form', [
+            'data' => $task,
+            'donate_type' => 'task',
+            'current_payment_method' => 'Zcash',
+        ]);
+    }
+
+    // For Issue
+    public function donateToIssue($hashid)
+    {
+        $id = Hashids::decode($hashid)[0] ?? null;
+        $issue = Issue::findOrFail($id);
+        return view('funds.donation_form', [
+            'data' => $issue,
+            'donate_type' => 'issue',
+            'current_payment_method' => 'Zcash',
+        ]);
+    }
+
+    // For Idea
+    public function donateToIdea($hashid)
+    {
+        $id = Hashids::decode($hashid)[0] ?? null;
+        $idea = Idea::findOrFail($id);
+        return view('funds.donation_form', [
+            'data' => $idea,
+            'donate_type' => 'idea',
+            'current_payment_method' => 'Zcash',
+        ]);
+    }
+
+
+    public function transferFromUnit(Request $request)
+    {
+        $request->validate([
+            'unit_id' => 'required|integer',
+            'username' => 'required|string',
+            'donate_amount' => 'required|numeric|min:1',
+            'donate_to_type' => 'required|in:unit,objective,task,issue,idea',
+        ]);
+
+        $donateType = $request->donate_to_type;
+        $targetId = $request->unit_id;
+
+        $transaction = new Transaction();
+        $transaction->transaction_id = 'TXN-' . strtoupper(Str::random(10));
+        $transaction->user_id = auth()->id();
+        $transaction->donated_by = $request->username;
+        $transaction->amount = $request->donate_amount;
+        // $transaction->payment_method = $request->paymentMethod ?? 'unknown';
+
+        // Dynamically assign based on donate_to_type
+        switch ($donateType) {
+            case 'unit':
+                $transaction->unit_id = $targetId;
+                break;
+            case 'objective':
+                $transaction->objective_id = $targetId;
+                break;
+            case 'task':
+                $transaction->task_id = $targetId;
+                break;
+            case 'issue':
+                $transaction->issues_id = $targetId;
+                break;
+            case 'idea':
+                $transaction->idea_id = $targetId;
+                break;
+        }
+
+        $transaction->save();
+
+        return redirect()->back()->with('success', 'Donation successful!');
+    }
 
 
 
+    public function submit(Request $request)
+    {
+        // Validate the request
+
+        $donateType = $request->donate_to_type;
+        $targetId   = $request->unit_id; // By default we will use unit_id name for input
+
+        // Prepare base data
+        $data = [
+            'transaction_id'  => 'TXN-' . strtoupper(Str::random(10)),
+            'user_id'         => auth()->id(),
+            'donated_by'      => $request->username,
+            'amount'          => $request->donate_amount,
+            // 'payment_method'  => $request->paymentMethod ?? 'unknown',
+            'created_at'      => now(),
+            // 'updated_at'      => now(),
+        ];
+
+        // Dynamically add target ID based on donation type
+        switch ($donateType) {
+            case 'unit':
+                $data['unit_id'] = $targetId;
+                break;
+            case 'objective':
+                $data['objective_id'] = $targetId;
+                break;
+            case 'task':
+                $data['task_id'] = $targetId;
+                break;
+            case 'issue':
+                $data['issues_id'] = $targetId;
+                break;
+            case 'idea':
+                $data['idea_id'] = $targetId;
+                break;
+        }
+
+        // Check if transaction already exists for this username (you can also match by donate_to_type + id if needed)
+        $existing = DB::table('transaction')
+            ->where('donated_by', $request->username)
+            ->where(function ($query) use ($donateType, $targetId) {
+                switch ($donateType) {
+                    case 'unit':
+                        $query->where('unit_id', $targetId);
+                        break;
+                    case 'objective':
+                        $query->where('objective_id', $targetId);
+                        break;
+                    case 'task':
+                        $query->where('task_id', $targetId);
+                        break;
+                    case 'issue':
+                        $query->where('issues_id', $targetId);
+                        break;
+                    case 'idea':
+                        $query->where('idea_id', $targetId);
+                        break;
+                }
+            })
+            ->first();
+
+        if ($existing) {
+            // Remove created_at if updating
+            unset($data['created_at']);
+
+            DB::table('transaction')
+                ->where('id', $existing->id)
+                ->update($data);
+        } else {
+            DB::table('transaction')->insert($data);
+        }
+
+        // Redirect to Givebutter
+        return redirect()->away('https://givebutter.com/G8ntYk');
+    }
+
+
+    public function donationList(Request $request)
+    {
+        $transaction = DB::table('transaction')
+            ->leftJoin('units', 'transaction.unit_id', '=', 'units.id')
+            ->leftJoin('tasks', 'transaction.task_id', '=', 'tasks.id')
+            ->leftJoin('ideas', 'transaction.idea_id', '=', 'ideas.id')
+            ->leftJoin('issues', 'transaction.issues_id', '=', 'issues.id')
+            ->leftJoin('objectives', 'transaction.objective_id', '=', 'objectives.id')
+            ->select(
+                'transaction.*',
+                'units.name as unit_name',
+                'tasks.name as task_name',
+                'ideas.title as idea_title',
+                'issues.title as issue_title',
+                'objectives.name as objective_title'
+            )
+            ->where(function ($query) {
+                $query->where('transaction.unit_id', '>', 0)
+                    ->orWhere('transaction.task_id', '>', 0)
+                    ->orWhere('transaction.idea_id', '>', 0)
+                    ->orWhere('transaction.issues_id', '>', 0)
+                    ->orWhere('transaction.objective_id', '>', 0);
+            })
+            ->get();
+
+        $unitData = Unit::where('id', $request->unit)->first();
+        // $issueResolutions = $this->calculateIssueResolution($request->unit);
+        // view()->share('totalIssueResolutions', $issueResolutions);
+
+        return view('funds.donation_list', ['transaction' => $transaction, 'unitData' => $unitData]);
+    }
 }

@@ -114,7 +114,7 @@
             <div class="sidebar_block_right">
                 <div class="blue_progress"></div>
                 {{-- dd($totalIssueResolutions) --}}
-                {{ $totalIssueResolutions }}
+                {{-- {{ $totalIssueResolutions }} --}}
             </div>
         </div>
         <div class="sidebar_block_row">

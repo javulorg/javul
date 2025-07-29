@@ -212,7 +212,7 @@
                                             Funds:
                                         </div>
                                         <div class="sidebar_block_right">
-                                            Received $2500<br>
+                                           Received ${{ $totalAmount }}<br>
                                             Awarded ${{ number_format($awardedObjFunds, 2) }}<br>
                                             Available ${{ number_format($availableObjFunds, 2) }}<br>
                                         </div>
@@ -221,7 +221,6 @@
                                     <div class="text-center">
                                         <a href="{{ url('funds/donate/objective/' . $objectiveIDHashID->encode($objectiveObj->id)) }}"
                                             rel="noopener noreferrer">Donate</a>
-
 
                                     </div>
 

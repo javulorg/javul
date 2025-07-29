@@ -55,45 +55,49 @@
     </div>
 
     <div class="sidebar_block_content">
-
-        @if(count($site_activity) > 0)
+    @if(count($site_activity) > 0)
         @foreach($site_activity as $activity)
-        {{-- @dd($activity) --}}
 
         @php
-        if (!empty($activity->task_id)) {
-        $type = 'task';
-        } elseif (!empty($activity->idea_id)) {
-        $type = 'idea';
+            if (!empty($activity->task_id)) {
+                $type = 'task';
+            } elseif (!empty($activity->idea_id)) {
+                $type = 'idea';
+            } elseif (!empty($activity->objective_id)) {
+                $type = 'objective';
+            } elseif (!empty($activity->issue_id)) {
+                $type = 'issue';
+            } elseif (!empty($activity->unit_id)) {
+                $type = 'unit';
+            } elseif (!empty($activity->wiki_id)) {
+                $type = 'wiki';
+            } else {
+                $type = 'comment';
+            }
 
-        } elseif (!empty($activity->objective_id)) {
-        $type = 'objective';
-        } elseif (!empty($activity->issue_id)) {
-        $type = 'issue';
-        } else {
-        $type = 'comment';
-        }
-
-        // Check if completed
-        $isComplete = isset($activity->status) && strtolower($activity->status) === 'complete';
+            $isComplete = isset($activity->status) && strtolower($activity->status) === 'complete';
         @endphp
 
         <div class="log_item">
             <div class="log_icon">
                 @if($isComplete)
-                <i class="fa-solid fa-circle-check" style="color: green;"></i> {{-- completed icon --}}
+                    <i class="fa-solid fa-circle-check" style="color: green;"></i>
                 @elseif($type === 'task')
-                <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
+                    <img src="{{ asset('v2/assets/img/list.svg') }}" alt="" class="img-fluid">
                 @elseif($type === 'idea')
-                <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt="" class="img-fluid">
+                    <img src="{{ asset('v2/assets/img/humbleicons_bulb.svg') }}" alt="" class="img-fluid">
                 @elseif($type === 'objective')
-                <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
+                    <img src="{{ asset('v2/assets/img/location.svg') }}" alt="" class="img-fluid">
                 @elseif($type === 'issue')
-                <img src="{{ asset('v2/assets/img/bug.svg') }}" alt="" class="img-fluid">
+                    <img src="{{ asset('v2/assets/img/bug.svg') }}" alt="" class="img-fluid">
+                @elseif($type === 'unit')
+                    <i class="fab fa-stack-overflow" aria-hidden="true"></i>
+                @elseif($type === 'wiki')
+                    <i class="fab fa-book"></i>
                 @elseif($type === 'comment')
-                <i class="fa-solid fa-comment-dots"></i>
+                    <i class="fa-solid fa-comment-dots"></i>
                 @else
-                <i class="fa-solid fa-comment"></i> {{-- fallback --}}
+                    <i class="fa-solid fa-comment"></i>
                 @endif
             </div>
 
@@ -103,20 +107,21 @@
             </div>
         </div>
         @endforeach
-        @else
+    @else
         <div class="log_item">
             No activity found.
         </div>
-        @endif
+    @endif
 
-        <div class="sidebar_block_content_bottom">
-            <a href="#">Top Contributors</a>
-            <div class="separator"></div>
-            @if(isset($unit) && $unit != null)
+    <div class="sidebar_block_content_bottom">
+        <a href="#">Top Contributors</a>
+        <div class="separator"></div>
+        @if(isset($unit) && $unit != null)
             <a href="{{ url('activities?unit=' . $unit) }}">More Activity</a>
-            @else
+        @else
             <a href="{{ url('activities') }}">More Activity</a>
-            @endif
-        </div>
+        @endif
     </div>
+</div>
+
 </div>
