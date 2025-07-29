@@ -9,6 +9,7 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
 
+
 <div class="bg-light p-3 mb-4">
     <div class="row">
         <div class="col-sm-4 text-center">
@@ -37,7 +38,7 @@
         </div>
         <div class="col-sm-8">
             <div class="user-header">
-                <h3><?php echo e($obj->first_name.' '.$obj->last_name); ?></h3>
+                <h3><?php echo e($data->first_name.' '.$data->last_name); ?></h3>
             </div>
             <div class="d-flex justify-content-between align-items-center">
                 <div class="user-header">
@@ -45,28 +46,9 @@
                     Account age: <?php echo e($obj->created_at); ?>
 
                 </div>
-                <div class="user-header">
-                    <span class="bi bi-hand-thumbs-up"></span>
-                    Skills:
-                    <?php $job_skills = explode(",",$obj->job_skills); ?>
-                    <?php if(!empty($job_skills)): ?>
-                    <?php $__currentLoopData = $job_skills; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $skill): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <span class="badge bg-info"><?php echo e(\App\Models\JobSkill::getName($skill)); ?></span>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    <?php endif; ?>
-                </div>
+                
             </div>
-            <div class="user-header mb-2">
-                <span class="bi bi-bookmark"></span>
-                Area of Interest:
-                <?php $area_of_interest = explode(",",$obj->area_of_interest); ?>
-                <?php if(!empty($area_of_interest)): ?>
-                <?php $__currentLoopData = $area_of_interest; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $interest): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <span class="badge bg-info"
-                    style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo e(\App\Models\AreaOfInterest::getName($interest)); ?></span>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                <?php endif; ?>
-            </div>
+            
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <span class="bi bi-geo-alt"></span>
@@ -136,15 +118,18 @@
         
 
         <?php
-    $donateToType = request()->segment(3); // 'objective' from /funds/donate/objective/abc123
-?>
+        $donateToType = request()->segment(3); // 'objective' from /funds/donate/objective/abc123
+        ?>
 
-        <form accept-charset="UTF-8" action="<?php echo url('funds/transfer-from-unit'); ?>"
-            class="simple_form form-horizontal" method="post" novalidate="novalidate" id="donationForm">
+
+
+
+        <form accept-charset="UTF-8" action="<?php echo e(route('donation.submit')); ?>" class="simple_form form-horizontal"
+            method="post" novalidate="novalidate" id="donationForm">
             <?php echo e(csrf_field()); ?>
 
 
-                <input type="hidden" name="donate_to_type" value="<?php echo e($donateToType); ?>">
+            <input type="hidden" name="donate_to_type" value="<?php echo e($donateToType); ?>">
 
 
             <?php if($errors->any()): ?>
@@ -164,7 +149,7 @@
                     <input type="text" name="unit_name" placeholder="Unit Name" id="unit_name" class="form-control"
                         value="<?php echo e($obj->name); ?>" readonly><br>
 
-                        <input type="hidden" name="unit_id" value="<?php echo e($obj->id); ?>">
+                    <input type="hidden" name="unit_id" value="<?php echo e($obj->id); ?>">
                     <label>Username</label>
                     <input type="text" name="username" placeholder="User Name" id="user_name" class="form-control"
                         value="<?php echo e(Auth::user()->username); ?>" readonly><br>
@@ -208,40 +193,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    $(document).ready(function () {
-        $('#donationForm').on('submit', function (e) {
-            e.preventDefault(); // ✅ Prevent page reload
-
-            $.ajax({
-                url: '<?php echo e(url("funds/transfer-from-unit")); ?>',
-                method: 'POST',
-                data: $(this).serialize(),
-                success: function (res) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Transaction Successful!',
-                        text: 'Transaction ID: ' + res.transaction_id
-                    });
-
-                    $('#donationForm')[0].reset();
-                },
-                error: function (xhr) {
-                    let message = 'Something went wrong.';
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        message = Object.values(xhr.responseJSON.errors).join('\n');
-                    }
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Transaction Failed',
-                        text: message
-                    });
-                }
-            });
-        });
-    });
-</script>
 
 
 <?php echo $__env->make('layout.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\javul\resources\views/funds/donation.blade.php ENDPATH**/ ?>

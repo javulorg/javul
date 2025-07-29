@@ -48,9 +48,9 @@ class ObjectivesController extends Controller
     {
 
 
-            $pagination = $this->service->listAll($request)
-                    ->paginate(10)
-                    ->appends($request->all());
+        $pagination = $this->service->listAll($request)
+            ->paginate(10)
+            ->appends($request->all());
 
         $msg_flag = false;
         $msg_val = '';
@@ -783,7 +783,12 @@ class ObjectivesController extends Controller
                         view()->share('unitObj', $unitData);
                         $objectiveIdeas = Objective::with('ideas')->where('id', $objectiveObj->id)->first();
                         view()->share('objectiveIdeas', $objectiveIdeas);
-                        return view('objectives.view', ['childobjectiveObj' => $childobjectiveObj]);
+                        $totalAmount = DB::table('transaction')
+                            ->where('objective_id', $objective_id)
+                            ->sum('amount');
+
+
+                        return view('objectives.view', ['childobjectiveObj' => $childobjectiveObj, 'totalAmount' => $totalAmount]);
                     }
                 }
             }
@@ -993,7 +998,7 @@ class ObjectivesController extends Controller
     public function storeW(Request $request)
     {
         $userId = $request->input('userId');
-        $objective_id = $request->input('objective_id'   );
+        $objective_id = $request->input('objective_id');
 
         if (!$userId || !$objective_id) {
             return response()->json([

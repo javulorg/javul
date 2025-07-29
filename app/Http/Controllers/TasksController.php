@@ -2119,6 +2119,9 @@ class TasksController extends Controller
                     ->select(['task_complete.*', 'users.first_name', 'users.last_name'])
                     ->orderBy('id', 'asc')
                     ->get();
+                $dataTask = TaskComplete::where('task_id', $task_id)->get();
+                $taskUserId = $taskCompleteObj->first()->user_id ?? null;
+
 
                 if (auth()->user()->role == 1 || auth()->user()->role == 2 || auth()->user()->role == 3) {
                     $taskObj = Task::where('id', '=', $task_id)->first();
@@ -2267,7 +2270,11 @@ class TasksController extends Controller
                         view()->share('taskCompleteObj', $taskCompleteObj);
                         view()->share('taskEditors', $taskEditors);
                         view()->share('rewardAssigned', $rewardAssigned);
-                        return view('tasks.partials.complete_task');
+
+                        $paypalEmail = User::where('id', $taskUserId)->value('paypal_email');
+                        $username = User::where('id', $taskUserId)->value('username');
+
+                        return view('tasks.partials.complete_task', ['paypalEmail' => $paypalEmail, 'username' => $username, 'taskUserId' => $taskUserId]);
                     }
                 }
             }
@@ -2343,8 +2350,22 @@ class TasksController extends Controller
         return redirect('tasks');
     }
 
+
+    // public function submit(Request $request)
+    // {
+    //     DB::table('transaction')
+    //         ->where('donated_by', $request->username)
+    //         ->update([
+    //             'paypal_email' => $request->paypal_email,
+    //             'award'       => $request->award,
+    //             'updated_at'   => now()
+    //         ]);
+    // }
+
     public function mark_as_complete(Request $request, $task_id)
     {
+
+
         $task_id_encoded = $task_id;
         if (!empty($task_id)) {
             $taskIDHashID = new Hashids('task id hash', 10, Config::get('app.encode_chars'));
@@ -2719,6 +2740,26 @@ class TasksController extends Controller
                 'action' => 'added',
                 'message' => 'Added to watchlist.'
             ]);
+        }
+    }
+
+    public function submit(Request $request)
+    {
+
+        // Update the transaction table using raw query
+        $updated = DB::table('transaction')
+            ->where('task_id', $request->taskId)
+            ->where('donated_by', $request->name)
+            ->update([
+                'paypal_id' => $request->paypal_email,
+                'award' => $request->amount,
+                'updated_at' => now(),
+            ]);
+
+        if ($updated) {
+            return back()->with('success', 'Transaction updated successfully.');
+        } else {
+            return back()->with('error', 'No transaction found to update.');
         }
     }
 }

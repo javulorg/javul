@@ -218,9 +218,13 @@
                                         </div>
                                     </div>
 
-                                   <div class="text-center">
-    <a href="{{ url('funds/donate/idea/' . $unitIDHashID->encode($idea->id)) }}">Donate</a>
-</div>
+                                    <div class="text-center">
+                                        <a href="{{ url('funds/donate/idea/' . $unitIDHashID->encode($idea->id)) }}"
+                                            rel="noopener noreferrer">Donate</a>
+
+                                        {{-- <a
+                                            href="{{ url('funds/donate/idea/' . ) }}">Donate</a> --}}
+                                    </div>
 
 
                                 </div>

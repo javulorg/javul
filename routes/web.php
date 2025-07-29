@@ -307,12 +307,13 @@ Route::get('objectives/{objective_id}/{slug_id}/{unit_id}/tasks', [TasksControll
 
 Route::post('/like', [\App\Http\Controllers\V2\CommentController::class, 'like'])->name('like');
 Route::post('/dislike', [\App\Http\Controllers\V2\CommentController::class, 'dislike'])->name('dislike');
-
 //FundsController
 Route::get('funds/donate/unit/{unit_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/donate/objective/{objective_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/donate/task/{task_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/donate/issue/{issue_id}', [FundsController::class, 'donate_to_unit_objective_task']);
+Route::get('funds/donate/idea/{idea_id}', [FundsController::class, 'donate_to_unit_objective_task']);
+
 Route::get('funds/donate/user/{user_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/get-card-name', [FundsController::class, 'get_card_name']);
 Route::post('funds/donate-amount', [FundsController::class, 'donate_amount']);
@@ -409,12 +410,21 @@ Route::post('/message/send-message', [MessageController::class, 'sendMessage'])-
 Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateForm']);
 
 
-
-
 Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateToUnit']);
 Route::get('funds/donate/objective/{hashid}', [FundsController::class, 'donateToObjective']);
 Route::get('funds/donate/task/{hashid}', [FundsController::class, 'donateToTask']);
 Route::get('funds/donate/issue/{hashid}', [FundsController::class, 'donateToIssue']);
-Route::get('funds/donate/idea/{hashid}', [FundsController::class, 'donateToIdea']);
+// Route::get('funds/donate/idea/{hashid}', [FundsController::class, 'donateToIdea']);
 
 Route::post('funds/transfer-from-unit', [FundsController::class, 'transferFromUnit']);
+Route::post('/donation/submit', [FundsController::class, 'submit'])->name('donation.submit');
+
+Route::post('/payment/submit', [TasksController::class, 'submit'])->name('payment.submit');
+
+// Route::get('/funds/donations-list', )->
+
+
+// Route::get('/funds/donations-list', function () {
+//     return view('layout.master');
+// })->name('funds.donation_list');
+Route::get('donation-list', [FundsController::class, 'donationList']);

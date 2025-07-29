@@ -9,6 +9,7 @@
 </style>
 @endsection
 @section('content')
+{{-- @dd($data) --}}
 {{-- @php $obj_identifier = get_class($obj); @endphp --}}
 <div class="bg-light p-3 mb-4">
     <div class="row">
@@ -38,14 +39,14 @@
         </div>
         <div class="col-sm-8">
             <div class="user-header">
-                <h3>{{$obj->first_name.' '.$obj->last_name}}</h3>
+                <h3>{{$data->first_name.' '.$data->last_name}}</h3>
             </div>
             <div class="d-flex justify-content-between align-items-center">
                 <div class="user-header">
                     <span class="bi bi-clock"></span>
                     Account age: {{$obj->created_at}}
                 </div>
-                <div class="user-header">
+                {{-- <div class="user-header">
                     <span class="bi bi-hand-thumbs-up"></span>
                     Skills:
                     <?php $job_skills = explode(",",$obj->job_skills); ?>
@@ -54,9 +55,9 @@
                     <span class="badge bg-info">{{\App\Models\JobSkill::getName($skill)}}</span>
                     @endforeach
                     @endif
-                </div>
+                </div> --}}
             </div>
-            <div class="user-header mb-2">
+            {{-- <div class="user-header mb-2">
                 <span class="bi bi-bookmark"></span>
                 Area of Interest:
                 <?php $area_of_interest = explode(",",$obj->area_of_interest); ?>
@@ -66,7 +67,7 @@
                     style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{\App\Models\AreaOfInterest::getName($interest)}}</span>
                 @endforeach
                 @endif
-            </div>
+            </div> --}}
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <span class="bi bi-geo-alt"></span>
@@ -181,14 +182,17 @@
         </form> --}}
 
         @php
-    $donateToType = request()->segment(3); // 'objective' from /funds/donate/objective/abc123
-@endphp
+        $donateToType = request()->segment(3); // 'objective' from /funds/donate/objective/abc123
+        @endphp
 
-        <form accept-charset="UTF-8" action="{!! url('funds/transfer-from-unit') !!}"
-            class="simple_form form-horizontal" method="post" novalidate="novalidate" id="donationForm">
+
+
+
+        <form accept-charset="UTF-8" action="{{ route('donation.submit') }}" class="simple_form form-horizontal"
+            method="post" novalidate="novalidate" id="donationForm">
             {{ csrf_field() }}
 
-                <input type="hidden" name="donate_to_type" value="{{ $donateToType }}">
+            <input type="hidden" name="donate_to_type" value="{{ $donateToType }}">
 
 
             @if($errors->any())
@@ -207,7 +211,7 @@
                     <input type="text" name="unit_name" placeholder="Unit Name" id="unit_name" class="form-control"
                         value="{{ $obj->name }}" readonly><br>
 
-                        <input type="hidden" name="unit_id" value="{{ $obj->id }}">
+                    <input type="hidden" name="unit_id" value="{{ $obj->id }}">
                     <label>Username</label>
                     <input type="text" name="username" placeholder="User Name" id="user_name" class="form-control"
                         value="{{ Auth::user()->username }}" readonly><br>
@@ -251,7 +255,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
+{{-- <script>
     $(document).ready(function () {
         $('#donationForm').on('submit', function (e) {
             e.preventDefault(); // ✅ Prevent page reload
@@ -284,5 +288,4 @@
             });
         });
     });
-</script>
-
+</script> --}}

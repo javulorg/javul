@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class IdeaTask extends Model
 {
+    protected $table = 'ideas';
     use HasFactory;
     protected $fillable = [
       'idea_id',

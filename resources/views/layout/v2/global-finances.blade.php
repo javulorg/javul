@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="sidebar_block_left text-left">
-                Awarded:  {{ $awardedFunds }}
+                {{-- Awarded: {{ $awardedFunds }} --}}
             </div>
         </div>
         <div class="sidebar_block_row">
@@ -29,12 +29,13 @@
             </div>
             <div class="sidebar_block_right">
 
-                Available: {{ $availableFunds }}
+                {{-- Available: {{ $availableFunds }} --}}
             </div>
         </div>
 
         <div class="sidebar_block_content_bottom">
-<a href="{{ url('funds/donate/unit/' . $unitIDHashID->encode($unitData->id)) }}" rel="noopener noreferrer">Donate</a>
+            <a href="{{ url('funds/donate/unit/' . $unitIDHashID->encode($unitData->id)) }}"
+                rel="noopener noreferrer">Donate</a>
             <div class="separator"></div>
             <a href="#">Financial Activity</a>
         </div>

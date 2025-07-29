@@ -43,6 +43,8 @@
         @include('layout.v2.global-activity-log',['title' => $title])
         @endif
     </div>
+
+
     <div class="main_content">
         <div class="content_block">
             <div class="table_block table_block_tasks active">
@@ -391,12 +393,14 @@
                         @if(!empty($taskCompleteObj) && count($taskCompleteObj) > 0)
                         <?php $i=1; ?>
                         @foreach($taskCompleteObj as $completeObj)
+                        {{-- @dd($completeObj); --}}
                         <div class="row">
                             <div class="col-sm-12">
                                 <img src="{!! url('assets/images/user.png') !!}"
                                     style="border: 1px solid;height:50px;vertical-align: top;" />
                                 <div style="display: inline-block;padding-left: 10px;">
                                     <a href="{!! url('userprofiles/'.$userIDHashID->encode($completeObj->user_id).'/'.
+
                         strtolower($completeObj->first_name.'_'.$completeObj->last_name)) !!}">
                                         {{ $completeObj->first_name.' '.$completeObj->last_name }}
                                     </a>
@@ -499,8 +503,8 @@
 
                     {{-- Admin users (role == 1) --}}
                     @if($authUserObj->role == 1)
-                    <form role="form" method="post"
-                        action="{{ url('tasks/mark_task_complete/' . $taskIDHashID->encode($taskObj->id)) }}" novalidate
+                    {{-- {{ url('tasks/mark_task_complete/' . $taskIDHashID->encode($taskObj->id)) }} --}}
+                    <form id="taskCompleteForm" role="form" method="post" action="{{ url('tasks/mark_task_complete/' . $taskIDHashID->encode($taskObj->id)) }}" novalidate
                         enctype="multipart/form-data">
                         @csrf
                         @method('post')
@@ -550,15 +554,15 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" style="margin-bottom:0px">Quality of Work</label>
-                                <div><input value="0" name="quality_of_work" type="number" class="rating_user" min=0
-                                        max=5 step=0.5 data-size="xs"></div>
+                                <div><input value="0" name="quality_of_work" type="number" requird class="rating_user"
+                                        min=0 max=5 step=0.5 data-size="xs"></div>
                             </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-sm-12">
                                 <label class="control-label" style="margin-bottom:0px">Timeliness</label>
-                                <div><input value="0" type="number" name="timeliness" class="rating_user" min=0 max=5
-                                        step=0.5 data-size="xs"></div>
+                                <div><input value="0" type="number" required name="timeliness" class="rating_user" min=0
+                                        max=5 step=0.5 data-size="xs"></div>
                             </div>
                         </div>
 
@@ -566,15 +570,81 @@
                         @include('tasks.partials.complete_evaluation')
 
                         {{-- Admin Submit Button --}}
-                        <div class="row form-group mt-4">
+                        {{-- <div class="row form-group mt-4">
                             <div class="col-sm-12">
                                 <button type="submit" class="btn orange-bg">
                                     <span class="glyphicon glyphicon-ok"></span> Complete Task
                                 </button>
                             </div>
-                        </div>
+                        </div> --}}
+                        {{-- @php
+                        @dd($paypalEmail);
+                        @endphp --}}
+
+
+                        <button type="submit" class="btn orange-bg" >
+                            <span class="glyphicon glyphicon-ok"></span> Complete Task
+                        </button>
+
+
+
                     </form>
+
                     @endif
+                    <!-- Payment Modal -->
+                    {{-- <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <form method="POST"  action="{{ route('payment.submit') }}">
+                                    @csrf
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="paymentModalLabel">Payment Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <div class="mb-3">
+
+                                            <label>Taak Id</label> <input type="text" name="taskId" class="form-control"
+                                                value="{{$taskObj->id}}" readonly>
+
+                                        </div>
+
+                                        <div class="mb-3">
+
+                                            <label>Name</label> <input type="text" name="name" class="form-control"
+                                                value="{{$username}}" readonly>
+
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>PayPal Email</label>
+                                            <input type="email" name="paypal_email" class="form-control"
+                                                value="{{ $paypalEmail }}" readonly>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Amount</label>
+                                            <input type="number" name="amount" class="form-control" min="1" value={{ $taskObj->compensation }} required>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Submit Payment</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div> --}}
+
+
+
+
 
 
                 </div>
@@ -583,6 +653,7 @@
     </div>
 </div>
 @endsection
+
 @section('scripts')
 <script>
     $(document).ready(function() {
@@ -593,4 +664,25 @@
                 } );
         });
 </script>
+{{-- <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 5 second (5000 ms) delay before opening modal
+        setTimeout(function () {
+            let myModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            myModal.show();
+        }, 1000);
+    });
+</script> --}}
+
+{{-- <script>
+    document.getElementById('completeAndOpenModalBtn').addEventListener('click', function () {
+    document.getElementById('taskCompleteForm').submit();
+    setTimeout(function () {
+      let modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+      modal.show();
+    }, 1000);
+  });
+</script> --}}
+
+
 @endsection

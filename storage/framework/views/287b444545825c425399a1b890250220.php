@@ -81,21 +81,7 @@
             chatOnline();
         }
     </script>
-   <script>
-    // Agar page refresh flag nahi hai, to reload once and set it
-    if (!sessionStorage.getItem('justReloaded')) {
-        sessionStorage.setItem('justReloaded', 'true');
-        window.location.reload(true); // 🔁 Force reload from server
-    } else {
-        sessionStorage.removeItem('justReloaded'); // ✅ Clean up
-    }
-
-    // Jab page chhode, flag hata do taaki next time firse chale
-    window.addEventListener('beforeunload', () => {
-        sessionStorage.removeItem('justReloaded');
-    });
-</script>
-
+   
 
 <?php $__env->stopSection(); ?>
 

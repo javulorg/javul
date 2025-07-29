@@ -81,7 +81,7 @@
                     <a class="nav-link" href="{{ url('activities') }}">Global Activity Log</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contribute</a>
+                    <a class="nav-link" href="{{ url('top-contribute')}}">Contribute</a>
                 </li>
             </ul>
         </div>

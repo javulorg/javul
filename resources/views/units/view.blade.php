@@ -82,7 +82,7 @@
             chatOnline();
         }
     </script>
-   <script>
+   {{-- <script>
     // Agar page refresh flag nahi hai, to reload once and set it
     if (!sessionStorage.getItem('justReloaded')) {
         sessionStorage.setItem('justReloaded', 'true');
@@ -96,6 +96,6 @@
         sessionStorage.removeItem('justReloaded');
     });
 </script>
-
+ --}}
 
 @endsection
