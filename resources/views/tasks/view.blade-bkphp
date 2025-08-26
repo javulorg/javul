@@ -1,4 +1,3 @@
-<!-- //resources/views/tasks/view.blade.php -->
 @extends('layout.master')
 @section('title', 'Task: ' . $taskObj->name)
 @section('style')
@@ -30,8 +29,8 @@
         @if(isset($unitData))
         @include('layout.v2.global-unit-overview')
         <?php
-        $title = 'Activity Log';
-        ?>
+                    $title = 'Activity Log';
+                    ?>
         @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
 
         @include('layout.v2.global-finances')
@@ -39,8 +38,8 @@
         @include('layout.v2.global-about-site')
         @else
         <?php
-        $title = 'Global Activity Log';
-        ?>
+                    $title = 'Global Activity Log';
+                    ?>
         @include('layout.v2.global-activity-log',['title' => $title])
         @endif
     </div>
@@ -163,9 +162,8 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <a  class=" donate-custom-button" id="submit_button_donate_tasks" 
-                                         data-url="{{url('/donation/submit')}}"
-                                        >Donate</a>
+                                        <a
+                                            href="{{ url('funds/donate/task/' . $taskIDHashID->encode($taskObj->id)) }}">Donate</a>
                                     </div>
 
 
@@ -332,9 +330,9 @@
                         <div class="comment_icon">
                             <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
                         </div>
-                        <input type="hidden" name="unit_id" id="comment_unit_id" value="<?= $unit_id ?>">
-                        <input type="hidden" name="section_id" id="comment_section_id" value="<?= $section_id ?>">
-                        <input type="hidden" name="object_id" id="comment_object_id" value="<?= $object_id ?>">
+                        <input type="hidden" name="unit_id" id="comment_unit_id" value="<?=  $unit_id ?>">
+                        <input type="hidden" name="section_id" id="comment_section_id" value="<?=  $section_id ?>">
+                        <input type="hidden" name="object_id" id="comment_object_id" value="<?=  $object_id ?>">
                         <div class="comment_content">
                             <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
                             <button id="comment_form" class="btn">Submit</button>
@@ -408,11 +406,11 @@
                                     )
                                     <a class="btn btn-sm btn-primary assign_now"
                                         data-uid="{{$userIDHashID->encode($bidder->user_id)}}"
-                                data-tid="{{$taskIDHashID->encode($bidder->task_id)}}"
-                                style="color:#fff;">Assign now</a>
-                                @else
-                                -
-                                @endif
+                                        data-tid="{{$taskIDHashID->encode($bidder->task_id)}}"
+                                        style="color:#fff;">Assign now</a>
+                                    @else
+                                    -
+                                    @endif
                                 </td> --}}
                                 <td class="type_col">
                                     @if($taskObj->status == "assigned" && $bidder->user_id == $taskObj->assign_to)
@@ -527,177 +525,172 @@
 @endsection
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ asset('js/donation.js') }}"></script>
+
 <script>
     $(document).ready(function() {
-        $("#comment_form").click(function(e) {
-            var unitId = $('#comment_unit_id').val();
-            var sectionId = $('#comment_section_id').val();
-            var objectId = $('#comment_object_id').val();
-            var desc = $('#comment').val();
+            $("#comment_form").click(function(e){
+                var unitId = $('#comment_unit_id').val();
+                var sectionId = $('#comment_section_id').val();
+                var objectId = $('#comment_object_id').val();
+                var desc = $('#comment').val();
 
-            $.ajax({
-                type: "POST",
-                url: '{{ url("/forum/submitauto") }}',
-                data: {
-                    unit_id: unitId,
-                    section_id: sectionId,
-                    object_id: objectId,
-                    desc: desc,
-                    _token: $('input[name="_token"]').val(),
-                },
-                success: function(response, xhr, textStatus) {
-                    if (response.status === 201) {
-                        location.reload();
-                    }
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    console.log(xhr.responseText);
-                },
-            });
-        });
-
-        $(".assign_now").click(function(e) {
-            var uid = $(this).attr('data-uid');
-            var tid = $(this).attr('data-tid');
-            if ($.trim(uid) != "" && $.trim(tid) != "") {
                 $.ajax({
-                    type: 'GET',
-                    url: '{{ url("/tasks/assign") }}',
+                    type: "POST",
+                    url: '{{ url("/forum/submitauto") }}',
                     data: {
-                        uid: uid,
-                        tid: tid
+                        unit_id : unitId,
+                        section_id : sectionId,
+                        object_id : objectId,
+                        desc : desc,
+                        _token: $('input[name="_token"]').val(),
                     },
-                    dataType: 'json',
-                    success: function(resp) {
-                        if (resp.success) {
-                            // Show SweetAlert notification
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: 'Task assigned successfully!',
-                                timer: 2000, // Set a timer for auto-close
-                                showConfirmButton: false
-                            }).then(() => {
-                                // Reload the page
-                                window.location.reload(true);
-                            });
+                    success: function (response, xhr, textStatus) {
+                        if (response.status === 201) {
+                            location.reload();
                         }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseText);
+                    },
+                });
+            });
+
+            $(".assign_now").click(function (e) {
+                var uid = $(this).attr('data-uid');
+                var tid = $(this).attr('data-tid');
+                if($.trim(uid) != "" && $.trim(tid) != ""){
+                    $.ajax({
+                        type:'GET',
+                        url: '{{ url("/tasks/assign") }}',
+                        data:{uid:uid,tid:tid },
+                        dataType:'json',
+                        success:function(resp){
+                            if (resp.success) {
+                                // Show SweetAlert notification
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Task assigned successfully!',
+                                    timer: 2000, // Set a timer for auto-close
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    // Reload the page
+                                    window.location.reload(true);
+                                });
+                            }
+                        }
+                    })
+                }
+            });
+
+            $('.like_button').click(function() {
+                var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
+                $.ajax({
+                    url: '{{ route("like") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        comment_id: commentId
+                    },
+                    success: function(response) {
+                        $('#like_count').text(response.dislike_count);
+                        location.reload();
+                        console.log(response);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
                     }
-                })
-            }
-        });
+                });
+            });
 
-        $('.like_button').click(function() {
-            var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
-            $.ajax({
-                url: '{{ route("like") }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    comment_id: commentId
-                },
-                success: function(response) {
-                    $('#like_count').text(response.dislike_count);
-                    location.reload();
-                    console.log(response);
-                },
-                error: function(xhr) {
-                    console.error(xhr);
-                }
+            $('.dislike_button').click(function() {
+                var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
+                $.ajax({
+                    url: '{{ route("dislike") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        comment_id: commentId
+                    },
+                    success: function(response) {
+                        console.log(response)
+
+                        $('#dislike_count').text(response.dislike_count);
+                        location.reload();
+
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
+                    }
+                });
             });
         });
-
-        $('.dislike_button').click(function() {
-            var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
-            $.ajax({
-                url: '{{ route("dislike") }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    comment_id: commentId
-                },
-                success: function(response) {
-                    console.log(response)
-
-                    $('#dislike_count').text(response.dislike_count);
-                    location.reload();
-
-                },
-                error: function(xhr) {
-                    console.error(xhr);
-                }
-            });
-        });
-
-        handleDonationClick('#submit_button_donate_tasks');
-    });
 </script>
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.watchlist-link').forEach(function(link) {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-link').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
 
-                const url = this.dataset.url;
-                const taskId = this.dataset.id;
-                const viewUrl = this.dataset.viewUrl; // ✅ Add this data-view-url in HTML
+            const url = this.dataset.url;
+            const taskId = this.dataset.id;
+            const viewUrl = this.dataset.viewUrl; // ✅ Add this data-view-url in HTML
 
-                const eyeIcon = document.getElementById('task-eye-icon-' + taskId);
-                const eyeOffIcon = document.getElementById('task-eye-off-icon-' + taskId);
-                const anchor = document.getElementById('task-eye-link-' + taskId);
+            const eyeIcon = document.getElementById('task-eye-icon-' + taskId);
+            const eyeOffIcon = document.getElementById('task-eye-off-icon-' + taskId);
+            const anchor = document.getElementById('task-eye-link-' + taskId);
 
-                this.classList.add('pointer-events-none', 'opacity-50');
+            this.classList.add('pointer-events-none', 'opacity-50');
 
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (anchor) anchor.style.display = "none";
-                        if (eyeOffIcon) eyeOffIcon.style.display = "inline-block";
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (anchor) anchor.style.display = "none";
+                    if (eyeOffIcon) eyeOffIcon.style.display = "inline-block";
 
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Added to Watchlist',
-                            html: `
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Watchlist',
+                        html: `
                             <p>${data.message || 'Task added successfully!'}</p>
                             <a href="${viewUrl}" target="_blank" style="color:#3085d6; text-decoration: underline;">
                                 View Task
                             </a>
                         `,
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                    })
-                    .catch(err => {
-                        console.error('Watchlist error:', err);
-                        this.classList.remove('pointer-events-none', 'opacity-50');
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops!',
-                            text: 'Something went wrong. Please try again.',
-                        });
+                        showConfirmButton: false,
+                        timer: 3000
                     });
-            });
+                })
+                .catch(err => {
+                    console.error('Watchlist error:', err);
+                    this.classList.remove('pointer-events-none', 'opacity-50');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Something went wrong. Please try again.',
+                    });
+                });
         });
     });
+});
 </script>
 
 
 <script>
-    // <script src = "https://code.jquery.com/jquery-3.6.0.min.js" >
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js">
 </script>
 
 <script>
-    $(document).ready(function() {
-        $('.delete-task').click(function() {
+    $(document).ready(function () {
+        $('.delete-task').click(function () {
             if (!confirm('Are you sure you want to delete this task?')) {
                 return;
             }
@@ -711,11 +704,11 @@
                     _token: '{{ csrf_token() }}',
                     _method: 'DELETE'
                 },
-                success: function(response) {
+                success: function (response) {
                     // Redirect back like Laravel's redirect()->back()
                     window.location.href = document.referrer;
                 },
-                error: function() {
+                error: function () {
                     alert('Failed to delete task.');
                 }
             });
@@ -724,140 +717,135 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.watchlist-link-task').forEach(function(el) {
-            el.addEventListener('click', function() {
-                const isAuth = el.getAttribute('data-auth');
-                const loginUrl = "{{ route('login') }}";
+    document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-link-task').forEach(function (el) {
+        el.addEventListener('click', function () {
+            const isAuth = el.getAttribute('data-auth');
+            const loginUrl = "{{ route('login') }}";
 
-                if (isAuth === 'no') {
-                    // alert("Please login to add this task to your watchlist.");
-                    window.location.href = loginUrl;
-                    return;
-                }
+            if (isAuth === 'no') {
+                // alert("Please login to add this task to your watchlist.");
+                window.location.href = loginUrl;
+                return;
+            }
 
-                // ✅ Proceed with AJAX
-                const url = el.getAttribute('data-url');
-                const taskId = el.getAttribute('data-id');
+            // ✅ Proceed with AJAX
+            const url = el.getAttribute('data-url');
+            const taskId = el.getAttribute('data-id');
 
-                fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            task_id: taskId
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        // Toggle icons
-                        document.getElementById('task-eye-link-' + taskId).style.display = 'none';
-                        document.getElementById('task-eye-off-icon-' + taskId).style.display = 'inline';
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ task_id: taskId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Toggle icons
+                document.getElementById('task-eye-link-' + taskId).style.display = 'none';
+                document.getElementById('task-eye-off-icon-' + taskId).style.display = 'inline';
+            })
+            .catch(error => console.error('Error:', error));
         });
     });
+});
 </script>
 
 
 <script>
-    $(document).ready(function() {
-        $('.watchlist-link-task').click(function() {
-            let isAuth = $(this).data('auth');
+    $(document).ready(function () {
+        $('.watchlist-link-task').click(function () {
+    let isAuth = $(this).data('auth');
+    if (isAuth === 'no') {
+        window.location.href = "{{ route('login') }}";
+        return;
+    }
+
+    let url = $(this).data('url');
+    let taskId = $(this).data('id');
+    let $eyeIcon = $('#task-eye-icon-' + taskId);
+    let $eyeOffIcon = $('#task-eye-off-icon-' + taskId);
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            _token: '{{ csrf_token() }}'
+        },
+        success: function (response) {
+            $eyeIcon.parent().hide();
+            $eyeOffIcon.show();
+
+            // ✅ Success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Added!',
+                text: 'Task added to your watchlist successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        },
+        error: function (xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed',
+                text: 'Unable to update watchlist.'
+            });
+        }
+    });
+});
+
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.watchlist-toggle-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isAuth = this.dataset.auth;
             if (isAuth === 'no') {
                 window.location.href = "{{ route('login') }}";
                 return;
             }
 
-            let url = $(this).data('url');
-            let taskId = $(this).data('id');
-            let $eyeIcon = $('#task-eye-icon-' + taskId);
-            let $eyeOffIcon = $('#task-eye-off-icon-' + taskId);
+            const taskId = this.dataset.id;
+            const url = this.dataset.url;
+            const eyeLink = document.getElementById('task-eye-toggle-' + taskId);
+            const showIcon = eyeLink.querySelector('img[data-type="show"]');
+            const hideIcon = eyeLink.querySelector('img[data-type="hide"]');
 
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    _token: '{{ csrf_token() }}'
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                success: function(response) {
-                    $eyeIcon.parent().hide();
-                    $eyeOffIcon.show();
-
-                    // ✅ Success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added!',
-                        text: 'Task added to your watchlist successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed',
-                        text: 'Unable to update watchlist.'
-                    });
+                body: JSON.stringify({ task_id: taskId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.action === 'added') {
+                        showIcon.style.display = 'none';
+                        hideIcon.style.display = 'inline';
+                        Swal.fire('Success', data.message, 'success');
+                    } else if (data.action === 'removed') {
+                        showIcon.style.display = 'inline';
+                        hideIcon.style.display = 'none';
+                        Swal.fire('Notice', data.message, 'info');
+                    }
+                } else {
+                    Swal.fire('Error', data.message || 'Failed to update watchlist.', 'error');
                 }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'Something went wrong.', 'error');
             });
         });
-
     });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.watchlist-toggle-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const isAuth = this.dataset.auth;
-                if (isAuth === 'no') {
-                    window.location.href = "{{ route('login') }}";
-                    return;
-                }
-
-                const taskId = this.dataset.id;
-                const url = this.dataset.url;
-                const eyeLink = document.getElementById('task-eye-toggle-' + taskId);
-                const showIcon = eyeLink.querySelector('img[data-type="show"]');
-                const hideIcon = eyeLink.querySelector('img[data-type="hide"]');
-
-                fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            task_id: taskId
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            if (data.action === 'added') {
-                                showIcon.style.display = 'none';
-                                hideIcon.style.display = 'inline';
-                                Swal.fire('Success', data.message, 'success');
-                            } else if (data.action === 'removed') {
-                                showIcon.style.display = 'inline';
-                                hideIcon.style.display = 'none';
-                                Swal.fire('Notice', data.message, 'info');
-                            }
-                        } else {
-                            Swal.fire('Error', data.message || 'Failed to update watchlist.', 'error');
-                        }
-                    })
-                    .catch(() => {
-                        Swal.fire('Error', 'Something went wrong.', 'error');
-                    });
-            });
-        });
-
-    });
+});
 </script>
 
 

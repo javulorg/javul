@@ -1,4 +1,3 @@
-<!-- resources/views/layout/v2/global-finances.blade.php -->
 <div class="sidebar_block">
     <div class="sidebar_block_ttl">
         Finances
@@ -33,27 +32,12 @@
                 {{-- Available: {{ $availableFunds }} --}}
             </div>
         </div>
-        <style>
-        .donate-custom-button{
-               color: #319df5;cursor: pointer; text-decoration: underline;
-        }
-          </style>
 
         <div class="sidebar_block_content_bottom">
-            <a  id="submit_button"  class=" donate-custom-button"  data-url="{{url('/donation/submit')}}" >Donate</a>
+            <a href="{{ url('funds/donate/unit/' . $unitIDHashID->encode($unitData->id)) }}"
+                rel="noopener noreferrer">Donate</a>
             <div class="separator"></div>
             <a href="#">Financial Activity</a>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ asset('js/donation.js') }}"></script>
-<script>
-    $(document).ready(function(){
-
-        handleDonationClick('#submit_button');
-        
-});
-
-</script> 
