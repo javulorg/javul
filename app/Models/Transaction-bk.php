@@ -1,5 +1,5 @@
 <?php
-// app/Models/Transaction.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -11,14 +11,11 @@ class Transaction extends Model
      *
      * @var string
      */
-           // Donation changes start
-    protected $table = 'transactions';
-           
+    protected $table = 'transaction';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['created_by','user_id','donated_by_user_id','amount','trans_type','pay_key','status','comments','transaction_id'];
-    // Donation changes end
 }
