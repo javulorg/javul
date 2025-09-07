@@ -394,9 +394,7 @@ $data = User::where('username', $username)->first();
                     $transactionData['created_by'] = 1; //Auth::user()->id;
                     $transactionData['user_id'] = $obj->id;
                     if (Auth::check())
-                        // Donation changes start
-                        $transactionData['user_id'] = Auth::user()->id;
-                        // Donation changes end
+                        $transactionData['donated_by_user_id'] = Auth::user()->id;
                     if ($current_payment_method == "Zcash") {
                         $transactionData['trans_type'] = 'credit_zcash';
                     } else {
@@ -426,9 +424,8 @@ $data = User::where('username', $username)->first();
                     $addFunds['payment_method'] = $current_payment_method;
                     $addFunds['fund_type'] = $donateTo;
                     if (Auth::check())
-                               // Donation changes start
-                        $addFunds['user_id'] = Auth::user()->id;
-       // Donation changes end
+                        $addFunds['donated_by_user_id'] = Auth::user()->id;
+
                     $fundID = Fund::create($addFunds)->id;
 
 
@@ -959,9 +956,7 @@ $data = User::where('username', $username)->first();
         $transaction = new Transaction();
         $transaction->transaction_id = 'TXN-' . strtoupper(Str::random(10));
         $transaction->user_id = auth()->id();
-               // Donation changes start
-        $transaction->created_by = auth()->id();
-               // Donation changes end
+        $transaction->donated_by = $request->username;
         $transaction->amount = $request->donate_amount;
         // $transaction->payment_method = $request->paymentMethod ?? 'unknown';
 
@@ -977,7 +972,7 @@ $data = User::where('username', $username)->first();
                 $transaction->task_id = $targetId;
                 break;
             case 'issue':
-                $transaction->issue_id = $targetId;
+                $transaction->issues_id = $targetId;
                 break;
             case 'idea':
                 $transaction->idea_id = $targetId;
@@ -986,7 +981,7 @@ $data = User::where('username', $username)->first();
 
         $transaction->save();
 
-        return response()->json(['success'=> 'Donation successful!', 'transaction_id' => $transaction->transaction_id]);
+        return redirect()->back()->with('success', 'Donation successful!');
     }
 
 
@@ -1002,11 +997,8 @@ $data = User::where('username', $username)->first();
         $data = [
             'transaction_id'  => 'TXN-' . strtoupper(Str::random(10)),
             'user_id'         => auth()->id(),
-            // 'created_by'      => $request->username,
-                   // Donation changes start
-            'created_by'      => auth()->id(),
-            'amount'          => $request->donate_amount ?? 100,
-                   // Donation changes end
+            'donated_by'      => $request->username,
+            'amount'          => $request->donate_amount,
             // 'payment_method'  => $request->paymentMethod ?? 'unknown',
             'created_at'      => now(),
             // 'updated_at'      => now(),
@@ -1032,10 +1024,8 @@ $data = User::where('username', $username)->first();
         }
 
         // Check if transaction already exists for this username (you can also match by donate_to_type + id if needed)
-               // Donation changes start
-        $existing = DB::table('transactions')
-            ->where('created_by', $request->username)
-                   // Donation changes end
+        $existing = DB::table('transaction')
+            ->where('donated_by', $request->username)
             ->where(function ($query) use ($donateType, $targetId) {
                 switch ($donateType) {
                     case 'unit':
@@ -1047,10 +1037,8 @@ $data = User::where('username', $username)->first();
                     case 'task':
                         $query->where('task_id', $targetId);
                         break;
-                    case 'issue': 
-                               // Donation changes start
-                        $query->where('issue_id', $targetId);
-                               // Donation changes end
+                    case 'issue':
+                        $query->where('issues_id', $targetId);
                         break;
                     case 'idea':
                         $query->where('idea_id', $targetId);
@@ -1063,56 +1051,44 @@ $data = User::where('username', $username)->first();
             // Remove created_at if updating
             unset($data['created_at']);
 
-                   // Donation changes start
-            DB::table('transactions')
-                   // Donation changes end
+            DB::table('transaction')
                 ->where('id', $existing->id)
                 ->update($data);
         } else {
-                   // Donation changes start
-            DB::table('transactions')->insert($data);
-                   // Donation changes end
+            DB::table('transaction')->insert($data);
         }
 
         // Redirect to Givebutter
         return redirect()->away('https://givebutter.com/G8ntYk');
-               // Donation changes start
-        // return redirect()->back()->with(['success'=> 'Donation successful!', 'transaction' => $data]);
-               // Donation changes end
     }
 
 
     public function donationList(Request $request)
     {
-               // Donation changes start
-         $unitId = $request->query('unit'); 
-        $unitData = Unit::where('id', $unitId)->first();
-        $transaction = DB::table('transactions')
-            ->leftJoin('units', 'transactions.unit_id', '=', 'units.id')
-            ->leftJoin('tasks', 'transactions.task_id', '=', 'tasks.id')
-            ->leftJoin('ideas', 'transactions.idea_id', '=', 'ideas.id')
-            ->leftJoin('issues', 'transactions.issue_id', '=', 'issues.id')
-            ->leftJoin('objectives', 'transactions.objective_id', '=', 'objectives.id')
-            ->leftJoin('users', 'transactions.created_by', '=', 'users.id')
+        $transaction = DB::table('transaction')
+            ->leftJoin('units', 'transaction.unit_id', '=', 'units.id')
+            ->leftJoin('tasks', 'transaction.task_id', '=', 'tasks.id')
+            ->leftJoin('ideas', 'transaction.idea_id', '=', 'ideas.id')
+            ->leftJoin('issues', 'transaction.issues_id', '=', 'issues.id')
+            ->leftJoin('objectives', 'transaction.objective_id', '=', 'objectives.id')
             ->select(
-                'transactions.*',
+                'transaction.*',
                 'units.name as unit_name',
                 'tasks.name as task_name',
                 'ideas.title as idea_title',
                 'issues.title as issue_title',
-                'objectives.name as objective_title',
-                'users.username as created_by'
+                'objectives.name as objective_title'
             )
             ->where(function ($query) {
-                $query->where('transactions.unit_id', '>', 0)
-                    ->orWhere('transactions.task_id', '>', 0)
-                    ->orWhere('transactions.idea_id', '>', 0)
-                    ->orWhere('transactions.issue_id', '>', 0)
-                    ->orWhere('transactions.objective_id', '>', 0);
+                $query->where('transaction.unit_id', '>', 0)
+                    ->orWhere('transaction.task_id', '>', 0)
+                    ->orWhere('transaction.idea_id', '>', 0)
+                    ->orWhere('transaction.issues_id', '>', 0)
+                    ->orWhere('transaction.objective_id', '>', 0);
             })
             ->get();
 
-        // $unitData = Unit::where('id', $request->unit)->first();
+        $unitData = Unit::where('id', $request->unit)->first();
         // $issueResolutions = $this->calculateIssueResolution($request->unit);
         // view()->share('totalIssueResolutions', $issueResolutions);
 
