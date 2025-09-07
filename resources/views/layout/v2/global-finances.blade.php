@@ -1,3 +1,11 @@
+<!-- resources/views/layout/v2/global-finances.blade.php -->
+ <?php
+
+use App\Models\Transaction;
+
+$unitTotalAmount = Transaction::sum('amount');
+?>
+
 <div class="sidebar_block">
     <div class="sidebar_block_ttl">
         Finances
@@ -11,7 +19,7 @@
                 Funded
             </div>
             <div class="sidebar_block_left text-left">
-                Received: $3,000
+                Received: ${{ number_format($unitTotalAmount, 2) }}
             </div>
         </div>
         <div class="sidebar_block_row">
@@ -32,12 +40,27 @@
                 {{-- Available: {{ $availableFunds }} --}}
             </div>
         </div>
+        <style>
+        .donate-custom-button{
+               color: #319df5;cursor: pointer; text-decoration: underline;
+        }
+          </style>
 
         <div class="sidebar_block_content_bottom">
-            <a href="{{ url('funds/donate/unit/' . $unitIDHashID->encode($unitData->id)) }}"
-                rel="noopener noreferrer">Donate</a>
+            <a  id="submit_button"  class=" donate-custom-button"  data-url="{{url('/donation/submit')}}" >Donate</a>
             <div class="separator"></div>
-            <a href="#">Financial Activity</a>
+            <a href="{{url('/finances?unit='.$unitData->id)}}">Financial Activity</a>
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('js/donation.js') }}"></script>
+<script>
+    $(document).ready(function(){
+
+        handleDonationClick('#submit_button');
+        
+});
+
+</script> 

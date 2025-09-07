@@ -1,5 +1,5 @@
 <?php
-
+// routes/web.php
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AlertsController;
 use App\Http\Controllers\Auth\AuthController;
@@ -358,7 +358,7 @@ Route::post('/account/request-to-transfer-zcash', [AccountController::class, 're
 
 // V2
 Route::resource('activities', SiteActivityController::class);
-
+Route::get('finances', [FundsController::class, 'financeActivities']);
 Route::post('priorities', [\App\Http\Controllers\V2\PriorityController::class, 'store']);
 
 

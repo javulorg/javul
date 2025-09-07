@@ -1,3 +1,4 @@
+<!-- resources/views/issues/view.blade.php -->
 @extends('layout.master')
 @section('title', 'Issue: ' . $issueObj->title)
 @section('style')
@@ -224,8 +225,14 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <a
-                                            href="{{ url('funds/donate/issue/' . $issueIDHashID->encode($issueObj->id)) }}">Donate</a>
+                                        <style>
+                                           
+                                        </style>
+                                      <a 
+                                      class=" donate-custom-button"
+                                       id="submit_button_donate"
+                                        data-url="{{url('/donation/submit')}}"
+                                       >Donate</a>
                                     </div>
 
 
@@ -463,6 +470,7 @@
 @endsection
 
 @section('scripts')
+<script src="{{ asset('js/donation.js') }}"></script>
 <script>
     $(document).ready(function() {
             $('.modal-link').click(function() {
@@ -571,6 +579,7 @@
                 });
             });
 
+            handleDonationClick('#submit_button_donate');
         });
 </script>
 <!-- Include SweetAlert2 -->
@@ -679,6 +688,11 @@
         }
     });
 });
+  $(document).ready(function(){
+
+  
+});
+
 </script>
 
 

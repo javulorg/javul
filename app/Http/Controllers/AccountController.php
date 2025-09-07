@@ -1,5 +1,5 @@
 <?php
-
+// app/Http/Controllers/AccountController.php
 namespace App\Http\Controllers;
 
 use App\Models\Alerts;
@@ -96,9 +96,9 @@ class AccountController extends Controller
         //view()->share('expiry_years',$expiry_years);
 
         //Get user withdrawal request list
-        $withdrawal_list = Transaction::join('zcash_withdraw_request','zcash_withdraw_request.user_transaction_id','=','transaction.id')
+        $withdrawal_list = Transaction::join('zcash_withdraw_request','zcash_withdraw_request.user_transaction_id','=','transactions.id')
         ->select('zcash_withdraw_request.status as withdrawal_status','zcash_withdraw_request.*')
-        ->where('transaction.user_id','=', Auth::user()->id)
+        ->where('transactions.user_id','=', Auth::user()->id)
         ->get();
         view()->share('withdrawal_list',$withdrawal_list);
 
