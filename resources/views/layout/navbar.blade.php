@@ -65,7 +65,7 @@
             </div>
             <div class="separator"></div>
             <div class="nav-item">
-                <a class="nav-link" href="#">Finances</a>
+                <a class="nav-link" href="{{ url('finances?unit=' . $unitData->id) }}">Finances</a>
             </div>
             <div class="nav-item">
                 <a class="nav-link" href="{{ url('donation-list?unit=' . $unitData->id) }}">Donate</a>

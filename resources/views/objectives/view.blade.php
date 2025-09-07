@@ -1,3 +1,4 @@
+<!-- resources/views/objectives/view.blade.php -->
 @extends('layout.master')
 @section('title', 'Objective: ' . $objectiveObj->name)
 @section('style')
@@ -219,9 +220,10 @@
 
                                     </div>
                                     <div class="text-center">
-                                        <a href="{{ url('funds/donate/objective/' . $objectiveIDHashID->encode($objectiveObj->id)) }}"
-                                            rel="noopener noreferrer">Donate</a>
-
+                                    <a  class=" donate-custom-button" 
+                                     id="submit_button_donate_objective" 
+                                      data-url="{{url('/donation/submit')}}"
+                                     >Donate</a>
                                     </div>
 
 
@@ -893,7 +895,7 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="{{ asset('js/donation.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const loginUrl = "{{ route('login') }}";
@@ -976,6 +978,10 @@
                 });
             }
         });
+        
+    });
+    $(document).ready(function(){
+                 handleDonationClick('#submit_button_donate_objective');
     });
 </script>
 

@@ -1,3 +1,4 @@
+<!-- resources/views/ideas/show.blade.php -->
 @extends('layout.master')
 @section('title', 'Idea: ' . $idea->title)
 @section('style')
@@ -26,8 +27,8 @@
         @if(isset($unitData))
         @include('layout.v2.global-unit-overview')
         <?php
-                $title = 'Activity Log';
-                ?>
+        $title = 'Activity Log';
+        ?>
         @include('layout.v2.global-activity-log',['title' => $title, 'unit' => $unitData->id])
 
         @include('layout.v2.global-finances')
@@ -35,8 +36,8 @@
         @include('layout.v2.global-about-site')
         @else
         <?php
-                $title = 'Global Activity Log';
-                ?>
+        $title = 'Global Activity Log';
+        ?>
         @include('layout.v2.global-activity-log',['title' => $title])
         @endif
     </div>
@@ -210,7 +211,7 @@
                                         </div>
                                         <div class="sidebar_block_right">
                                             @if(isset($idea->category_id))
-                                            <?php $category =App\Models\Category::where('id', $idea->category_id)->first();?>
+                                            <?php $category = App\Models\Category::where('id', $idea->category_id)->first(); ?>
                                             {{ucfirst($category->title )}}
                                             @else
                                             -
@@ -219,11 +220,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <a href="{{ url('funds/donate/idea/' . $unitIDHashID->encode($idea->id)) }}"
-                                            rel="noopener noreferrer">Donate</a>
-
-                                        {{-- <a
-                                            href="{{ url('funds/donate/idea/' . ) }}">Donate</a> --}}
+                                            <a  class=" donate-custom-button"  id="submit_button_donate_ideas" data-url="{{url('/donation/submit')}}" >Donate</a>   
                                     </div>
 
 
@@ -417,18 +414,19 @@
                                     </a>
                                 </td>
                                 <td class="type_col">
-                                    <?php $status_class=''; $verified_by =''; $resolved_by ='';
-                                                if($idea->issue->status=="unverified")
-                                                    $status_class="text-danger";
-                                                elseif($idea->issue->status=="verified"){
-                                                    $status_class="text-info";
-                                                    $verified_by = " (by ".App\Models\User::getUserName($idea->issue->verified_by).')';
-                                                }
-                                                elseif($idea->issue->status == "resolved"){
-                                                    $status_class = "text-success";
-                                                    $resolved_by = " (by ".App\Models\User::getUserName($idea->issue->resolved_by).')';
-                                                }
-                                                ?>
+                                    <?php $status_class = '';
+                                    $verified_by = '';
+                                    $resolved_by = '';
+                                    if ($idea->issue->status == "unverified")
+                                        $status_class = "text-danger";
+                                    elseif ($idea->issue->status == "verified") {
+                                        $status_class = "text-info";
+                                        $verified_by = " (by " . App\Models\User::getUserName($idea->issue->verified_by) . ')';
+                                    } elseif ($idea->issue->status == "resolved") {
+                                        $status_class = "text-success";
+                                        $resolved_by = " (by " . App\Models\User::getUserName($idea->issue->resolved_by) . ')';
+                                    }
+                                    ?>
                                     <span class="{{$status_class}}">{{ucfirst($idea->issue->status).$verified_by.
                                         $resolved_by}}</span>
                                 </td>
@@ -571,9 +569,9 @@
                         <div class="comment_icon">
                             <img src="{{ asset('v2/assets/img/User_Circle.svg') }}" alt="" class="img-fluid">
                         </div>
-                        <input type="hidden" name="unit_id" id="comment_unit_id" value="<?=  $unit_id ?>">
-                        <input type="hidden" name="section_id" id="comment_section_id" value="<?=  $section_id ?>">
-                        <input type="hidden" name="object_id" id="comment_object_id" value="<?=  $object_id ?>">
+                        <input type="hidden" name="unit_id" id="comment_unit_id" value="<?= $unit_id ?>">
+                        <input type="hidden" name="section_id" id="comment_section_id" value="<?= $section_id ?>">
+                        <input type="hidden" name="object_id" id="comment_object_id" value="<?= $object_id ?>">
                         <div class="comment_content">
                             <textarea cols="30" id="comment" rows="10" placeholder="White a message..."></textarea>
                             <button id="comment_form" class="btn">Send</button>
@@ -595,198 +593,200 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-                    $('.modal-link').click(function() {
-                        var modalId = $(this).data('modal-id');
-                        $('#modalIdSpan').text(modalId);
-                    });
+        $('.modal-link').click(function() {
+            var modalId = $(this).data('modal-id');
+            $('#modalIdSpan').text(modalId);
+        });
 
-                    $('#submitRating').click(function() {
-                        var selectedRating = $("input[name='rating']:checked").val();
-                        if (selectedRating !== undefined) {
+        $('#submitRating').click(function() {
+            var selectedRating = $("input[name='rating']:checked").val();
+            if (selectedRating !== undefined) {
 
-                            var unitId = $('#unit_id').val();
-                            var typeId = $('#idea_id').val();
-                            $.ajax({
-                                url: '{{ url("priorities") }}',
-                                type: 'POST',
-                                data: {
-                                    type_value   : 2,
-                                    rating :selectedRating,
-                                    unit_id : unitId,
-                                    type_id : typeId,
-                                    _token: $('input[name="_token"]').val(),
-                                },
-                                success: function (response, xhr, textStatus) {
-                                    if (response.status === 201) {
-                                        $('#exampleModal').modal('hide');
-                                        location.reload();
-                                    }
-                                },
-                                error: function (xhr, textStatus, errorThrown) {
-                                    console.log(xhr.responseText);
-                                },
-                            });
-                        }else {
-                            alert("Please select a rating.");
+                var unitId = $('#unit_id').val();
+                var typeId = $('#idea_id').val();
+                $.ajax({
+                    url: '{{ url("priorities") }}',
+                    type: 'POST',
+                    data: {
+                        type_value: 2,
+                        rating: selectedRating,
+                        unit_id: unitId,
+                        type_id: typeId,
+                        _token: $('input[name="_token"]').val(),
+                    },
+                    success: function(response, xhr, textStatus) {
+                        if (response.status === 201) {
+                            $('#exampleModal').modal('hide');
+                            location.reload();
                         }
-
-                    });
-                    $("#comment_form").click(function(e)
-                    {
-                        var unitId = $('#comment_unit_id').val();
-                        var sectionId = $('#comment_section_id').val();
-                        var objectId = $('#comment_object_id').val();
-                        var desc = $('#comment').val();
-
-                        $.ajax({
-                            type: "POST",
-                            url: '{{ url("/forum/submitauto") }}',
-                            data: {
-                                unit_id : unitId,
-                                section_id : sectionId,
-                                object_id : objectId,
-                                desc : desc,
-                                _token: $('input[name="_token"]').val(),
-                            },
-                            success: function (response, xhr, textStatus) {
-                                if (response.status === 201) {
-                                    location.reload();
-                                }
-                            },
-                            error: function (xhr, textStatus, errorThrown) {
-                                console.log(xhr.responseText);
-                            },
-                        });
-                    });
-
-                    $('.like_button').click(function() {
-                        var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
-                        $.ajax({
-                            url: '{{ route("like") }}',
-                            method: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                comment_id: commentId
-                            },
-                            success: function(response) {
-                                $('#like_count').text(response.dislike_count);
-                                location.reload();
-                                console.log(response);
-                            },
-                            error: function(xhr) {
-                                console.error(xhr);
-                            }
-                        });
-                    });
-
-                    $('.dislike_button').click(function() {
-                        var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
-                        $.ajax({
-                            url: '{{ route("dislike") }}',
-                            method: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                comment_id: commentId
-                            },
-                            success: function(response) {
-                                console.log(response)
-
-                                $('#dislike_count').text(response.dislike_count);
-                                location.reload();
-
-                            },
-                            error: function(xhr) {
-                                console.error(xhr);
-                            }
-                        });
-                    });
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseText);
+                    },
                 });
+            } else {
+                alert("Please select a rating.");
+            }
+
+        });
+        $("#comment_form").click(function(e) {
+            var unitId = $('#comment_unit_id').val();
+            var sectionId = $('#comment_section_id').val();
+            var objectId = $('#comment_object_id').val();
+            var desc = $('#comment').val();
+
+            $.ajax({
+                type: "POST",
+                url: '{{ url("/forum/submitauto") }}',
+                data: {
+                    unit_id: unitId,
+                    section_id: sectionId,
+                    object_id: objectId,
+                    desc: desc,
+                    _token: $('input[name="_token"]').val(),
+                },
+                success: function(response, xhr, textStatus) {
+                    if (response.status === 201) {
+                        location.reload();
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.log(xhr.responseText);
+                },
+            });
+        });
+
+        $('.like_button').click(function() {
+            var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
+            $.ajax({
+                url: '{{ route("like") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    comment_id: commentId
+                },
+                success: function(response) {
+                    $('#like_count').text(response.dislike_count);
+                    location.reload();
+                    console.log(response);
+                },
+                error: function(xhr) {
+                    console.error(xhr);
+                }
+            });
+        });
+
+        $('.dislike_button').click(function() {
+            var commentId = $(this).closest('.comment_container').find('input[type=hidden]').val();
+            $.ajax({
+                url: '{{ route("dislike") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    comment_id: commentId
+                },
+                success: function(response) {
+                    console.log(response)
+
+                    $('#dislike_count').text(response.dislike_count);
+                    location.reload();
+
+                },
+                error: function(xhr) {
+                    console.error(xhr);
+                }
+            });
+        });
+
+        handleDonationClick('#submit_button_donate_ideas');
+    });
 </script>
 <!-- Make sure this is included in your HTML head or before this script -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="{{ asset('js/donation.js') }}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    document.body.addEventListener('click', function (e) {
-        const watchBtn = e.target.closest('.watchlist-link-idea');
-        const unwatchBtn = e.target.closest('.unwatchlist-link-idea');
+        document.body.addEventListener('click', function(e) {
+            const watchBtn = e.target.closest('.watchlist-link-idea');
+            const unwatchBtn = e.target.closest('.unwatchlist-link-idea');
 
-        // ✅ Add to Watchlist
-        if (watchBtn) {
-            const isLoggedIn = watchBtn.dataset.auth === '1';
-            if (!isLoggedIn) {
-                window.location.href = "/login"; // redirect to login
-                return;
-            }
-
-            const ideaId = watchBtn.dataset.id;
-            const url = watchBtn.dataset.url;
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                body: JSON.stringify({})
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('idea-eye-link-' + ideaId).style.display = 'none';
-                document.getElementById('idea-eye-off-link-' + ideaId).style.display = 'inline-block';
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Added to Watchlist',
-                    text: data.message || 'Idea added successfully!',
-                    timer: 2000,
-                    showConfirmButton: false,
-                });
-            })
-            .catch(() => {
-                Swal.fire('Error', 'Failed to add to watchlist.', 'error');
-            });
-        }
-
-        // ✅ Remove from Watchlist
-        if (unwatchBtn) {
-            const isLoggedIn = unwatchBtn.dataset.auth === '1';
-            if (!isLoggedIn) {
-                window.location.href = "/login";
-                return;
-            }
-
-            const ideaId = unwatchBtn.dataset.id;
-            const url = unwatchBtn.dataset.url;
-
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
+            // ✅ Add to Watchlist
+            if (watchBtn) {
+                const isLoggedIn = watchBtn.dataset.auth === '1';
+                if (!isLoggedIn) {
+                    window.location.href = "/login"; // redirect to login
+                    return;
                 }
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('idea-eye-link-' + ideaId).style.display = 'inline-block';
-                document.getElementById('idea-eye-off-link-' + ideaId).style.display = 'none';
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Removed from Watchlist',
-                    text: data.message || 'Idea removed successfully!',
-                    timer: 2000,
-                    showConfirmButton: false,
-                });
-            })
-            .catch(() => {
-                Swal.fire('Error', 'Failed to remove from watchlist.', 'error');
-            });
-        }
+                const ideaId = watchBtn.dataset.id;
+                const url = watchBtn.dataset.url;
+
+                fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('idea-eye-link-' + ideaId).style.display = 'none';
+                        document.getElementById('idea-eye-off-link-' + ideaId).style.display = 'inline-block';
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Added to Watchlist',
+                            text: data.message || 'Idea added successfully!',
+                            timer: 2000,
+                            showConfirmButton: false,
+                        });
+                    })
+                    .catch(() => {
+                        Swal.fire('Error', 'Failed to add to watchlist.', 'error');
+                    });
+            }
+
+            // ✅ Remove from Watchlist
+            if (unwatchBtn) {
+                const isLoggedIn = unwatchBtn.dataset.auth === '1';
+                if (!isLoggedIn) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                const ideaId = unwatchBtn.dataset.id;
+                const url = unwatchBtn.dataset.url;
+
+                fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('idea-eye-link-' + ideaId).style.display = 'inline-block';
+                        document.getElementById('idea-eye-off-link-' + ideaId).style.display = 'none';
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Removed from Watchlist',
+                            text: data.message || 'Idea removed successfully!',
+                            timer: 2000,
+                            showConfirmButton: false,
+                        });
+                    })
+                    .catch(() => {
+                        Swal.fire('Error', 'Failed to remove from watchlist.', 'error');
+                    });
+            }
+        });
     });
-});
+     
 </script>
 
 

@@ -1,5 +1,5 @@
 <?php
-
+// app/Http/Requests/UnitRequest.php
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,7 +25,8 @@ class UnitRequest extends FormRequest
             'scope'               => 'nullable|in:0,1,2,3',
             'unit_category'       => 'required',
             'credibility'         => 'required',
-            'country'             => 'required'
+            'country'             => 'required',
+            'description'         => 'required'
         ];
     }
 }

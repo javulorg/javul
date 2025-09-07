@@ -1,5 +1,5 @@
 <?php
-
+// app/Http/Controllers/ObjectivesController.php
 namespace App\Http\Controllers;
 
 use App\Models\ActivityPoint;
@@ -783,7 +783,9 @@ class ObjectivesController extends Controller
                         view()->share('unitObj', $unitData);
                         $objectiveIdeas = Objective::with('ideas')->where('id', $objectiveObj->id)->first();
                         view()->share('objectiveIdeas', $objectiveIdeas);
-                        $totalAmount = DB::table('transaction')
+                               // Donation changes start
+                        $totalAmount = DB::table('transactions')
+                               // Donation changes end
                             ->where('objective_id', $objective_id)
                             ->sum('amount');
 

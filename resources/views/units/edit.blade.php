@@ -444,7 +444,7 @@ $("#state").prop('disabled', true);
 $("#city").prop('disabled', true);
 $.ajax({
 type: 'POST',
-url: '{{ url('units/get_state') }}',
+url: "{{ url('units/get_state') }}",
 dataType: 'json',
 async: true,
 data: {
@@ -479,7 +479,7 @@ $(".cities_loader.location_loader").show();
 $("#city").prop('disabled', true);
 $.ajax({
 type: 'POST',
-url: '{{ url('units/get_city') }}',
+url: "{{ url('units/get_city') }}",
 dataType: 'json',
 async: true,
 data: {

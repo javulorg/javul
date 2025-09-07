@@ -1,3 +1,4 @@
+<!-- resources/views/funds/donation_list.blade.php -->
 @extends('layout.master')
 
 @section('title', 'Issues')
@@ -58,11 +59,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($transaction as $txn)
+                            @foreach($transactions as $txn)
+                            
                             <tr>
                                 <td class="type_col">
                                     <a href="{!! url('userprofiles/'.$userIDHashID->encode($txn->user_id)) !!}">
-                                        {{ $txn->donated_by }}
+                                        {{ $txn->created_by }}
                                     </a>
                                 </td>
 
@@ -84,7 +86,7 @@
     @if($txn->idea_id > 0)
         <strong>Idea:</strong> {{ $txn->idea_title }}<br>
     @endif
-    @if($txn->issues_id > 0)
+    @if($txn->issue_id > 0)
         <strong>Issue:</strong> {{ $txn->issue_title }}<br>
     @endif
     @if($txn->objective_id > 0)
