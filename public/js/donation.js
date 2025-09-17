@@ -11,7 +11,10 @@ function handleDonationClick(buttonId) {
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             success: function (res) {
-                console.log(res, 'res')
+                console.log(res, 'res');
+                if (res && res.redirect_url) {
+                    window.location.href = res.redirect_url;
+                }
 
                 // Step 2: Now send to transfer-from-unit
                 // $.ajax({

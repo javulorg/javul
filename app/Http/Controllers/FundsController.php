@@ -994,24 +994,24 @@ $data = User::where('username', $username)->first();
     public function submit(Request $request)
     {
         // Validate the request
-
         $donateType = $request->donate_to_type;
         $targetId   = $request->unit_id; // By default we will use unit_id name for input
-
+        
         // Prepare base data
         $data = [
             'transaction_id'  => 'TXN-' . strtoupper(Str::random(10)),
             'user_id'         => auth()->id(),
             // 'created_by'      => $request->username,
-                   // Donation changes start
+            // Donation changes start
             'created_by'      => auth()->id(),
             'amount'          => $request->donate_amount ?? 100,
-                   // Donation changes end
+            // Donation changes end
             // 'payment_method'  => $request->paymentMethod ?? 'unknown',
-            'created_at'      => now(),
+            'created_at'      => date('Y-m-d H:i:s'),
             // 'updated_at'      => now(),
         ];
-
+        // echo '<pre>';print_r($data);echo "<pre>";die();
+        
         // Dynamically add target ID based on donation type
         switch ($donateType) {
             case 'unit':
@@ -1075,10 +1075,17 @@ $data = User::where('username', $username)->first();
         }
 
         // Redirect to Givebutter
-        return redirect()->away('https://givebutter.com/G8ntYk');
-               // Donation changes start
-        // return redirect()->back()->with(['success'=> 'Donation successful!', 'transaction' => $data]);
-               // Donation changes end
+        // Donation changes start
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'redirect_url' => 'https://givebutter.com/G8ntYk',
+                'transaction' => $data
+            ]);
+        }else{
+            return redirect()->away('https://givebutter.com/G8ntYk');
+        }
+            // Donation changes end
     }
 
 
@@ -1116,6 +1123,25 @@ $data = User::where('username', $username)->first();
         // $issueResolutions = $this->calculateIssueResolution($request->unit);
         // view()->share('totalIssueResolutions', $issueResolutions);
 
-        return view('funds.donation_list', ['transaction' => $transaction, 'unitData' => $unitData]);
+        return view('funds.donation_list', ['transactions' => $transaction, 'unitData' => $unitData]);
     }
+    
+    // Issue fixed by tarun  - start
+    
+    public function donationDetails($id)
+    {
+        $unitTotalAmount = Transaction::sum('amount');
+        return response()->json(['success'=> 'Donation fetched successfully!', 'transaction_amount' => $unitTotalAmount]);
+    }
+    public function financeActivities(Request $request)
+    {
+        $unitId = $request->query('unit');
+        $unitData = Unit::where('id', $unitId)->first();
+        $activities = \App\Models\Transaction::where('unit_id', $unitId)
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+        
+        return view('funds.activities', compact('activities','unitData'));
+    }
+    // Issue fixed by tarun  - End
 }

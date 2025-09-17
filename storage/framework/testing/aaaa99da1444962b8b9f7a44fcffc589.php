@@ -1,0 +1,67 @@
+<!-- resources/views/layout/v2/global-finances.blade.php -->
+ <?php
+
+use App\Models\Transaction;
+
+$unitTotalAmount = Transaction::sum('amount');
+?>
+
+<div class="sidebar_block">
+    <div class="sidebar_block_ttl">
+        Finances
+        <div class="arrow">
+            <img src="<?php echo e(asset('v2/assets/img/bottom_y.svg')); ?>" alt="">
+        </div>
+    </div>
+    <div class="sidebar_block_content">
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left text-left">
+                Funded
+            </div>
+            <div class="sidebar_block_left text-left">
+                Received: $<?php echo e(number_format($unitTotalAmount, 2)); ?>
+
+            </div>
+        </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+                <div class="sidebar_block_right">
+                    <div class="green_progress"></div> 105%
+                </div>
+            </div>
+            <div class="sidebar_block_left text-left">
+                
+            </div>
+        </div>
+        <div class="sidebar_block_row">
+            <div class="sidebar_block_left">
+            </div>
+            <div class="sidebar_block_right">
+
+                
+            </div>
+        </div>
+        <style>
+        .donate-custom-button{
+               color: #319df5;cursor: pointer; text-decoration: underline;
+        }
+          </style>
+
+        <div class="sidebar_block_content_bottom">
+            <a  id="submit_button"  class=" donate-custom-button"  data-url="<?php echo e(url('/donation/submit')); ?>" >Donate</a>
+            <div class="separator"></div>
+            <a href="<?php echo e(url('/finances?unit='.$unitData->id)); ?>">Financial Activity</a>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="<?php echo e(asset('js/donation.js')); ?>"></script>
+<script>
+    $(document).ready(function(){
+
+        handleDonationClick('#submit_button');
+        
+});
+
+</script> <?php /**PATH /var/www/html/javul-staging/javul/resources/views/layout/v2/global-finances.blade.php ENDPATH**/ ?>
