@@ -996,21 +996,22 @@ $data = User::where('username', $username)->first();
         // Validate the request
         $donateType = $request->donate_to_type;
         $targetId   = $request->unit_id; // By default we will use unit_id name for input
-
+        
         // Prepare base data
         $data = [
             'transaction_id'  => 'TXN-' . strtoupper(Str::random(10)),
             'user_id'         => auth()->id(),
             // 'created_by'      => $request->username,
-                   // Donation changes start
+            // Donation changes start
             'created_by'      => auth()->id(),
             'amount'          => $request->donate_amount ?? 100,
-                   // Donation changes end
+            // Donation changes end
             // 'payment_method'  => $request->paymentMethod ?? 'unknown',
-            'created_at'      => now(),
+            'created_at'      => date('Y-m-d H:i:s'),
             // 'updated_at'      => now(),
         ];
-
+        // echo '<pre>';print_r($data);echo "<pre>";die();
+        
         // Dynamically add target ID based on donation type
         switch ($donateType) {
             case 'unit':
