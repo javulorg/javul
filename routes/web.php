@@ -233,6 +233,7 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     //ElfinderController
     Route::get('elfinder/connectorex', [ElfinderController::class, 'showConnector'])->name("elfinder.connectorex")->middleware('auth');
     Route::post('elfinder/connectorex', [ElfinderController::class, 'showConnector'])->name("elfinder.connectorex")->middleware('auth');
+    Route::post('initiate-transaction', [FundsController::class, 'test']);
 });
 
 //HomeController

@@ -220,7 +220,11 @@
                                     </div>
 
                                     <div class="text-center">
-                                            <a  class=" donate-custom-button"  id="submit_button_donate_ideas" data-url="{{url('/donation/submit')}}" >Donate</a>   
+                                            <a  class=" donate-custom-button" 
+                                             id="submit_button_donate_ideas"
+                                             data-unit_id="{{ $unitData->id }}"
+                                             data-donation_type="idea"
+                                             >Donate</a>   
                                     </div>
 
 

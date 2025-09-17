@@ -164,7 +164,9 @@
 
                                     <div class="text-center">
                                         <a  class=" donate-custom-button" id="submit_button_donate_tasks" 
-                                         data-url="{{url('/donation/submit')}}"
+                                         data-unit_id="{{$unitData->id}}"
+                                         data-donate_to_type="task"
+                                         data-username="{{ auth()->user()->name }}"
                                         >Donate</a>
                                     </div>
 

@@ -47,7 +47,11 @@ $unitTotalAmount = Transaction::sum('amount');
           </style>
 
         <div class="sidebar_block_content_bottom">
-            <a  id="submit_button"  class=" donate-custom-button"  data-url="{{url('/donation/submit')}}" >Donate</a>
+            <a  id="submit_button"  class=" donate-custom-button" 
+             data-url="{{url('/donation/submit')}}" 
+             data-unit_id="{{ $unitData->id }}"
+             data-donation_type="{{ $donationType ?? 'unit' }}"
+             >Donate</a>
             <div class="separator"></div>
             <a href="{{url('/finances?unit='.$unitData->id)}}">Financial Activity</a>
         </div>

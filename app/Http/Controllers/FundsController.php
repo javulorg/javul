@@ -989,7 +989,89 @@ class FundsController extends Controller
         return response()->json(['success' => 'Donation successful!', 'transaction_id' => $transaction->transaction_id]);
     }
 
+    public function initiateTransaction(Request $request){
+     // Validate the request
 
+        $donateType = $request->donate_to_type;
+        $targetId   = $request->unit_id; // By default we will use unit_id name for input
+
+        // Prepare base data
+        $data = [
+            'transaction_id'  => 'TXN-' . strtoupper(Str::random(10)),
+            'user_id'         => auth()->id(),
+            'created_by'      => auth()->id(),
+            'amount'          => $request->donate_amount,
+
+            // 'payment_method'  => $request->paymentMethod ?? 'unknown',
+            'created_at'      => now(),
+            // 'updated_at'      => now(),
+        ];
+
+        // Dynamically add target ID based on donation type
+        switch ($donateType) {
+            case 'unit':
+                $data['unit_id'] = $targetId;
+                break;
+            case 'objective':
+                $data['objective_id'] = $targetId;
+                break;
+            case 'task':
+                $data['task_id'] = $targetId;
+                break;
+            case 'issue':
+                $data['issue_id'] = $targetId;
+                break;
+            case 'idea':
+                $data['idea_id'] = $targetId;
+                break;
+        }
+
+        // Check if transaction already exists for this username (you can also match by donate_to_type + id if needed)
+        $existing = DB::table('transactions')
+            ->where('created_by', auth()->id(),)
+            ->where(function ($query) use ($donateType, $targetId) {
+                switch ($donateType) {
+                    case 'unit':
+                        $query->where('unit_id', $targetId);
+                        break;
+                    case 'objective':
+                        $query->where('objective_id', $targetId);
+                        break;
+                    case 'task':
+                        $query->where('task_id', $targetId);
+                        break;
+                    case 'issue':
+                        $query->where('issue_id', $targetId);
+                        break;
+                    case 'idea':
+                        $query->where('idea_id', $targetId);
+                        break;
+                }
+            })
+            ->first();
+
+        if ($existing) {
+            // Remove created_at if updating
+            unset($data['created_at']);
+
+            DB::table('transactions')
+                ->where('id', $existing->id)
+                ->update($data);
+        } else {
+            DB::table('transactions')->insert($data);
+        }
+
+        // Redirect to Givebutter
+        // return redirect()->away('https://givebutter.com/G8ntYk');
+        return response()->json([
+            'success' => true,
+            'redirect_url' => 'https://givebutter.com/G8ntYk',
+            'transaction' => $data,
+            'type'=>$donateType,
+            'target_id'=> $targetId
+        ]);
+    
+    }
 
     public function submit(Request $request)
     {

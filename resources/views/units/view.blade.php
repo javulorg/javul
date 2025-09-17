@@ -1,5 +1,6 @@
 @extends('layout.master')
 @section('title', 'Unit: ' . $unitObj->name)
+<?php $donationType = 'unit'; ?>
 @section('style')
     <style>
         <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />

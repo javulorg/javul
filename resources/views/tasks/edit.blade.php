@@ -1,6 +1,7 @@
 @extends('layout.master')
 @section('title', 'Task: ' . $taskObj->name)
 @section('site-name')
+<?php $donationType = 'task'; ?>
 @if(isset($unitData))
 <h1>{{ $unitData->name }}</h1>
 @else

@@ -231,7 +231,8 @@
                                       <a 
                                       class=" donate-custom-button"
                                        id="submit_button_donate"
-                                        data-url="{{url('/donation/submit')}}"
+                                        data-unit_id="{{$unitData->id}}"
+                                        data-donation_type="issue"
                                        >Donate</a>
                                     </div>
 

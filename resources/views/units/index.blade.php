@@ -1,5 +1,6 @@
 @extends('layout.master')
 @section('title', 'Units')
+<?php $donationType = 'unit'; ?>
 @section('site-name')
     <h1>Javul.org</h1>
     <div class="banner_desc d-md-block d-none">

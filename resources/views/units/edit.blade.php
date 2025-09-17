@@ -1,6 +1,6 @@
 @extends('layout.master')
 @section('title', 'Update Unit')
-
+<?php $donationType = 'unit'; ?>
 @section('site-name')
 @if(isset($unitData))
 <h1>{{ $unitData->name }}</h1>

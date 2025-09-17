@@ -1,14 +1,20 @@
 // public/js/donation.js create a new folder name js in public
 function handleDonationClick(buttonId) {
     $(document).on('click', buttonId, function () {
-        let donateUrl = $(this).data('url');
-        console.log(donateUrl, 'donateUrl')
+
+        let unitId = $(this).data('unit_id');
+        console.log(unitId, 'unitId')
+        let donateToType = $(this).data('donation_type');
+
 
         $.ajax({
-            url: donateUrl,
+            url: 'initiate-transaction',
             method: 'POST',
             data:{
-                _token: $('meta[name="csrf-token"]').attr('content')
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                donate_to_type: donateToType,
+                unit_id: unitId,
+                donate_amount: 0
             },
             success: function (res) {
                 console.log(res, 'res');
@@ -51,11 +57,13 @@ function handleDonationClick(buttonId) {
                 //     }
                 // });
             },
-            error: function () {
+            error: function (error) {
+                console.error('Error fetching donation data:', error);
+                console.log(error.responseJSON.message, 'error.responseJSON.message')
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Unable to fetch donation data.'
+                    text: error?.responseJSON?.message || 'Unable to fetch donation data.'
                 });
             }
         });
