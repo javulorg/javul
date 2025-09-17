@@ -34,11 +34,11 @@ use Hashids\Hashids;
 
 class FundsController extends Controller
 {
-        protected $service;
+    protected $service;
 
     public function __construct(SiteActivityService $service)
     {
-                $this->service = $service;
+        $this->service = $service;
 
         $this->middleware('auth', ['except' => ['donate_to_unit_objective_task', 'donate_amount', 'transfer_from_unit', 'success', 'cancel']]);
     }
@@ -151,21 +151,21 @@ class FundsController extends Controller
 
 
 
-                    if ($exists) {
-                        $obj = Idea::where('id', $realId)->get();
-                        $title = $obj->first()->title;
-                        $obj->id = $obj->first()->id;
-                        $obj->name = $title;
-                        $donateTo = " Idea ";
+                        if ($exists) {
+                            $obj = Idea::where('id', $realId)->get();
+                            $title = $obj->first()->title;
+                            $obj->id = $obj->first()->id;
+                            $obj->name = $title;
+                            $donateTo = " Idea ";
 
-                        //$controller="tasks";
-                        //$addFunds=['task_id'=>$obj->id];
-                        //$hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
-                        $availableFunds = Fund::getIssueDonatedFund( $obj->id);
-                        $awardedFunds = Fund::getIssueAwardedFund( $obj->id);
+                            //$controller="tasks";
+                            //$addFunds=['task_id'=>$obj->id];
+                            //$hashID= new Hashids('task id hash',10,\Config::get('app.encode_chars'));
+                            $availableFunds = Fund::getIssueDonatedFund($obj->id);
+                            $awardedFunds = Fund::getIssueAwardedFund($obj->id);
+                        }
                     }
-                }
-                     break;
+                    break;
                 case 'user':
                     $exists = User::checkUserExist($id, true);
                     if ($exists) {
@@ -254,10 +254,10 @@ class FundsController extends Controller
                 return view('funds.donation', ['rating_points' => $rating_points]);
             }
         }
-      $username = Auth::user()->username;
-$data = User::where('username', $username)->first();
+        $username = Auth::user()->username;
+        $data = User::where('username', $username)->first();
 
-        return view('funds.donation', ['rating_points' => $rating_points, 'obj' => $obj , 'data' => $data]);
+        return view('funds.donation', ['rating_points' => $rating_points, 'obj' => $obj, 'data' => $data]);
     }
 
 
@@ -396,7 +396,7 @@ $data = User::where('username', $username)->first();
                     if (Auth::check())
                         // Donation changes start
                         $transactionData['user_id'] = Auth::user()->id;
-                        // Donation changes end
+                    // Donation changes end
                     if ($current_payment_method == "Zcash") {
                         $transactionData['trans_type'] = 'credit_zcash';
                     } else {
@@ -426,9 +426,9 @@ $data = User::where('username', $username)->first();
                     $addFunds['payment_method'] = $current_payment_method;
                     $addFunds['fund_type'] = $donateTo;
                     if (Auth::check())
-                               // Donation changes start
+                        // Donation changes start
                         $addFunds['user_id'] = Auth::user()->id;
-       // Donation changes end
+                    // Donation changes end
                     $fundID = Fund::create($addFunds)->id;
 
 
@@ -959,9 +959,9 @@ $data = User::where('username', $username)->first();
         $transaction = new Transaction();
         $transaction->transaction_id = 'TXN-' . strtoupper(Str::random(10));
         $transaction->user_id = auth()->id();
-               // Donation changes start
+        // Donation changes start
         $transaction->created_by = auth()->id();
-               // Donation changes end
+        // Donation changes end
         $transaction->amount = $request->donate_amount;
         // $transaction->payment_method = $request->paymentMethod ?? 'unknown';
 
@@ -986,7 +986,7 @@ $data = User::where('username', $username)->first();
 
         $transaction->save();
 
-        return response()->json(['success'=> 'Donation successful!', 'transaction_id' => $transaction->transaction_id]);
+        return response()->json(['success' => 'Donation successful!', 'transaction_id' => $transaction->transaction_id]);
     }
 
 
@@ -996,7 +996,7 @@ $data = User::where('username', $username)->first();
         // Validate the request
         $donateType = $request->donate_to_type;
         $targetId   = $request->unit_id; // By default we will use unit_id name for input
-        
+
         // Prepare base data
         $data = [
             'transaction_id'  => 'TXN-' . strtoupper(Str::random(10)),
@@ -1011,7 +1011,7 @@ $data = User::where('username', $username)->first();
             // 'updated_at'      => now(),
         ];
         // echo '<pre>';print_r($data);echo "<pre>";die();
-        
+
         // Dynamically add target ID based on donation type
         switch ($donateType) {
             case 'unit':
@@ -1032,10 +1032,10 @@ $data = User::where('username', $username)->first();
         }
 
         // Check if transaction already exists for this username (you can also match by donate_to_type + id if needed)
-               // Donation changes start
+        // Donation changes start
         $existing = DB::table('transactions')
             ->where('created_by', $request->username)
-                   // Donation changes end
+            // Donation changes end
             ->where(function ($query) use ($donateType, $targetId) {
                 switch ($donateType) {
                     case 'unit':
@@ -1047,10 +1047,10 @@ $data = User::where('username', $username)->first();
                     case 'task':
                         $query->where('task_id', $targetId);
                         break;
-                    case 'issue': 
-                               // Donation changes start
+                    case 'issue':
+                        // Donation changes start
                         $query->where('issue_id', $targetId);
-                               // Donation changes end
+                        // Donation changes end
                         break;
                     case 'idea':
                         $query->where('idea_id', $targetId);
@@ -1063,15 +1063,15 @@ $data = User::where('username', $username)->first();
             // Remove created_at if updating
             unset($data['created_at']);
 
-                   // Donation changes start
+            // Donation changes start
             DB::table('transactions')
-                   // Donation changes end
+                // Donation changes end
                 ->where('id', $existing->id)
                 ->update($data);
         } else {
-                   // Donation changes start
+            // Donation changes start
             DB::table('transactions')->insert($data);
-                   // Donation changes end
+            // Donation changes end
         }
 
         // Redirect to Givebutter
@@ -1082,17 +1082,17 @@ $data = User::where('username', $username)->first();
                 'redirect_url' => 'https://givebutter.com/G8ntYk',
                 'transaction' => $data
             ]);
-        }else{
+        } else {
             return redirect()->away('https://givebutter.com/G8ntYk');
         }
-            // Donation changes end
+        // Donation changes end
     }
 
 
     public function donationList(Request $request)
     {
-               // Donation changes start
-         $unitId = $request->query('unit'); 
+        // Donation changes start
+        $unitId = $request->query('unit');
         $unitData = Unit::where('id', $unitId)->first();
         $transaction = DB::table('transactions')
             ->leftJoin('units', 'transactions.unit_id', '=', 'units.id')
@@ -1125,23 +1125,23 @@ $data = User::where('username', $username)->first();
 
         return view('funds.donation_list', ['transactions' => $transaction, 'unitData' => $unitData]);
     }
-    
+
     // Issue fixed by tarun  - start
-    
+
     public function donationDetails($id)
     {
         $unitTotalAmount = Transaction::sum('amount');
-        return response()->json(['success'=> 'Donation fetched successfully!', 'transaction_amount' => $unitTotalAmount]);
+        return response()->json(['success' => 'Donation fetched successfully!', 'transaction_amount' => $unitTotalAmount]);
     }
     public function financeActivities(Request $request)
     {
         $unitId = $request->query('unit');
         $unitData = Unit::where('id', $unitId)->first();
         $activities = \App\Models\Transaction::where('unit_id', $unitId)
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
-        
-        return view('funds.activities', compact('activities','unitData'));
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('funds.activities', compact('activities', 'unitData'));
     }
     // Issue fixed by tarun  - End
 }
