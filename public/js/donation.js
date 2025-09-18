@@ -8,7 +8,7 @@ function handleDonationClick(buttonId) {
 
 
         $.ajax({
-            url: 'initiate-transaction',
+            url: '/donation/initiate-transaction',
             method: 'POST',
             data:{
                 _token: $('meta[name="csrf-token"]').attr('content'),

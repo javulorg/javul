@@ -233,7 +233,6 @@ Route::group(['middleware' => 'prevent-back-history', 'auth'], function () {
     //ElfinderController
     Route::get('elfinder/connectorex', [ElfinderController::class, 'showConnector'])->name("elfinder.connectorex")->middleware('auth');
     Route::post('elfinder/connectorex', [ElfinderController::class, 'showConnector'])->name("elfinder.connectorex")->middleware('auth');
-    Route::post('initiate-transaction', [FundsController::class, 'test']);
 });
 
 //HomeController
@@ -308,21 +307,31 @@ Route::get('objectives/{objective_id}/{slug_id}/{unit_id}/tasks', [TasksControll
 
 Route::post('/like', [\App\Http\Controllers\V2\CommentController::class, 'like'])->name('like');
 Route::post('/dislike', [\App\Http\Controllers\V2\CommentController::class, 'dislike'])->name('dislike');
+
+
 //FundsController
 Route::get('funds/donate/unit/{unit_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/donate/objective/{objective_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/donate/task/{task_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/donate/issue/{issue_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/donate/idea/{idea_id}', [FundsController::class, 'donate_to_unit_objective_task']);
-
 Route::get('funds/donate/user/{user_id}', [FundsController::class, 'donate_to_unit_objective_task']);
 Route::get('funds/get-card-name', [FundsController::class, 'get_card_name']);
 Route::post('funds/donate-amount', [FundsController::class, 'donate_amount']);
-// Route::post('funds/transfer-from-unit', [FundsController::class, 'transfer_from_unit']);
 Route::post('funds/transfer-from-unit', [FundsController::class, 'transferFromUnit']);
-
 Route::get('funds/success', [FundsController::class, 'success']);
 Route::get('funds/cancel', [FundsController::class, 'cancel']);
+Route::get('finances', [FundsController::class, 'financeActivities']);
+Route::get('donation-list', [FundsController::class, 'donationList']);
+Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateForm']);
+Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateToUnit']);
+Route::get('funds/donate/objective/{hashid}', [FundsController::class, 'donateToObjective']);
+Route::get('funds/donate/task/{hashid}', [FundsController::class, 'donateToTask']);
+Route::get('funds/donate/issue/{hashid}', [FundsController::class, 'donateToIssue']);
+Route::post('funds/transfer-from-unit', [FundsController::class, 'transferFromUnit']);
+Route::post('/donation/submit', [FundsController::class, 'submit'])->name('donation.submit');
+Route::post('/donation/initiate-transaction', [FundsController::class, 'initiateTransaction']);
+
 
 //IssuesController
 Route::any('issues/{unit_id}/lists', [IssuesController::class, 'lists']); // it doesn't exists
@@ -359,7 +368,6 @@ Route::post('/account/request-to-transfer-zcash', [AccountController::class, 're
 
 // V2
 Route::resource('activities', SiteActivityController::class);
-Route::get('finances', [FundsController::class, 'financeActivities']);
 Route::post('priorities', [\App\Http\Controllers\V2\PriorityController::class, 'store']);
 
 
@@ -408,17 +416,6 @@ Route::resource('ideas', IdeaController::class);
 
 Route::post('/message/send-message', [MessageController::class, 'sendMessage'])->name('message.send-message');
 
-Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateForm']);
-
-
-Route::get('funds/donate/unit/{hashid}', [FundsController::class, 'donateToUnit']);
-Route::get('funds/donate/objective/{hashid}', [FundsController::class, 'donateToObjective']);
-Route::get('funds/donate/task/{hashid}', [FundsController::class, 'donateToTask']);
-Route::get('funds/donate/issue/{hashid}', [FundsController::class, 'donateToIssue']);
-// Route::get('funds/donate/idea/{hashid}', [FundsController::class, 'donateToIdea']);
-
-Route::post('funds/transfer-from-unit', [FundsController::class, 'transferFromUnit']);
-Route::post('/donation/submit', [FundsController::class, 'submit'])->name('donation.submit');
 
 Route::post('/payment/submit', [TasksController::class, 'submit'])->name('payment.submit');
 
@@ -428,4 +425,3 @@ Route::post('/payment/submit', [TasksController::class, 'submit'])->name('paymen
 // Route::get('/funds/donations-list', function () {
 //     return view('layout.master');
 // })->name('funds.donation_list');
-Route::get('donation-list', [FundsController::class, 'donationList']);

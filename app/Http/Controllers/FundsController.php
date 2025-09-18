@@ -1027,39 +1027,39 @@ class FundsController extends Controller
         }
 
         // Check if transaction already exists for this username (you can also match by donate_to_type + id if needed)
-        $existing = DB::table('transactions')
-            ->where('created_by', auth()->id(),)
-            ->where(function ($query) use ($donateType, $targetId) {
-                switch ($donateType) {
-                    case 'unit':
-                        $query->where('unit_id', $targetId);
-                        break;
-                    case 'objective':
-                        $query->where('objective_id', $targetId);
-                        break;
-                    case 'task':
-                        $query->where('task_id', $targetId);
-                        break;
-                    case 'issue':
-                        $query->where('issue_id', $targetId);
-                        break;
-                    case 'idea':
-                        $query->where('idea_id', $targetId);
-                        break;
-                }
-            })
-            ->first();
+        // $existing = DB::table('transactions')
+        //     ->where('created_by', auth()->id(),)
+        //     ->where(function ($query) use ($donateType, $targetId) {
+        //         switch ($donateType) {
+        //             case 'unit':
+        //                 $query->where('unit_id', $targetId);
+        //                 break;
+        //             case 'objective':
+        //                 $query->where('objective_id', $targetId);
+        //                 break;
+        //             case 'task':
+        //                 $query->where('task_id', $targetId);
+        //                 break;
+        //             case 'issue':
+        //                 $query->where('issue_id', $targetId);
+        //                 break;
+        //             case 'idea':
+        //                 $query->where('idea_id', $targetId);
+        //                 break;
+        //         }
+        //     })
+        //     ->first();
 
-        if ($existing) {
-            // Remove created_at if updating
-            unset($data['created_at']);
+        // if ($existing) {
+        //     // Remove created_at if updating
+        //     unset($data['created_at']);
 
-            DB::table('transactions')
-                ->where('id', $existing->id)
-                ->update($data);
-        } else {
+        //     DB::table('transactions')
+        //         ->where('id', $existing->id)
+        //         ->update($data);
+        // } else {
             DB::table('transactions')->insert($data);
-        }
+        // }
 
         // Redirect to Givebutter
         // return redirect()->away('https://givebutter.com/G8ntYk');
